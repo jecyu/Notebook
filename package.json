@@ -1,10 +1,27 @@
 {
+  "name": "shooterrao-notebook",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shooterRao/Notebook"
+  },
+  "author": "shooterRao",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8"
+  },
   "dependencies": {},
   "devDependencies": {
+    "husky": "^1.0.0-rc.13",
     "vuepress": "^0.14.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "bash deploy.sh"
+    }
   }
 }

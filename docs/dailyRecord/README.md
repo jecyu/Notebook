@@ -6,7 +6,7 @@
 
 加载blob流图片
 
-```JavaScript
+```js
 var img = new Image();
 img.src = window.URL.createObjectURL(this._blob);
 img.onload = function() {
@@ -19,9 +19,17 @@ img.onload = function() {
 
 ### 21
 
-```JavaScript
+```js
 !!"false" => true(Boolean)
 !!undefined => false
 !!123 || !!’abc’ => true
 !!是转Boolean的一个技巧，可以得到这个值真正对应的布尔值
+```
+
+### 22
+
+获取返回头部的contentType
+
+```js
+xhr.getResponseHeader("Content-Type")
 ```
