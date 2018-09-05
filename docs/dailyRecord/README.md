@@ -2,22 +2,20 @@
 
 ## Aug
 
-### 20
-
-加载 blob 流图片
+### 加载 blob 流图片
 
 ```js
-var img = new Image();
+const img = new Image();
 img.src = window.URL.createObjectURL(this._blob);
 img.onload = function() {
   // 获取图片原始尺寸 （IE9+）
-  var imgWidth = this.naturalWidth;
-  var imgHeight = this.naturalHeight;
+  const imgWidth = this.naturalWidth;
+  const imgHeight = this.naturalHeight;
   window.URL.revokeObjectURL(img.src);
 };
 ```
 
-### 21
+### !!含义
 
 ```js
 !!"false" => true(Boolean)
@@ -26,22 +24,18 @@ img.onload = function() {
 !!是转Boolean的一个技巧，可以得到这个值真正对应的布尔值
 ```
 
-### 22
-
-获取返回头部的 contentType
+### 获取返回头部的 contentType
 
 ```js
-xhr.getResponseHeader("Content-Type");
+const contentType = xhr.getResponseHeader("Content-Type");
 ```
 
-### 23
+### 判断问题
 
 有一个现象，就是当 A 对象没有`name`属性时，去判断`A.name !== XXX`是返回`true`的，如果没有`name`属性，必须先判断`A.name`是否存在，再去判断它是否不等于 XXX
 所以说，像这种写法`if(node.data.topicitem.isFavorite)`，是错误的, 应该改成`if(node.data && node.data.topicitem && node.data.topicitem.isFavorite)`
 
-### 24
-
-根据数组里面对象某个字段值进行排序
+### 根据数组里面对象某个字段值进行排序
 
 ```js
 sortUp: function(data, key) {
@@ -65,13 +59,12 @@ sortUp: function(data, key) {
 Tips: 在 sort 函数里面，a < b return 1（降序）
 a < b return -1（升序)
 
-### 25
+### 页数计算方法
 
-页数计算方法：Math.ceil(总条数/展示的条数)
+`const totalPages = Math.ceil(总条数/展示的条数)`
 
-### 26
 
-cookie 通用方法
+### cookie通用方法
 
 ```js
 const cookieuUtil = {
@@ -88,10 +81,11 @@ const cookieuUtil = {
     },
     // 获取cookie
     getCookie: function(key) {
-        const arr = document.cookie.split('; '),arr2;
+        const arr = document.cookie.split('; ');
+        let arr2 = [];
         for (let i = 0; i < arr.length; i++) {
           arr2 = arr[i].split('=');
-          if (arr2[0] == name) {
+          if (arr2[0] == key) {
             return arr2[1];
           }
       }
@@ -104,9 +98,7 @@ const cookieuUtil = {
 };
 ```
 
-### 27
-
-UMD 模块通用写法
+### UMD模块通用写法
 
 ```js
 (function(global, factory) {
@@ -126,9 +118,7 @@ UMD 模块通用写法
 });
 ```
 
-### 28
-
-关于 webpack 打包 umd 模块的一些小坑
+### 关于 webpack 打包 umd 模块的一些小坑
 
 首先，如果想把一个模块通过`<script src>`方式引入，挂载到 window 变量上，需要配置 webpack 打包成`umd`
 
@@ -173,15 +163,13 @@ output: {
 }
 ```
 
-### 29
-
-css-background-img 中 center 属性很方便
+### css-background-img中center属性很方便
 
 ```css
 background: url("./loading-icon.gif") no-repeat center;
 ```
 
-NodeList 转 Array 的多种方法
+### NodeList 转 Array 的多种方法
 
 ```js
 // 方法一
@@ -192,7 +180,7 @@ const array = Array.prototype.slice.call(NodeList);
 const array = [...NodeList];
 ```
 
-一个 tap 技巧
+### 一个 tap 技巧
 
 ```js
 function tap(x, fn = x => x) {
@@ -205,9 +193,7 @@ array.filter(v => tap(v) > 2);
 // tap对于函数式编程很有帮助
 ```
 
-### 30
-
-123.toString()为什么会报错
+### 123.toString()为什么会报错
 
 ```js
 123.toString()相当于123.0toString()
@@ -220,9 +206,7 @@ n.toString();
 123.0.toString();
 ```
 
-### 31
-
-用`Promise`模拟`Dojo`里的`Deferred`函数
+### 用`Promise`模拟`Dojo`里的`Deferred`函数
 
 ```js
 const Deferred = function() {
@@ -243,9 +227,7 @@ dojoDef.promise.then(res => {
 
 ## Sep
 
-### 1
-
-Promise.finally 实现方法
+### `Promise.finaly` 实现方法
 
 ```js
 Promise.prototype.finally = function(callback) {
@@ -265,4 +247,22 @@ Promise.resolve('done').finally(() => {
 Promise.reject('error').finally(() => {
   console.log('error');
 });
+```
+
+### `Merge` 对象
+
+```js
+// 合并对象（不会覆盖对象已有的属性）
+function merge(obj = { }, defaults) {
+  const has = Object.prototype.hasOwnProperty;
+  for (const key in defaults) {
+    // 确保不会合并default原型链上的属性
+    if(has.call(defaults, key)) {
+      if (typeof obj[key] === 'undefined') {
+          obj[key] = defaults[key];
+        }
+      }
+    }
+  return obj;
+}
 ```
