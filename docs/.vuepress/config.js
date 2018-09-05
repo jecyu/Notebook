@@ -2,6 +2,9 @@ module.exports = {
   base: "/Notebook/",
   title: "Raojw's Notebook",
   description: "📝每天记录一点点",
+  head: [
+    ['link', { rel: 'icon', href: '/images/logo.png' }]
+  ],
   themeConfig: {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
