@@ -266,3 +266,59 @@ function merge(obj = { }, defaults) {
   return obj;
 }
 ```
+
+### Event lop
+
+微任务包括 `process.nextTick` ，`promise` ，`Object.observe` ，`MutationObserver`
+
+宏任务包括 `script` ， `setTimeout` ，`setInterval` ，`setImmediate` ，`I/O` ，`UI rendering`
+
+1. 执行一个宏任务（栈中没有就从事件队列中获取)
+2. 执行过程中如果遇到微任务，就将它添加到微任务的任务队列中
+3. 宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行)
+4. 当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
+5. 渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
+
+### 解析url参数
+
+```js
+/**
+ * 解析url参数
+ * @example ?id=123&a=b
+ * @return Object {id:123, a:b}
+ * 
+ */
+function urlParse() {
+    const url = window.location.search;
+    const obj = {};
+    const reg = /[?&][^?&]+=[^?&]+/g;// ？/&开头 + 非？&至少一个 = + 非？&至少一个
+    const arr = url.match(reg);
+    if(arr) {
+        arr.forEach(item => {
+            let tempArr = item.substring(1).split('=');
+            let key = decodeURIComponent(tempArr[0]);
+            let value = decodeURIComponent(tempArr[1]);
+            obj[key] = value;
+        });
+    }
+    return obj;
+};
+```
+
+### ESlint
+
+[Eslint规则配置参考](http://eslint.cn/docs/rules/)
+
+```
+"off" or "0"：表示这个规则关闭，
+"warn" or "1"：表示这个规则是一个警告处理
+"error" or "2"：表示这个规则是一个错误处理
+```
+
+### vscode小技巧
+
+跳回之前的位置
+> control + -
+
+跳到当前光标的位置
+> option + ←
