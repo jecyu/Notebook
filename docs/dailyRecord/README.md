@@ -1,6 +1,6 @@
 # 2018
 
-## Aug
+## 八月
 
 ### 加载 blob 流图片
 
@@ -225,7 +225,7 @@ dojoDef.promise.then(res => {
 });
 ```
 
-## Sep
+## 九月
 
 ### `Promise.finaly` 实现方法
 
@@ -322,3 +322,84 @@ function urlParse() {
 
 跳到当前光标的位置
 > option + ←
+
+### 关于ES6的class
+
+```js
+class A {
+  constructor() {
+    console.log(this);
+    console.log(new.target.name);
+  }
+}
+
+class B extends A {
+  constructor() {
+    // super代表父类的构造函数的constructor
+    super();// 相当于A.call(this)
+    // 只有调用super()之后，才能使用this，因为子类实例的构建，是基于对父类实例加工，执行super方法才返回父类实例
+    console.log(this);
+  }
+}
+
+// 派生类上可以忽略constructor,它是等效于上面的写法
+class B extends A {
+  ...
+}
+
+// B函数内super执行时，super内的this指向b，A.prototype.constructor.call(this)
+const b = new B();
+
+// Object.getPrototypeOf方法可以用来从子类上获取父类
+console.log(Object.getPrototypeOf(B));// Function：A
+
+// 一些原型链的指向
+b._proto__ => B.prototype => B.prototype.__proto__ => A.prototype =>  A.prototype.__proto__ => Object.prototype => Object.prototype.__proto__ => null
+
+// ES5模拟ES6类的继承实现
+function A () {}
+A.prototype.test = function() {}
+
+function B() {
+  A.call(this);
+}
+// Object.create
+B.prototype = Object.create(A.prototype, {
+  constructor: {
+    value: B,
+    enumerable: true,
+    writable: true,
+    configurable: true
+  }
+})
+
+```
+
+### git常用合并命令
+
+稳妥点合并
+* git fetch origin xxx
+* git diff xxx
+* git merge origin/xxx
+
+暴力合并
+* git pull origin xxx
+
+### git更新文件冲突解决方案
+
+如果工作区还没有add和commit，直接git pull会产生以下提示：
+
+> Please,commit your changes or stash them before you can merge.
+
+解决方案有2种：
+
+1. 保留本地修改，不被新的修改覆盖
+
+* git stash (保留本地修改，还没有add和commit)
+* git pull (更新)
+* git stash pop (回到本地更改)
+
+2. 如果想让远程代码完全覆盖本地代码的修改
+
+* git reset -hard
+* git pull
