@@ -403,3 +403,54 @@ B.prototype = Object.create(A.prototype, {
 
 * git reset -hard
 * git pull
+
+### 关于weakmap
+
+> weak map 是只包含对象键的特殊 map。和 weak set 类似，键的是弱对象引用，因此当其为仅存的某个对象的引用时，垃圾回收不会被阻止。当键被垃圾回收器清理之后，所关联的值也一并销毁。当想要将额外的信息附加到生命周期可由外部代码控制的对象上时，带有内存管理的 weak map 类型是唯一适合的。
+
+使用weakmap模拟实例对象私有变量
+
+```js
+let Widget = (function() {
+
+  let privateData = new WeakMap();
+
+  function Widget(id) {
+    privateData.set(this, {id: id});
+  }
+
+  Widget.prototype.getId = function() {
+    return privateData.get(this).id;
+  };
+
+  return Widget;
+
+}());
+
+const w = new Widget('123456789');
+w.getId() // '123456789';
+w = null; // privateData解除对w的引用，id(值)会一并被销毁
+```
+
+### ajax并发请求
+
+```js
+const url = '';
+
+// async/await
+async function asyncGetUrl() {
+  const promise1 = fetch(url).then(res => res.json());
+  const promise2 = fetch(url).then(res => res.json());
+  const res1 = await promise1;
+  const res2 = await promise2;
+  console.log(res1, res2);
+}
+
+// promise all
+async function allGetUrl() {
+  const promise1 = fetch(url).then(res => res.json());
+  const promise2 = fetch(url).then(res => res.json());
+  const [res1, res2] =  await Promise.all([promise1, promise2]);
+  console.log(res1, res2);
+}
+```
