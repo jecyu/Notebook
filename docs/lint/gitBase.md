@@ -194,7 +194,7 @@ git rev-list -n 1 HEAD -- <file_path> #得到 deleting_commit
 git checkout <deleting_commit>^ -- <file_path> #回到删除文件 deleting_commit 之前的状态
 ```
 
-## 回到某一个commit的状态，并重新增添一个commit
+## 以新增一个commit的方式还原某一个commit的修改
 ```sh
 git revert <commit-id>
 ```
@@ -227,8 +227,9 @@ blame的意思为‘责怪’，你懂的。
 git blame <file-name>
 ```
 
-## 显示本地执行过git命令
-就像shell的history一样
+## 显示本地更新过HEAD的git命令记录
+每次更新了HEAD 的git 命令比如 commint、amend、cherry-pick、reset、revert等都会被记录下来（不限分支），就像shell的history一样。
+这样你可以reset 到任何一次更新了HEAD 的操作之后，而不仅仅是回到当前分支下的某个commit 之后的状态。
 ```
 git reflog
 ```

@@ -63,42 +63,41 @@ a < b return -1（升序)
 
 `const totalPages = Math.ceil(总条数/展示的条数)`
 
-
-### cookie通用方法
+### cookie 通用方法
 
 ```js
 const cookieuUtil = {
-    // 设置cookie方法
-    setCookie: function(key, val, time) {
-        // 获取当前时间
-        const date=new Date();
-        // 将date设置为n天以后的时间
-        const expiresDays = time;
-        // 格式化为cookie识别的时间
-        date.setTime(date.getTime() + expiresDays*24*3600*1000);
-        // 设置cookie
-        document.cookie = key + "=" + val +";expires="+date.toGMTString();
-    },
-    // 获取cookie
-    getCookie: function(key) {
-        const arr = document.cookie.split('; ');
-        let arr2 = [];
-        for (let i = 0; i < arr.length; i++) {
-          arr2 = arr[i].split('=');
-          if (arr2[0] == key) {
-            return arr2[1];
-          }
+  // 设置cookie方法
+  setCookie: function(key, val, time) {
+    // 获取当前时间
+    const date = new Date();
+    // 将date设置为n天以后的时间
+    const expiresDays = time;
+    // 格式化为cookie识别的时间
+    date.setTime(date.getTime() + expiresDays * 24 * 3600 * 1000);
+    // 设置cookie
+    document.cookie = key + "=" + val + ";expires=" + date.toGMTString();
+  },
+  // 获取cookie
+  getCookie: function(key) {
+    const arr = document.cookie.split("; ");
+    let arr2 = [];
+    for (let i = 0; i < arr.length; i++) {
+      arr2 = arr[i].split("=");
+      if (arr2[0] == key) {
+        return arr2[1];
       }
-          return '';
-    },
-    // 删除cookie
-    delCookie:function(key) {
-         this.setCookie(key, '', -1)
     }
+    return "";
+  },
+  // 删除cookie
+  delCookie: function(key) {
+    this.setCookie(key, "", -1);
+  }
 };
 ```
 
-### UMD模块通用写法
+### UMD 模块通用写法
 
 ```js
 (function(global, factory) {
@@ -163,7 +162,7 @@ output: {
 }
 ```
 
-### css-background-img中center属性很方便
+### css-background-img 中 center 属性很方便
 
 ```css
 background: url("./loading-icon.gif") no-repeat center;
@@ -183,13 +182,13 @@ const array = [...NodeList];
 ### 一个 tap 技巧
 
 ```js
-function tap(x, fn = x => x) {
+function tap(x, fn = (x) => x) {
   console.log(fn(x));
   return x;
 }
 const array = [1, 2, 3, 4, 5];
-array.filter(v => tap(v > 2));
-array.filter(v => tap(v) > 2);
+array.filter((v) => tap(v > 2));
+array.filter((v) => tap(v) > 2);
 // tap对于函数式编程很有帮助
 ```
 
@@ -220,7 +219,7 @@ const Deferred = function() {
 // use
 const dojoDef = Deferred();
 dojoDef.resolve("dojo-deferred-done");
-dojoDef.promise.then(res => {
+dojoDef.promise.then((res) => {
   console.log(res);
 });
 ```
@@ -233,19 +232,19 @@ dojoDef.promise.then(res => {
 Promise.prototype.finally = function(callback) {
   let P = this.constructor;
   return this.then(
-    value => P.resolve(callback()).then(() => value),
-    reason =>
+    (value) => P.resolve(callback()).then(() => value),
+    (reason) =>
       P.resolve(callback()).then(() => {
         throw reason;
       })
   );
 };
 // use
-Promise.resolve('done').finally(() => {
-  console.log('done');
+Promise.resolve("done").finally(() => {
+  console.log("done");
 });
-Promise.reject('error').finally(() => {
-  console.log('error');
+Promise.reject("error").finally(() => {
+  console.log("error");
 });
 ```
 
@@ -253,16 +252,16 @@ Promise.reject('error').finally(() => {
 
 ```js
 // 合并对象（不会覆盖对象已有的属性）
-function merge(obj = { }, defaults) {
+function merge(obj = {}, defaults) {
   const has = Object.prototype.hasOwnProperty;
   for (const key in defaults) {
     // 确保不会合并default原型链上的属性
-    if(has.call(defaults, key)) {
-      if (typeof obj[key] === 'undefined') {
-          obj[key] = defaults[key];
-        }
+    if (has.call(defaults, key)) {
+      if (typeof obj[key] === "undefined") {
+        obj[key] = defaults[key];
       }
     }
+  }
   return obj;
 }
 ```
@@ -276,38 +275,38 @@ function merge(obj = { }, defaults) {
 1. 执行一个宏任务（栈中没有就从事件队列中获取)
 2. 执行过程中如果遇到微任务，就将它添加到微任务的任务队列中
 3. 宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行)
-4. 当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
-5. 渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
+4. 当前宏任务执行完毕，开始检查渲染，然后 GUI 线程接管渲染
+5. 渲染完毕后，JS 线程继续接管，开始下一个宏任务（从事件队列中获取）
 
-### 解析url参数
+### 解析 url 参数
 
 ```js
 /**
  * 解析url参数
  * @example ?id=123&a=b
  * @return Object {id:123, a:b}
- * 
+ *
  */
 function urlParse() {
-    const url = window.location.search;
-    const obj = {};
-    const reg = /[?&][^?&]+=[^?&]+/g;// ？/&开头 + 非？&至少一个 = + 非？&至少一个
-    const arr = url.match(reg);
-    if(arr) {
-        arr.forEach(item => {
-            let tempArr = item.substring(1).split('=');
-            let key = decodeURIComponent(tempArr[0]);
-            let value = decodeURIComponent(tempArr[1]);
-            obj[key] = value;
-        });
-    }
-    return obj;
-};
+  const url = window.location.search;
+  const obj = {};
+  const reg = /[?&][^?&]+=[^?&]+/g; // ？/&开头 + 非？&至少一个 = + 非？&至少一个
+  const arr = url.match(reg);
+  if (arr) {
+    arr.forEach((item) => {
+      let tempArr = item.substring(1).split("=");
+      let key = decodeURIComponent(tempArr[0]);
+      let value = decodeURIComponent(tempArr[1]);
+      obj[key] = value;
+    });
+  }
+  return obj;
+}
 ```
 
 ### ESlint
 
-[Eslint规则配置参考](http://eslint.cn/docs/rules/)
+[Eslint 规则配置参考](http://eslint.cn/docs/rules/)
 
 ```
 "off" or "0"：表示这个规则关闭，
@@ -315,15 +314,17 @@ function urlParse() {
 "error" or "2"：表示这个规则是一个错误处理
 ```
 
-### vscode小技巧
+### vscode 小技巧
 
 跳回之前的位置
+
 > control + -
 
 跳到当前光标的位置
+
 > option + ←
 
-### 关于ES6的class
+### 关于 ES6 的 class
 
 ```js
 class A {
@@ -372,51 +373,51 @@ B.prototype = Object.create(A.prototype, {
     configurable: true
   }
 })
-
 ```
 
-### git常用合并命令
+### git 常用合并命令
 
 稳妥点合并
-* git fetch origin xxx
-* git diff xxx
-* git merge origin/xxx
+
+- git fetch origin xxx
+- git diff xxx
+- git merge origin/xxx
 
 暴力合并
-* git pull origin xxx
 
-### git更新文件冲突解决方案
+- git pull origin xxx
 
-如果工作区还没有add和commit，直接git pull会产生以下提示：
+### git 更新文件冲突解决方案
+
+如果工作区还没有 add 和 commit，直接 git pull 会产生以下提示：
 
 > Please,commit your changes or stash them before you can merge.
 
-解决方案有2种：
+解决方案有 2 种：
 
 1. 保留本地修改，不被新的修改覆盖
 
-* git stash (保留本地修改，还没有add和commit)
-* git pull (更新)
-* git stash pop (回到本地更改)
+- git stash (保留本地修改，还没有 add 和 commit)
+- git pull (更新)
+- git stash pop (回到本地更改)
 
 2. 如果想让远程代码完全覆盖本地代码的修改
 
-* git reset -hard
-* git pull
+- git reset -hard
+- git pull
 
-### 关于weakmap
+### 关于 weakmap
 
 > weak map 是只包含对象键的特殊 map。和 weak set 类似，键的是弱对象引用，因此当其为仅存的某个对象的引用时，垃圾回收不会被阻止。当键被垃圾回收器清理之后，所关联的值也一并销毁。当想要将额外的信息附加到生命周期可由外部代码控制的对象上时，带有内存管理的 weak map 类型是唯一适合的。
 
-使用weakmap模拟实例对象私有变量
+使用 weakmap 模拟实例对象私有变量
 
 ```js
 let Widget = (function() {
-
   let privateData = new WeakMap();
 
   function Widget(id) {
-    privateData.set(this, {id: id});
+    privateData.set(this, { id: id });
   }
 
   Widget.prototype.getId = function() {
@@ -424,23 +425,22 @@ let Widget = (function() {
   };
 
   return Widget;
+})();
 
-}());
-
-const w = new Widget('123456789');
-w.getId() // '123456789';
+const w = new Widget("123456789");
+w.getId(); // '123456789';
 w = null; // privateData解除对w的引用，id(值)会一并被销毁
 ```
 
-### ajax并发请求
+### ajax 并发请求
 
 ```js
-const url = '';
+const url = "";
 
 // async/await
 async function asyncGetUrl() {
-  const promise1 = fetch(url).then(res => res.json());
-  const promise2 = fetch(url).then(res => res.json());
+  const promise1 = fetch(url).then((res) => res.json());
+  const promise2 = fetch(url).then((res) => res.json());
   const res1 = await promise1;
   const res2 = await promise2;
   console.log(res1, res2);
@@ -448,9 +448,80 @@ async function asyncGetUrl() {
 
 // promise all
 async function allGetUrl() {
-  const promise1 = fetch(url).then(res => res.json());
-  const promise2 = fetch(url).then(res => res.json());
-  const [res1, res2] =  await Promise.all([promise1, promise2]);
+  const promise1 = fetch(url).then((res) => res.json());
+  const promise2 = fetch(url).then((res) => res.json());
+  const [res1, res2] = await Promise.all([promise1, promise2]);
   console.log(res1, res2);
+}
+```
+
+### bash 一个小坑
+
+今天打算写个 shell 脚本来发布到 github 上，commit 的信息就定为当前时间，于是就这么写了
+
+```shell
+time="📝"$(date +"%Y-%m-%d %H:%M:%S")
+
+git add .
+git commit -m $time
+git push origin master
+```
+
+然后发现报错无法进行，于是直接把`echo "📝"$(date +"%Y-%m-%d %H:%M:%S")`这句话丢到 zsh 上跑，发现又没问题，觉得很奇怪，为什么取变量遇到**空格**就中断了呢？？
+
+谷歌了很久，终于在一本在线书籍上找到答案
+
+```shell
+a=`ls -l`
+echo $a           # 不带引号，移除所有的制表符与分行符
+echo "$a"         # 带引号，会保留空白符
+```
+
+所以，以上问题得到解决
+
+```shell
+git commit -m "$time"
+```
+
+### 元素节点中的 children 和 childNodes 的区别
+
+```js
+const el = document.querySelector('.el');
+
+// children只包含元素节点
+el.children
+
+// childNodes包含元素节点和文本节点(空白的text也算)
+el.childNodes
+
+// 如果想在childNodes中判断非文本节点
+xxx.nodeType != 3
+
+// 关于nodeType值
+nodeType: {
+  1: 元素节点,
+  2: 属性节点,
+  3: 文本节点
+}
+```
+
+### Element.matches--polyfill
+
+> matches 可用于事件代理进行元素判断
+
+```js
+if (!Element.prototype.matches) {
+  Element.prototype.matches =
+    Element.prototype.matchesSelector ||
+    Element.prototype.mozMatchesSelector ||
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.oMatchesSelector ||
+    Element.prototype.webkitMatchesSelector ||
+    function(s) {
+      var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+        i = matches.length;
+      while (--i >= 0 && matches.item(i) !== this) {}
+      return i > -1;
+    };
 }
 ```

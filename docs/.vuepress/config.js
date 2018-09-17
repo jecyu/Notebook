@@ -53,14 +53,14 @@ module.exports = {
         {
           title: "协同开发",
           collapsable: true,
-          children: ["gitBase", "collaborative",]
+          children: ["gitBase", "collaborative"]
         }
       ],
       "/bookmark/": [
         {
           title: "网站书签整理",
           collapsable: false,
-          children: ["", "BE", "TOOL"]
+          children: ["", "backend", "tool"]
         }
       ]
     },
