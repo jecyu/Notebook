@@ -459,7 +459,7 @@ async function allGetUrl() {
 
 今天打算写个 shell 脚本来发布到 github 上，commit 的信息就定为当前时间，于是就这么写了
 
-```shell
+```sh
 time="📝"$(date +"%Y-%m-%d %H:%M:%S")
 
 git add .
@@ -471,7 +471,7 @@ git push origin master
 
 谷歌了很久，终于在一本在线书籍上找到答案
 
-```shell
+```sh
 a=`ls -l`
 echo $a           # 不带引号，移除所有的制表符与分行符
 echo "$a"         # 带引号，会保留空白符
@@ -479,7 +479,7 @@ echo "$a"         # 带引号，会保留空白符
 
 所以，以上问题得到解决
 
-```shell
+```sh
 git commit -m "$time"
 ```
 
@@ -524,4 +524,93 @@ if (!Element.prototype.matches) {
       return i > -1;
     };
 }
+```
+
+### 关于 delete 注意点
+
+```js
+var a = 1;
+// delete无法删除已经声明的变量
+/* 通过变量声明生成全局对象的属性，拥有DontDelete */
+delete a; // false
+
+a = 1;
+/* 通过未声明的变量赋值生成全局对象的属性，没有DontDelete */
+delete a; // true
+```
+
+### canvas.toDataURL('image/png') 跨域报错的解决方案
+
+```js
+const img = new Image();
+// 在chrome68浏览器中，如果设src在设crossOrigin属性之前，同样会报错
+// 所以先设crossOrigin属性，解决跨域，再设src
+img.setAttribute('crossOrigin', 'anonymous');
+img.src = 'xxx';
+```
+
+### git创建独立的分支
+
+```sh
+git checkout --orphan 新分支名 <start_point>
+
+## 删除此分支中的索引及索引中的所有文件
+git rm -rf .
+```
+
+### vim底线命令
+
+```
+q 不保存,直接退出
+q! 不保存，并强制退出
+e! 放弃所有修改，从上次保存文件开始再编辑
+w 保存文件,但不退出
+w! 强制保存，不退出
+wq或x 保存，并退出
+wq! 强制保存，并退出
+```
+
+### 一些ss的命令
+
+```sh
+## 登录ssh
+ssh root@xxx
+
+## 安装ss
+yum install epel-release
+yum install python-pip
+yum install python-setuptools m2crypto supervisor
+pip install shadowsocks
+
+## 配置ss
+mkdir /etc/shadowsocks
+vim /etc/shadowsocks/config.json
+
+{
+  "server":"0.0.0.0",
+  "server_port":1000,
+  "local_address": "127.0.0.1",
+  "local_port":1080,
+  "password":"123456",
+  "timeout":300,
+  "method":"aes-256-cfb",
+  "fast_open": false
+}
+
+## 开启ss
+ssserver -c /etc/shadowsocks/config.json -d start
+## 关闭ss
+ssserver -c /etc/shadowsocks/config.json -d stop
+
+## 开机启动
+vi /etc/rc.local
+## 添加启动命令
+ssserver -c /etc/shadowsocks/config.json -d start
+
+## bbr加速
+wget –no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh
+chmod +x bbr.sh
+./bbr.sh
+
+## 重启
 ```
