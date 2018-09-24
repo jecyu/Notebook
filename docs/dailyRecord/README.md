@@ -459,7 +459,7 @@ async function allGetUrl() {
 
 今天打算写个 shell 脚本来发布到 github 上，commit 的信息就定为当前时间，于是就这么写了
 
-```sh
+```bash
 time="📝"$(date +"%Y-%m-%d %H:%M:%S")
 
 git add .
@@ -471,7 +471,7 @@ git push origin master
 
 谷歌了很久，终于在一本在线书籍上找到答案
 
-```sh
+```bash
 a=`ls -l`
 echo $a           # 不带引号，移除所有的制表符与分行符
 echo "$a"         # 带引号，会保留空白符
@@ -479,7 +479,7 @@ echo "$a"         # 带引号，会保留空白符
 
 所以，以上问题得到解决
 
-```sh
+```bash
 git commit -m "$time"
 ```
 
@@ -551,7 +551,7 @@ img.src = 'xxx';
 
 ### git创建独立的分支
 
-```sh
+```bash
 git checkout --orphan 新分支名 <start_point>
 
 ## 删除此分支中的索引及索引中的所有文件
@@ -572,7 +572,7 @@ wq! 强制保存，并退出
 
 ### 一些ss的命令
 
-```sh
+```bash
 ## 登录ssh
 ssh root@xxx
 
@@ -614,3 +614,137 @@ chmod +x bbr.sh
 
 ## 重启
 ```
+
+### vue svg-icon 方案
+
+安装 `svg-sprite-loader`
+
+> yarn add svg-sprite-loader --dev
+
+添加webpack配置
+
+```js
+// vuecli3
+chainWebpack: config => {
+  // use svg
+  const svgRule = config.module.rule('svg')
+  svgRule.uses.clear()
+  svgRule
+    .include
+    .add(resolve('src/icons/svg'))
+    .end()
+    .use('svg-sprite-loader')
+    .loader('svg-sprite-loader')
+    .options({
+      symbolId: 'icon-[name]'
+    })
+    .end()
+  // image exclude svg
+  const imagesRule = config.module.rule('images')
+    imagesRule
+    .test(/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/)
+    .exclude
+    .add(resolve('src/icons/svg'))
+    .end()
+}
+
+// vuecli2
+{
+  test: /\.svg$/,
+  loader: 'svg-sprite-loader',
+  include: [resolve('src/icons')],
+  options: {
+    symbolId: 'icon-[name]'
+  }
+},
+
+// 注册全局组件
+import Vue from 'vue'
+import SvgIcon from '@/components/SvgIcon'// svg组件
+
+// register globally
+Vue.component('svg-icon', SvgIcon)
+
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+const req = require.context('./svg', false, /\.svg$/)
+requireAll(req)
+
+```
+
+SvgIcon
+
+```vue
+<template>
+  <svg :style="svgColor" fill="currentColor" :class="svgClass" aria-hidden="true">
+    <use :xlink:href="iconName"></use>
+  </svg>
+</template>
+
+<script>
+export default {
+  name: 'svg-icon',
+  props: {
+    iconClass: {
+      type: String,
+      required: true
+    },
+    className: {
+      type: String
+    },
+    color: {
+      type: String
+    }
+  },
+  computed: {
+    iconName() {
+      return `#icon-${this.iconClass}`;
+    },
+    svgClass() {
+      if (this.className) {
+        return 'svg-icon ' + this.className;
+      } else {
+        return 'svg-icon';
+      }
+    },
+    svgColor() {
+      if (this.color) {
+        return {
+          color: this.color
+        };
+      } else {
+        return '';
+      }
+    }
+  }
+};
+</script>
+
+<style scoped>
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+</style>
+
+```
+
+### vue `.native` 修饰符
+
+> 现在在组件上使用 v-on 只会监听自定义事件 (组件用 $emit 触发的事件)。如果要监听根元素的原生事件，可以使用 .native 修饰符
+> 相当于把组件监听原生dom事件的方式
+
+### export 注意的
+
+```js
+const foo = 123
+export { foo } => import { foo }
+export default { foo } => import * as foo // 其实导出的是模块的default属性
+// 一般来说，不建议使用export default { xxx } 这种写法
+```
+
+### tree ignore
+
+`tree -I "node_modules|bower_components"`
