@@ -748,3 +748,48 @@ export default { foo } => import * as foo // 其实导出的是模块的default�
 ### tree ignore
 
 `tree -I "node_modules|bower_components"`
+
+### gitignore
+
+.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。那么解决方法就是先把本地缓存删除（改变成未track状态），然后再提交。
+
+```bash
+git rm -r --cached .
+git add .
+git commit -m 'update .gitignore'
+```
+
+### sass calc取值
+
+```scss
+height: calc(100% - #{$headerHeight + $stepHeight + $footerHeight});
+```
+
+### vue-transition组件 mode
+
+* in-out：新元素先进行过渡，完成之后当前元素过渡离开。
+
+* out-in：当前元素先进行过渡，完成之后新元素过渡进入。
+
+### Array.fill 小坑
+
+有个需求，我要往一个新数组里的全部对象加个`index
+
+```js
+const array = Array(10).fill({}).map((v,i) => {
+  v.index = i + 1
+  return v
+})
+```
+
+然而你会发现
+
+```js
+[{index: 10}, {index: 10}, ...] // 所有index都是同一个值
+```
+
+查阅MDN文档
+
+> 当一个对象被传递给 fill方法的时候, 填充数组的是这个对象的引用
+
+所以，所有后面对象index值的改变，都会改变前面的值
