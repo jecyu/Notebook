@@ -112,6 +112,8 @@
 
 * [React滑动组件](https://github.com/atlassian/react-beautiful-dnd)
 
+* [React课程](https://github.com/supnate/react-geek-time)
+
 ## webpack
 
 * [官方文档](https://webpack.js.org/)
@@ -240,7 +242,11 @@
 
 * [Virtual-dom](https://github.com/Matt-Esch/virtual-dom)
 
-* [JavaScript30](https://github.com/soyaine/JavaScript30)
+* [JavaScript30天小练习](https://github.com/soyaine/JavaScript30)
+
+* [前端特效连载](https://github.com/comehope/front-end-daily-challenges)
+
+* [30秒js代码片段](https://github.com/30-seconds/30-seconds-of-code)
 
 ## 面试
 

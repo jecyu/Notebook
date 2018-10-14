@@ -793,3 +793,83 @@ const array = Array(10).fill({}).map((v,i) => {
 > 当一个对象被传递给 fill方法的时候, 填充数组的是这个对象的引用
 
 所以，所有后面对象index值的改变，都会改变前面的值
+
+## 十月
+
+### vue的`v-model`
+
+> `v-model`是`v-bind:value`和`v-on:input`和语法糖
+
+```html
+<div id="app">
+  <input v-model="value" type="text">
+  <input :value="value" type="text" v-on:input="value = $event.target.value">
+  <custom-input v-model="value"/>
+</div>
+```
+
+其中，custom-input的写法
+
+```js
+Vue.component('custom-input', {
+  props: ['value'],
+  template: `
+    <input
+      :value="value"
+      @input="$emit('input', $event.target.value)"
+    >
+  `
+})
+```
+
+### vue 子组件改变props的方法
+
+由于vue遵循单向数据流，不建议在子组件里面直接改变props的值，一般通过2种方法
+
+* 通过`$emit`父组件事件来改变父组件传给子组件的值，然后在子组件里面`watch`props的值，状态变化时触发相关反应
+
+* 给props加个对象字段，如：
+
+```js
+props: ['state'],
+
+template: <span>{{state.someData.value}}</span>
+
+// 改
+js: this.state.someData.value = xxx; // 直接改变了父组件的data值
+
+```
+
+### 生成uuid
+
+```js
+const guid = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+```
+
+### 事件代理的优点
+
+* 动态生成的节点如果是绑定同一事件，应该把事件注册到动态节点的父节点上，这样就不需要对子节点逐一进行注销操作了
+
+* 节省内存
+
+### Array-chunk
+
+```js
+const chunk = (arr, size) =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+);
+// chunk([1,2,3,4,5],2) => [[1,2],[3,4,5]]
+```
+
+### Vue组件style
+
+在使用vue组件时，如果想给该组件加个行内style，需要`:style="{}"`这种写法，直接写`style`不会生效
+
+### 测试图片
+![图片](https://img-1257816861.cos.ap-guangzhou.myqcloud.com/0_TOyhDvTVRmXc7xLD.jpeg)
