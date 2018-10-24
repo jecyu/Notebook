@@ -246,7 +246,21 @@
 
 * [前端特效连载](https://github.com/comehope/front-end-daily-challenges)
 
-* [30秒js代码片段](https://github.com/30-seconds/30-seconds-of-code)
+### github-30-seconds系列
+
+* [js](https://github.com/30-seconds/30-seconds-of-code)
+
+* [css](https://github.com/30-seconds/30-seconds-of-css)
+
+* [interviews](https://github.com/30-seconds/30-seconds-of-interviews)
+
+* [react](https://github.com/30-seconds/30-seconds-of-react)
+
+* [python](https://github.com/kriadmin/30-seconds-of-python-code)
+
+* [java8](https://github.com/biezhi/30-seconds-of-java8)
+
+* [php](https://github.com/appzcoder/30-seconds-of-php-code)
 
 ## 面试
 

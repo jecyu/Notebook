@@ -803,7 +803,7 @@ const array = Array(10).fill({}).map((v,i) => {
 ```html
 <div id="app">
   <input v-model="value" type="text">
-  <input :value="value" type="text" v-on:input="value = $event.target.value">
+  <input :value="value" type="text" @input="value = $event.target.value">
   <custom-input v-model="value"/>
 </div>
 ```
@@ -871,5 +871,32 @@ const chunk = (arr, size) =>
 
 在使用vue组件时，如果想给该组件加个行内style，需要`:style="{}"`这种写法，直接写`style`不会生效
 
-### 测试图片
-![图片](https://img-1257816861.cos.ap-guangzhou.myqcloud.com/0_TOyhDvTVRmXc7xLD.jpeg)
+### 深度扁平化数组
+
+```js
+const deepFlatten = arr => [].concat(...arr.map(v => (Array.isArray(v) ? deepFlatten(v) : v)))
+
+deepFlatten([1,[2],[[3]]]) => [1,2,3]
+```
+
+### 找出两个数组中不同的值
+
+```js
+const differenceWith = (arr, val, comp) => arr.filter(a => val.findIndex(b => comp(a, b)) === -1);
+
+differenceWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0], (a, b) => Math.round(a) === Math.round(b)); // [1, 1.2]
+```
+
+### 关于浏览器全屏API
+
+通过一个元素`requestFullscreen`和`exitFullscreen`(需要加上浏览器前缀)进行触发，还有通过监听document的`fullscreenchange`事件来进行相关操作
+
+参考
+[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Fullscreen_API)
+[fscreen](https://github.com/rafrex/fscreen/blob/master/src/index.js)，源码写得很优雅
+
+### 三角函数
+
+弧度 = 角度 * Math.PI / 180
+
+角度 = 弧度 * 180 / Math.PI
