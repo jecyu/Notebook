@@ -900,3 +900,103 @@ differenceWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0], (a, b) => Math.round(a) === Mat
 弧度 = 角度 * Math.PI / 180
 
 角度 = 弧度 * 180 / Math.PI
+
+### vue data属性不被代理的方法
+
+```js
+const app = new Vue({
+  data: {
+    _app: '',
+    $ppa: ''
+  }
+})
+// 以上_app,$ppa都不会被代理，只要加了_和$开头的属性都不会被vue代理
+```
+
+### event.currentTarget
+
+> 当事件遍历DOM时，标识事件的当前目标。它总是引用事件处理程序附加到的元素，而不是event.target，event.target标识事件发生的元素。
+
+> 简单来说，就是指向绑定addEventListener的那个元素
+
+> 当将相同的事件处理程序附加到多个元素时，event.currentTarget非常实用
+
+```html
+<body>
+<div id="box">
+</div>
+</body>
+```
+
+```js
+const handle = function(event) {
+  console.log(event.currentTarget)
+  console.log(event.target)
+}
+
+// 点击box
+// 分别打印 body元素、box元素
+document.body.addEventListener('click', handle, false)
+
+// 点击box
+// 分别打印 box元素、box元素
+document.querySelector('#box').addEventListener('click', handle, false)
+```
+
+### vuecli3传递全局变量
+
+文档实例：
+
+```js
+// vue.config.js
+module.exports = {
+  css: {
+    loaderOptions: {
+      // 给 sass-loader 传递选项
+      sass: {
+        // @/ 是 src/ 的别名
+        // 所以这里假设你有 `src/variables.scss` 这个文件
+        data: `@import "@/variables.scss";`
+      }
+    }
+  }
+}
+```
+
+*注意*: 如果第一个加载的vue组件，`<style>`处声明了`scoped`，那么上面传递的全局变量也会被前缀处理
+
+解决方法：
+
+第一个组件(通常App.vue)style处声明`lang='scss'`且不能声明`scoped`
+
+### vue render函数用组件的v-model
+
+比如，`iview`的`Poptip`组件有用到`v-model`，如果在外面`render`函数里，是无法使用`v-model`的，所以，需要以下这种写法：
+
+```js
+export default {
+  name: 'render',
+  data() {
+    return {
+      visible: false
+    }
+  },
+  render(h) {
+    const vm = this
+    // 其实是把v-model拆成value和oninput
+    // 这样就可以用this.visible控制Poptip是否显示
+    return h('div',[
+      h('Poptip', {
+        props: {
+          value: vm.visible
+        },
+        on: {
+          input: (e) => {
+            this.visible = e
+          }
+        }
+      }
+    ])
+  }
+}
+```
