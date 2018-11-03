@@ -182,13 +182,13 @@ const array = [...NodeList];
 ### 一个 tap 技巧
 
 ```js
-function tap(x, fn = (x) => x) {
+function tap(x, fn = x => x) {
   console.log(fn(x));
   return x;
 }
 const array = [1, 2, 3, 4, 5];
-array.filter((v) => tap(v > 2));
-array.filter((v) => tap(v) > 2);
+array.filter(v => tap(v > 2));
+array.filter(v => tap(v) > 2);
 // tap对于函数式编程很有帮助
 ```
 
@@ -219,7 +219,7 @@ const Deferred = function() {
 // use
 const dojoDef = Deferred();
 dojoDef.resolve("dojo-deferred-done");
-dojoDef.promise.then((res) => {
+dojoDef.promise.then(res => {
   console.log(res);
 });
 ```
@@ -232,8 +232,8 @@ dojoDef.promise.then((res) => {
 Promise.prototype.finally = function(callback) {
   let P = this.constructor;
   return this.then(
-    (value) => P.resolve(callback()).then(() => value),
-    (reason) =>
+    value => P.resolve(callback()).then(() => value),
+    reason =>
       P.resolve(callback()).then(() => {
         throw reason;
       })
@@ -293,7 +293,7 @@ function urlParse() {
   const reg = /[?&][^?&]+=[^?&]+/g; // ？/&开头 + 非？&至少一个 = + 非？&至少一个
   const arr = url.match(reg);
   if (arr) {
-    arr.forEach((item) => {
+    arr.forEach(item => {
       let tempArr = item.substring(1).split("=");
       let key = decodeURIComponent(tempArr[0]);
       let value = decodeURIComponent(tempArr[1]);
@@ -439,8 +439,8 @@ const url = "";
 
 // async/await
 async function asyncGetUrl() {
-  const promise1 = fetch(url).then((res) => res.json());
-  const promise2 = fetch(url).then((res) => res.json());
+  const promise1 = fetch(url).then(res => res.json());
+  const promise2 = fetch(url).then(res => res.json());
   const res1 = await promise1;
   const res2 = await promise2;
   console.log(res1, res2);
@@ -448,8 +448,8 @@ async function asyncGetUrl() {
 
 // promise all
 async function allGetUrl() {
-  const promise1 = fetch(url).then((res) => res.json());
-  const promise2 = fetch(url).then((res) => res.json());
+  const promise1 = fetch(url).then(res => res.json());
+  const promise2 = fetch(url).then(res => res.json());
   const [res1, res2] = await Promise.all([promise1, promise2]);
   console.log(res1, res2);
 }
@@ -545,11 +545,11 @@ delete a; // true
 const img = new Image();
 // 在chrome68浏览器中，如果设src在设crossOrigin属性之前，同样会报错
 // 所以先设crossOrigin属性，解决跨域，再设src
-img.setAttribute('crossOrigin', 'anonymous');
-img.src = 'xxx';
+img.setAttribute("crossOrigin", "anonymous");
+img.src = "xxx";
 ```
 
-### git创建独立的分支
+### git 创建独立的分支
 
 ```bash
 git checkout --orphan 新分支名 <start_point>
@@ -558,7 +558,7 @@ git checkout --orphan 新分支名 <start_point>
 git rm -rf .
 ```
 
-### vim底线命令
+### vim 底线命令
 
 ```
 q 不保存,直接退出
@@ -570,7 +570,7 @@ wq或x 保存，并退出
 wq! 强制保存，并退出
 ```
 
-### 一些ss的命令
+### 一些 ss 的命令
 
 ```bash
 ## 登录ssh
@@ -621,7 +621,7 @@ chmod +x bbr.sh
 
 > yarn add svg-sprite-loader --dev
 
-添加webpack配置
+添加 webpack 配置
 
 ```js
 // vuecli3
@@ -668,7 +668,6 @@ Vue.component('svg-icon', SvgIcon)
 const requireAll = requireContext => requireContext.keys().map(requireContext)
 const req = require.context('./svg', false, /\.svg$/)
 requireAll(req)
-
 ```
 
 SvgIcon
@@ -682,7 +681,7 @@ SvgIcon
 
 <script>
 export default {
-  name: 'svg-icon',
+  name: "svg-icon",
   props: {
     iconClass: {
       type: String,
@@ -701,9 +700,9 @@ export default {
     },
     svgClass() {
       if (this.className) {
-        return 'svg-icon ' + this.className;
+        return "svg-icon " + this.className;
       } else {
-        return 'svg-icon';
+        return "svg-icon";
       }
     },
     svgColor() {
@@ -712,7 +711,7 @@ export default {
           color: this.color
         };
       } else {
-        return '';
+        return "";
       }
     }
   }
@@ -728,13 +727,12 @@ export default {
   overflow: hidden;
 }
 </style>
-
 ```
 
 ### vue `.native` 修饰符
 
 > 现在在组件上使用 v-on 只会监听自定义事件 (组件用 $emit 触发的事件)。如果要监听根元素的原生事件，可以使用 .native 修饰符
-> 相当于把组件监听原生dom事件的方式
+> 相当于把组件监听原生 dom 事件的方式
 
 ### export 注意的
 
@@ -751,7 +749,7 @@ export default { foo } => import * as foo // 其实导出的是模块的default�
 
 ### gitignore
 
-.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。那么解决方法就是先把本地缓存删除（改变成未track状态），然后再提交。
+.gitignore 只能忽略那些原来没有被 track 的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore 是无效的。那么解决方法就是先把本地缓存删除（改变成未 track 状态），然后再提交。
 
 ```bash
 git rm -r --cached .
@@ -759,27 +757,29 @@ git add .
 git commit -m 'update .gitignore'
 ```
 
-### sass calc取值
+### sass calc 取值
 
 ```scss
 height: calc(100% - #{$headerHeight + $stepHeight + $footerHeight});
 ```
 
-### vue-transition组件 mode
+### vue-transition 组件 mode
 
-* in-out：新元素先进行过渡，完成之后当前元素过渡离开。
+- in-out：新元素先进行过渡，完成之后当前元素过渡离开。
 
-* out-in：当前元素先进行过渡，完成之后新元素过渡进入。
+- out-in：当前元素先进行过渡，完成之后新元素过渡进入。
 
 ### Array.fill 小坑
 
 有个需求，我要往一个新数组里的全部对象加个`index
 
 ```js
-const array = Array(10).fill({}).map((v,i) => {
-  v.index = i + 1
-  return v
-})
+const array = Array(10)
+  .fill({})
+  .map((v, i) => {
+    v.index = i + 1;
+    return v;
+  });
 ```
 
 然而你会发现
@@ -788,15 +788,15 @@ const array = Array(10).fill({}).map((v,i) => {
 [{index: 10}, {index: 10}, ...] // 所有index都是同一个值
 ```
 
-查阅MDN文档
+查阅 MDN 文档
 
-> 当一个对象被传递给 fill方法的时候, 填充数组的是这个对象的引用
+> 当一个对象被传递给 fill 方法的时候, 填充数组的是这个对象的引用
 
-所以，所有后面对象index值的改变，都会改变前面的值
+所以，所有后面对象 index 值的改变，都会改变前面的值
 
 ## 十月
 
-### vue的`v-model`
+### vue 的`v-model`
 
 > `v-model`是`v-bind:value`和`v-on:input`和语法糖
 
@@ -808,27 +808,27 @@ const array = Array(10).fill({}).map((v,i) => {
 </div>
 ```
 
-其中，custom-input的写法
+其中，custom-input 的写法
 
 ```js
-Vue.component('custom-input', {
-  props: ['value'],
+Vue.component("custom-input", {
+  props: ["value"],
   template: `
     <input
       :value="value"
       @input="$emit('input', $event.target.value)"
     >
   `
-})
+});
 ```
 
-### vue 子组件改变props的方法
+### vue 子组件改变 props 的方法
 
-由于vue遵循单向数据流，不建议在子组件里面直接改变props的值，一般通过2种方法
+由于 vue 遵循单向数据流，不建议在子组件里面直接改变 props 的值，一般通过 2 种方法
 
-* 通过`$emit`父组件事件来改变父组件传给子组件的值，然后在子组件里面`watch`props的值，状态变化时触发相关反应
+- 通过`$emit`父组件事件来改变父组件传给子组件的值，然后在子组件里面`watch`props 的值，状态变化时触发相关反应
 
-* 给props加个对象字段，如：
+- 给 props 加个对象字段，如：
 
 ```js
 props: ['state'],
@@ -837,25 +837,25 @@ template: <span>{{state.someData.value}}</span>
 
 // 改
 js: this.state.someData.value = xxx; // 直接改变了父组件的data值
-
 ```
 
-### 生成uuid
+### 生成 uuid
 
 ```js
 const guid = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    const r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
-}
+};
 ```
 
 ### 事件代理的优点
 
-* 动态生成的节点如果是绑定同一事件，应该把事件注册到动态节点的父节点上，这样就不需要对子节点逐一进行注销操作了
+- 动态生成的节点如果是绑定同一事件，应该把事件注册到动态节点的父节点上，这样就不需要对子节点逐一进行注销操作了
 
-* 节省内存
+- 节省内存
 
 ### Array-chunk
 
@@ -863,13 +863,13 @@ const guid = () => {
 const chunk = (arr, size) =>
   Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
     arr.slice(i * size, i * size + size)
-);
+  );
 // chunk([1,2,3,4,5],2) => [[1,2],[3,4,5]]
 ```
 
-### Vue组件style
+### Vue 组件 style
 
-在使用vue组件时，如果想给该组件加个行内style，需要`:style="{}"`这种写法，直接写`style`不会生效
+在使用 vue 组件时，如果想给该组件加个行内 style，需要`:style="{}"`这种写法，直接写`style`不会生效
 
 ### 深度扁平化数组
 
@@ -882,44 +882,49 @@ deepFlatten([1,[2],[[3]]]) => [1,2,3]
 ### 找出两个数组中不同的值
 
 ```js
-const differenceWith = (arr, val, comp) => arr.filter(a => val.findIndex(b => comp(a, b)) === -1);
+const differenceWith = (arr, val, comp) =>
+  arr.filter(a => val.findIndex(b => comp(a, b)) === -1);
 
-differenceWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0], (a, b) => Math.round(a) === Math.round(b)); // [1, 1.2]
+differenceWith(
+  [1, 1.2, 1.5, 3, 0],
+  [1.9, 3, 0],
+  (a, b) => Math.round(a) === Math.round(b)
+); // [1, 1.2]
 ```
 
-### 关于浏览器全屏API
+### 关于浏览器全屏 API
 
-通过一个元素`requestFullscreen`和`exitFullscreen`(需要加上浏览器前缀)进行触发，还有通过监听document的`fullscreenchange`事件来进行相关操作
+通过一个元素`requestFullscreen`和`exitFullscreen`(需要加上浏览器前缀)进行触发，还有通过监听 document 的`fullscreenchange`事件来进行相关操作
 
 参考
-[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Fullscreen_API)
+[MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Fullscreen_API)
 [fscreen](https://github.com/rafrex/fscreen/blob/master/src/index.js)，源码写得很优雅
 
 ### 三角函数
 
-弧度 = 角度 * Math.PI / 180
+弧度 = 角度 \* Math.PI / 180
 
-角度 = 弧度 * 180 / Math.PI
+角度 = 弧度 \* 180 / Math.PI
 
-### vue data属性不被代理的方法
+### vue data 属性不被代理的方法
 
 ```js
 const app = new Vue({
   data: {
-    _app: '',
-    $ppa: ''
+    _app: "",
+    $ppa: ""
   }
-})
+});
 // 以上_app,$ppa都不会被代理，只要加了_和$开头的属性都不会被vue代理
 ```
 
 ### event.currentTarget
 
-> 当事件遍历DOM时，标识事件的当前目标。它总是引用事件处理程序附加到的元素，而不是event.target，event.target标识事件发生的元素。
+> 当事件遍历 DOM 时，标识事件的当前目标。它总是引用事件处理程序附加到的元素，而不是 event.target，event.target 标识事件发生的元素。
 
-> 简单来说，就是指向绑定addEventListener的那个元素
+> 简单来说，就是指向绑定 addEventListener 的那个元素
 
-> 当将相同的事件处理程序附加到多个元素时，event.currentTarget非常实用
+> 当将相同的事件处理程序附加到多个元素时，event.currentTarget 非常实用
 
 ```html
 <body>
@@ -930,20 +935,20 @@ const app = new Vue({
 
 ```js
 const handle = function(event) {
-  console.log(event.currentTarget)
-  console.log(event.target)
-}
+  console.log(event.currentTarget);
+  console.log(event.target);
+};
 
 // 点击box
 // 分别打印 body元素、box元素
-document.body.addEventListener('click', handle, false)
+document.body.addEventListener("click", handle, false);
 
 // 点击box
 // 分别打印 box元素、box元素
-document.querySelector('#box').addEventListener('click', handle, false)
+document.querySelector("#box").addEventListener("click", handle, false);
 ```
 
-### vuecli3传递全局变量
+### vuecli3 传递全局变量
 
 文档实例：
 
@@ -960,16 +965,16 @@ module.exports = {
       }
     }
   }
-}
+};
 ```
 
-*注意*: 如果第一个加载的vue组件，`<style>`处声明了`scoped`，那么上面传递的全局变量也会被前缀处理
+_注意_: 如果第一个加载的 vue 组件，`<style>`处声明了`scoped`，那么上面传递的全局变量也会被前缀处理
 
 解决方法：
 
-第一个组件(通常App.vue)style处声明`lang='scss'`且不能声明`scoped`
+第一个组件(通常 App.vue)style 处声明`lang='scss'`且不能声明`scoped`
 
-### vue render函数用组件的v-model
+### vue render 函数用组件的 v-model
 
 比如，`iview`的`Poptip`组件有用到`v-model`，如果在外面`render`函数里，是无法使用`v-model`的，所以，需要以下这种写法：
 
@@ -998,5 +1003,34 @@ export default {
       }
     ])
   }
+}
+```
+
+### 为什么不用 for-in 数组
+
+MDN 文档上的解析
+
+![MDN](https://img-1257816861.cos.ap-guangzhou.myqcloud.com/for-in%E6%95%B0%E7%BB%84.png)
+
+比如：
+
+```js
+const arr = [];
+
+Object.defineProperty(arr, "0", {
+  value: 1,
+  enumerable: false
+});
+
+arr.push(2);
+
+for (let i in arr) {
+  console.log(i); // 只会打印 1
+  console.log(arr[i]); // 只会打印 2
+}
+
+// 用 for of
+for (let i of arr) {
+  console.log(i); // 1、2 均可打印
 }
 ```
