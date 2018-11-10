@@ -1006,7 +1006,7 @@ export default {
 }
 ```
 
-### 为什么不用 for-in 数组
+### 为什么不用 for-in 遍历数组
 
 MDN 文档上的解析
 
@@ -1034,3 +1034,54 @@ for (let i of arr) {
   console.log(i); // 1、2 均可打印
 }
 ```
+
+### vue 模板解析报错
+
+> [Vue warn]: You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build.
+
+`vue.config.js`增加别名：
+
+```js
+module.exports = {
+  configureWebpack: {
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js'
+      }
+    }
+  }
+```
+
+### eslint 行禁用
+
+```js
+alert('foo'); // eslint-disable-line
+
+// eslint-disable-next-line
+alert('foo');
+
+/* eslint-disable-next-line */
+alert('foo');
+
+alert('foo'); /* eslint-disable-line */
+```
+
+### vue-router 为 history 时请求本地 static 的小坑
+
+如果`vue-router`使用`history`模式，比如在`http://localhost:8080/about/home`页面下，发起本地json文件`ajax`请求
+
+```js
+this.$http.get('static/foo.json').then(res => {
+  console.log(res)
+})
+```
+
+这时控制台会发出404报错，`GET http://localhost:8080/about/static/foo.json 404 (Not Found)`
+
+问题在于发起的请求地址是错的，应该是`http://localhost:8080/static/foo.json`才对
+
+对这种问题，有2种方法
+
+1. `static`前面加个`/`，`this.$http.get('/static/foo.json')`，但这种情况打包路径要额外处理
+
+2. vue-router模式改为`hash`模式
