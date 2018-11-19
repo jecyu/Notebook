@@ -1085,3 +1085,13 @@ this.$http.get('static/foo.json').then(res => {
 1. `static`前面加个`/`，`this.$http.get('/static/foo.json')`，但这种情况打包路径要额外处理
 
 2. vue-router模式改为`hash`模式
+
+### axios 请求图片流
+
+```js
+axios({
+  url: "",
+  method: "",
+  responseType: "blob"
+})
+```

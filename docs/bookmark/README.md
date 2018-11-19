@@ -246,6 +246,12 @@
 
 * [前端特效连载](https://github.com/comehope/front-end-daily-challenges)
 
+* [JavaScript 资源大全中文版](https://github.com/jobbole/awesome-javascript-cn#timeline)
+
+* [JavaScript开发者应懂的33个概念(中文版)](https://github.com/stephentian/33-js-concepts)
+
+* [JavaScript开发者应懂的33个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
+
 ### github-30-seconds系列
 
 * [js](https://github.com/30-seconds/30-seconds-of-code)
