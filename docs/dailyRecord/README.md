@@ -105,10 +105,10 @@ const cookieuUtil = {
   typeof exports === "object" && typeof module !== "undefined"
     ? (module.exports = factory())
     : // amd
-      typeof define === "function" && define.amd
-      ? define(factory)
-      : // window
-        (global.xxx = factory());
+    typeof define === "function" && define.amd
+    ? define(factory)
+    : // window
+      (global.xxx = factory());
 })(this, function() {
   "use strict";
   // do something...
@@ -674,7 +674,12 @@ SvgIcon
 
 ```vue
 <template>
-  <svg :style="svgColor" fill="currentColor" :class="svgClass" aria-hidden="true">
+  <svg
+    :style="svgColor"
+    fill="currentColor"
+    :class="svgClass"
+    aria-hidden="true"
+  >
     <use :xlink:href="iconName"></use>
   </svg>
 </template>
@@ -731,7 +736,7 @@ export default {
 
 ### vue `.native` 修饰符
 
-> 现在在组件上使用 v-on 只会监听自定义事件 (组件用 $emit 触发的事件)。如果要监听根元素的原生事件，可以使用 .native 修饰符
+> 现在在组件上使用 v-on 只会监听自定义事件 (组件用 \$emit 触发的事件)。如果要监听根元素的原生事件，可以使用 .native 修饰符
 > 相当于把组件监听原生 dom 事件的方式
 
 ### export 注意的
@@ -928,8 +933,7 @@ const app = new Vue({
 
 ```html
 <body>
-<div id="box">
-</div>
+  <div id="box"></div>
 </body>
 ```
 
@@ -1055,36 +1059,36 @@ module.exports = {
 ### eslint 行禁用
 
 ```js
-alert('foo'); // eslint-disable-line
+alert("foo"); // eslint-disable-line
 
 // eslint-disable-next-line
-alert('foo');
+alert("foo");
 
 /* eslint-disable-next-line */
-alert('foo');
+alert("foo");
 
-alert('foo'); /* eslint-disable-line */
+alert("foo"); /* eslint-disable-line */
 ```
 
 ### vue-router 为 history 时请求本地 static 的小坑
 
-如果`vue-router`使用`history`模式，比如在`http://localhost:8080/about/home`页面下，发起本地json文件`ajax`请求
+如果`vue-router`使用`history`模式，比如在`http://localhost:8080/about/home`页面下，发起本地 json 文件`ajax`请求
 
 ```js
-this.$http.get('static/foo.json').then(res => {
-  console.log(res)
-})
+this.$http.get("static/foo.json").then(res => {
+  console.log(res);
+});
 ```
 
-这时控制台会发出404报错，`GET http://localhost:8080/about/static/foo.json 404 (Not Found)`
+这时控制台会发出 404 报错，`GET http://localhost:8080/about/static/foo.json 404 (Not Found)`
 
 问题在于发起的请求地址是错的，应该是`http://localhost:8080/static/foo.json`才对
 
-对这种问题，有2种方法
+对这种问题，有 2 种方法
 
-1. `static`前面加个`/`，`this.$http.get('/static/foo.json')`，但这种情况打包路径要额外处理
+1. `static`前面加个`/`，`this.$http.get('/static/foo.json')`，但这种情况打包路径要额外处理(建议使用绝对路径)
 
-2. vue-router模式改为`hash`模式
+2. vue-router 模式改为`hash`模式
 
 ### axios 请求图片流
 
@@ -1093,5 +1097,96 @@ axios({
   url: "",
   method: "",
   responseType: "blob"
-})
+});
+```
+
+### 文本溢出出现省略号…的方法
+
+```css
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+```
+
+### 简洁的对象合并 polyfill
+
+```js
+const __assign = function() {
+  __assign =
+    Object.assign ||
+    function(t) {
+      for (let s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (let p in s)
+          if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+      return t;
+    };
+  return __assign.apply(this, arguments);
+};
+```
+
+### 注册所有 vue 全局组件方式
+
+关于`require.context()`方法：
+
+- 要搜索的文件夹目录，如 '.', './componets'
+- 是否还应该搜索它的子目录
+- 以及一个匹配文件的正则表达式
+
+```js
+import Vue from "vue";
+
+// 检索目录下的模块
+const req = require.context(".", true, /\.vue$/);
+
+// require.context模块导出（返回）一个（require）函数，这个函数可以接收一个参数
+
+/* ƒ webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+*/
+
+req.keys().forEach(fileName => {
+  // require模块
+  const componentConfig = req(fileName);
+  const name =
+    fileName.name ||
+    fileName
+      .replace(/^\.\/.*\//, "")
+      .replace(/\.vue$/, "")
+      .toLowerCase();
+  Vue.component(name, componentConfig.default || componentConfig);
+});
+```
+
+### 用 vue jsx 渲染简单的 tree
+
+```js
+methods: {
+  createdNode(data, listItems = [], level = 0) {
+    data.forEach(v => {
+      if (v.children) {
+        listItems.push(
+          <li class="tree-node" style={{paddingLeft: `${level*16}px`}}>
+            <i class="tree-node-arrow" />
+              {v.label}
+            </li>
+          );
+        } else {
+          listItems.push(<li class="tree-node" style={{paddingLeft: `${level*16}px`}}>{v.label}</li>);
+        }
+        if (v.children && v.children.length !== 0) {
+          let l = level;
+          l++;
+          this.createdNode(v.children, listItems, l);
+        }
+      });
+      return listItems;
+    }
+  },
+render(h) {
+  return <ul class="tree">{this.createdNode(this.data)}</ul>;
+}
 ```
