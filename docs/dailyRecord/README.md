@@ -1167,26 +1167,58 @@ req.keys().forEach(fileName => {
 methods: {
   createdNode(data, listItems = [], level = 0) {
     data.forEach(v => {
-      if (v.children) {
+      if (v.children && v.children.length !== 0) {
         listItems.push(
           <li class="tree-node" style={{paddingLeft: `${level*16}px`}}>
             <i class="tree-node-arrow" />
-              {v.label}
-            </li>
-          );
-        } else {
-          listItems.push(<li class="tree-node" style={{paddingLeft: `${level*16}px`}}>{v.label}</li>);
-        }
-        if (v.children && v.children.length !== 0) {
-          let l = level;
-          l++;
-          this.createdNode(v.children, listItems, l);
-        }
-      });
-      return listItems;
-    }
-  },
+            {v.label}
+          </li>
+        );
+        let l = level;
+        l++;
+        return this.createdNode(v.children, listItems, l);
+      }
+      listItems.push(<li class="tree-node" style={{paddingLeft: `${level*16}px`}}>{v.label}</li>);
+    });
+    return listItems;
+  }
+},
 render(h) {
   return <ul class="tree">{this.createdNode(this.data)}</ul>;
 }
+```
+
+### forEach 无法调出循环
+
+> 没有办法中止或者跳出 forEach 循环，除了抛出一个异常。
+
+```js
+const arr = [1, 2, 3];
+arr.forEach(v => {
+  if (v === 2) {
+    return; // 只会结束本次回调
+  }
+  console.log(v); // 1, 3
+});
+```
+
+取而代之的方法是使用普通的 for 循环或者 some，every
+
+```js
+// some
+const arr = [1, 2, 3];
+arr.some(v => {
+  if (v === 2) {
+    return true;
+  }
+  console.log(v); // 1
+});
+
+// every
+arr.every(v => {
+  if (v === 2) {
+    return false;
+  }
+  console.log(v); // 1
+});
 ```
