@@ -1174,9 +1174,7 @@ methods: {
             {v.label}
           </li>
         );
-        let l = level;
-        l++;
-        return this.createdNode(v.children, listItems, l);
+        return this.createdNode(v.children, listItems, level + 1);
       }
       listItems.push(<li class="tree-node" style={{paddingLeft: `${level*16}px`}}>{v.label}</li>);
     });
@@ -1222,3 +1220,49 @@ arr.every(v => {
   console.log(v); // 1
 });
 ```
+
+### 一个有用的 range 函数
+
+```js
+const range = (start, end) => Array.from({ length: end - start + 1 },
+(x,i) => i + start)
+
+const res = range(1, 10)
+console.log(res) => [1, ..., 10]
+```
+
+## 十二月
+
+### vscode 开启别名路径提示
+
+一般上了`webpack`的项目都会进行别名配置，比如用`@`映射`src`，vscode 默认是不会开启别名路径提示的，需要手动配置
+
+首先在项目根目录下加个`jsconfig.json`
+
+```js
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "target": "ES6",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+```
+
+如果想在`.vue`文件中生效，需要：
+
+安装`path-intellisense`插件，在`setting.json`中加上
+
+```js
+"path-intellisense.mappings": {
+  "@": "${workspaceRoot}/src"
+}
+```
+
+这样就可以在普通`js`文件，和`.vue`文件里面都会有别名的路径提示和自动补全了
