@@ -1194,7 +1194,7 @@ render(h) {
 }
 ```
 
-### forEach 无法调出循环
+### forEach 无法跳出循环
 
 > 没有办法中止或者跳出 forEach 循环，除了抛出一个异常。
 
@@ -1276,5 +1276,28 @@ console.log(res) => [1, ..., 10]
 ```
 
 这样就可以在普通`js`文件，和`.vue`文件里面都会有别名的路径提示和自动补全了
+
+### vue 组件命名
+
+> 单文件组件的文件名应该要么始终是单词大写开头 (PascalCase)，要么始终是横线连接 (kebab-case)。
+
+```js
+// (PascalCase)方式命名一个组件
+Vue.component('NrLayCom', {
+  template: `<div>123</div>`
+})
+```
+
+```html
+<!-- 方式一 -->
+<NrLayCom></NrLayCom>
+<!-- 方式二 -->
+<nr-lay-com></nr-lay-com>
+```
+
+用**PascalCase**方式命名的组件，可以用**kebab-case**方式进行调用，
+但是，用**kebab-case**命名的组件，则不能用**PascalCase**方式进行调用
+
+开发时，**建议统一只用一种方式，不要两者混用**
 
 [#十二月](#十二月)
