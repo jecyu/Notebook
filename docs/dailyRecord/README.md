@@ -1288,6 +1288,8 @@ Vue.component('NrLayCom', {
 })
 ```
 
+调用方法：
+
 ```html
 <!-- 方式一 -->
 <NrLayCom></NrLayCom>
@@ -1299,5 +1301,87 @@ Vue.component('NrLayCom', {
 但是，用**kebab-case**命名的组件，则不能用**PascalCase**方式进行调用
 
 开发时，**建议统一只用一种方式，不要两者混用**
+
+### mac 命名行开启xcode虚拟机
+
+查看可用虚拟机
+
+```bash
+xcrun instruments -s
+```
+
+开启指定虚拟机
+
+```bash
+xcrun instruments -w "iPhone X (12.1)"
+```
+
+### 本地仓库设置config
+
+展示config：
+
+```bash
+git config --local --list (当前目录)
+git config --global --list (全局)
+```
+
+修改：
+
+```bash
+git config user.name xxxx
+git config user.email xxxx@xxx.com
+```
+
+### 修改上一个 commit 的描述
+
+```bash
+git commit --amend
+```
+
+### vue 动态组件 :is 的值
+
+`component :is`里面的值，可以是组件对象，或者函数(返回Promise)，或者是字符串(已经注册的组件name)
+
+### console.log 调试注意的
+
+由于`console.log`机制，调试对象时是指向同一个地址，所以涉及到异步更新时，执行时和打印时的结果不一致，需要这么处理
+
+```js
+console.log(JSON.stringify(xxx))
+```
+
+### vue 高级动态组件
+
+```js
+// 高级动态组件
+// 返回一个对象，在component选项里面返回promise(resolve)
+Vue.component("hcom", () => {
+  return {
+  // 异步组件加载时使用的组件
+    loading: {
+      render(h) {
+        return h("div", "loading");
+      }
+    },
+  // 加载失败时使用的组件
+    error: {
+      render(h) {
+        return h("div", "error");
+      }
+    },
+  // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+    delay: 0,
+    component: new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          render(h) {
+            return h("div", "高级动态组件");
+          }
+        });
+      }, 2000);
+    })
+  };
+});
+```
 
 [#十二月](#十二月)

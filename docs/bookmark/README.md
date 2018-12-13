@@ -106,13 +106,21 @@
 
 * [Awesome-React](https://github.com/enaqx/awesome-react)
 
-* [React文本编辑器](https://draftjs.org/)
-
 * [Mobx](https://mobx.js.org/index.html)
 
-* [React滑动组件](https://github.com/atlassian/react-beautiful-dnd)
-
 * [React课程](https://github.com/supnate/react-geek-time)
+
+### 组件库
+
+* [文本编辑器](https://draftjs.org/)
+
+* [滑动组件](https://github.com/atlassian/react-beautiful-dnd)
+
+* [transition组件](https://github.com/reactjs/react-transition-group)
+
+* [react-motion](https://github.com/chenglou/react-motion)
+
+* [react-spring动画库](https://github.com/drcmda/react-spring)
 
 ## webpack
 
@@ -283,3 +291,5 @@
 * [面试题(上)](https://www.tuicool.com/articles/uiMVzq)
 
 * [面试题(下)](http://www.cnblogs.com/0603ljx/p/4334228.html)
+
+* [前端面试重难点](https://github.com/yygmind/blog)
