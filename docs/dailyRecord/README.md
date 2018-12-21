@@ -224,7 +224,7 @@ dojoDef.promise.then(res => {
 });
 ```
 
-[#八月](#八月)
+[##八月](##八月)
 
 ## 九月
 
@@ -801,7 +801,7 @@ const array = Array(10)
 
 所以，所有后面对象 index 值的改变，都会改变前面的值
 
-[#九月](#九月)
+[##九月](##九月)
 
 ## 十月
 
@@ -1014,7 +1014,7 @@ export default {
 }
 ```
 
-[#十月](#十月)
+[##十月](##十月)
 
 ## 十一月
 
@@ -1239,7 +1239,7 @@ const res = range(1, 10)
 console.log(res) => [1, ..., 10]
 ```
 
-[#十一月](#十一月)
+[##十一月](##十一月)
 
 ## 十二月
 
@@ -1340,7 +1340,7 @@ git commit --amend
 
 ### vue 动态组件 :is 的值
 
-`component :is`里面的值，可以是组件对象，或者函数(返回Promise)，或者是字符串(已经注册的组件name)
+`component :is`里面的值，可以是组件对象，或者函数(返回`Promise`)，或者是字符串(已经注册的组件的`name`)
 
 ### console.log 调试注意的
 
@@ -1384,4 +1384,22 @@ Vue.component("hcom", () => {
 });
 ```
 
-[#十二月](#十二月)
+### 只能用 new 来调用函数
+
+```js
+function Person(name) {
+  if (!(this instanceof Person)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+  this.name = name;
+}
+
+const P = new Person('P');
+Person('p') // "Cannot call a class as a function"
+```
+
+### 关于 __proto__ 
+
+`__proto__`是用来获取对象的原型，现在推荐使用`Object.getPrototypeOf()`来获取
+
+[##十二月](##十二月)
