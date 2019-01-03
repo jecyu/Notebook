@@ -110,7 +110,7 @@
 
 * [React课程](https://github.com/supnate/react-geek-time)
 
-### 组件库
+### React 组件
 
 * [文本编辑器](https://draftjs.org/)
 
@@ -121,6 +121,10 @@
 * [react-motion](https://github.com/chenglou/react-motion)
 
 * [react-spring动画库](https://github.com/drcmda/react-spring)
+
+* [react-treebeard](https://github.com/storybooks/react-treebeard)
+
+* [velocity-react](https://github.com/google-fabric/velocity-react)
 
 ## webpack
 
@@ -140,13 +144,17 @@
 
 * [mpvue](http://mpvue.com/)
 
-## 组件
+## 组件(插件)
 
 * [github上实用、常用的插件和库](https://blog.csdn.net/andyliulin/article/details/78246906)
 
 * [67 个拯救前端开发者的工具、库和资源](https://www.zcfy.cc/article/67-useful-tools-libraries-and-resources-for-saving-your-time-as-a-web-developer-4174.html?t=new)
 
 * [github优秀前端项目分享](http://www.cnblogs.com/liusixin/p/7217971.html)
+
+* [图片裁剪](https://github.com/tapmodo/Jcrop)
+
+* [cropperjs](https://github.com/fengyuanchen/cropperjs)
 
 ## 在线书籍
 

@@ -1402,4 +1402,48 @@ Person('p') // "Cannot call a class as a function"
 
 `__proto__`是用来获取对象的原型，现在推荐使用`Object.getPrototypeOf()`来获取
 
+### 命令行大法好
+
+`open -a xxx` 打开软件
+
+`open -e` 
+
+详情请看 `open --help`
+
 [十二月](#十二月)
+
+# 2019
+
+## 一月
+
+### 利用 Coverage 检测可以懒加载的modules
+
+1、打开devTools,，按`Ctrl+shift+p`，mac(`cmd+shift+p`)，输入`Coverage`，选`Drawer: Coverage`
+
+2、reload
+
+3、可以看到哪些modules可以用`import()`懒加载了
+
+### nginx vue history 爬坑
+
+按照官方`nginx`的参考配置：
+
+```bash
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
+
+如果是项目在根目录倒没啥问题，但如果项目在xxx路径下，比如在`http://ip/vue/`路径下，点击跳转到路由`http://ip/vue/about`下是ok的，但是一刷新页面，你会发现就不好使了。原因很简单，就在上面的配置中:
+
+`try_files $uri $uri/ /index.html` => `http://ip/vue/about/index.html`
+
+所以，这种情况正确的操作是：
+
+```bash
+location /vue/ {
+  try_files $uri $uri/ /vue/index.html;# 全部跳回到vue/index.html页面中
+}
+```
+
+注意， `/vue/`实际上你上面配的`root`下的vue文件夹，比如你的`root`是`/app`，`location /vue/ `即为 `location /app/vue/`
