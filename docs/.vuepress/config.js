@@ -1,10 +1,8 @@
 module.exports = {
   base: "/Notebook/",
-  title: "Raojw's Notebook",
+  title: "Jecyu's Notebook",
   description: "📝每天记录一点点",
-  head: [
-    ['link', { rel: 'icon', href: '/images/logo.png' }]
-  ],
+  head: [["link", { rel: "icon", href: "/images/logo.jpeg" }]],
   themeConfig: {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
@@ -17,13 +15,11 @@ module.exports = {
       },
       {
         text: "🔧个人博客",
-        link:
-          "http://shooterblog.site"
+        link: "https://jecyu.github.io/blog/"
       },
       {
         text: "🔗Github",
-        link:
-          "https://github.com/shooterRao"
+        link: "https://github.com/Jecyu"
       }
     ],
     // sidebar: "auto",
@@ -32,16 +28,12 @@ module.exports = {
         {
           title: "日常记录",
           collapsable: true,
-          children: [
-            ""
-          ]
+          children: ["", "2019"]
         },
         {
           title: "arcgis",
           collapsable: false,
-          children: [
-            "arcgis"
-          ]
+          children: ["arcgis"]
         }
       ],
       "/lint/": [

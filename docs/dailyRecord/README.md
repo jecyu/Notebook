@@ -811,9 +811,9 @@ const array = Array(10)
 
 ```html
 <div id="app">
-  <input v-model="value" type="text">
-  <input :value="value" type="text" @input="value = $event.target.value">
-  <custom-input v-model="value"/>
+  <input v-model="value" type="text" />
+  <input :value="value" type="text" @input="value = $event.target.value" />
+  <custom-input v-model="value" />
 </div>
 ```
 
@@ -1283,9 +1283,9 @@ console.log(res) => [1, ..., 10]
 
 ```js
 // (PascalCase)方式命名一个组件
-Vue.component('NrLayCom', {
+Vue.component("NrLayCom", {
   template: `<div>123</div>`
-})
+});
 ```
 
 调用方法：
@@ -1302,7 +1302,7 @@ Vue.component('NrLayCom', {
 
 开发时，**建议统一只用一种方式，不要两者混用**
 
-### mac 命名行开启xcode虚拟机
+### mac 命名行开启 xcode 虚拟机
 
 查看可用虚拟机
 
@@ -1316,9 +1316,9 @@ xcrun instruments -s
 xcrun instruments -w "iPhone X (12.1)"
 ```
 
-### 本地仓库设置config
+### 本地仓库设置 config
 
-展示config：
+展示 config：
 
 ```bash
 git config --local --list (当前目录)
@@ -1347,7 +1347,7 @@ git commit --amend
 由于`console.log`机制，调试对象时是指向同一个地址，所以涉及到异步更新时，执行时和打印时的结果不一致，需要这么处理
 
 ```js
-console.log(JSON.stringify(xxx))
+console.log(JSON.stringify(xxx));
 ```
 
 ### vue 高级动态组件
@@ -1357,19 +1357,19 @@ console.log(JSON.stringify(xxx))
 // 返回一个对象，在component选项里面返回promise(resolve)
 Vue.component("hcom", () => {
   return {
-  // 异步组件加载时使用的组件
+    // 异步组件加载时使用的组件
     loading: {
       render(h) {
         return h("div", "loading");
       }
     },
-  // 加载失败时使用的组件
+    // 加载失败时使用的组件
     error: {
       render(h) {
         return h("div", "error");
       }
     },
-  // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+    // 展示加载时组件的延时时间。默认值是 200 (毫秒)
     delay: 0,
     component: new Promise(resolve => {
       setTimeout(() => {
@@ -1394,11 +1394,11 @@ function Person(name) {
   this.name = name;
 }
 
-const P = new Person('P');
-Person('p') // "Cannot call a class as a function"
+const P = new Person("P");
+Person("p"); // "Cannot call a class as a function"
 ```
 
-### 关于 __proto__ 
+### 关于 **proto**
 
 `__proto__`是用来获取对象的原型，现在推荐使用`Object.getPrototypeOf()`来获取
 
@@ -1406,44 +1406,8 @@ Person('p') // "Cannot call a class as a function"
 
 `open -a xxx` 打开软件
 
-`open -e` 
+`open -e`
 
 详情请看 `open --help`
 
 [十二月](#十二月)
-
-# 2019
-
-## 一月
-
-### 利用 Coverage 检测可以懒加载的modules
-
-1、打开devTools,，按`Ctrl+shift+p`，mac(`cmd+shift+p`)，输入`Coverage`，选`Drawer: Coverage`
-
-2、reload
-
-3、可以看到哪些modules可以用`import()`懒加载了
-
-### nginx vue history 爬坑
-
-按照官方`nginx`的参考配置：
-
-```bash
-location / {
-  try_files $uri $uri/ /index.html;
-}
-```
-
-如果是项目在根目录倒没啥问题，但如果项目在xxx路径下，比如在`http://ip/vue/`路径下，点击跳转到路由`http://ip/vue/about`下是ok的，但是一刷新页面，你会发现就不好使了。原因很简单，就在上面的配置中:
-
-`try_files $uri $uri/ /index.html` => `http://ip/vue/about/index.html`
-
-所以，这种情况正确的操作是：
-
-```bash
-location /vue/ {
-  try_files $uri $uri/ /vue/index.html;# 全部跳回到vue/index.html页面中
-}
-```
-
-注意， `/vue/`实际上你上面配的`root`下的vue文件夹，比如你的`root`是`/app`，`location /vue/ `即为 `location /app/vue/`

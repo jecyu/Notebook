@@ -1,5 +1,5 @@
 {
-  "name": "shooterrao-notebook",
+  "name": "Jecyu-notebook",
   "version": "1.0.0",
   "scripts": {
     "dev": "vuepress dev docs",
@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shooterRao/Notebook"
+    "url": "git+https://github.com/Jecyu/Notebook"
   },
-  "author": "shooterRao",
+  "author": "Jecyu",
   "license": "MIT",
   "engines": {
     "node": ">=8"
