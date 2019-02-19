@@ -6,10 +6,10 @@
 
 本规范提供了一种统一的编码规范来编写 [Vue.js](http://vuejs.org/) 代码。这使得代码具有如下的特性：
 
-* 其它开发者或是团队成员更容易阅读和理解。
-* IDEs 更容易理解代码，从而提供高亮、格式化等辅助功能
-* 更容易使用现有的工具
-* 更容易实现缓存以及代码包的分拆
+- 其它开发者或是团队成员更容易阅读和理解。
+- IDEs 更容易理解代码，从而提供高亮、格式化等辅助功能
+- 更容易使用现有的工具
+- 更容易实现缓存以及代码包的分拆
 
 本指南为 [De Voorhoede](https://github.com/voorhoede) 参考 [RiotJS 编码规范](https://github.com/voorhoede/riotjs-style-guide) 而写。
 
@@ -21,7 +21,7 @@ Vue.js 的设计初衷就是帮助开发者更好的开发界面模块。一个�
 
 ### 怎么做？
 
-每一个 Vue 组件（等同于模块）[首先]((https://addyosmani.com/first/))必须专注于解决一个[单一的问题](http://en.wikipedia.org/wiki/Single_responsibility_principle)，*独立的*、*可复用的*、*微小的* 和 *可测试的*。
+每一个 Vue 组件（等同于模块）[首先](<(https://addyosmani.com/first/)>)必须专注于解决一个[单一的问题](http://en.wikipedia.org/wiki/Single_responsibility_principle)，_独立的_、_可复用的_、_微小的_ 和 _可测试的_。
 
 如果你的组件做了太多的事或是变得臃肿，请将其拆分成更小的组件并保持单一的原则。一般来说，尽量保证每一个文件的代码行数不要超过 100 行。也请保证组件可独立的运行。比较好的做法是增加一个单独的 demo 示例。
 
@@ -31,18 +31,18 @@ Vue.js 的设计初衷就是帮助开发者更好的开发界面模块。一个�
 
 组件的命名需遵从以下原则：
 
-* **有意义的**: 不过于具体，也不过于抽象
-* **简短**: 2 到 3 个单词
-* **具有可读性**: 以便于沟通交流
+- **有意义的**: 不过于具体，也不过于抽象
+- **简短**: 2 到 3 个单词
+- **具有可读性**: 以便于沟通交流
 
 同时还需要注意：
 
-* 必须符合**自定义元素规范**: [使用连字符](https://www.w3.org/TR/custom-elements/#concepts)分隔单词，切勿使用保留字。
-* **`app-` 前缀作为命名空间**: 如果非常通用的话可使用一个单词来命名，这样可以方便于其它项目里复用。
+- 必须符合**自定义元素规范**: [使用连字符](https://www.w3.org/TR/custom-elements/#concepts)分隔单词，切勿使用保留字。
+- **`app-` 前缀作为命名空间**: 如果非常通用的话可使用一个单词来命名，这样可以方便于其它项目里复用。
 
 ### 为什么？
 
-* 组件是通过组件名来调用的。所以组件名必须简短、富有含义并且具有可读性。
+- 组件是通过组件名来调用的。所以组件名必须简短、富有含义并且具有可读性。
 
 ### 如何做？
 
@@ -53,9 +53,12 @@ Vue.js 的设计初衷就是帮助开发者更好的开发界面模块。一个�
 <range-slider></range-slider>
 
 <!-- 避免 -->
-<btn-group></btn-group> <!-- 虽然简短但是可读性差. 使用 `button-group` 替代 -->
-<ui-slider></ui-slider> <!-- ui 前缀太过于宽泛，在这里意义不明确 -->
-<slider></slider> <!-- 与自定义元素规范不兼容 -->
+<btn-group></btn-group>
+<!-- 虽然简短但是可读性差. 使用 `button-group` 替代 -->
+<ui-slider></ui-slider>
+<!-- ui 前缀太过于宽泛，在这里意义不明确 -->
+<slider></slider>
+<!-- 与自定义元素规范不兼容 -->
 ```
 
 [↑ 回到目录](#目录)
@@ -66,9 +69,9 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
 
 ### 为什么？
 
-* 复杂的行内表达式难以阅读。
-* 行内表达式是不能够通用的，这可能会导致重复编码的问题。
-* IDE 基本上不能识别行内表达式语法，所以使用行内表达式 IDE 不能提供自动补全和语法校验功能。
+- 复杂的行内表达式难以阅读。
+- 行内表达式是不能够通用的，这可能会导致重复编码的问题。
+- IDE 基本上不能识别行内表达式语法，所以使用行内表达式 IDE 不能提供自动补全和语法校验功能。
 
 ### 怎么做？
 
@@ -85,24 +88,25 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
   export default {
     computed: {
       month() {
-        return this.twoDigits((new Date()).getUTCMonth() + 1);
+        return this.twoDigits(new Date().getUTCMonth() + 1);
       },
       year() {
-        return (new Date()).getUTCFullYear();
+        return new Date().getUTCFullYear();
       }
     },
     methods: {
       twoDigits(num) {
-        return ('0' + num).slice(-2);
+        return ("0" + num).slice(-2);
       }
-    },
+    }
   };
 </script>
 
 <!-- 避免 -->
 <template>
   <h1>
-    {{ `${(new Date()).getUTCFullYear()}-${('0' + ((new Date()).getUTCMonth()+1)).slice(-2)}` }}
+    {{ `${(new Date()).getUTCFullYear()}-${('0' + ((new
+    Date()).getUTCMonth()+1)).slice(-2)}` }}
   </h1>
 </template>
 ```
@@ -115,10 +119,10 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
 
 ### 为什么？
 
-* 使得组件 API 清晰直观。
-* 只使用原始类型和函数作为 props 使得组件的 API 更接近于 HTML(5) 原生元素。
-* 其它开发者更好的理解每一个 prop 的含义、作用。
-* 传递过于复杂的对象使得我们不能够清楚的知道哪些属性或方法被自定义组件使用，这使得代码难以重构和维护。
+- 使得组件 API 清晰直观。
+- 只使用原始类型和函数作为 props 使得组件的 API 更接近于 HTML(5) 原生元素。
+- 其它开发者更好的理解每一个 prop 的含义、作用。
+- 传递过于复杂的对象使得我们不能够清楚的知道哪些属性或方法被自定义组件使用，这使得代码难以重构和维护。
 
 ### 怎么做？
 
@@ -132,7 +136,8 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
   max="100"
   step="5"
   :on-slide="updateInputs"
-  :on-end="updateResults">
+  :on-end="updateResults"
+>
 </range-slider>
 
 <!-- 避免 -->
@@ -153,30 +158,36 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
 
 ### 怎么做？
 
-* 提供默认值。
-* 使用 `type` 属性[校验类型](http://vuejs.org/v2/guide/components.html#Prop-Validation)。
-* 使用 props 之前先检查该 prop 是否存在。
+- 提供默认值。
+- 使用 `type` 属性[校验类型](http://vuejs.org/v2/guide/components.html#Prop-Validation)。
+- 使用 props 之前先检查该 prop 是否存在。
 
 ```html
 <template>
-  <input type="range" v-model="value" :max="max" :min="min">
+  <input type="range" v-model="value" :max="max" :min="min" />
 </template>
 <script type="text/javascript">
   export default {
     props: {
       max: {
         type: Number, // 这里添加了数字类型的校验
-        default() { return 10; },
+        default() {
+          return 10;
+        }
       },
       min: {
         type: Number,
-        default() { return 0; },
+        default() {
+          return 0;
+        }
       },
       value: {
         type: Number,
-        default() { return 4; },
-      },
-    },
+        default() {
+          return 4;
+        }
+      }
+    }
   };
 </script>
 ```
@@ -191,39 +202,39 @@ Vue.js 的表达式是 100% 的 Javascript 表达式。这使得其功能性很�
 
 ### 为什么？
 
-* 使用 **ES6**，就不再需要将 `this` 保存到一个变量中了。
-* 一般来说，当你使用箭头函数时，会保留 `this` 的作用域。（译者注：箭头函数没有它自己的 this 值，箭头函数内的 this 值继承自外围作用域。）
-* 如果你没有使用 **ES6**，当然也就不会使用 `箭头函数` 啦，那你必须将 “this” 保存到到某个变量中。这是唯一的例外。
+- 使用 **ES6**，就不再需要将 `this` 保存到一个变量中了。
+- 一般来说，当你使用箭头函数时，会保留 `this` 的作用域。（译者注：箭头函数没有它自己的 this 值，箭头函数内的 this 值继承自外围作用域。）
+- 如果你没有使用 **ES6**，当然也就不会使用 `箭头函数` 啦，那你必须将 “this” 保存到到某个变量中。这是唯一的例外。
 
 ### 怎么做？
 
 ```html
 <script type="text/javascript">
-export default {
-  methods: {
-    hello() {
-      return 'hello';
-    },
-    printHello() {
-      console.log(this.hello());
-    },
-  },
-};
+  export default {
+    methods: {
+      hello() {
+        return "hello";
+      },
+      printHello() {
+        console.log(this.hello());
+      }
+    }
+  };
 </script>
 
 <!-- 避免 -->
 <script type="text/javascript">
-export default {
-  methods: {
-    hello() {
-      return 'hello';
-    },
-    printHello() {
-      const self = this; // 没有必要
-      console.log(self.hello());
-    },
-  },
-};
+  export default {
+    methods: {
+      hello() {
+        return "hello";
+      },
+      printHello() {
+        const self = this; // 没有必要
+        console.log(self.hello());
+      }
+    }
+  };
 </script>
 ```
 
@@ -235,12 +246,12 @@ export default {
 
 ### 为什么？
 
-* 导出一个清晰、组织有序的组件，使得代码易于阅读和理解。同时也便于标准化。
-* 按首字母排序 properties、data、computed、watches 和 methods 使得这些对象内的属性便于查找。
-* 合理组织，使得组件易于阅读。（name; extends; props, data 和 computed; components; watch 和 methods; lifecycle methods 等）。
-* 使用 `name` 属性。借助于 [vue devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en) 可以让你更方便的测试。
-* 合理的 CSS 结构，如 [BEM](https://medium.com/tldr-tech/bem-blocks-elements-and-modifiers-6b3b0af9e3ea#.bhnomd7gw) 或 [rscss](https://github.com/rstacruz/rscss) - [详情？](#使用组件名作为样式作用域空间)。
-* 使用单文件 .vue 文件格式来组件代码。
+- 导出一个清晰、组织有序的组件，使得代码易于阅读和理解。同时也便于标准化。
+- 按首字母排序 properties、data、computed、watches 和 methods 使得这些对象内的属性便于查找。
+- 合理组织，使得组件易于阅读。（name; extends; props, data 和 computed; components; watch 和 methods; lifecycle methods 等）。
+- 使用 `name` 属性。借助于 [vue devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en) 可以让你更方便的测试。
+- 合理的 CSS 结构，如 [BEM](https://medium.com/tldr-tech/bem-blocks-elements-and-modifiers-6b3b0af9e3ea#.bhnomd7gw) 或 [rscss](https://github.com/rstacruz/rscss) - [详情？](#使用组件名作为样式作用域空间)。
+- 使用单文件 .vue 文件格式来组件代码。
 
 ### 怎么做？
 
@@ -256,7 +267,7 @@ export default {
 <script type="text/javascript">
   export default {
     // 不要忘记了 name 属性
-    name: 'RangeSlider',
+    name: "RangeSlider",
     // 使用组件 mixins 共享通用功能
     mixins: [],
     // 组成新的组件
@@ -265,7 +276,7 @@ export default {
     props: {
       bar: {}, // 按字母顺序
       foo: {},
-      fooBar: {},
+      fooBar: {}
     },
     // 变量
     data() {},
@@ -277,12 +288,14 @@ export default {
     methods: {},
     // 生命周期函数
     beforeCreate() {},
-    mounted() {},
+    mounted() {}
   };
 </script>
 
 <style scoped>
-  .Ranger__Wrapper { /* ... */ }
+  .Ranger__Wrapper {
+    /* ... */
+  }
 </style>
 ```
 
@@ -294,62 +307,57 @@ Vue.js 提供的处理函数和表达式都是绑定在 ViewModel 上的，组�
 
 ### 为什么？
 
-* 开发者可以随意给事件命名，即使是原生事件的名字，这样会带来迷惑性。
-* 过于宽松的事件命名可能与 [DOM 模板不兼容](https://vuejs.org/v2/guide/components.html#DOM-Template-Parsing-Caveats)。
+- 开发者可以随意给事件命名，即使是原生事件的名字，这样会带来迷惑性。
+- 过于宽松的事件命名可能与 [DOM 模板不兼容](https://vuejs.org/v2/guide/components.html#DOM-Template-Parsing-Caveats)。
 
 ### 怎么做？
 
-* 事件名也使用连字符命名。
-* 一个事件的名字对应组件外的一组意义操作，如：upload-success、upload-error 以及 dropzone-upload-success、dropzone-upload-error （如果需要前缀的话）。
-* 事件命名应该以动词（如 client-api-load） 或是 名词（如 drive-upload-success）结尾。（[出处](https://github.com/GoogleWebComponents/style-guide#events)）
-
+- 事件名也使用连字符命名。
+- 一个事件的名字对应组件外的一组意义操作，如：upload-success、upload-error 以及 dropzone-upload-success、dropzone-upload-error （如果需要前缀的话）。
+- 事件命名应该以动词（如 client-api-load） 或是 名词（如 drive-upload-success）结尾。（[出处](https://github.com/GoogleWebComponents/style-guide#events)）
 
 [↑ 回到目录](#目录)
 
-## 避免 this.$parent
+## 避免 this.\$parent
 
 Vue.js 支持组件嵌套，并且子组件可访问父组件的上下文。访问组件之外的上下文违反了[基于模块开发](#基于模块开发)的[第一原则](https://addyosmani.com/first/)。因此你应该尽量避免使用 **`this.$parent`**。
 
 ### 为什么？
 
-* 组件必须相互保持独立，Vue 组件也是。如果组件需要访问其父层的上下文就违反了该原则。
-* 如果一个组件需要访问其父组件的上下文，那么该组件将不能在其它上下文中复用。
+- 组件必须相互保持独立，Vue 组件也是。如果组件需要访问其父层的上下文就违反了该原则。
+- 如果一个组件需要访问其父组件的上下文，那么该组件将不能在其它上下文中复用。
 
 ### 怎么做？
 
-* 通过 props 将值传递给子组件。
-* 通过 props 传递回调函数给子组件来达到调用父组件方法的目的。
-* 通过在子组件触发事件来通知父组件。
+- 通过 props 将值传递给子组件。
+- 通过 props 传递回调函数给子组件来达到调用父组件方法的目的。
+- 通过在子组件触发事件来通知父组件。
 
 [↑ 回到目录](#目录)
 
-## 谨慎使用 this.$refs
+## 谨慎使用 this.\$refs
 
 Vue.js 支持通过 `ref` 属性来访问其它组件和 HTML 元素。并通过 `this.$refs` 可以得到组件或 HTML 元素的上下文。在大多数情况下，通过 `this.$refs`来访问其它组件的上下文是可以避免的。在使用的的时候你需要注意避免调用了不恰当的组件 API，所以应该尽量避免使用 `this.$refs`。
 
 ### 为什么？
 
-* 组件必须是保持独立的，如果一个组件的 API 不能够提供所需的功能，那么这个组件在设计、实现上是有问题的。
-* 组件的属性和事件必须足够的给大多数的组件使用。
+- 组件必须是保持独立的，如果一个组件的 API 不能够提供所需的功能，那么这个组件在设计、实现上是有问题的。
+- 组件的属性和事件必须足够的给大多数的组件使用。
 
 ### 怎么做？
 
-* 提供良好的组件 API。
-* 总是关注于组件本身的目的。
-* 拒绝定制代码。如果你在一个通用的组件内部编写特定需求的代码，那么代表这个组件的 API 不够通用，或者你可能需要一个新的组件来应对该需求。
-* 检查所有的 props 是否有缺失的，如果有提一个 issue 或是完善这个组件。
-* 检查所有的事件。子组件向父组件通信一般是通过事件来实现的，但是大多数的开发者更多的关注于 props 从忽视了这点。
-* **Props向下传递，事件向上传递！**。以此为目标升级你的组件，提供良好的 API 和 独立性。
-* 当遇到 props 和 events 难以实现的功能时，通过 `this.$refs`来实现。
-* 当需要操作 DOM 无法通过指令来做的时候可使用 `this.$ref` 而不是 `JQuery`、`document.getElement*`、`document.queryElement`。
-
+- 提供良好的组件 API。
+- 总是关注于组件本身的目的。
+- 拒绝定制代码。如果你在一个通用的组件内部编写特定需求的代码，那么代表这个组件的 API 不够通用，或者你可能需要一个新的组件来应对该需求。
+- 检查所有的 props 是否有缺失的，如果有提一个 issue 或是完善这个组件。
+- 检查所有的事件。子组件向父组件通信一般是通过事件来实现的，但是大多数的开发者更多的关注于 props 从忽视了这点。
+- **Props 向下传递，事件向上传递！**。以此为目标升级你的组件，提供良好的 API 和 独立性。
+- 当遇到 props 和 events 难以实现的功能时，通过 `this.$refs`来实现。
+- 当需要操作 DOM 无法通过指令来做的时候可使用 `this.$ref` 而不是 `JQuery`、`document.getElement*`、`document.queryElement`。
 
 ```html
 <!-- 推荐，并未使用 this.$refs -->
-<range :max="max"
-  :min="min"
-  @current-value="currentValue"
-  :step="1"></range>
+<range :max="max" :min="min" @current-value="currentValue" :step="1"></range>
 ```
 
 ```html
@@ -372,7 +380,7 @@ Vue.js 支持通过 `ref` 属性来访问其它组件和 HTML 元素。并通过
     // ...
     data() {
       return {
-        active: false,
+        active: false
       };
     },
     methods: {
@@ -381,21 +389,17 @@ Vue.js 支持通过 `ref` 属性来访问其它组件和 HTML 元素。并通过
       },
       hide() {
         this.active = false;
-      },
-    },
+      }
+    }
     // ...
   };
 </script>
-
 ```
 
 ```html
 <!-- 如果可通过 emited 来做则避免通过 this.$refs 直接访问 -->
 <template>
-  <range :max="max"
-    :min="min"
-    ref="range"
-    :step="1"></range>
+  <range :max="max" :min="min" ref="range" :step="1"></range>
 </template>
 
 <script>
@@ -404,8 +408,8 @@ Vue.js 支持通过 `ref` 属性来访问其它组件和 HTML 元素。并通过
     methods: {
       getRangeCurrentValue() {
         return this.$refs.range.currentValue;
-      },
-    },
+      }
+    }
     // ...
   };
 </script>
@@ -419,8 +423,8 @@ Vue.js 的组件是自定义元素，这非常适合用来作为样式的根作�
 
 ### 为什么？
 
-* 给样式加上作用域空间可以避免组件样式影响外部的样式。
-* 保持模块名、目录名、样式根作用域名一样，可以很好的将其关联起来，便于开发者理解。
+- 给样式加上作用域空间可以避免组件样式影响外部的样式。
+- 保持模块名、目录名、样式根作用域名一样，可以很好的将其关联起来，便于开发者理解。
 
 ### 怎么做？
 
@@ -429,12 +433,16 @@ Vue.js 的组件是自定义元素，这非常适合用来作为样式的根作�
 ```html
 <style scoped>
   /* 推荐 */
-  .MyExample { }
-  .MyExample li { }
-  .MyExample__item { }
+  .MyExample {
+  }
+  .MyExample li {
+  }
+  .MyExample__item {
+  }
 
   /* 避免 */
-  .My-Example { } /* 没有用组件名或模块名限制作用域, 不符合 BEM 规范 */
+  .My-Example {
+  } /* 没有用组件名或模块名限制作用域, 不符合 BEM 规范 */
 </style>
 ```
 
@@ -442,14 +450,14 @@ Vue.js 的组件是自定义元素，这非常适合用来作为样式的根作�
 
 ## 提供组件 API 文档
 
-使用 Vue.js 组件的过程中会创建 Vue 组件实例，这个实例是通过自定义属性配置的。为了便于其他开发者使用该组件，对于这些自定义属性即组件API应该在 `README.md` 文件中进行说明。
+使用 Vue.js 组件的过程中会创建 Vue 组件实例，这个实例是通过自定义属性配置的。为了便于其他开发者使用该组件，对于这些自定义属性即组件 API 应该在 `README.md` 文件中进行说明。
 
 ## 为什么？
 
-* 良好的文档可以让开发者比较容易的对组件有一个整体的认识，而不用去阅读组件的源码，也更方便开发者使用。
-* 组件配置属性即组件的 API，对于组件的用户来说他们更感兴趣的是 API 而不是实现原理。
-* 正式的文档会告诉开发者组件 API 变更以及向后的兼容性情况。
-* `README.md` 是标准的我们应该首先阅读的文档文件。代码托管网站（GitHub、Bitbucket、Gitlab 等）会默认在仓库中展示该文件作为仓库的介绍。
+- 良好的文档可以让开发者比较容易的对组件有一个整体的认识，而不用去阅读组件的源码，也更方便开发者使用。
+- 组件配置属性即组件的 API，对于组件的用户来说他们更感兴趣的是 API 而不是实现原理。
+- 正式的文档会告诉开发者组件 API 变更以及向后的兼容性情况。
+- `README.md` 是标准的我们应该首先阅读的文档文件。代码托管网站（GitHub、Bitbucket、Gitlab 等）会默认在仓库中展示该文件作为仓库的介绍。
 
 ### 怎么做？
 
@@ -476,19 +484,16 @@ range slider 组件可通过拖动的方式来设置一个给定范围内的数�
 
 `<range-slider>` 支持如下的自定义属性：
 
-
-| attribute | type | description
-| --- | --- | ---
-| `min` | Number | 可拖动的最小值.
-| `max` | Number | 可拖动的最大值.
-| `values` | Number[] *optional* | 包含最大值和最小值的数组.  如. `values="[10, 20]"`. Defaults to `[opts.min, opts.max]`.
-| `step` | Number *optional* | 增加减小的数值单位，默认为 1.
-| `on-slide` | Function *optional* | 用户拖动开始按钮或者结束按钮时的回调函数，函数接受 `(values, HANDLE)` 格式的参数。 如： `on-slide={ updateInputs }`,  `component.updateInputs = (values, HANDLE) => { const value = values[HANDLE]; }`.
-| `on-end` | Function *optional* | 当用户停止拖动时触发的回调函数，函数接受 `(values, HANDLE)` 格式的参数。
-
+| attribute  | type                | description                                                                                                                                                                                            |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `min`      | Number              | 可拖动的最小值.                                                                                                                                                                                        |
+| `max`      | Number              | 可拖动的最大值.                                                                                                                                                                                        |
+| `values`   | Number[] _optional_ | 包含最大值和最小值的数组. 如. `values="[10, 20]"`. Defaults to `[opts.min, opts.max]`.                                                                                                                 |
+| `step`     | Number _optional_   | 增加减小的数值单位，默认为 1.                                                                                                                                                                          |
+| `on-slide` | Function _optional_ | 用户拖动开始按钮或者结束按钮时的回调函数，函数接受 `(values, HANDLE)` 格式的参数。 如： `on-slide={ updateInputs }`, `component.updateInputs = (values, HANDLE) => { const value = values[HANDLE]; }`. |
+| `on-end`   | Function _optional_ | 当用户停止拖动时触发的回调函数，函数接受 `(values, HANDLE)` 格式的参数。                                                                                                                               |
 
 如需要自定义 slider 的样式可参考 [noUiSlider 文档]((http://refreshless.com/nouislider/more/#section-styling)
-
 
 [↑ 回到目录](#目录)
 
@@ -498,9 +503,9 @@ range slider 组件可通过拖动的方式来设置一个给定范围内的数�
 
 ### 为什么？
 
-* demo 可以说明组件是独立可使用的。
-* demo 可以让开发者预览组件的功能效果。
-* demo 可以展示组件各种配置参数下的功能。
+- demo 可以说明组件是独立可使用的。
+- demo 可以让开发者预览组件的功能效果。
+- demo 可以展示组件各种配置参数下的功能。
 
 [↑ 回到目录](#目录)
 
@@ -510,8 +515,8 @@ range slider 组件可通过拖动的方式来设置一个给定范围内的数�
 
 ### 为什么？
 
-* 保证所有的开发者使用同样的编码规范。
-* 更早的感知到语法错误。
+- 保证所有的开发者使用同样的编码规范。
+- 更早的感知到语法错误。
 
 ### 怎么做？
 
@@ -557,6 +562,7 @@ eslint src/**/*.vue
 ```
 
 运行 JSHint
+
 ```bash
 jshint --config modules/.jshintrc --extra-ext=html --extract=auto modules/
 ```
@@ -569,19 +575,19 @@ jshint --config modules/.jshintrc --extra-ext=html --extract=auto modules/
 
 Vue.js 是一个基于组件的框架。如果你不知道何时创建组件可能会导致以下问题：
 
-* 如果组件太大, 可能很难重用和维护;
-* 如果组件太小，你的项目就会（因为深层次的嵌套而）被淹没，也更难使组件间通信;
+- 如果组件太大, 可能很难重用和维护;
+- 如果组件太小，你的项目就会（因为深层次的嵌套而）被淹没，也更难使组件间通信;
 
 ### 怎么做?
 
-* 始终记住为你的项目需求构建你的组件，但是你也应该尝试想到它们能够从中脱颖而出（独立于项目之外）。如果它们能够在你项目之外工作，就像一个库那样，就会使得它们更加健壮和一致。
-* 尽可能早地构建你的组件总是更好的，因为这样使得你可以在一个已经存在和稳定的组件上构建你的组件间通信（props & events）。
+- 始终记住为你的项目需求构建你的组件，但是你也应该尝试想到它们能够从中脱颖而出（独立于项目之外）。如果它们能够在你项目之外工作，就像一个库那样，就会使得它们更加健壮和一致。
+- 尽可能早地构建你的组件总是更好的，因为这样使得你可以在一个已经存在和稳定的组件上构建你的组件间通信（props & events）。
 
 ### 规则
 
-* 首先，尽可能早地尝试构建出诸如模态框、提示框、工具条、菜单、头部等这些明显的（通用型）组件。总之，你知道的这些组件以后一定会在当前页面或者是全局范围内需要。
-* 第二，在每一个新的开发项目中，对于一整个页面或者其中的一部分，在进行开发前先尝试思考一下。如果你认为它有一部分应该是一个组件，那么就创建它吧。
-* 最后，如果你不确定，那就不要。避免那些“以后可能会有用”的组件污染你的项目。它们可能会永远的只是（静静地）待在那里，这一点也不聪明。注意，一旦你意识到应该这么做，最好是就把它打破，以避免与项目的其他部分构成兼容性和复杂性。
+- 首先，尽可能早地尝试构建出诸如模态框、提示框、工具条、菜单、头部等这些明显的（通用型）组件。总之，你知道的这些组件以后一定会在当前页面或者是全局范围内需要。
+- 第二，在每一个新的开发项目中，对于一整个页面或者其中的一部分，在进行开发前先尝试思考一下。如果你认为它有一部分应该是一个组件，那么就创建它吧。
+- 最后，如果你不确定，那就不要。避免那些“以后可能会有用”的组件污染你的项目。它们可能会永远的只是（静静地）待在那里，这一点也不聪明。注意，一旦你意识到应该这么做，最好是就把它打破，以避免与项目的其他部分构成兼容性和复杂性。
 
 [↑ 回到目录](#目录)
 
@@ -599,22 +605,23 @@ Mixins 封装可重用的代码，避免了重复。如果两个组件共享有�
 
 ```js
 const MenuMixin = {
-  data () {
+  data() {
     return {
-      language: 'EN'
-    }
+      language: "EN"
+    };
   },
 
   methods: {
-    changeLanguage () {
-      if (this.language === 'DE') this.$set(this, 'language', 'EN')
-      if (this.language === 'EN') this.$set(this, 'language', 'DE')
+    changeLanguage() {
+      if (this.language === "DE") this.$set(this, "language", "EN");
+      if (this.language === "EN") this.$set(this, "language", "DE");
     }
   }
-}
+};
 
-export default MenuMixin
+export default MenuMixin;
 ```
+
 要使用 mixin，只需将其导入到两个组件中（我只展示移动组件）。
 
 ```html
@@ -625,11 +632,11 @@ export default MenuMixin
 </template>
 
 <script>
-  import MenuMixin from './MenuMixin'
+  import MenuMixin from "./MenuMixin";
 
   export default {
     mixins: [MenuMixin]
-  }
+  };
 </script>
 ```
 
@@ -643,6 +650,6 @@ Fork 和提 PR 以帮助我们改进或者可以给我们提 [Issue](https://git
 
 ## 译者
 
-* [杨小福](https://github.com/xiaofuzi)
-* [机智的马里奥](https://github.com/wysxhlyy)
-* [根号三](https://github.com/sqrthree)
+- [杨小福](https://github.com/xiaofuzi)
+- [机智的马里奥](https://github.com/wysxhlyy)
+- [根号三](https://github.com/sqrthree)

@@ -1,5 +1,5 @@
 {
-  "name": "Jecyu-notebook",
+  "name": "jecyu-notebook",
   "version": "1.0.0",
   "scripts": {
     "dev": "vuepress dev docs",
