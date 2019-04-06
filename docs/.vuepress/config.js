@@ -28,7 +28,7 @@ module.exports = {
         {
           title: "日常记录",
           collapsable: true,
-          children: ["", "2019"]
+          children: ["", "2019", "table"]
         },
         {
           title: "arcgis",
@@ -45,7 +45,7 @@ module.exports = {
         {
           title: "协同开发",
           collapsable: true,
-          children: ["gitBase", "collaborative"]
+          children: ["gitBase", "gitWorkFlow", "collaborative"]
         }
       ],
       "/bookmark/": [
