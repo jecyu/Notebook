@@ -44,6 +44,22 @@ git config --global user.name
 git config --global user.email
 ```
 
+## 配置本地的用户名和邮箱
+
+```sh
+git config --global user.name "username"
+
+git config --global user.email "email"
+```
+
+## 查看本地的用户名和邮箱
+
+```sh
+git config user.name
+
+git config user.email
+```
+
 ## 回到远程仓库的状态
 
 抛弃本地所有的修改，回到远程仓库的状态。
@@ -129,6 +145,11 @@ git push origin/mybranch -u
 ```sh
 git branch -r
 ```
+
+## 合并分支
+
+在 git 中合并分支有三种方法，分别是 merge，rebase，cherry-pick，而其中 merge 又有三种区别
+https://yanhaijing.com/git/2017/07/14/four-method-for-git-merge/
 
 ## 列出本地和远程分支
 
