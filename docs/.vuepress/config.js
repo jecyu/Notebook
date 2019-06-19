@@ -7,6 +7,7 @@ module.exports = {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
       { text: "🏷书签整理", link: "/bookmark/" },
+      { text: "☁️运维", link: "/devops/" },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
       {
         text: "📖知识脑图",
@@ -53,6 +54,13 @@ module.exports = {
           title: "网站书签整理",
           collapsable: false,
           children: ["", "backend", "tool"]
+        }
+      ],
+      "/devops/": [
+        {
+          title: "运维",
+          collapsable: false,
+          children: ["", "linux"]
         }
       ]
     },

@@ -338,6 +338,8 @@ git remote set-url origin <URL>
 
 ## 增加远程仓库
 
+通常用于非 clone 的模式，如远程构建好仓库后，本地同时也构建本地的仓库，这时就需要通过下面命令进行关联
+
 ```sh
 git remote add origin <remote-url>
 ```
