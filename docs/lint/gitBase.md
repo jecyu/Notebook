@@ -24,6 +24,8 @@ _如果之前未使用过 Git，可以学习[Git 小白教程](http://rogerdudle
 
 **commit-id**：输出命令：`git log`，最上面那行`commit xxxxxx`，后面的字符串就是 commit-id
 
+## 改写提交
+
 ## 展示帮助信息
 
 ```sh
