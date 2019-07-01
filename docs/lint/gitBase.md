@@ -546,8 +546,28 @@ git rebase --autostash
 
 ## 从远程仓库根据 ID，拉下某一状态，到本地分支
 
-```sh
+```bash
 git fetch origin pull/<id>/head:<branch-name>
+```
+
+## 查看 git fetch 之后的文件更改
+
+查看 commit j 记录
+
+```bash
+git log origin/master ^master
+```
+
+如果你只是想看看如果你使用 `git pull`，会修改哪些文件，那么就这样做
+
+```bash
+git diff HEAD @{u} --name-only
+```
+
+如果您想查看当前版本和即将到来的版本之间的所有差异，包括未提交的本地修改，请键入以下内容
+
+```bash
+git diff @{u} --name-only
 ```
 
 ## 详细展示一行中的修改
