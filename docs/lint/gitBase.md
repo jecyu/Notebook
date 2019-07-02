@@ -184,9 +184,23 @@ git branch -r
 
 ### 合并分支
 
-```bash
 在 git 中合并分支有三种方法，分别是 merge，rebase，cherry-pick，而其中 merge 又有三种区别
 https://yanhaijing.com/git/2017/07/14/four-method-for-git-merge/
+
+#### merge
+
+如果添加 --no-ff 选项，就是 fast-forward 合并也可以建立合并提交。这是记录分支存在过的非常有用的选项。
+
+```bash
+git merge <branch>
+```
+
+#### cherry-pick
+
+这命令简直就是神器，给你自由，你想把那个节点 merge 过来就把那个节点 merge 过来，其合入的不是分支而是提交节点
+
+```bash
+git cherry-pick commitId
 ```
 
 ### 列出本地和远程分支
