@@ -203,6 +203,10 @@ git merge <branch>
 git cherry-pick commitId
 ```
 
+### 排除合并某些文件
+
+这个通常很有用，特别是针对 .env 文件时，每个人的本地配置不同
+
 ### 列出本地和远程分支
 
 -a 参数相当于：all

@@ -15,3 +15,16 @@ chmod g+w,o+rw xxxx
 ```
 
 ### 本地上传文件到远程服务器
+
+## 命令工具
+
+### 目录及文件的基本操作
+
+#### mv
+
+描述：移动（重命名）文件或目录
+
+```bash
+mv hello.txt hello.doc
+mv hello.doc /root/
+```
