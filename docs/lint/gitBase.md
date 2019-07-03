@@ -207,6 +207,10 @@ git cherry-pick commitId
 
 这个通常很有用，特别是针对 .env 文件时，每个人的本地配置不同
 
+```bash
+
+```
+
 ### 列出本地和远程分支
 
 -a 参数相当于：all
@@ -257,6 +261,54 @@ git branch -m <new-branch-name>
 
 ```bash
 git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/
+```
+
+## stash
+
+### 存储当前的修改，但不用提交 commit
+
+详解可以参考[廖雪峰老师的 git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000)
+
+```sh
+git stash
+```
+
+### 展示所有 stashes
+
+```sh
+git stash list
+```
+
+### 回到某个 stash 的状态
+
+```sh
+git stash apply <stash@{n}>
+```
+
+### 保存当前状态，包括 untracked 的文件
+
+untracked 文件：新建的文件
+
+```sh
+git stash -u
+```
+
+### 回到最后一个 stash 的状态，并删除这个 stash
+
+```sh
+git stash pop
+```
+
+### 删除所有的 stash
+
+```sh
+git stash clear
+```
+
+### 从 stash 中拿出某个文件的修改
+
+```sh
+git checkout <stash@{n}> -- <file-path>
 ```
 
 ## 操作标签
@@ -451,52 +503,6 @@ git remote add origin <remote-url>
 
 ```sh
 git whatchanged --since='2 weeks ago'
-```
-
-## 存储当前的修改，但不用提交 commit
-
-详解可以参考[廖雪峰老师的 git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000)
-
-```sh
-git stash
-```
-
-## 保存当前状态，包括 untracked 的文件
-
-untracked 文件：新建的文件
-
-```sh
-git stash -u
-```
-
-## 展示所有 stashes
-
-```sh
-git stash list
-```
-
-## 回到某个 stash 的状态
-
-```sh
-git stash apply <stash@{n}>
-```
-
-## 回到最后一个 stash 的状态，并删除这个 stash
-
-```sh
-git stash pop
-```
-
-## 删除所有的 stash
-
-```sh
-git stash clear
-```
-
-## 从 stash 中拿出某个文件的修改
-
-```sh
-git checkout <stash@{n}> -- <file-path>
 ```
 
 ## 展示所有 tracked 的文件
