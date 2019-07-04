@@ -6,8 +6,14 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
+      {
+        text: "开发者",
+        items: [
+          { text: "💻前端", link: "/frontend/" },
+          { text: "☁️运维", link: "/devops/" }
+        ]
+      },
       { text: "🏷书签整理", link: "/bookmark/" },
-      { text: "☁️运维", link: "/devops/" },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
       {
         text: "📖知识脑图",
@@ -29,7 +35,7 @@ module.exports = {
         {
           title: "日常记录",
           collapsable: true,
-          children: ["", "2019", "table"]
+          children: ["2019", "", "table"]
         },
         {
           title: "arcgis",
