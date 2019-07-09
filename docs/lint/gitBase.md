@@ -102,6 +102,26 @@ git config --global alias.st status
 $ echo <filename> >> .gitignore
 ```
 
+## 设定 SSH 连接
+
+### Mac
+
+```bash
+ssh-keygen
+```
+接着会显示以下的内容输出，在有需要的地方输入设定验证密码的文字，然后按“Enter”键。
+
+如果不设定验证密码，请不要输入任何文字，直接按“Enter”键即可。
+
+执行下一个命令就可以确认形成SSH键公钥的内容。
+
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+接下来，在远程数据库设定公钥。
+
+
 ## 回到远程仓库的状态
 
 抛弃本地所有的修改，回到远程仓库的状态。
