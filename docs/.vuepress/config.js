@@ -71,7 +71,7 @@ module.exports = {
         {
           title: "运维",
           collapsable: false,
-          children: ["", "linux"]
+          children: ["", "linux", "window"]
         }
       ],
       "/frontend/": [
