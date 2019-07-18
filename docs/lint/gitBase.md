@@ -82,6 +82,21 @@ git config --global user.name
 git config --global user.email
 ```
 
+### 查看 git 配置
+
+在项目的根目录下，输入 
+```bash
+# 打开 .git 目录
+cd .git 
+
+# 查看里面的文件
+
+ls 
+
+# 打开 config 文件
+vi config
+```
+
 ### 给 git 命令起别名
 
 简化命令
@@ -120,6 +135,10 @@ cat ~/.ssh/id_rsa.pub
 ```
 
 接下来，在远程数据库设定公钥。
+
+### window 
+
+先下载 cmder 命令行（linux）工具，之后跟 mac 一样的命令行操作即可。
 
 
 ## 回到远程仓库的状态
