@@ -630,3 +630,73 @@ async created() {
   }
 }
 ```
+
+### async/await 使用
+
+#### 捕获错误
+
+```js
+async function asyncAwaitTryCatch() {
+  try {
+    const api = new Api();
+    const user = await api.getUser();
+    const friends = await api.getFriend();
+
+    await api.throwError();
+    console.log('Error was not thrown');
+
+    const photo = await api.getPhoto(user.id);
+    console.log('async/await', { user, friends, photo })
+  } catch (err) {
+    console.log(err);
+  }
+}
+```
+
+#### 组合
+
+- 调用 async 函数作为一个 promise 对象来返回数据
+```js
+async function getUserInfo() {
+  const api = new Api()
+  const user = await api.getUser()
+  const friends= await api.getFriends(user.id)
+  const photo = await api.getPhoto(user.id)
+  return {user, friends, photo }
+}
+
+function promiseUserInfo() {
+  getUserInfo().then({ user, friends, photo }) => {
+    console.log('promiseUserInfo', { user, friends, photo })
+  }
+} 
+
+// 或者继续使用 async/await 语法
+async function awaitUserInfo () {
+  const { user, friends, photo } = await getUserInfo()
+  console.log('awaitUserInfo', { user, friends, photo })
+}
+```
+
+- 检索前十个用户的所有数据
+```js
+async function getLotsOfUserData() {
+  const users = []
+  while(users.length < 10) {
+    users.push(await getUserInfo())
+  }
+  console.log('getLotsOfUserData', users)
+}
+```
+- 并发请求
+```js
+async function getLotsOfUserDataFaster() {
+  try {
+    const userPromises = Array(10).fill(getUserInfo())
+    const users = await Promise.all(userPromises)
+    console.log('getLotsOfUserDataFaster', users)
+  } catch (err) {
+    console.log(err)
+  }
+}
+```
