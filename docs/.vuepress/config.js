@@ -10,7 +10,8 @@ module.exports = {
         text: "开发者",
         items: [
           { text: "💻前端", link: "/frontend/" },
-          { text: "☁️运维", link: "/devops/" }
+          { text: "☁️运维", link: "/devops/" },
+          { text: "🚬测试", link: "/test/" }
         ]
       },
       { text: "🏷书签整理", link: "/bookmark/" },
@@ -49,6 +50,11 @@ module.exports = {
         }
       ],
       "/lint/": [
+        {
+          title: "代码审查",
+          collapsable: true,
+          children: ["codeReview"]
+        },
         {
           title: "编码规范",
           collapsable: true,
