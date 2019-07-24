@@ -700,3 +700,12 @@ async function getLotsOfUserDataFaster() {
   }
 }
 ```
+
+### transform 对 fixed 的影响
+
+需求：需要对 iview 的模态框的样式进行自定义覆盖，因此就是 transfer:false 把 Modal 渲染到父组件内。此时会出现问题。
+症状：使用了 iview Modal 组件时，如果设置了 transfer: false 属性时，有时候会出现无法打开Modal 框的现象，原因可能在于父元素设置了
+transform 属性。因此
+原因：应用了transform属性的元素会导致该元素形成一个新的包含块，然后其后代元素如果有fixed定位的属性，那么其元素将会以该父元素作为包含块。
+分析：iview 使用了 transfer-dom 指令来解决上面的问题，把 modal 移动到 body 下面。
+解决：因此如果需要自定义覆盖 modal 的样式，又不能渲染到父组件内，要想避免污染全局样式，此时建议通过类名去限制作用域。
