@@ -11,7 +11,8 @@ module.exports = {
         items: [
           { text: "💻前端", link: "/frontend/" },
           { text: "☁️运维", link: "/devops/" },
-          { text: "🚬测试", link: "/test/" }
+          { text: "🚬测试", link: "/test/" },
+          { text: "🌍GIS", link: "/gis/" }
         ]
       },
       { text: "🏷书签整理", link: "/bookmark/" },
