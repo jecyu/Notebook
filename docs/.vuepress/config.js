@@ -84,7 +84,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: ["", "css", 'js', "performance", "vue"]
+          children: ["", "css", 'js', "performance", "vue", "npm"]
         }
       ]
     },
