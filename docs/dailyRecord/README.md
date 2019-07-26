@@ -628,8 +628,19 @@ async created() {
   if (this.panelData[0].children.length > 0) {
     this.handleSelectList(this.panelData[0].children[0]);
   }
+},
+methods: {
+  checkIsSelected(data) {
+    this.defaultSelectedItems.forEach(v => {
+      if (v.name === data.name) {
+        this.$set(data,'isSelected', true);
+      }
+    })
+  }
 }
 ```
+
+
 
 ### async/await 使用
 

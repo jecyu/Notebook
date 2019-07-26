@@ -40,11 +40,6 @@ module.exports = {
           children: ["", "2018", "table"]
         },
         {
-          title: "arcgis",
-          collapsable: false,
-          children: ["arcgis"]
-        },
-        {
           title: "TechnologyDevelopment",
           collapsable: false,
           children: ["TechnologyDevelopment"]
