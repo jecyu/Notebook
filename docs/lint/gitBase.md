@@ -242,12 +242,55 @@ git merge <branch>
 git cherry-pick commitId
 ```
 
-### 排除合并某些文件
+<!-- ### 排除合并某些文件
 
 这个通常很有用，特别是针对 .env 文件时，每个人的本地配置不同
 
 ```bash
 
+``` -->
+
+#### 从其他分支合并指定文件或文件夹
+
+功能分为2个分支，分别为A、B。
+A上面有个列表页功能
+B上面有个详情页功能，还有个系统消息功能
+
+产品经理说先上列表功能，于是我们就开发A分支，列表功能很快开发完成。
+第二天按常理开发B分支，开发到一半，产品经理说目前的系统消息功能需要急着上线，要和列表功能一起上线，当时就懵逼了，然后赶紧放下详情页的开发，立马去开发系统消息功能，开发完之后需要将列表功能和系统消息功能放在一个分支上提测，这时候分支合并就派上用场了。
+
+使用git merge 命令进行分支合并是通用的做法，但是git merge 合并的时候会将两个分支的内容完全合并，如果想合并一部分肯定是不行的。那怎么办？
+
+如何从其他分支merge指定文件到当前分支，git checkout 是个合适的工具。
+
+```bash
+git checkout source_branch <path>...
+```
+
+- 强制合并
+```bash
+git branch 当前位于 A 分支上
+  * A  
+    B
+# 在使用git checkout某文件到当前分支时，会将当前分支的对应文件强行覆盖
+git checkout B xxx.html xxx.js
+```
+
+- 智能合并
+1. 使用git checkout 将根据A分支创建一个A_temp分支，避免影响A分支
+```bash
+git checkout -b A_temp
+```
+2. 将B分支合并到A_temp分支
+```bash
+git merge --no-ff B
+```
+3. 切换到A分支，并使用git checkout 将A_temp分支上的系统消息功能相关文件或文件夹覆盖到A分支
+```bash
+$ git checkout A
+Switched to branch 'A'
+
+$ git checkout A_temp message.html message.css message.js other.js
 ```
 
 ### 列出本地和远程分支
