@@ -228,7 +228,7 @@ https://yanhaijing.com/git/2017/07/14/four-method-for-git-merge/
 
 #### merge
 
-如果添加 --no-ff 选项，就是 fast-forward 合并也可以建立合并提交。这是记录分支存在过的非常有用的选项。
+如果添加 --no-ff 选项，就是 fast-forward 合并也可以建立合并提交。这是记录分支存在过的非常有用的选项。考虑一下“功能”分支上的一系列次要提交共同构成一个新功能的情况：如果你只是在没有--no-ff的情况下执行“git merge feature_branch”，那么就不可能从Git历史中看到哪一个 提交对象一起实现了一个功能 - 您必须手动读取所有日志消息。好处就是 GUI界面可以直观看到信息。
 
 ```bash
 git merge <branch>
