@@ -51,11 +51,29 @@
   </tbody>
 </table>
 
-## 配置 registry 地址
+## npm 换源
 
+一、使用淘宝镜像
+1. 临时使用
 ```bash
-# 配置淘宝源
+npm --registry https://registry.npm.taobao.org install express
+```
+2. 持久使用
+```bash
 npm config set registry https://registry.npm.taobao.org
+```
+3. 通过cnpm
+```bash
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
+
+二、使用官方镜像
+```bash
+npm config set registry https://registry.npmjs.org/
+```
+三、查看npm源地址
+```bash
+npm config get registry
 ```
 
 ## 关于 npm 包版本号前缀 ~ 和 ^ 区别

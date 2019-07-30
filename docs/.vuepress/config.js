@@ -15,6 +15,7 @@ module.exports = {
           { text: "🌍GIS", link: "/gis/" }
         ]
       },
+      { text: "🖌️设计", link: "/design/" },
       { text: "🏷书签整理", link: "/bookmark/" },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
       {

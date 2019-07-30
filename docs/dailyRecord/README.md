@@ -729,3 +729,34 @@ transform 属性。因此
   </div>
 </div>
 ```
+
+### flex布局中使用iview的table表格的宽度会计算出错,导致很长的宽度
+
+场景：两边固定，中间自适应
+
+- 原因：设置了flex-grow元素的子级宽度问题
+- 解决：给该子元素设置 `overflow: auto;` 或 `width: 0;`
+
+```css
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  .left {
+    width: 300px;
+    /* flex: 0 0 300px; */
+    flex-shrink: 0;
+    background: chocolate;
+  }
+  .right {
+    width: 200px;
+    flex-shrink: 0;
+    /* flex: 0 0 200px; */
+    background: cadetblue;
+  }
+  .content {
+    flex-grow: 1;
+    background: hotpink;
+    overflow: hidden;
+  }
+```
