@@ -60,7 +60,7 @@ module.exports = {
         {
           title: "协同开发",
           collapsable: true,
-          children: ["gitBase", "gitWorkFlow", "collaborative"]
+          children: ["gitBase", "gitWorkFlow", "collaborative", "gitCommit"]
         }
       ],
       "/bookmark/": [
