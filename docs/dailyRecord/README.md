@@ -565,10 +565,11 @@ async function test() {
 
 ## 六月
 
-eslint+lint-staged 禁用老项目中的 ES6
+### eslint+lint-staged 禁用老项目中的 ES6
+
 用惯了 es6，在编写广州一体化中，会在有些地方使用了 es6 语法，导致在低版本的浏览器中出现微件加载错误。于是我就用了 eslint 在提交的代码时进行语法检查。列下步骤，复习下。
-步骤一：本地仓库安装 yarn add eslint 或者 npm install eslint
-步骤二：安装后，进行初始化 eslint —init，生成配置文件 .eslintrc.js
+1. 步骤一：本地仓库安装 yarn add eslint 或者 npm install eslint
+2. 步骤二：安装后，进行初始化 eslint —init，生成配置文件 .eslintrc.js
 
 ```bash
 module.exports = {
@@ -580,7 +581,7 @@ module.exports = {
 }
 ```
 
-步骤三：npm install --D lint-staged husky 或 yarn add lint-staged husky，然后进行配置，最后提交文件即可自动触发。
+3. 步骤三：npm install --D lint-staged husky 或 yarn add lint-staged husky，然后进行配置，最后提交文件即可自动触发。
 
 ```bash
 {
@@ -760,3 +761,72 @@ transform 属性。因此
     overflow: hidden;
   }
 ```
+
+### 了解 babel
+
+1. babel-loader: 负责 es6 语法转化
+2. babel-preset-env: 包含 es6、7 等版本的语法转化规则
+3. babel-polyfill: es6 内置方法和函数转化垫片
+4. babel-plugin-transform-runtime: 避免 polyfill 污染全局变量
+需要注意的是, babel-loader和babel-polyfill。前者负责语法转化，比如：箭头函数；后者负责内置方法和函数，比如：new Set()。
+
+#### babel
+
+Babel什么都不做，它的行为就像const Babel = code => code;通过解析代码，然后再次生成相同的代码。您将需要为Babel添加一些插件来执行诸如置换es6、JSX之类的操作
+
+#### babel-core
+
+如果你想在你的真实项目中使用babel，你需要安装babel但是
+没有 `babel` 包可用。
+
+babel将它分成两个独立的包：`babel-cli`和`babel-core`
+**babel-cli**：可用于从命令行编译文件。
+**babel-core**：如果你想使用 Node API，你可以安装`babel-core`
+，与“babel-cli”相同，除非您在应用程序内以编程方式使用它。
+
+在生产之前使用`babel-cli`或`babel-core`编译文件。
+
+#### preset vs plugin
+
+我们可以使用`babel插件(es2015)`一次添加一个特性(es6,JSX)，或者我们可以使用`babel预置`来包含特定年份的所有特性(es6)。预置使设置更容易。
+
+#### babel-preset-es2015
+
+`babel-preset-env`支持es2015特性，并取代了es2015、es2016、es2017和最新版本。因此，使用`babel-preset-env`，它的行为与`babel-preset-latest`完全相同(或者将babel-preset-es2015、babel-preset-es2016和babel-preset-es2017放在一起)。
+
+#### babel-preset-react
+
+将`JSX`转换为`createElement`调用，如将`react`纯类转换为函数，并删除`prop`类型。
+
+#### babel-polyfill
+
+没有`babel-polyfill`, babel只允许您使用箭头函数、析构、默认参数和ES6中引入的其他特定于语法的特性。新的ES6内置组件(如Set、Map和Promise)必须是polyfill，以包含应用程序入口点顶部需要的polyfill。
+
+#### babel-loader
+
+你理解了babel-core，babel-cli，以及为什么需要预设，插件，现在
+你每次都是从`babel-cli`逐个文件地编译ES6到ES5。
+要摆脱这个，你需要捆绑任务`/ js`文件。 因此你需要用`WebPack`。
+
+`loader` 有点像任务，它们通过将各种文件转换为webpack可以处理的有效模块，为各种文件提供了利用webpack捆绑功能的能力。
+
+Webpack通过`Babel -loader`提供了强大的Babel支持。
+
+#### devDependencies
+
+当您部署应用程序时，需要安装依赖项中的模块，否则应用程序将无法工作。devDependencies中的模块不需要安装在生产服务器上，因为您不是在这台机器上开发的。
+
+这些包只用于开发和测试。
+
+#### 难道没有任何单一的依赖来取代它们吗？
+
+当您阅读上述时，您的确需要一些预置和加载器来转换es2015或JSX文件。
+
+#### babel -> @babel
+
+从`Babel 7`开始，Babel团队就开始使用[scoped包](https://babeljs.io/docs/en/next/v7-migration#scoped-packages)，这样做是为了更好地区分哪些包是官方的，哪些包是第三方的。
+所以你现在必须使用@ babel / core而不是babel-core。
+
+您的依赖项需要像这样修改：
+
+babel-cli - > @ babel / cli。 例如：babel-与@ babel /。
