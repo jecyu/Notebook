@@ -12,7 +12,8 @@ module.exports = {
           { text: "💻前端", link: "/frontend/" },
           { text: "☁️运维", link: "/devops/" },
           { text: "🚬测试", link: "/test/" },
-          { text: "🌍GIS", link: "/gis/" }
+          { text: "🌍GIS", link: "/gis/" },
+          { text: "️️🖱️软件", link: "/software/" }
         ]
       },
       { text: "🖌️设计", link: "/design/" },
@@ -75,6 +76,13 @@ module.exports = {
           title: "运维",
           collapsable: false,
           children: ["", "linux", "window"]
+        }
+      ],
+      "/software/": [
+        {
+          title: "软件",
+          collapsable: false,
+          children: ["excel",]
         }
       ],
       "/frontend/": [
