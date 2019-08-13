@@ -830,3 +830,22 @@ Webpack通过`Babel -loader`提供了强大的Babel支持。
 您的依赖项需要像这样修改：
 
 babel-cli - > @ babel / cli。 例如：babel-与@ babel /。
+
+## 八月
+
+### 在项目开发中，新安装一个包，应该放到 package.json 的 dependencies 还是 dependencies 上呢？
+
+结论：其实放到哪里都没关系，当我们 `npm install` 的时候两种包都会下载。但是如果将 NODE_ENV 设置为 produciton 就只会安装 dependencies，这样在持续集成的时候，进行自动化部署的时候就会花更少的时间。(但是如果要在线上跑测试的话，就需要 npm install 安装所有依赖。因为测试框架 Jest 安装在开发依赖对象里。）
+这里当然我们也可以使用下面的命令：
+```bash
+npm install  - -prod[uction] 安装 dependencies 或 NODE_ENV=production npm install
+npm install  - -dev[elopment] 安装 devDependencies
+```
+这里是社区的建议：
+- dependencies
+  - 框架：React，AngularJS，Vue.js
+  - 工具库：lodash
+- devDependencies  
+  - 测试框架：Jest，Mocha，Jasmine
+  - 格式化工具：ESLint，Prettier
+  - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。） 
