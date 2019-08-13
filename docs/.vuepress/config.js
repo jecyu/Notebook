@@ -9,11 +9,12 @@ module.exports = {
       {
         text: "开发者",
         items: [
-          { text: "💻前端", link: "/frontend/" },
+          { text: "💻大前端", link: "/frontend/" },
+          { text: "️️🧘🏻‍算法修炼", link: "/algorithm/" },
           { text: "☁️运维", link: "/devops/" },
           { text: "🚬测试", link: "/test/" },
           { text: "🌍GIS", link: "/gis/" },
-          { text: "️️🖱️软件", link: "/software/" }
+          { text: "️️🖱️软件", link: "/software/" },
         ]
       },
       { text: "🖌️设计", link: "/design/" },
