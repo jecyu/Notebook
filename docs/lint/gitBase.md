@@ -477,6 +477,18 @@ git checkout <deleting_commit>^ -- <file_path> #回到删除文件 deleting_comm
 
 ## 改写提交
 
+### 恢复 git reset --hard 的误操作
+
+有时候使用Git工作得小心翼翼，特别是涉及到一些高级操作，例如 reset, rebase 和 merge。甚至一些很小的操作，例如删除一个分支，我都担心数据丢失。
+
+git的历史记录是不可修改的，也就是说你不能更 改任何已经发生的事情。你做的任何操作都只是在原来的操作上修改。也就是说，即使你删除了一个分支，修改了一个提交，或者强制重置，你仍然可以回滚这些操作。
+
+但是 `reflog` 就是用来解决这个问题的。简单的说，它会记录所有HEAD的历史，也就是说当你做 reset，checkout等操作的时候，这些操作会被记录在reflog中。
+
+如果你因为reset等操作丢失一个提交的时候，你总是可以把它找回来。除非你的操作已经被git当做垃圾处理掉了，一般是30天以后。
+
+原文：[恢复 git reset --hard 的误操作](https://www.cnblogs.com/mliudong/archive/2013/04/08/3007303.html)
+
 ### 查看 commit 历史
 
 ```sh
