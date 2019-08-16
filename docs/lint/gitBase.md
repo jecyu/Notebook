@@ -250,6 +250,22 @@ git cherry-pick commitId
 
 ``` -->
 
+#### rebase
+
+> rebase 作用简要为：可以对某一段线性提交历史进行编辑、删除、赋值、 粘贴，合理适应 rebase 命令可以让我们的提交历史干净、简介
+注意：不要通过rebase对任何已经提交到公共仓库中的commit进行修改（你自己一个人玩的分支除外）
+
+##### 合并多个 commit 为一个完整的 commit
+
+```bash
+git rebase -i [startponit] [endpoint]
+```
+其中 -i 意思是 `--ineractive`，即弹交互式的界面让用户编辑完成合并操作，`[startponit]` `endpoint` 指定了一个编辑区间。如果不指定 `[endponit]` 则该区间的默认是当前分支 `HEAD` 所指向的 `commit`.
+
+##### 将某一段 commit 粘贴到另外一个分支上
+
+参考资料：[rebase 用法小结](https://www.jianshu.com/p/4a8f4af4e803)
+
 #### 从其他分支合并指定文件或文件夹
 
 功能分为2个分支，分别为A、B。

@@ -92,6 +92,13 @@ module.exports = {
           collapsable: false,
           children: ["", "css", 'js', "performance", "vue", "npm"]
         }
+      ],
+      "/gis/": [
+        {
+          title: "GIS",
+          collapsable: false,
+          children: ["", "handleFile"]
+        }
       ]
     },
     lastUpdated: "Last Updated",
