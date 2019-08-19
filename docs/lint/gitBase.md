@@ -58,6 +58,12 @@ git add <filepattern>
 git config --global --list
 ```
 
+### 删除全局设置
+
+```sh
+git config --global --unset <entry-name>
+```
+
 ### 输出彩色
 
 ```bash
@@ -741,12 +747,6 @@ git log Branch1 ^Branch2
 
 ```sh
 git log --show-signature
-```
-
-## 删除全局设置
-
-```sh
-git config --global --unset <entry-name>
 ```
 
 ## 新建并切换到新分支上，同时这个分支没有任何 commit
