@@ -15,6 +15,7 @@ module.exports = {
           { text: "🚬测试", link: "/test/" },
           { text: "🌍GIS", link: "/gis/" },
           { text: "️️🖱️软件", link: "/software/" },
+          { text: "️️🐛网络工程", link: "/network/" },
         ]
       },
       { text: "🖌️设计", link: "/design/" },
