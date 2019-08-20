@@ -849,3 +849,73 @@ npm install  - -dev[elopment] 安装 devDependencies
   - 测试框架：Jest，Mocha，Jasmine
   - 格式化工具：ESLint，Prettier
   - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。） 
+
+### axios 不会对 URL 中的功能性字符进行编码
+
+#### 导语
+
+在使用 axios 的 get 请求参数出现了错误。
+`http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
+```js
+async getCityRegionData() {
+    try {
+      const params = {
+        "ids[]": this.itemData.indicatorIds.join()
+      };
+      const cityRegionData = await getCityByIndicators(params);
+      this.cityRegionData = cityRegionData;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+```
+经过排查后，发现是 axios 中会对 get 请求的整个 url 进行 encodeURI，导致有些 get 方法不能传 []。
+
+#### URL 包含特殊字符
+
+在请求中如果 url 包含特殊字符的话，可能导接口接收参数失败，所以前端需要对特殊自负进行 encode，方法有两种：
+- encodeURI()
+
+对整个 url 进行编码，会避开 url 中的功能性字符，例如，&?[]
+
+编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
+
+编码后：http://10.10.67.67:8080/api/chain/basic/users?params=+%5B
+
+- encodeURIComponent()
+
+对某个参数进行编码，会编码所有特殊字符
+
+编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
+编码后：http://10.10.67.67:8080/api/chain/basic/users?params=%2B%5B
+
+#### 解决
+
+通过以上分析可知，我们需要在 axios 中对 get 方法进行处理，可以在请求拦截器中对 get 方法进行单独处理，避开 axios 的 encodeURI，注意的是参数 针对 key 和 value 都需要进行 encodeURIComponent 编码。
+
+
+```js
+interceptors(instance = this.instance) {
+  // 请求拦截
+  instance.interceptors.request.use(
+    config => {
+      // 处理 axios 不会对 url 中的功能进行编码
+      let url = config.url;
+      // 针对 get 参数编码
+      if (config.method === 'get' && config.params) {
+        url +='?';
+        let keys = Object.keys(config.params);
+        for (let key of keys) {
+          url += `${encodeURIComponent(key)}=${encodeURIComponent(
+            config.params[key]
+          )}&`
+        }
+        url = url.substring(0, url.length - 1);
+        config.params = {}; // 清空
+      }
+      config.url = url;
+      return config;
+    }
+  )
+}
+```
