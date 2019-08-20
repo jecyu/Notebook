@@ -919,3 +919,85 @@ interceptors(instance = this.instance) {
   )
 }
 ```
+
+### vueCli 本地开发设置个区分明显的 favicon
+
+#### 导语
+
+日常开发某个功能后，成功部署上线，测试人员测试发现严重bug，立马打开项目仓库，查看代码思路，发现可疑之处，改正非常迅速，刷新屏幕后，发现还有错误哦。于是继续排查代码，清缓存，最好才发现是线上地址。
+
+#### 分析问题
+
+居然知道这个痛点了，由于 ip 地址很难注意到，就搞一个明显的 favicon 来处理吧，线上保持不变，本地代码添加多点，弄个 favion 图片。
+
+
+#### 解决
+
+**第一种处理**：直接动态添加 link 标签中，这种是直接在 dom 生成后引入脚本处理。
+```js
+if (process.env.NODE_ENV === "development") {
+  changeFavicon("../public/favicon_dev.ico");
+}
+function changeFavicon(src) {
+  const link = document.createElement("link");
+  const oldLink = document.getElementById("dynamic-favicon");
+  link.id = "dynamic-favicon"; 
+  link.ref = "shortcut icon";
+  link.href = src;
+  if (oldLink) {
+    document.head.removeChild(oldLink);
+  }
+  document.head.appendChild(link);
+}
+```
+动态设置：
+这种动态创建 link 标签，然后添加元素，可以从服务器动态获取图片，随意更换 favicon。
+
+**第二种处理**
+
+VueCli3 以前，webpack 的配置是暴露出来的，我们可以直接修改 webpack 的配置：
+webpack.dev.config
+```js
+new HtmlWebpackPlugin({
+  filename: 'index.html',
+  template: 'index.html',
+  inject: true,
+  favicon: path.resolve('favicon.icon')
+})
+```
+
+VueCli3 以后，调整 webpack 配置是通过 `vue.config.js` 文件配置的，有两种配置方式：
+
+简单配置方式：
+```js
+// vue.config.js
+module.export = {
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      // 为生产环境作配置
+    } else {
+      // 为开发环境做配置
+    }
+  }
+}
+```
+
+链式操作：
+Vue CLI 内部的 webpack 配置是通过 webpack-chain 维护的。这个库提供了一个 webpack 原始配置的上层抽象，使其可以定义剧名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们做改造。
+```js
+chainWebpack: config => {
+    config.plugin('html').tap(
+        args => {
+      if (process.env.NODE_ENV === 'development') {
+        args[0].favicon = path.resolve('public/favicon_dev.ico');
+      }
+      return args; /* 传递给 html-webpack-plugin's 构造函数的新参数 */
+    })
+  },
+```
+注意的是：本次配置 favicon 用链式操作，这样就不会覆盖原来的 `html-webpack-plugin` 的配置选项。使用 configureWebpack 简单配置方式的话，需要重新制定其他的 `html-webpack-plugin` 的选项。
+
+#### 参考资料
+
+- webpack 相关的配置 [Vue CLI 官网](https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F) 
+- 有关于 html-webpack-plugin 在 webpack-chain 中的配置看这里[webpack-chain](https://github.com/jantimon/html-webpack-plugin#options)
