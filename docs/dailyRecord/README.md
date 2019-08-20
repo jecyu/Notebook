@@ -856,7 +856,22 @@ npm install  - -dev[elopment] 安装 devDependencies
 
 在使用 axios 的 get 请求参数出现了错误。
 `http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
+
 ```js
+// xxxx/module.js 模块封装的函数
+import { GET, POST, PUT, DELETE } from "@/plugins/axios";
+export function getCityByIndicators(params) {
+  return GET(
+    `rest/pas/v1/naturalRes/indicator/dimension/city`,
+    "根据指标获取以行政区排序的城市数据",
+    params
+  );
+} 
+```
+
+在组件中请求
+```js
+// xxx.vue
 async getCityRegionData() {
     try {
       const params = {

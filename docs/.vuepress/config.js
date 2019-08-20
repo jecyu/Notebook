@@ -70,7 +70,7 @@ module.exports = {
         {
           title: "网站书签整理",
           collapsable: false,
-          children: ["", "backend", "tool"]
+          children: ["", "backend", "tool", "network"]
         }
       ],
       "/devops/": [
@@ -84,7 +84,7 @@ module.exports = {
         {
           title: "软件",
           collapsable: false,
-          children: ["excel",]
+          children: ["excel", "ps"]
         }
       ],
       "/frontend/": [
