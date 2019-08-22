@@ -1,5 +1,13 @@
 # css
 
+## box-sizing 属性用来定义 user agent 如何计算元素的总宽度和总高度
+
+- content-box，即是默认值。如果你设置一个元素的`width`为 100px，那么这个元素的内容会有 100px 宽，并且任何`border`和`padding`都会被增加到最后绘制出来的元素宽度中。
+- border-box：告诉浏览器，你想要设置的`border`和`padding`的值是包含在`width`内。内容区实际的宽度是`content= width -(padding + border)`。
+
+注意的是 `border-box` 是不包括 `margin`的。
+一般情况下，我们会在全局设置 `box-sizing` 值为 `border-box`；这样在处理元素大小的时候方便得多，也避免了在布局内容时可能遇到的坑。
+
 ## 统一字体
 
 采用 CSS3 的 @font-face 属性解决。

@@ -10,7 +10,13 @@ module.exports = {
         text: "开发者",
         items: [
           { text: "💻大前端", link: "/frontend/" },
-          { text: "️️🧘🏻‍算法修炼", link: "/algorithm/" },
+          { 
+            text: "️️🧘🏻‍算法修炼", 
+            items: [ 
+              {text: "数据结构", link: "/algorithm/dataStructure"},
+              {text: "算法分类", link: "/algorithm/algorithm"},
+            ] 
+          },
           { text: "☁️运维", link: "/devops/" },
           { text: "🚬测试", link: "/test/" },
           { text: "🌍GIS", link: "/gis/" },
@@ -18,7 +24,9 @@ module.exports = {
           { text: "️️🐛网络工程", link: "/network/" },
         ]
       },
-      { text: "🖌️设计", link: "/design/" },
+      { text: "设计", items: [
+        { text: "🖌️UI", link: "/design/" }]
+      },
       { text: "🏷书签整理", link: "/bookmark/" },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
       {
@@ -73,11 +81,18 @@ module.exports = {
           children: ["", "backend", "tool", "network"]
         }
       ],
+      "/design/": [
+        {
+          title: "设计",
+          collapsable: false,
+          children: ["layout",]
+        }
+      ],
       "/devops/": [
         {
           title: "运维",
           collapsable: false,
-          children: ["", "linux", "window"]
+          children: ["", "linux", "window", "mac"]
         }
       ],
       "/software/": [
@@ -92,6 +107,12 @@ module.exports = {
           title: "前端",
           collapsable: false,
           children: ["", "css", 'js', "performance", "vue", "npm"]
+        }
+      ],
+      "/algorithm/": [
+        {
+          title: "前端",
+          collapsable: false,
         }
       ],
       "/gis/": [
