@@ -34,5 +34,9 @@
 
 ### eventBus
 
+### $attrs与$listeners
+
+#### 岛屿
+
 
 > 参考资料：https://juejin.im/post/5d267dcdf265da1b957081a3
