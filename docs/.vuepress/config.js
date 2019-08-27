@@ -13,6 +13,7 @@ module.exports = {
           { 
             text: "️️🧘🏻‍算法修炼", 
             items: [ 
+              {text: "计算机基础", link: "/algorithm/computerBasics"},
               {text: "数据结构", link: "/algorithm/dataStructure"},
               {text: "算法分类", link: "/algorithm/algorithm"},
             ] 

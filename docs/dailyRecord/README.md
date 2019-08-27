@@ -1,5 +1,212 @@
 # 2019
 
+## 八月
+
+### vue 中绑定常量数组出现的奇怪 bug
+
+### 根据权限不同加载不同的路由表
+
+### Vue CLI 请求本地的 JSON 文件
+
+有些时候，需要在前端配置 JSON 文件，通常是把静态文件放到本地项目的 static 文件夹下。我们可以通过使用 axios 进行请求，具体如下：
+```js
+async fetchIndustryApplication() {
+  try {
+    const res = await this.$http.get(
+      "static/mockdata/FZBZ_JSON/ai_analysis_indexData_industryApplication.json"
+    );
+    const data = res.data;
+    this.industryApplications = data.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+```
+
+### 在项目开发中，新安装一个包，应该放到 package.json 的 dependencies 还是 dependencies 上呢？
+
+结论：其实放到哪里都没关系，当我们 `npm install` 的时候两种包都会下载。但是如果将 NODE_ENV 设置为 produciton 就只会安装 dependencies，这样在持续集成的时候，进行自动化部署的时候就会花更少的时间。(但是如果要在线上跑测试的话，就需要 npm install 安装所有依赖。因为测试框架 Jest 安装在开发依赖对象里。）
+这里当然我们也可以使用下面的命令：
+```bash
+npm install  - -prod[uction] 安装 dependencies 或 NODE_ENV=production npm install
+npm install  - -dev[elopment] 安装 devDependencies
+```
+这里是社区的建议：
+- dependencies
+  - 框架：React，AngularJS，Vue.js
+  - 工具库：lodash
+- devDependencies  
+  - 测试框架：Jest，Mocha，Jasmine
+  - 格式化工具：ESLint，Prettier
+  - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。） 
+
+### axios 不会对 URL 中的功能性字符进行编码
+
+#### 导语
+
+在使用 axios 的 get 请求参数出现了错误。
+`http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
+
+```js
+// xxxx/module.js 模块封装的函数
+import { GET, POST, PUT, DELETE } from "@/plugins/axios";
+export function getCityByIndicators(params) {
+  return GET(
+    `rest/pas/v1/naturalRes/indicator/dimension/city`,
+    "根据指标获取以行政区排序的城市数据",
+    params
+  );
+} 
+```
+
+在组件中请求
+```js
+// xxx.vue
+async getCityRegionData() {
+    try {
+      const params = {
+        "ids[]": this.itemData.indicatorIds.join()
+      };
+      const cityRegionData = await getCityByIndicators(params);
+      this.cityRegionData = cityRegionData;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+```
+经过排查后，发现是 axios 中会对 get 请求的整个 url 进行 encodeURI，导致有些 get 方法不能传 []。
+
+#### URL 包含特殊字符
+
+在请求中如果 url 包含特殊字符的话，可能导接口接收参数失败，所以前端需要对特殊自负进行 encode，方法有两种：
+- encodeURI()
+
+对整个 url 进行编码，会避开 url 中的功能性字符，例如，&?[]
+
+编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
+
+编码后：http://10.10.67.67:8080/api/chain/basic/users?params=+%5B
+
+- encodeURIComponent()
+
+对某个参数进行编码，会编码所有特殊字符
+
+编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
+编码后：http://10.10.67.67:8080/api/chain/basic/users?params=%2B%5B
+
+#### 解决
+
+通过以上分析可知，我们需要在 axios 中对 get 方法进行处理，可以在请求拦截器中对 get 方法进行单独处理，避开 axios 的 encodeURI，注意的是参数 针对 key 和 value 都需要进行 encodeURIComponent 编码。
+
+
+```js
+interceptors(instance = this.instance) {
+  // 请求拦截
+  instance.interceptors.request.use(
+    config => {
+      // 处理 axios 不会对 url 中的功能进行编码
+      let url = config.url;
+      // 针对 get 参数编码
+      if (config.method === 'get' && config.params) {
+        url +='?';
+        let keys = Object.keys(config.params);
+        for (let key of keys) {
+          url += `${encodeURIComponent(key)}=${encodeURIComponent(
+            config.params[key]
+          )}&`
+        }
+        url = url.substring(0, url.length - 1);
+        config.params = {}; // 清空
+      }
+      config.url = url;
+      return config;
+    }
+  )
+}
+```
+
+### vueCli 本地开发设置个区分明显的 favicon
+
+#### 导语
+
+日常开发某个功能后，成功部署上线，测试人员测试发现严重bug，立马打开项目仓库，查看代码思路，发现可疑之处，改正非常迅速，刷新屏幕后，发现还有错误哦。于是继续排查代码，清缓存，最好才发现是线上地址。
+
+#### 分析问题
+
+居然知道这个痛点了，由于 ip 地址很难注意到，就搞一个明显的 favicon 来处理吧，线上保持不变，本地代码添加多点，弄个 favion 图片。
+
+
+#### 解决
+
+**第一种处理**：直接动态添加 link 标签中，这种是直接在 dom 生成后引入脚本处理。
+```js
+if (process.env.NODE_ENV === "development") {
+  changeFavicon("../public/favicon_dev.ico");
+}
+function changeFavicon(src) {
+  const link = document.createElement("link");
+  const oldLink = document.getElementById("dynamic-favicon");
+  link.id = "dynamic-favicon"; 
+  link.ref = "shortcut icon";
+  link.href = src;
+  if (oldLink) {
+    document.head.removeChild(oldLink);
+  }
+  document.head.appendChild(link);
+}
+```
+动态设置：
+这种动态创建 link 标签，然后添加元素，可以从服务器动态获取图片，随意更换 favicon。
+
+**第二种处理**
+
+VueCli3 以前，webpack 的配置是暴露出来的，我们可以直接修改 webpack 的配置：
+webpack.dev.config
+```js
+new HtmlWebpackPlugin({
+  filename: 'index.html',
+  template: 'index.html',
+  inject: true,
+  favicon: path.resolve('favicon.icon')
+})
+```
+
+VueCli3 以后，调整 webpack 配置是通过 `vue.config.js` 文件配置的，有两种配置方式：
+
+简单配置方式：
+```js
+// vue.config.js
+module.export = {
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      // 为生产环境作配置
+    } else {
+      // 为开发环境做配置
+    }
+  }
+}
+```
+
+链式操作：
+Vue CLI 内部的 webpack 配置是通过 webpack-chain 维护的。这个库提供了一个 webpack 原始配置的上层抽象，使其可以定义剧名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们做改造。
+```js
+chainWebpack: config => {
+    config.plugin('html').tap(
+        args => {
+      if (process.env.NODE_ENV === 'development') {
+        args[0].favicon = path.resolve('public/favicon_dev.ico');
+      }
+      return args; /* 传递给 html-webpack-plugin's 构造函数的新参数 */
+    })
+  },
+```
+注意的是：本次配置 favicon 用链式操作，这样就不会覆盖原来的 `html-webpack-plugin` 的配置选项。使用 configureWebpack 简单配置方式的话，需要重新制定其他的 `html-webpack-plugin` 的选项。
+
+#### 参考资料
+
+- webpack 相关的配置 [Vue CLI 官网](https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F) 
+- 有关于 html-webpack-plugin 在 webpack-chain 中的配置看这里[webpack-chain](https://github.com/jantimon/html-webpack-plugin#options)
+
 ## 一月
 
 ### 利用 Coverage 检测可以懒加载的 modules
@@ -831,188 +1038,3 @@ Webpack通过`Babel -loader`提供了强大的Babel支持。
 
 babel-cli - > @ babel / cli。 例如：babel-与@ babel /。
 
-## 八月
-
-### 在项目开发中，新安装一个包，应该放到 package.json 的 dependencies 还是 dependencies 上呢？
-
-结论：其实放到哪里都没关系，当我们 `npm install` 的时候两种包都会下载。但是如果将 NODE_ENV 设置为 produciton 就只会安装 dependencies，这样在持续集成的时候，进行自动化部署的时候就会花更少的时间。(但是如果要在线上跑测试的话，就需要 npm install 安装所有依赖。因为测试框架 Jest 安装在开发依赖对象里。）
-这里当然我们也可以使用下面的命令：
-```bash
-npm install  - -prod[uction] 安装 dependencies 或 NODE_ENV=production npm install
-npm install  - -dev[elopment] 安装 devDependencies
-```
-这里是社区的建议：
-- dependencies
-  - 框架：React，AngularJS，Vue.js
-  - 工具库：lodash
-- devDependencies  
-  - 测试框架：Jest，Mocha，Jasmine
-  - 格式化工具：ESLint，Prettier
-  - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。） 
-
-### axios 不会对 URL 中的功能性字符进行编码
-
-#### 导语
-
-在使用 axios 的 get 请求参数出现了错误。
-`http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
-
-```js
-// xxxx/module.js 模块封装的函数
-import { GET, POST, PUT, DELETE } from "@/plugins/axios";
-export function getCityByIndicators(params) {
-  return GET(
-    `rest/pas/v1/naturalRes/indicator/dimension/city`,
-    "根据指标获取以行政区排序的城市数据",
-    params
-  );
-} 
-```
-
-在组件中请求
-```js
-// xxx.vue
-async getCityRegionData() {
-    try {
-      const params = {
-        "ids[]": this.itemData.indicatorIds.join()
-      };
-      const cityRegionData = await getCityByIndicators(params);
-      this.cityRegionData = cityRegionData;
-    } catch (err) {
-      console.log(err);
-    }
-  },
-```
-经过排查后，发现是 axios 中会对 get 请求的整个 url 进行 encodeURI，导致有些 get 方法不能传 []。
-
-#### URL 包含特殊字符
-
-在请求中如果 url 包含特殊字符的话，可能导接口接收参数失败，所以前端需要对特殊自负进行 encode，方法有两种：
-- encodeURI()
-
-对整个 url 进行编码，会避开 url 中的功能性字符，例如，&?[]
-
-编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
-
-编码后：http://10.10.67.67:8080/api/chain/basic/users?params=+%5B
-
-- encodeURIComponent()
-
-对某个参数进行编码，会编码所有特殊字符
-
-编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
-编码后：http://10.10.67.67:8080/api/chain/basic/users?params=%2B%5B
-
-#### 解决
-
-通过以上分析可知，我们需要在 axios 中对 get 方法进行处理，可以在请求拦截器中对 get 方法进行单独处理，避开 axios 的 encodeURI，注意的是参数 针对 key 和 value 都需要进行 encodeURIComponent 编码。
-
-
-```js
-interceptors(instance = this.instance) {
-  // 请求拦截
-  instance.interceptors.request.use(
-    config => {
-      // 处理 axios 不会对 url 中的功能进行编码
-      let url = config.url;
-      // 针对 get 参数编码
-      if (config.method === 'get' && config.params) {
-        url +='?';
-        let keys = Object.keys(config.params);
-        for (let key of keys) {
-          url += `${encodeURIComponent(key)}=${encodeURIComponent(
-            config.params[key]
-          )}&`
-        }
-        url = url.substring(0, url.length - 1);
-        config.params = {}; // 清空
-      }
-      config.url = url;
-      return config;
-    }
-  )
-}
-```
-
-### vueCli 本地开发设置个区分明显的 favicon
-
-#### 导语
-
-日常开发某个功能后，成功部署上线，测试人员测试发现严重bug，立马打开项目仓库，查看代码思路，发现可疑之处，改正非常迅速，刷新屏幕后，发现还有错误哦。于是继续排查代码，清缓存，最好才发现是线上地址。
-
-#### 分析问题
-
-居然知道这个痛点了，由于 ip 地址很难注意到，就搞一个明显的 favicon 来处理吧，线上保持不变，本地代码添加多点，弄个 favion 图片。
-
-
-#### 解决
-
-**第一种处理**：直接动态添加 link 标签中，这种是直接在 dom 生成后引入脚本处理。
-```js
-if (process.env.NODE_ENV === "development") {
-  changeFavicon("../public/favicon_dev.ico");
-}
-function changeFavicon(src) {
-  const link = document.createElement("link");
-  const oldLink = document.getElementById("dynamic-favicon");
-  link.id = "dynamic-favicon"; 
-  link.ref = "shortcut icon";
-  link.href = src;
-  if (oldLink) {
-    document.head.removeChild(oldLink);
-  }
-  document.head.appendChild(link);
-}
-```
-动态设置：
-这种动态创建 link 标签，然后添加元素，可以从服务器动态获取图片，随意更换 favicon。
-
-**第二种处理**
-
-VueCli3 以前，webpack 的配置是暴露出来的，我们可以直接修改 webpack 的配置：
-webpack.dev.config
-```js
-new HtmlWebpackPlugin({
-  filename: 'index.html',
-  template: 'index.html',
-  inject: true,
-  favicon: path.resolve('favicon.icon')
-})
-```
-
-VueCli3 以后，调整 webpack 配置是通过 `vue.config.js` 文件配置的，有两种配置方式：
-
-简单配置方式：
-```js
-// vue.config.js
-module.export = {
-  configureWebpack: config => {
-    if (process.env.NODE_ENV === 'production') {
-      // 为生产环境作配置
-    } else {
-      // 为开发环境做配置
-    }
-  }
-}
-```
-
-链式操作：
-Vue CLI 内部的 webpack 配置是通过 webpack-chain 维护的。这个库提供了一个 webpack 原始配置的上层抽象，使其可以定义剧名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们做改造。
-```js
-chainWebpack: config => {
-    config.plugin('html').tap(
-        args => {
-      if (process.env.NODE_ENV === 'development') {
-        args[0].favicon = path.resolve('public/favicon_dev.ico');
-      }
-      return args; /* 传递给 html-webpack-plugin's 构造函数的新参数 */
-    })
-  },
-```
-注意的是：本次配置 favicon 用链式操作，这样就不会覆盖原来的 `html-webpack-plugin` 的配置选项。使用 configureWebpack 简单配置方式的话，需要重新制定其他的 `html-webpack-plugin` 的选项。
-
-#### 参考资料
-
-- webpack 相关的配置 [Vue CLI 官网](https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F) 
-- 有关于 html-webpack-plugin 在 webpack-chain 中的配置看这里[webpack-chain](https://github.com/jantimon/html-webpack-plugin#options)
