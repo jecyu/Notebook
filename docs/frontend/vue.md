@@ -1,5 +1,10 @@
 # vue
 
+## Vue.js 组件
+
+- [Vue.js 组件编码规范](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
+- [前端组件设计原则](https://juejin.im/post/5c49cff56fb9a049bd42a90f#heading-4)
+
 ## vue-router 记录用户的历史页面
 
 系统有个功能，就是如果获取用户权限表失败的时候，会跳回到登录页，跳回之前会把用户要进入的路由记录到cookie，然后下次登录重定向到此路由页面，xxx有几个页面是携带路由参数的，我们发现修复之前cookie上记录的是没带参数的，所以重定向渲染页面就会报错，解决方法就是要把参数写入到cookie里，本来打算去把路由的query对象格式化存到cookie里，后来看了下文档，发现有个`fullPath`值可以解决
@@ -20,6 +25,8 @@
     deep: true
   }
 ```
+
+### 利用 immediate 的场景
 
 ## 组件通信方式
 

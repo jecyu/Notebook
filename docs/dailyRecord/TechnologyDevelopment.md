@@ -31,7 +31,7 @@
   - vue 3.0
   - TypeScript
 - 软技能
-  - 写 PPT 
+  - 写 PPT
 
 #### 文章
 

@@ -1,4 +1,19 @@
 module.exports = {
+  plugins: [
+    'vuepress-plugin-zooming', {
+      // 支持点击缩放的图片元素的选择器
+      selector: 'img',
+      // 进入一个页面后，经过一定延迟后使页面中的图片支持缩放
+      delay: 1000,
+
+      // medium-zoom 的 options
+      // 默认值: {}
+      options: {
+        bgColor: 'black',
+        zIndex: 10000,
+      }
+    }
+  ],
   base: "/Notebook/",
   title: "Jecyu's Notebook",
   description: "📝每天记录一点点",
@@ -41,6 +56,10 @@ module.exports = {
       },
       {
         text: "🔗Github",
+        link: "https://github.com/Jecyu"
+      },
+      {
+        text: "英语学习",
         link: "https://github.com/Jecyu"
       }
     ],
@@ -93,7 +112,7 @@ module.exports = {
         {
           title: "运维",
           collapsable: false,
-          children: ["", "linux", "window", "mac"]
+          children: ["linux", "window", "mac"]
         }
       ],
       "/software/": [
@@ -107,7 +126,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: ["", "css", 'js', "performance", "vue", "npm"]
+          children: ["", "css", 'js', "performance", "vue", "npm", "lodash"]
         }
       ],
       "/algorithm/": [
@@ -126,5 +145,6 @@ module.exports = {
     },
     lastUpdated: "Last Updated",
     sidebarDepth: 2
-  }
+  },
+ 
 };

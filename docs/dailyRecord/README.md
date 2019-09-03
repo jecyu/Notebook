@@ -1,11 +1,50 @@
 # 2019
 
+## 九月
+
+### vuepress 添加支持图片缩放
+
+使用 vuepress 过程中，难免需要引入图片解释。有时候图片过大，小图会很不清晰，这时候就很有必要支持图片可缩放。vuepress 官方提供了插件
+`vuepress-plugin-zooming`。注意如果： vuepress 版本小于 1.0 过低不支持，应该升级 vuepress 版本，删除旧的版本，重新安装。
+
+#### 安装
+
+```bash
+yarn add vuepress-plugin-zooming 
+```
+
+#### 使用
+
+在配置文件中引入`vuepress-plugin-zooming`。
+```js
+// .vuepress/config.js
+module.esxports = {
+   plugins: [
+    'vuepress-plugin-zooming', {
+      // 支持点击缩放的图片元素的选择器
+      selector: 'img',
+      // 进入一个页面后，经过一定延迟后使页面中的图片支持缩放
+      delay: 1000,
+
+      // medium-zoom 的 options
+      // 默认值: {}
+      options: {
+        bgColor: 'black',
+        zIndex: 10000,
+      }
+    }
+  ]
+}
+```
+
 ## 八月
+
+<!-- ### 行政区划的分层分级 -->
 
 ### 正则表达式的应用
 
 ```js
-1.12 Selector containing string (case-sensitive)
+Selector containing string (case-sensitive)
 
 // jQuery
 $("selector:contains('text')");
@@ -19,9 +58,50 @@ function contains(selector, text) {
 }
 ```
 
-### vue 中绑定常量数组出现的奇怪 bug
+检测文件时，跑 lint，从多个文件进行处理。
+（场景：检测是否带有 es6 语法导致创建微件错误，低版本浏览器）
+```js
+yarn lint widgets/**/Widget.js
+```
 
-### 根据权限不同加载不同的路由表
+### vue 动态增减组表单
+
+输入数据，回收数据。
+多个弹框带来的问题。
+
+#### 导语
+
+要实现这样的一个需求，渲染多个组的表单，每组包含相同的表单控件，需要对表单进行双向绑定，之所以要绑定是因为要实现历史的条件的恢复，也就是默认的选中功能。下面通过两个业务场景来阐述。
+
+抽象：输入➡️输出
+对应：存入以及取出
+
+### 双向绑定
+
+是否用 iview 等第三方组件
+
+#### 实现表格里存取表单的数据
+
+问题：一开始没有绑定唯一的 key 时，会出现这样的情况。选择一个下拉框时，其他下拉框的值也被同步设定了，因为它们的 key 值相同。
+
+解决方案一：动态生成每个下拉框需要的 key 值，然后通过 v-model 进行双向绑定，存到父组件的一个对象selectedRule 里，当前一个组件几十个一个 key不会出现页面卡顿的情况，如果超过几百个的话可能会有操作延迟的情况。
+
+解决方案二：不用 v-model 绑定。
+
+#### 动态添加组控件表单
+
+```js
+ handleFormModAdd() {
+      const { modules, module } = this;
+      let newModule = JSON.parse(JSON.stringify(module)); // 通过深拷贝 copy 来避免相同 key 名称 的关联
+      // modules.push(module);  key 相同会导致选择问题
+      modules.push(newModule);
+    },
+```
+
+<!-- ### vue 中绑定常量数组出现的奇怪 bug
+
+### 根据权限不同加载不同的路由表 -->
 
 ### JS 求出两个数组的交集
 
@@ -76,7 +156,7 @@ const target = [
 
 #### 解决方案
 
-一开始考虑用原生 JS 这样实现，但是发现不行，因为我的需求是希望通过比对数组里的对象某个属性，下面这种方式既无法比较对象，无法比较到对象里面的值。
+一开始考虑用原生 JS 这样实现，但是发现不行，因为我的需求是希望通过比对数组里的对象某个属性，下面这种方式既无法比较对象，也无法比较到对象里面的值。
 ```js
 let intersection = a.filter(v => b.includes(v))
 ```
@@ -115,6 +195,8 @@ indexDataCategory.forEach(item => {
 
 当然，我们不会满足于仅仅实现效果，接下里我们看看 lodash 的实现原理。
 待补充。
+
+## 总结
 
 ### Vue CLI 请求本地的 JSON 文件
 
@@ -157,9 +239,30 @@ npm install  - -dev[elopment] 安装 devDependencies
 在使用 axios 的 get 请求参数出现了错误。
 `http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
 
+在 axios 中的 GET 基本使用
+```js
+axios.get('/user', {
+    params: {
+      ID: 12345
+    }
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
+  });  
+```
+
+这里是对 GET 进行了一个此封装。
+
+实际中的调用：
 ```js
 // xxxx/module.js 模块封装的函数
-import { GET, POST, PUT, DELETE } from "@/plugins/axios";
+import { GET } from "@/plugins/axios";
 export function getCityByIndicators(params) {
   return GET(
     `rest/pas/v1/naturalRes/indicator/dimension/city`,
@@ -169,7 +272,7 @@ export function getCityByIndicators(params) {
 } 
 ```
 
-在组件中请求
+在实际的 Vue 组件中进行请求
 ```js
 // xxx.vue
 async getCityRegionData() {
@@ -204,10 +307,11 @@ async getCityRegionData() {
 编码前：http://10.10.67.67:8080/api/chain/basic/users?params=+[
 编码后：http://10.10.67.67:8080/api/chain/basic/users?params=%2B%5B
 
+#### 针对对象形式的请求
+
 #### 解决
 
 通过以上分析可知，我们需要在 axios 中对 get 方法进行处理，可以在请求拦截器中对 get 方法进行单独处理，避开 axios 的 encodeURI，注意的是参数 针对 key 和 value 都需要进行 encodeURIComponent 编码。
-
 
 ```js
 interceptors(instance = this.instance) {
@@ -234,6 +338,10 @@ interceptors(instance = this.instance) {
   )
 }
 ```
+
+#### 总结
+
+虽然我们在实际项目中，前后端请求遵循 restful 风格，但是遇到老项目时，后端的接口不能动的情况下，就需要改动前端代码的 axios 代码了。
 
 ### vueCli 本地开发设置个区分明显的 favicon
 

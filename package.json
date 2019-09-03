@@ -15,11 +15,13 @@
   "engines": {
     "node": ">=8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vuepress": "^1.0.3",
+    "vuepress-plugin-zooming": "^1.1.2"
+  },
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.0",
-    "husky": "^1.0.0-rc.13",
-    "vuepress": "^0.14.1"
+    "husky": "^1.0.0-rc.13"
   },
   "husky": {
     "hooks": {
