@@ -105,7 +105,7 @@ module.exports = {
         {
           title: "设计",
           collapsable: false,
-          children: ["layout",]
+          children: ["layout", "animate"]
         }
       ],
       "/devops/": [
@@ -126,7 +126,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: ["", "css", 'js', "performance", "vue", "npm", "lodash"]
+          children: ["", "css", 'js', "es6", "performance", "vue", "npm", "lodash"]
         }
       ],
       "/algorithm/": [

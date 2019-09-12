@@ -12,7 +12,6 @@
 ### 大量数据性能优化
 
 - 表格渲染
-
 - 树渲染
 
 ### 动画性能优化
@@ -20,6 +19,9 @@
 - 操作与交互
 - 函数防抖&节流
 
-### 8 个提高 JS 性能的方法
+### 参考资料
 
-[https://mp.weixin.qq.com/s/wG08-mhjqgLToOKvQNvOgg](https://mp.weixin.qq.com/s/wG08-mhjqgLToOKvQNvOgg)
+- [8 个提高 JS 性能的方法](https://mp.weixin.qq.com/s/wG08-mhjqgLToOKvQNvOgg)
+- [vue能否做到支持3W条数据复选、全选、行点击不卡顿？
+](https://www.zhihu.com/question/323476114/answer/682723821?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&hb_wx_block=1)
+- [如何快速提升 JSON.stringify() 的性能？](https://mp.weixin.qq.com/s/zg_AMRqDO5w-M1RePlDZRQ)——保存表单条件就是用的JSON.stringify()，另外后端抱怨存的东西太大了。还有在使用 `get` 请求接口时，参数是对象时，也需要做`stringify()`的处理。

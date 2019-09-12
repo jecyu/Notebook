@@ -2,6 +2,173 @@
 
 ## 九月
 
+### iview 合并指定两个或多个单元格
+
+### 统计代码行数
+
+#### 导语
+
+最近需求问起了代码的统计行数是多少，主要是在申请软件著作权的时候，申请表格要求提交代码量。有两种方式统计，一是通过自定义脚本，二是通过第三方工具。
+
+#### 自定义脚本
+
+**脚本1:**
+```bash
+find . "(" -name "*.m" -or -name "*.mm" -or -name "*.cpp" -or -name "*.h" -or -name "*.rss" ")" -print | xargs wc -l
+```
+缺点：
+- 需要自定义脚本：不同的编程语言，有不同的文件后缀名，需要自行配置；
+- 不能过滤掉注释；
+- 不能过滤掉空行
+
+**脚本2**
+```bash
+find . -name "*.m" -or -name "*.h" -or -name "*.xib" -or -name "*.c" |xargs grep -v "^$"|wc -l
+```
+改进：
+去掉空行
+`xargs grep -v "^$"`
+
+大家都知道用 `wc -l` 命令进行代码行数统计，但是它会将代码中的注释、空行所占用的文本行都统计在内。如果想查看一个 tar 包或一个项目目录中“实际”的代码行数并且不愿意自己去写一个脚本来做此类工作，那么可以考虑使用 cloc。
+
+#### CLOC
+
+[cloc](https://github.com/AlDanial/cloc) 是一个 perl 脚本，它可以统计很多种编程语言的代码文件中的空行、注释以及实际的代 码行数。
+
+CLOC是Count Lines of Code的意思，可以计算空行数、注释行数、各种语言的有效行数，还可以比较两个代码库在各种行数之间的不同。CLOC是完全由Perl实现的，不依赖第三方组件，移植性强。
+
+下载安装 cloc.
+```bash
+ brew install cloc
+```
+
+查看命令
+```js
+cloc --help
+```
+
+#### 拓展
+
+- [git 代码统计](https://segmentfault.com/a/1190000008542123) —— 可以统计本地Git仓库中不同贡献者的代码行数的一些方法
+
+### iframe 跨域通信
+
+需要注意传递值时，要确保好**对方准备接收数据**的时候，再发送信息过去。那么如果处理呢？设置通信的关键词，必要的时候还可以加密处理。
+
+### 表单锁定与解锁
+
+#### 头脑风暴
+
+- 动态绑定指令。https://codeday.me/bug/20190406/896886.html
+
+应用场景：
+
+复盘：todo: 看下具体的 iview 或者是 ant-design 都是怎么处理 disable 属性的。
+
+- 使用 fieldSet 的属性，
+
+- 直接给组件添加`disabled`属性，但是这样的话，如果需要禁用多个组件的话，就很很麻烦了。因此，我们需要用指令来代替。
+- 改写现有的指令，提供颜色。
+  
+- 自定义指令
+动态判断。
+```js
+export default {
+  inserted(el, binding) {
+    if (binding.value && binding.value.disabled) {
+      el.classList.add("system-model-disabled");
+    }
+  },
+  // 所在组件  vnode 更新时调用
+  update(el, binding) {
+    if (binding.value && binding.value.disabled) {
+      el.classList.add("system-model-disabled");
+    } else if (el.classList.contains("system-model-disabled")) {
+      el.classList.remove("system-model-disabled");
+    }
+  }
+};
+```
+
+#### 参考资料
+
+- [如何disabled禁用所有表单input输入框元素](https://www.zhangxinxu.com/wordpress/2019/04/disabled-all-form-elements/)
+
+### 节点的属性
+
+- 树
+- 列表
+- 是否可以取消选中
+
+应用
+```js
+ handleClickItem(data) {
+    const { id } = data;
+    this.selectedItem = this.onSelectedChange(id);
+    // this.$emit("update:condition", this.topicList);
+    this.$emit("on-selected-change", this.selectedItem);
+  },
+  onSelectedChange(id) {
+    // 找到对应的项目
+    const node = this.topicList.find(val => {
+      return val.id === id;
+    });
+    if (node) {
+      this.$set(node, "selected", !node.selected);
+    }
+    // 取得补集，均设置为 false
+    const elseNodes = this.topicList.filter(val => {
+      return val.id !== id;
+    });
+    if (elseNodes && elseNodes.length > 0) {
+      elseNodes.forEach(val => {
+        this.$set(val, "selected", false);
+      });
+    }
+
+    // 取得选中的项目
+    const selectedItem = this.topicList.find(val => {
+      return val.selected;
+    });
+    if (!selectedItem) return {};
+    return selectedItem;
+  },
+```
+
+### CSS 伪类的应用
+
+激活的状态下，需要禁止 hover 的引用。
+
+### 用 CSS 隐藏页面元素的 5 种方法
+
+#### 导语
+
+日常中，我们可能会遇到不少跨域通信的问题，其中一个可以实现跨域通信的方案是通过`postMessage iframe 跨域`来通信，但是我不希望`iframe`元素占用我的CSS 布局，我想要视觉上隐藏它，但是不能影响它的正常功能如通信。
+
+#### Opacity
+
+`opactiy` 属性的意思时设置一个元素的透明度。它不是为改变元素的边界框（bounding box）而设计的。这意味着将 opacity 设为 0 只能从视觉上隐藏元素。
+
+#### Visibility
+
+#### Display
+
+#### Position
+
+#### Clip-path
+
+#### 参考资料
+
+- [用 CSS 隐藏页面元素的 5种方法]
+
+### 正则表达式验证——过滤掉带有分析方式的名称
+
+```js
+this.indicatorNames = indicatorNames.filter(item => {
+  return !/增长率|增长比|增减量/.test(item);
+});
+```
+
 ### vuepress 添加支持图片缩放
 
 使用 vuepress 过程中，难免需要引入图片解释。有时候图片过大，小图会很不清晰，这时候就很有必要支持图片可缩放。vuepress 官方提供了插件
@@ -36,6 +203,10 @@ module.esxports = {
   ]
 }
 ```
+
+#### 参考
+
+- [VuePress 社区](https://vuepress.github.io/zh/plugins/nprogress/#%E5%AE%89%E8%A3%85)
 
 ## 八月
 

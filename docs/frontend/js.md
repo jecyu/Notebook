@@ -1,7 +1,8 @@
-# js
+# JavaScript
 
 > https://github.com/stephentian/33-js-concepts#6-this-call-apply-%E5%92%8C-bind
 
+## 深拷贝
 
 ## 数组操作
 
@@ -29,3 +30,7 @@ let difference = a.concat(b).filter(v => !a.includes(v) || !b.includes(v))
 ```js
 [1, 2, 3, 4, 5].join()
 ```
+
+## 参考资料
+
+- [如何写出一个惊艳面试官的深拷贝?](https://juejin.im/post/5d6aa4f96fb9a06b112ad5b1?utm_source=gold_browser_extension#heading-13)
