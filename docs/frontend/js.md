@@ -2,6 +2,8 @@
 
 > https://github.com/stephentian/33-js-concepts#6-this-call-apply-%E5%92%8C-bind
 
+## HTTP 请求
+
 ## 深拷贝
 
 ## 数组操作
@@ -34,3 +36,4 @@ let difference = a.concat(b).filter(v => !a.includes(v) || !b.includes(v))
 ## 参考资料
 
 - [如何写出一个惊艳面试官的深拷贝?](https://juejin.im/post/5d6aa4f96fb9a06b112ad5b1?utm_source=gold_browser_extension#heading-13)
+- [从多线程到Event Loop全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15)

@@ -55,6 +55,21 @@ cloc --help
 
 需要注意传递值时，要确保好**对方准备接收数据**的时候，再发送信息过去。那么如果处理呢？设置通信的关键词，必要的时候还可以加密处理。
 
+#### 返回数据
+
+```js
+/**
+ * @vuese
+ * 接收dataeye的消息
+ * @arg res event
+ */
+onmessage(res) {
+  if (this.dataeyeUrl.includes(res.origin)) { // 注意本地开发时的 origin
+    this.validateMessage(res.data);
+  }
+},
+```
+
 ### 表单锁定与解锁
 
 #### 头脑风暴
@@ -133,6 +148,13 @@ export default {
     if (!selectedItem) return {};
     return selectedItem;
   },
+```
+
+在 vue 中，动态设置节点属性的话，要用`$set`才能保持响应式。
+```js
+if (!data.hasData) { // 设置禁用
+  this.$set(data, "disabled", true);
+}
 ```
 
 ### CSS 伪类的应用
