@@ -2,6 +2,14 @@
 
 ## 九月
 
+### vuecli3 新建项目，main.js 引入 iview 样式报错
+
+ No PostCSS Config found
+ 原因：应该是 vuecli3 对 postcss 没做处理。
+ 解决：把 postcss.config 删除即可。
+
+### 实现两个组件的互斥效果
+
 ### iview 合并指定两个或多个单元格
 
 ### 统计代码行数
