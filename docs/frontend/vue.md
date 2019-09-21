@@ -73,6 +73,17 @@ localStorage.save(PRODUCTROUTERPARAMS, {
 
 ## vue-router
 
+### vue 路由 按需 keep-alive
+
+- https://juejin.im/post/5cdcbae9e51d454759351d84#heading-4
+
+### 获取路由文件
+
+获取配置的路由
+```js
+vm.$router.options.routes
+```
+
 ### query 与 params 的区别与使用
 
 ### 记录用户的历史页面

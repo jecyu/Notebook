@@ -173,23 +173,70 @@ if (!data.hasData) { // 设置禁用
 
 #### 导语
 
-日常中，我们可能会遇到不少跨域通信的问题，其中一个可以实现跨域通信的方案是通过`postMessage iframe 跨域`来通信，但是我不希望`iframe`元素占用我的CSS 布局，我想要视觉上隐藏它，但是不能影响它的正常功能如通信。
+日常中，我们可能会遇到不少跨域通信的问题，其中一个可以实现跨域通信的方案是通过`postMessage iframe 跨域`来通信，但是我不希望`iframe`元素占用我的CSS 布局，我想要视觉上隐藏它，但是不能影响它的正常功能如通信。用 CSS 隐藏页面元素有许多种方法，
+
+- opacity 设为 0
+- visibility 设置 hidden。
+- 将 display 设置 noen
+- 将 position 设为 absolute
 
 #### Opacity
 
-`opactiy` 属性的意思时设置一个元素的透明度。它不是为改变元素的边界框（bounding box）而设计的。这意味着将 opacity 设为 0 只能从视觉上隐藏元素。
+`opactiy` 属性的意思时设置一个元素的透明度。它不是为改变元素的边界框（bounding box）而设计的。这意味着将 opacity 设为 0 只能从视觉上隐藏元素。而元素本身依然占据自己的位置并对网页的布局起作用。它也将响应用户的交互。
+
+```js
+.hide {
+  opacity: 0;
+}
+```
+除了用来隐藏元素外，我们可以用 `opacity` 实现一些体验比较好的动画。
+```css
+.o-hide {
+  opacity: 0;
+  transition: all ease 0.8s;
+}
+
+.o-hide:hover {
+  opacity: 1;
+}
+```
 
 #### Visibility
 
+第二个属性 `visibility` ，将它的值设为 `hidden` 将隐藏我们的元素。跟 `opacity` 属性一样，被隐藏的元素依然会对我们的网页布局起作用。与 `opacity` 不同的是它不会响应任何用户交互。
+
+注意：如果一个元素的 `visibility` 被设置为 `hidden`，同时想要显示它的某个子孙元素A，只要将这个 A 的 `visibility` 显式设为 `visible` 即可。
+
 #### Display
+
+`display` 属性真正隐藏元素，将 `display` 属性设为 `none` 确保元素不可见并且连盒模型也不生成，使用这个属性被隐藏的元素不占据任何空间，而且任何对该元素直接的用户交互操作都不生效。为这个属性添加过度动画是无效的，它的任何不同状态值的之间的切换总是会立即生效。
+
+注意的是，通过 DOM 依然可以访问到这个元素。Vue 中的 `v-show` 指令即是操作了这个属性。`v-if` 则完全不渲染这个 dom 元素。
 
 #### Position
 
+假设有一个元素你想要与它交互，但是你又不想让它影响你的网页布局，没有合适的属性可以处理这种情况（opacity 和 visibility 影响布局， display 不影响布局但又无法直接交互。在这种情况下，你只能考虑将元素移出可视区域。这个办法既不会影响布局，有能让元素保持可以操作。下面是采用这种办法的 CSS：
+```css
+.hide {
+   position: absolute;
+   top: -9999px;
+   left: -9999px;
+}
+```
+用 DOM 模拟复选框和单选按钮，但用这个方法隐藏真正的 checkbox 和 radio 元素来“接收”焦点切换.
+
 #### Clip-path
+
+隐藏元素的另一种方法是通过剪裁它们来实现。在以前，这可以通过 clip 属性来实现，但是这个属性被废弃了，换成一个更好的属性叫做 clip-path。
+```css
+.hide {
+  clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px);
+}
+```
 
 #### 参考资料
 
-- [用 CSS 隐藏页面元素的 5种方法]
+- [用 CSS 隐藏页面元素的 5种方法](https://75team.com/post/five-ways-to-hide-elements-in-css.html)
 
 ### 正则表达式验证——过滤掉带有分析方式的名称
 
@@ -397,7 +444,7 @@ indexDataCategory.forEach(item => {
 当然，我们不会满足于仅仅实现效果，接下里我们看看 lodash 的实现原理。
 待补充。
 
-## 总结
+#### 总结
 
 ### Vue CLI 请求本地的 JSON 文件
 
@@ -548,6 +595,444 @@ interceptors(instance = this.instance) {
 
 - 掘金文章：[vueCli 本地开发设置个区分明显的 favicon](https://juejin.im/post/5d61566c5188251e69336f3b)
 
+
+## 七月
+
+### Vue 执行默认选中
+
+```js
+async created() {
+  // 这里执行初始化数据获取
+  if (/*xxx*/) {
+    this.panelData = this.getData();
+   //  ....
+  }
+  // 默认选中第一项, 默认选中第一项，nextTick 等待 pageData 拿到数据，渲染 dom 后更新完毕
+  await this.$nextTick();
+  if (this.panelData[0].children.length > 0) {
+    this.handleSelectList(this.panelData[0].children[0]);
+  }
+},
+methods: {
+  checkIsSelected(data) {
+    this.defaultSelectedItems.forEach(v => {
+      if (v.name === data.name) {
+        this.$set(data,'isSelected', true);
+      }
+    })
+  }
+}
+```
+
+
+
+### async/await 使用
+
+#### 捕获错误
+
+```js
+async function asyncAwaitTryCatch() {
+  try {
+    const api = new Api();
+    const user = await api.getUser();
+    const friends = await api.getFriend();
+
+    await api.throwError();
+    console.log('Error was not thrown');
+
+    const photo = await api.getPhoto(user.id);
+    console.log('async/await', { user, friends, photo })
+  } catch (err) {
+    console.log(err);
+  }
+}
+```
+
+#### 组合
+
+- 调用 async 函数作为一个 promise 对象来返回数据
+```js
+async function getUserInfo() {
+  const api = new Api()
+  const user = await api.getUser()
+  const friends= await api.getFriends(user.id)
+  const photo = await api.getPhoto(user.id)
+  return {user, friends, photo }
+}
+
+function promiseUserInfo() {
+  getUserInfo().then({ user, friends, photo }) => {
+    console.log('promiseUserInfo', { user, friends, photo })
+  }
+} 
+
+// 或者继续使用 async/await 语法
+async function awaitUserInfo () {
+  const { user, friends, photo } = await getUserInfo()
+  console.log('awaitUserInfo', { user, friends, photo })
+}
+```
+
+- 检索前十个用户的所有数据
+```js
+async function getLotsOfUserData() {
+  const users = []
+  while(users.length < 10) {
+    users.push(await getUserInfo())
+  }
+  console.log('getLotsOfUserData', users)
+}
+```
+- 并发请求
+```js
+async function getLotsOfUserDataFaster() {
+  try {
+    const userPromises = Array(10).fill(getUserInfo())
+    const users = await Promise.all(userPromises)
+    console.log('getLotsOfUserDataFaster', users)
+  } catch (err) {
+    console.log(err)
+  }
+}
+```
+
+### transform 对 fixed 的影响
+
+- 需求：需要对 iview 的模态框的样式进行自定义覆盖，因此就是 transfer:false 把 Modal 渲染到父组件内。此时会出现问题。
+- 症状：使用了 iview Modal 组件时，如果设置了 transfer: false 属性时，有时候会出现无法打开Modal 框的现象，原因可能在于父元素设置了
+transform 属性。因此
+- 原因：应用了transform属性的元素会导致该元素形成一个新的包含块，然后其后代元素如果有fixed定位的属性，那么其元素将会以该父元素作为包含块。
+- 分析：iview 使用了 transfer-dom 指令来解决上面的问题，把 modal 移动到 body 下面。
+- 解决：因此如果需要自定义覆盖 modal 的样式，又不能渲染到父组件内，要想避免污染全局样式，此时建议通过类名去限制作用域。
+
+测试样例
+```html
+<div style="transform: translateX(-50%); height: 900px;">
+  <div>
+    <Modal v-model="ModalTest.isShow" :transfer="false" title="Modal"></Modal>
+  </div>
+</div>
+```
+
+### flex布局中使用iview的table表格的宽度会计算出错,导致很长的宽度
+
+场景：两边固定，中间自适应
+
+- 原因：设置了flex-grow元素的子级宽度问题
+- 解决：给该子元素设置 `overflow: auto;` 或 `width: 0;`
+
+```css
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  .left {
+    width: 300px;
+    /* flex: 0 0 300px; */
+    flex-shrink: 0;
+    background: chocolate;
+  }
+  .right {
+    width: 200px;
+    flex-shrink: 0;
+    /* flex: 0 0 200px; */
+    background: cadetblue;
+  }
+  .content {
+    flex-grow: 1;
+    background: hotpink;
+    overflow: hidden;
+  }
+```
+
+### 了解 babel
+
+1. babel-loader: 负责 es6 语法转化
+2. babel-preset-env: 包含 es6、7 等版本的语法转化规则
+3. babel-polyfill: es6 内置方法和函数转化垫片
+4. babel-plugin-transform-runtime: 避免 polyfill 污染全局变量
+需要注意的是, babel-loader和babel-polyfill。前者负责语法转化，比如：箭头函数；后者负责内置方法和函数，比如：new Set()。
+
+#### babel
+
+Babel什么都不做，它的行为就像const Babel = code => code;通过解析代码，然后再次生成相同的代码。您将需要为Babel添加一些插件来执行诸如置换es6、JSX之类的操作
+
+#### babel-core
+
+如果你想在你的真实项目中使用babel，你需要安装babel但是
+没有 `babel` 包可用。
+
+babel将它分成两个独立的包：`babel-cli`和`babel-core`
+**babel-cli**：可用于从命令行编译文件。
+**babel-core**：如果你想使用 Node API，你可以安装`babel-core`
+，与“babel-cli”相同，除非您在应用程序内以编程方式使用它。
+
+在生产之前使用`babel-cli`或`babel-core`编译文件。
+
+#### preset vs plugin
+
+我们可以使用`babel插件(es2015)`一次添加一个特性(es6,JSX)，或者我们可以使用`babel预置`来包含特定年份的所有特性(es6)。预置使设置更容易。
+
+#### babel-preset-es2015
+
+`babel-preset-env`支持es2015特性，并取代了es2015、es2016、es2017和最新版本。因此，使用`babel-preset-env`，它的行为与`babel-preset-latest`完全相同(或者将babel-preset-es2015、babel-preset-es2016和babel-preset-es2017放在一起)。
+
+#### babel-preset-react
+
+将`JSX`转换为`createElement`调用，如将`react`纯类转换为函数，并删除`prop`类型。
+
+#### babel-polyfill
+
+没有`babel-polyfill`, babel只允许您使用箭头函数、析构、默认参数和ES6中引入的其他特定于语法的特性。新的ES6内置组件(如Set、Map和Promise)必须是polyfill，以包含应用程序入口点顶部需要的polyfill。
+
+#### babel-loader
+
+你理解了babel-core，babel-cli，以及为什么需要预设，插件，现在
+你每次都是从`babel-cli`逐个文件地编译ES6到ES5。
+要摆脱这个，你需要捆绑任务`/ js`文件。 因此你需要用`WebPack`。
+
+`loader` 有点像任务，它们通过将各种文件转换为webpack可以处理的有效模块，为各种文件提供了利用webpack捆绑功能的能力。
+
+Webpack通过`Babel -loader`提供了强大的Babel支持。
+
+#### devDependencies
+
+当您部署应用程序时，需要安装依赖项中的模块，否则应用程序将无法工作。devDependencies中的模块不需要安装在生产服务器上，因为您不是在这台机器上开发的。
+
+这些包只用于开发和测试。
+
+#### 难道没有任何单一的依赖来取代它们吗？
+
+当您阅读上述时，您的确需要一些预置和加载器来转换es2015或JSX文件。
+
+#### babel -> @babel
+
+从`Babel 7`开始，Babel团队就开始使用[scoped包](https://babeljs.io/docs/en/next/v7-migration#scoped-packages)，这样做是为了更好地区分哪些包是官方的，哪些包是第三方的。
+所以你现在必须使用@ babel / core而不是babel-core。
+
+您的依赖项需要像这样修改：
+
+babel-cli - > @ babel / cli。 例如：babel-与@ babel /。
+
+## 三月
+
+### js 修改对象的 key 值
+
+ES5
+
+```bash
+var array = [
+  {
+    id: 1,
+    name: '小明'
+  },
+  {
+    id: 2,
+    name: '小红'
+  }
+]
+
+// 旧 key 到新 key 的应用
+for (var i = 0; i < array.length; i++) {
+  var obj = arrray[i];
+  for (var key in obj) {
+    var newkey = keyMap[key];
+    if (newkey) {
+      obj[newKey] = obj[key];
+      delete obj[key];
+    }
+  }
+}
+```
+
+ES6
+
+```bash
+const renameKeys = (keysMap, obj) =>
+  Object.keys(obj).reduce(
+    (acc, key) => ({
+      ...acc,
+      ...{ [keysMap[key] || key]: obj[key] }
+    }),
+    {}
+  );
+```
+
+### Echarts 如何调整 legend 和图表的间距
+
+在 opotions 中加入属性：
+
+```bash
+grid: {
+  top:'25%', //距上边距
+  left:'25%', //距离左边距
+  right:'25%', //距离右边距
+  bottom:'25%', //距离下边距
+}
+```
+
+### vue 父子组件数据传递
+
+1. 通过 props 的方式向子组件传递(父子组件)
+2. vuex 进行状态管理(父子组件和非父子组件) vuex
+3. 非父子组件的通信传递 Vue Event Bus，使用 Vue 的实例，实现事件的监听和发布，实现组件之间的传递。
+4. inheritAttrs + $attrs + $listeners
+
+### $attrs、$listeners、inheritAttrs
+
+**\$attrs:** 继承所有的父组件属性（除了 prop 传递的属性、class 和 style ）
+
+**inheritAttrs:** 默认值 true,继承所有的父组件属性（除 props 的特定绑定）作为普通的 HTML 特性应用在子组件的根元素上，如果你不希望组件的根元素继承特性设置 inheritAttrs: false,但是 class 属性和 style 会继承。
+
+**\$listeners:**，它是一个对象，里面包含了作用在这个组件上的所有监听器，你就可以配合 v-on="\$listeners" 将所有的事件监听器指向这个组件的某个特定的子元素。
+
+**可以使用 $attrs 和 $listeners 对 iview 组件进行二次封装**，如 modal(主要用于解决 iview 默认点击确定会关闭自动模态框的问题，
+( `closeByOuter`属性 + `@on-confirm`事件 ))， 通过 v-bind="\$attrs" 将父组件的 attrs 一起传给子组件。`$listeners` 包含了父作用域中的 (不含 .native 修饰器的) v-on 事件监听器。它可以通过 v-on="\$listeners" 传入内部组件--在创建更高层次的组件时非常有用，简言之：\$attrs 可以打包父组件的属性，同样的，`$listeners` 则打包父组件的事件。通过 v-on="\$listeners" 可以在子组件触发父组件的父组件的事件。
+
+```bash
+<template>
+  <Modal v-model="show" v-bind="$attrs" v-on="$listeners">
+    <div slot="header" class="modal-header">
+      <span class="title">{{$attrs.title}}</span>
+    </div>
+    <slot></slot>
+    <div slot="footer" class="modal-footer">
+      <span class="close-btn" @click="handleClose">取消</span>
+      <NrButton @click="handleConfirm">确定</NrButton>
+    </div>
+  </Modal>
+</template>
+
+export default {
+  inheritAttrs: false,
+  name: "NrModal",
+  props: {
+    value: {
+      type: Boolean,
+      default: () => false
+    },
+    // 点击确定后，是否在外部控制弹窗消失
+    closeByOuter: {
+      type: Boolean,
+      default: () => false
+    }
+  },
+  data() {
+    return {
+      show: this.value
+    };
+  },
+  watch: {
+    show(n) {
+      this.$emit("input", n);
+    },
+    value(n) {
+      this.show = n;
+    }
+  },
+  methods: {
+    handleClose() {
+      this.$emit("on-close");
+      this.show = false;
+    },
+    handleConfirm() {
+      this.$emit("on-confirm");  # 通过 v-on="\$listeners" 可以在子组件触发父组件的父组件的事件。
+      if (!this.closeByOuter) {
+        this.show = false;
+      }
+    }
+  }
+};
+```
+
+## 二月
+
+### 日期显示
+
+```bash
+week(day) {
+      let weekday = new Array(7);
+      weekday[0] = "周日";
+      weekday[1] = "周一";
+      weekday[2] = "周二";
+      weekday[3] = "周三";
+      weekday[4] = "周四";
+      weekday[5] = "周五";
+      weekday[7] = "周六";
+      return weekday[day];
+},
+timeFormate() {
+    let year = new Date().getFullYear();
+    let month =
+      new Date().getMonth() + 1 >= 10
+          ? new Date().getMonth() + 1
+          : "0" + (new Date().getMonth() + 1);
+    let date =
+      new Date().getDate() >= 10
+        ? new Date().getDate()
+        : "0" + new Date().getDate();
+    this.yearData =
+      year +
+      "年" +
+      month +
+      "月" +
+      date +
+      "日" +
+      " " +
+    this.week(new Date().getDay());
+    // 时钟
+    let hh =
+    new Date().getHours() >= 10
+          ? new Date().getHours()
+          : "0" + new Date().getHours();
+    let mm =
+        new Date().getMinutes() >= 10
+          ? new Date().getMinutes()
+          : "0" + new Date().getMinutes();
+    let hhcopy = "";
+      if (hh > 12) {
+        hhcopy = hh - 12;
+        this.unit = "pm";
+      } else {
+        hhcopy = hh;
+        this.unit = "am";
+      }
+    this.timeData = hhcopy + ":" + mm;
+},
+```
+
+### 设置 npm 源
+
+npm, yarn 查看源和换源：
+
+```bash
+npm config get registry // 查看 npm 当前镜像源
+
+npm config set registry https://registry.npm.taobao.org/ // 设置 npm 镜像源为淘宝镜像
+
+yarn config get registry // 查看 yarn 当前镜像源
+
+yarn config set registry https://registry.npm.taobao.org/ // 设置 yarn 镜像源为淘宝镜像
+```
+
+镜像源地址部分如下：
+
+```bash
+npm --- https://registry.npmjs.org/
+
+cnpm --- https://r.cnpmjs.org/
+
+taobao --- https://registry.npm.taobao.org/
+
+nj --- https://registry.nodejitsu.com/
+
+rednpm --- https://registry.mirror.cqupt.edu.cn/
+
+npmMirror --- https://skimdb.npmjs.com/registry/
+
+deunpm --- http://registry.enpmjs.org/
+```
+
 ## 一月
 
 ### 利用 Coverage 检测可以懒加载的 modules
@@ -686,224 +1171,7 @@ server.listen(8080);
 
 <!-- ### postMessage 实现跨域通信 -->
 
-## 二月
 
-### 日期显示
-
-```bash
-week(day) {
-      let weekday = new Array(7);
-      weekday[0] = "周日";
-      weekday[1] = "周一";
-      weekday[2] = "周二";
-      weekday[3] = "周三";
-      weekday[4] = "周四";
-      weekday[5] = "周五";
-      weekday[7] = "周六";
-      return weekday[day];
-},
-timeFormate() {
-    let year = new Date().getFullYear();
-    let month =
-      new Date().getMonth() + 1 >= 10
-          ? new Date().getMonth() + 1
-          : "0" + (new Date().getMonth() + 1);
-    let date =
-      new Date().getDate() >= 10
-        ? new Date().getDate()
-        : "0" + new Date().getDate();
-    this.yearData =
-      year +
-      "年" +
-      month +
-      "月" +
-      date +
-      "日" +
-      " " +
-    this.week(new Date().getDay());
-    // 时钟
-    let hh =
-    new Date().getHours() >= 10
-          ? new Date().getHours()
-          : "0" + new Date().getHours();
-    let mm =
-        new Date().getMinutes() >= 10
-          ? new Date().getMinutes()
-          : "0" + new Date().getMinutes();
-    let hhcopy = "";
-      if (hh > 12) {
-        hhcopy = hh - 12;
-        this.unit = "pm";
-      } else {
-        hhcopy = hh;
-        this.unit = "am";
-      }
-    this.timeData = hhcopy + ":" + mm;
-},
-```
-
-### 设置 npm 源
-
-npm, yarn 查看源和换源：
-
-```bash
-npm config get registry // 查看 npm 当前镜像源
-
-npm config set registry https://registry.npm.taobao.org/ // 设置 npm 镜像源为淘宝镜像
-
-yarn config get registry // 查看 yarn 当前镜像源
-
-yarn config set registry https://registry.npm.taobao.org/ // 设置 yarn 镜像源为淘宝镜像
-```
-
-镜像源地址部分如下：
-
-```bash
-npm --- https://registry.npmjs.org/
-
-cnpm --- https://r.cnpmjs.org/
-
-taobao --- https://registry.npm.taobao.org/
-
-nj --- https://registry.nodejitsu.com/
-
-rednpm --- https://registry.mirror.cqupt.edu.cn/
-
-npmMirror --- https://skimdb.npmjs.com/registry/
-
-deunpm --- http://registry.enpmjs.org/
-```
-
-## 三月
-
-### js 修改对象的 key 值
-
-ES5
-
-```bash
-var array = [
-  {
-    id: 1,
-    name: '小明'
-  },
-  {
-    id: 2,
-    name: '小红'
-  }
-]
-
-// 旧 key 到新 key 的应用
-for (var i = 0; i < array.length; i++) {
-  var obj = arrray[i];
-  for (var key in obj) {
-    var newkey = keyMap[key];
-    if (newkey) {
-      obj[newKey] = obj[key];
-      delete obj[key];
-    }
-  }
-}
-```
-
-ES6
-
-```bash
-const renameKeys = (keysMap, obj) =>
-  Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      ...{ [keysMap[key] || key]: obj[key] }
-    }),
-    {}
-  );
-```
-
-### Echarts 如何调整 legend 和图表的间距
-
-在 opotions 中加入属性：
-
-```bash
-grid: {
-  top:'25%', //距上边距
-  left:'25%', //距离左边距
-  right:'25%', //距离右边距
-  bottom:'25%', //距离下边距
-}
-```
-
-### vue 父子组件数据传递
-
-1. 通过 props 的方式向子组件传递(父子组件)
-2. vuex 进行状态管理(父子组件和非父子组件) vuex
-3. 非父子组件的通信传递 Vue Event Bus，使用 Vue 的实例，实现事件的监听和发布，实现组件之间的传递。
-4. inheritAttrs + $attrs + $listeners
-
-### $attrs、$listeners、inheritAttrs
-
-**\$attrs:** 继承所有的父组件属性（除了 prop 传递的属性、class 和 style ）
-
-**inheritAttrs:** 默认值 true,继承所有的父组件属性（除 props 的特定绑定）作为普通的 HTML 特性应用在子组件的根元素上，如果你不希望组件的根元素继承特性设置 inheritAttrs: false,但是 class 属性和 style 会继承。
-
-**\$listeners:**，它是一个对象，里面包含了作用在这个组件上的所有监听器，你就可以配合 v-on="\$listeners" 将所有的事件监听器指向这个组件的某个特定的子元素。
-
-**可以使用 $attrs 和 $listeners 对 iview 组件进行二次封装**，如 modal(主要用于解决 iview 默认点击确定会关闭自动模态框的问题，
-( `closeByOuter`属性 + `@on-confirm`事件 ))， 通过 v-bind="\$attrs" 将父组件的 attrs 一起传给子组件。`$listeners` 包含了父作用域中的 (不含 .native 修饰器的) v-on 事件监听器。它可以通过 v-on="\$listeners" 传入内部组件--在创建更高层次的组件时非常有用，简言之：\$attrs 可以打包父组件的属性，同样的，`$listeners` 则打包父组件的事件。通过 v-on="\$listeners" 可以在子组件触发父组件的父组件的事件。
-
-```bash
-<template>
-  <Modal v-model="show" v-bind="$attrs" v-on="$listeners">
-    <div slot="header" class="modal-header">
-      <span class="title">{{$attrs.title}}</span>
-    </div>
-    <slot></slot>
-    <div slot="footer" class="modal-footer">
-      <span class="close-btn" @click="handleClose">取消</span>
-      <NrButton @click="handleConfirm">确定</NrButton>
-    </div>
-  </Modal>
-</template>
-
-export default {
-  inheritAttrs: false,
-  name: "NrModal",
-  props: {
-    value: {
-      type: Boolean,
-      default: () => false
-    },
-    // 点击确定后，是否在外部控制弹窗消失
-    closeByOuter: {
-      type: Boolean,
-      default: () => false
-    }
-  },
-  data() {
-    return {
-      show: this.value
-    };
-  },
-  watch: {
-    show(n) {
-      this.$emit("input", n);
-    },
-    value(n) {
-      this.show = n;
-    }
-  },
-  methods: {
-    handleClose() {
-      this.$emit("on-close");
-      this.show = false;
-    },
-    handleConfirm() {
-      this.$emit("on-confirm");  # 通过 v-on="\$listeners" 可以在子组件触发父组件的父组件的事件。
-      if (!this.closeByOuter) {
-        this.show = false;
-      }
-    }
-  }
-};
-```
 
 ## 四月
 
@@ -1161,221 +1429,4 @@ module.exports = {
 
 ```
 
-## 七月
-
-### Vue 执行默认选中
-
-```js
-async created() {
-  // 这里执行初始化数据获取
-  if (/*xxx*/) {
-    this.panelData = this.getData();
-   //  ....
-  }
-  // 默认选中第一项, 默认选中第一项，nextTick 等待 pageData 拿到数据，渲染 dom 后更新完毕
-  await this.$nextTick();
-  if (this.panelData[0].children.length > 0) {
-    this.handleSelectList(this.panelData[0].children[0]);
-  }
-},
-methods: {
-  checkIsSelected(data) {
-    this.defaultSelectedItems.forEach(v => {
-      if (v.name === data.name) {
-        this.$set(data,'isSelected', true);
-      }
-    })
-  }
-}
-```
-
-
-
-### async/await 使用
-
-#### 捕获错误
-
-```js
-async function asyncAwaitTryCatch() {
-  try {
-    const api = new Api();
-    const user = await api.getUser();
-    const friends = await api.getFriend();
-
-    await api.throwError();
-    console.log('Error was not thrown');
-
-    const photo = await api.getPhoto(user.id);
-    console.log('async/await', { user, friends, photo })
-  } catch (err) {
-    console.log(err);
-  }
-}
-```
-
-#### 组合
-
-- 调用 async 函数作为一个 promise 对象来返回数据
-```js
-async function getUserInfo() {
-  const api = new Api()
-  const user = await api.getUser()
-  const friends= await api.getFriends(user.id)
-  const photo = await api.getPhoto(user.id)
-  return {user, friends, photo }
-}
-
-function promiseUserInfo() {
-  getUserInfo().then({ user, friends, photo }) => {
-    console.log('promiseUserInfo', { user, friends, photo })
-  }
-} 
-
-// 或者继续使用 async/await 语法
-async function awaitUserInfo () {
-  const { user, friends, photo } = await getUserInfo()
-  console.log('awaitUserInfo', { user, friends, photo })
-}
-```
-
-- 检索前十个用户的所有数据
-```js
-async function getLotsOfUserData() {
-  const users = []
-  while(users.length < 10) {
-    users.push(await getUserInfo())
-  }
-  console.log('getLotsOfUserData', users)
-}
-```
-- 并发请求
-```js
-async function getLotsOfUserDataFaster() {
-  try {
-    const userPromises = Array(10).fill(getUserInfo())
-    const users = await Promise.all(userPromises)
-    console.log('getLotsOfUserDataFaster', users)
-  } catch (err) {
-    console.log(err)
-  }
-}
-```
-
-### transform 对 fixed 的影响
-
-- 需求：需要对 iview 的模态框的样式进行自定义覆盖，因此就是 transfer:false 把 Modal 渲染到父组件内。此时会出现问题。
-- 症状：使用了 iview Modal 组件时，如果设置了 transfer: false 属性时，有时候会出现无法打开Modal 框的现象，原因可能在于父元素设置了
-transform 属性。因此
-- 原因：应用了transform属性的元素会导致该元素形成一个新的包含块，然后其后代元素如果有fixed定位的属性，那么其元素将会以该父元素作为包含块。
-- 分析：iview 使用了 transfer-dom 指令来解决上面的问题，把 modal 移动到 body 下面。
-- 解决：因此如果需要自定义覆盖 modal 的样式，又不能渲染到父组件内，要想避免污染全局样式，此时建议通过类名去限制作用域。
-
-测试样例
-```html
-<div style="transform: translateX(-50%); height: 900px;">
-  <div>
-    <Modal v-model="ModalTest.isShow" :transfer="false" title="Modal"></Modal>
-  </div>
-</div>
-```
-
-### flex布局中使用iview的table表格的宽度会计算出错,导致很长的宽度
-
-场景：两边固定，中间自适应
-
-- 原因：设置了flex-grow元素的子级宽度问题
-- 解决：给该子元素设置 `overflow: auto;` 或 `width: 0;`
-
-```css
-  .container {
-    display: flex;
-    height: 100%;
-  }
-  .left {
-    width: 300px;
-    /* flex: 0 0 300px; */
-    flex-shrink: 0;
-    background: chocolate;
-  }
-  .right {
-    width: 200px;
-    flex-shrink: 0;
-    /* flex: 0 0 200px; */
-    background: cadetblue;
-  }
-  .content {
-    flex-grow: 1;
-    background: hotpink;
-    overflow: hidden;
-  }
-```
-
-### 了解 babel
-
-1. babel-loader: 负责 es6 语法转化
-2. babel-preset-env: 包含 es6、7 等版本的语法转化规则
-3. babel-polyfill: es6 内置方法和函数转化垫片
-4. babel-plugin-transform-runtime: 避免 polyfill 污染全局变量
-需要注意的是, babel-loader和babel-polyfill。前者负责语法转化，比如：箭头函数；后者负责内置方法和函数，比如：new Set()。
-
-#### babel
-
-Babel什么都不做，它的行为就像const Babel = code => code;通过解析代码，然后再次生成相同的代码。您将需要为Babel添加一些插件来执行诸如置换es6、JSX之类的操作
-
-#### babel-core
-
-如果你想在你的真实项目中使用babel，你需要安装babel但是
-没有 `babel` 包可用。
-
-babel将它分成两个独立的包：`babel-cli`和`babel-core`
-**babel-cli**：可用于从命令行编译文件。
-**babel-core**：如果你想使用 Node API，你可以安装`babel-core`
-，与“babel-cli”相同，除非您在应用程序内以编程方式使用它。
-
-在生产之前使用`babel-cli`或`babel-core`编译文件。
-
-#### preset vs plugin
-
-我们可以使用`babel插件(es2015)`一次添加一个特性(es6,JSX)，或者我们可以使用`babel预置`来包含特定年份的所有特性(es6)。预置使设置更容易。
-
-#### babel-preset-es2015
-
-`babel-preset-env`支持es2015特性，并取代了es2015、es2016、es2017和最新版本。因此，使用`babel-preset-env`，它的行为与`babel-preset-latest`完全相同(或者将babel-preset-es2015、babel-preset-es2016和babel-preset-es2017放在一起)。
-
-#### babel-preset-react
-
-将`JSX`转换为`createElement`调用，如将`react`纯类转换为函数，并删除`prop`类型。
-
-#### babel-polyfill
-
-没有`babel-polyfill`, babel只允许您使用箭头函数、析构、默认参数和ES6中引入的其他特定于语法的特性。新的ES6内置组件(如Set、Map和Promise)必须是polyfill，以包含应用程序入口点顶部需要的polyfill。
-
-#### babel-loader
-
-你理解了babel-core，babel-cli，以及为什么需要预设，插件，现在
-你每次都是从`babel-cli`逐个文件地编译ES6到ES5。
-要摆脱这个，你需要捆绑任务`/ js`文件。 因此你需要用`WebPack`。
-
-`loader` 有点像任务，它们通过将各种文件转换为webpack可以处理的有效模块，为各种文件提供了利用webpack捆绑功能的能力。
-
-Webpack通过`Babel -loader`提供了强大的Babel支持。
-
-#### devDependencies
-
-当您部署应用程序时，需要安装依赖项中的模块，否则应用程序将无法工作。devDependencies中的模块不需要安装在生产服务器上，因为您不是在这台机器上开发的。
-
-这些包只用于开发和测试。
-
-#### 难道没有任何单一的依赖来取代它们吗？
-
-当您阅读上述时，您的确需要一些预置和加载器来转换es2015或JSX文件。
-
-#### babel -> @babel
-
-从`Babel 7`开始，Babel团队就开始使用[scoped包](https://babeljs.io/docs/en/next/v7-migration#scoped-packages)，这样做是为了更好地区分哪些包是官方的，哪些包是第三方的。
-所以你现在必须使用@ babel / core而不是babel-core。
-
-您的依赖项需要像这样修改：
-
-babel-cli - > @ babel / cli。 例如：babel-与@ babel /。
 

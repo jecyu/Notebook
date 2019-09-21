@@ -1,5 +1,33 @@
 # ES6 
 
+## Promise 基础
+
+Promise: 三个状态、两个过程、一个方式
+- 三个状态：`pending`、`fulfilled`、`rejected`
+- 两个过程（单向不可逆）
+  - `pending` -> `fulfilled`
+  - `pending` -> `rejected`
+- 一个方法`then`：Promise 本质上只有一个方法，`catch` 和 `all`方法都是基于 then 方法实现的。
+
+```js
+// 构造 Promise 时候，内部函数立即执行
+new Promise((resolve, reject) => {
+  console.log('new Promise);
+  resolve('success);
+})
+console.log('finish);
+
+// then 中用到了 return，那么 return 的值会被 Promise.resolve() 包装
+Promise.resolve(1) 
+  .then(res => {
+    console.log(res); // => 1
+    return 2; // 包装成 Promise.resolve(2)
+  })
+  .then(res => {
+    console.log(res); // => 2
+  })
+```
+
 ## 模块
 
 ### 命名导出（Named exports）
