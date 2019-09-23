@@ -1,5 +1,166 @@
 # vue
 
+## 插槽
+
+> 插槽，也就是 slot，是组件的一块 HTML 模版，这块模版显示不显示、以及怎样显示由父组件来决定。一个 slot 的核心两个问题是：显示不显示和怎样显示。
+
+由于插槽是一块模板，所以，对于任何一个组件，从模板种类的角度来分，其实都可以分为非插槽模板和插槽模板两大类。
+非插槽模板指的是html模板，比如‘div、span、ul、table’这些，非插槽模板的显示与隐藏以及怎样显示由组件自身控制；插槽模板是slot，它是一个空壳子，因为它的显示与隐藏以及最后用什么样的html模板显示由父组件控制。**但是插槽显示的位置却由子组件自身决定，slot写在组件template的什么位置，父组件传过来的模板将来就显示在什么位置**
+
+### 单个插槽 | 默认插槽 | 匿名插槽
+
+单个插槽可以放置在组件的任意位置，但是就像它的名字一样，一个组件中只能有一个该类插槽。相对应的，具名插槽就可以有很多个，只要名字（name属性）不同就可以了。
+
+```js
+// child
+export default {
+  name: "Child",
+  render() {
+    return (
+      <div class="child">
+        <h3>这里是子组件</h3>
+        {/* <slot /> */}
+        {this.$slots.default}
+      </div>
+    );
+  }
+};
+
+// template 写法
+//   <template>
+//   <div class='wrapper'>
+//     <span>I am a component</span>
+//     <slot></slot>
+//     <slot name='namedSlot'></slot>
+//   </div>
+// </template>
+
+// // main.vue
+// <template>
+//   <wrapper>
+//     <div>
+//       I am the slot
+//     </div>
+
+//     <div slot='namedSlot'>I am the named slot</div>
+//   </wrapper>
+// </template>
+```
+
+```js
+// parent
+<template>
+  <div class="default-wrapper">
+    <h1>Vue 单个插槽</h1>
+    <Child1>
+      <div class="tmpl">
+        <span>菜单1</span>
+        <span>菜单2</span>
+        <span>菜单3</span>
+        <span>菜单4</span>
+      </div>
+    </Child1>
+  </div>
+</template>
+```
+
+### 具名插槽
+
+匿名插槽没有name属性，所以是匿名插槽，那么，插槽加了name属性，就变成了具名插槽。具名插槽可以在一个组件中出现N次，出现在不同的位置。
+
+```js
+export default {
+  name: "Child",
+  render() {
+    return (
+      <div class="child">
+        <h3>这里是子组件</h3>
+        {/* <slot /> */}
+        {/* 具名插槽 */}
+        {this.$slots.up}
+      </div>
+    );
+  }
+};
+```
+
+```js
+// parent 
+<template>
+  <div class="named-wrapper">
+    <h1>Vue 具名插槽</h1>
+    <Child2>
+      <div class="tmpl" slot="up">
+        <span>菜单1</span>
+        <span>菜单2</span>
+        <span>菜单3</span>
+        <span>菜单4</span>
+      </div>
+    </Child2>
+  </div>
+</template>
+```
+
+### 作用域插槽
+
+作用域插槽跟单个插槽和具名插槽的区别，因为单个插槽和具名插槽不绑定数据，而作用域插槽，父组件只需要提供一套样式（在确实用作用域插槽绑定的数据的前提下），数据使用的都是子组件插槽自己绑定的s数据，在slot上面绑定数据。
+
+```js
+export default {
+  name: "Child",
+  data() {
+    return {
+      list: ["js", "java", "c++"]
+    }
+  },
+  render() {
+    return (
+      <div class="child">
+        <h3>这里是子组件</h3>
+        {/* <slot /> */}
+        {/* 具名插槽 */}
+        {this.$scopedSlots.up({
+          data: this.list
+        })}
+      </div>
+    );
+  }
+};
+
+// Template 写法
+// Child.vue
+//   <template>
+//   <div class='wrapper'>
+//     <span>I am a component</span>
+//     <slot :data='data'></slot>
+//   </div>
+// </template>
+
+// // main.vue
+// <template>
+//   <wrapper>
+//     <div slot-scope='{ data }'>
+//     </div>
+//   </wrapper>
+// </template>
+```
+
+```js
+// parent 
+<template>
+  <div class="slot-scoped">
+    <h1>Vue 作用域插槽 | 带数据的插槽</h1>
+    <Child3>
+      <div class="tmpl" slot="up" slot-scope="user">
+        {{ user.data }}
+      </div>
+    </Child3>
+  </div>
+</template>
+```
+
+- [深入理解vue中的slot与slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2)
+
 ## vue 组件重置状态（强制刷新）
 
 ### 父子组件，可以访问组件的情况下
@@ -256,3 +417,4 @@ provide() {
 - [Vue.js 组件编码规范](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
 - [前端组件设计原则](https://juejin.im/post/5c49cff56fb9a049bd42a90f#heading-4)
 - [https://juejin.im/post/5bb355dae51d450ea4020b42](https://juejin.im/post/5bb355dae51d450ea4020b42)
+- [从event loop规范探究javaScript异步及浏览器更新渲染时机](https://github.com/aooy/blog/issues/5)

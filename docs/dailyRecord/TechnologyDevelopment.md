@@ -38,3 +38,4 @@
 
 - [哪些技术会决定前端开发者的未来发展？
   ](https://juejin.im/post/5d1589c8e51d45776031b02e?utm_source=gold_browser_extension)
+- [高级前端专家是如何进阶的？| Winter专访](https://zhuanlan.zhihu.com/p/23190285)
