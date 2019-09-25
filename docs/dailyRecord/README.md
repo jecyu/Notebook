@@ -2,6 +2,27 @@
 
 ## 九月
 
+### 如何重新加载一个页面
+
+JavaScript 1.0
+```js
+// creates a history entry
+window.location.href = window.location.pathname + window.location.search + window.location.hash
+```
+
+JavaScript 1.1
+```js
+// does not create a history entry
+window.location.replace(window.location.pathname + window.location.search + window.location.hash)
+```
+
+JavaScript 1.2
+```js
+// 从服务器加载所有的内容
+window.location.reload(true)
+```
+
+
 ### vuecli3 新建项目，main.js 引入 iview 样式报错
 
  No PostCSS Config found
@@ -61,6 +82,21 @@ cloc --help
 
 ### iframe 跨域通信
 
+#### 前置知识
+
+`window.postMessage` 的功能是允许浏览器跨域在两个窗口间发送数据信息。它不是浏览器跟服务器之间交互，而是在两个客户端之间通信。
+
+`postMessage`是挂载在`window对象上`的，所以等`iframe`加载完毕后，用`iFrame.contentWindow`获取到`iframe`的`window`对象，然后调用`postMessage`方法，相当于给子页面发送了一条消息。我们只需要在子页面监听message事件，并且设置好回调函数即可
+
+> MDN 文档 [window.postMessage
+](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage)
+
+
+
+技术难点：
+- iframe 重新设置 src 不会重新加载的问题
+- iframe 所在的页面中通知父页面关闭魔胎框以及其他操作的问题（父子通信）
+
 需要注意传递值时，要确保好**对方准备接收数据**的时候，再发送信息过去。那么如果处理呢？设置通信的关键词，必要的时候还可以加密处理。
 
 #### 返回数据
@@ -77,6 +113,64 @@ onmessage(res) {
   }
 },
 ```
+
+### iframe 在更改了 src 之后对应的网页并未刷新
+
+子系统是通过 iframe 嵌入到父系统的，父系统会通过子系统发送的消息 URL，会直接访问子系统。出现了iframe 在更改了 src 之后对应的网页并不是对应的内容。于是看了网上的方案，在更改 `iframe src` 属性值之前加上这一句。
+
+```js
+document.getElementId('iframeId').contentWindow.location.reload(true);
+```
+`window.Location.reload` 是重新加载当前需要的所有内容，`Location.reload()` 方法用来刷新当前页面。该方法只有一个参数，当值为 `true`时，将强制浏览器从服务器加载页面资源，当值为 `false` 或者未传参时，浏览器则可能从缓存中读取页面。引用 MDN [Location.reload()
+](https://developer.mozilla.org/zh-CN/docs/Web/API/Location/reload)
+
+```js
+// 无缓存刷新页面（但页面引用的资源还是可能使用缓存，
+// 大多数浏览器可以通过设置在打开开发者工具时禁用缓存实现无缓存需求）
+window.location.reload(true);
+```
+与之对应的方法是 `window.Re`
+
+通过上面的设置后，仍然不能实现效果。继续往下分析
+
+#### 解决
+
+由于系统的技术是 Vue，通过排查问题后，让子系统是立即监听路由的变化，来加载对应的组件。
+```js
+watch: {
+  id: {
+    handler(val) {
+      val ? (this.pageId = val) : (this.pageId = this.$route.params.pageId);
+    },
+    deep: true,
+    immediate: true
+  },
+  pageId: {
+    handler() {
+      this.$nextTick(() => this.setPageSize())
+    },
+    immediate: true
+  }
+},
+```
+
+并且在父系统上，把已有的 iframe 先移除，再重新加载，避免使用 `reload` 不生效的情况。
+```js
+this.dataeyeShow = false; // 先关闭
+    this.$nextTick(() => {
+      this.enterdataeyeUrl = `${
+        this.$store.getters.config.DATAEYE
+      }releasePage/${pageId}`;
+      this.dataeyeShow = true; // 后开启，重新渲染
+    });
+```
+
+#### iframe 有哪些缺点？
+
+- iframe 会阻塞主页面的 `onload` 事件
+- 搜索引擎的检索程序无法解读这种页面，不利于 SEO
+
+可以通过 `JavaScript` 动态给 `iframe` 添加 `src` 属性值，这样就可以绕开上面两个问题。
 
 ### 表单锁定与解锁
 
