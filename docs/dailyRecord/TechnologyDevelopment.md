@@ -40,3 +40,4 @@
   ](https://juejin.im/post/5d1589c8e51d45776031b02e?utm_source=gold_browser_extension)
 - [高级前端专家是如何进阶的？| Winter专访](https://zhuanlan.zhihu.com/p/23190285)
 - [【专业造轮子】:一位大神的编程之路，让我大吃一惊！](https://blog.csdn.net/qq_23100787/article/details/51318671) -- 造轮子，提升自己的快速之路。
+- [从 1 到完美，写一个 js 库、node 库、前端组件库](https://segmentfault.com/a/1190000017064659)

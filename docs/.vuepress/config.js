@@ -138,7 +138,7 @@ module.exports = {
       ],
       "/algorithm/": [
         {
-          title: "前端",
+          title: "算法",
           collapsable: false,
         }
       ],
