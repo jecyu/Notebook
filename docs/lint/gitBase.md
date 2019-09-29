@@ -125,6 +125,8 @@ $ echo <filename> >> .gitignore
 
 ## 设定 SSH 连接
 
+SSH key 可以让你在你的电脑和 Git 远程仓库之间建立安全的加密连接。
+
 ### Mac
 
 ```bash
@@ -146,11 +148,82 @@ cat ~/.ssh/id_rsa.pub
 
 先下载 cmder 命令行（linux）工具，之后跟 mac 一样的命令行操作即可。
 
+### Git 配置多个 SSH-Key
+
+一般公司用的是 gitlab 提交代码，使用的是公司的用户名和公司的邮箱，而在个人的开源项目中，我们托管于 github，那么这个时候就需要两个 SSH-Key 去登录。
+
+#### 查看所有 SSH-Key
+
+```bash
+$ cd ~/.ssh/
+$ ls
+```
+
+#### 公司的 GitLab 生成一个 SSH-Key 
+
+在`~/.ssh/`目录会生成`gitlab_id-rsa`和`gitlab_id-rsa.pub`私钥和公钥。
+```
+$ ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/gitlab_id-rsa
+```
+
+查看你的public key，我们将`gitlab_id-rsa.pub`中的内容粘帖到公司`GitLab`服务器的`SSH-key`的配置中。
+```bash
+# 把文件内容打印到命令行工具上，方便复制
+cat ~/.ssh/gitlab_id-rsa.pub 
+```
+
+#### Github 生成一个 SSH-Key 
+
+在`~/.ssh/`目录会生成`github_id-rsa`和`github_id-rsa.pub`私钥和公钥。我们将`github_id-rsa.pub`中的内容粘帖到`github`服务器的`SSH-key`的配置中。
+```bash
+$ ssh-keygen -t rsa -C "xxxxx@xxxx.com” -f ~/.ssh/github_id-rsa
+```
+
+#### 在 ~/.ssh 目录下添加`config`配置文件用于区分多个 SSH-Key
+
+添加 config 配置文件
+```bash
+vi ~/.ssh/config
+```
+
+设置文件内容如下：
+```bash
+# gitlab
+Host gitlab.com
+  HostName gitlab.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/gitlab_id-rsa
+
+# github 
+Host github.com
+  HostName github.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/github_id-rsa
+```
+
+配置文件参数：
+- Host：可以看作是一个你要识别的模式，对识别的模式，进行配置对应的`主机名`和 `ssh` 文件。
+- HostName: 要登录主机的主机名。
+- User: 登录名。
+- IdentityFile: 知指明上面 User 对应的 identityFile 路径。
+  
+#### 测试
+
+```bash
+ssh -T git@github.com
+```
+输出：
+```bash
+Hi Jecyu! You've successfully authenticated, but GitHub does not provide shell access.
+```
+就表示成功的连上 github 了。也可以试试连接公司的 gitlab。
+
+> 更进一步阅读，了解 SSH  知识：https://segmentfault.com/q/1010000000835302 和 《SSH，The Secure Shell》 书本。
 
 ## 回到远程仓库的状态
 
 抛弃本地所有的修改，回到远程仓库的状态。
-
+ 
 ```bash
 git fetch --all && git reset --hard origin/master
 ```
