@@ -36,6 +36,12 @@ class Point {
 }
 ```
 
+**函数声明**和**类声明**之间的一个重要区别是函数声明会提升，类声明不会。你首先需要声明你的类，然后访问它，否则像下面的代码会抛出一个`ReferenceError`：
+```js
+let p = new Rectangle();
+// ReferenceError
+class Rectangle {}
+```
 下面是应用例子
 
 #### jQuery 的链式调用
