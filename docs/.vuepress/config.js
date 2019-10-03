@@ -26,7 +26,7 @@ module.exports = {
         items: [
           { text: "💻大前端", link: "/frontend/" },
           { 
-            text: "️️🧘🏻‍算法修炼", 
+            text: "️️🧘算法修炼", 
             items: [ 
               {text: "计算机基础", link: "/algorithm/computerBasics"},
               {text: "数据结构", link: "/algorithm/dataStructure"},
@@ -140,6 +140,7 @@ module.exports = {
         {
           title: "算法",
           collapsable: false,
+          children: ["computerBasics"]
         }
       ],
       "/gis/": [

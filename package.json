@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.0",
+    "doctoc": "^1.4.0",
     "husky": "^1.0.0-rc.13"
   },
   "husky": {

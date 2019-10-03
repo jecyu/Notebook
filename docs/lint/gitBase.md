@@ -688,6 +688,18 @@ git remote set-url origin <URL>
 git remote add origin <remote-url>
 ```
 
+### 从远程仓库根据 ID，拉下某一状态，到本地分支
+
+```bash
+git fetch origin pull/<id>/head:<branch-name>
+```
+
+### clone 下来指定的单一分支
+
+```sh
+git clone -b <branch-name> --single-branch https://github.com/user/repo.git
+```
+
 ## 查看两个星期内的改动
 
 ```sh
@@ -755,12 +767,6 @@ git clone repo.bundle <repo-dir> -b <branch-name>
 
 ```sh
 git rebase --autostash
-```
-
-## 从远程仓库根据 ID，拉下某一状态，到本地分支
-
-```bash
-git fetch origin pull/<id>/head:<branch-name>
 ```
 
 ## 查看 git fetch 之后的文件更改
@@ -834,12 +840,6 @@ git checkout --orphan <branch-name>
 
 ```sh
 git show <branch-name>:<file-name>
-```
-
-## clone 下来指定的单一分支
-
-```sh
-git clone -b <branch-name> --single-branch https://github.com/user/repo.git
 ```
 
 ## 忽略某个文件的改动
