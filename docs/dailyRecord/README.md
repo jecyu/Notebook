@@ -271,7 +271,7 @@ if (!data.hasData) { // 设置禁用
 
 - opacity 设为 0
 - visibility 设置 hidden。
-- 将 display 设置 noen
+- 将 display 设置 none
 - 将 position 设为 absolute
 
 #### Opacity

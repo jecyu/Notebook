@@ -1,5 +1,17 @@
 # css
 
+## transition
+
+盒子模型需要满足 block 属性才可以生效
+```css
+.box {
+  /* display: block */
+  display: inline-block; 
+}
+```
+
+- [“更多|收起”交互中渐进使用transition动画](https://www.zhangxinxu.com/wordpress/2012/10/more-display-show-hide-tranisition/) —— 张鑫旭大大的折叠收起
+
 ## box-sizing 属性用来定义 user agent 如何计算元素的总宽度和总高度
 
 - content-box，即是默认值。如果你设置一个元素的`width`为 100px，那么这个元素的内容会有 100px 宽，并且任何`border`和`padding`都会被增加到最后绘制出来的元素宽度中。

@@ -12,6 +12,17 @@
 - 输入正负号，则按键盘【shift+option+=】，那么即可输入了。
 - 要输入开方符号，那么按键盘【option+v】，即可输入【√】。
 - 输入求和符号则按【option+w】，就能够输入了的【∑】。
+  
+更多符号操作如下⬇️：
+1. 将输入法切换至 【简体拼音】。
+![mac-symbol1](../.vuepress/public/images/mac-symbol1.png)
+2. 切换后，再点击输入法图吧，显示下拉菜单，选择【显示文字表情与符号】。
+![mac-symbol2](../.vuepress/public/images/mac-symbol2.png)
+3. 弹出窗口。
+![mac-symbol3](../.vuepress/public/images/mac-symbol3.png)
+4. 选择【符号】，下拉菜单选择对应的符号。
+![mac-symbol4](../.vuepress/public/images/mac-symbol4.png)
+5. 即可完成在苹果系统自带输入法下单位符号的输入。
 
 ## 电脑上如何输入 Emoji 表情?
 

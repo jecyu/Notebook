@@ -77,7 +77,9 @@ CPU。
 
 ![函数调用](../.vuepress/public/images/functioncall.png)
 
-调用栈：
+#### 调用栈
+
+![调用栈](../.vuepress/public/images/cpu-stack.png)
 
 ## 二进制
 
