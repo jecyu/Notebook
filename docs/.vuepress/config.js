@@ -31,6 +31,7 @@ module.exports = {
               {text: "计算机基础", link: "/algorithm/computerBasics"},
               {text: "数据结构", link: "/algorithm/dataStructure"},
               {text: "算法分类", link: "/algorithm/algorithm"},
+              {text: "数据库", link: "/dataBase/index"},
             ] 
           },
           { text: "☁️运维", link: "/devops/" },
@@ -112,7 +113,7 @@ module.exports = {
         {
           title: "运维",
           collapsable: false,
-          children: ["linux", "window", "mac"]
+          children: ["linux", "window", "mac", "docker"]
         }
       ],
       "/software/": [
@@ -143,6 +144,14 @@ module.exports = {
           children: ["computerBasics"]
         }
       ],
+      "/dataBase/": [
+        {
+          title: "数据库",
+          collapsable: false,
+          children: ["", "mysql"]
+        }
+      ],
+      
       "/gis/": [
         {
           title: "GIS",

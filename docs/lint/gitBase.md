@@ -260,6 +260,42 @@ git diff HEAD
 
 ## 操作分支
 
+### 创建并切换到本地分支
+
+```bash
+git checkout -b <branch-name>
+```
+
+### 创建并切换到远程分支
+
+```bash
+git checkout -b <branch-name> origin/<branch-name>
+```
+
+### 删除本地分支
+
+```bash
+git branch -d <local-branchname>
+```
+
+### 删除远程分支
+
+```bash
+git push origin --delete <remote-branchname>
+```
+
+或者
+
+```bash
+git push origin :<remote-branchname>
+```
+
+### 重命名本地分支
+
+```bash
+git branch -m <new-branch-name>
+```
+
 ### 快速切换分支
 
 ```bash
@@ -394,42 +430,6 @@ $ git checkout A_temp message.html message.css message.js other.js
 
 ```bash
 git branch -a
-```
-
-### 创建并切换到本地分支
-
-```bash
-git checkout -b <branch-name>
-```
-
-### 创建并切换到远程分支
-
-```bash
-git checkout -b <branch-name> origin/<branch-name>
-```
-
-### 删除本地分支
-
-```bash
-git branch -d <local-branchname>
-```
-
-### 删除远程分支
-
-```bash
-git push origin --delete <remote-branchname>
-```
-
-或者
-
-```bash
-git push origin :<remote-branchname>
-```
-
-### 重命名本地分支
-
-```bash
-git branch -m <new-branch-name>
 ```
 
 ### 以最后提交的顺序列出所有 Git 分支

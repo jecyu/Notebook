@@ -1,33 +1,257 @@
 # 2019
 
+## 十月
+
+### webpack 编译时与运行时
+
+#### 传递意义上的编译时与运行时
+
+#### webpack 的编译时与运行时
+
+### vueCli 添加环境变量
+
+#### 导语
+
+目的：根据不同环境下下部分打包出不同的系统。其中 `process.env` 是 webpack 自带的，`VUE_APP_`是 VueCli 下。
+
+#### 原理
+
+Todo: webpack 配置打包编译，vuecli 到 webpack，yarn permission 等
+
+模式是 Vue CLI 项目中一个重要的概念。默认情况下，一个 Vue CLI 项目有三个模式。但是我们也可以自己新添加模式。一个模式可以包含多个环境变量。也就是说，每个模式都会将 `NODE_ENV` 的值设置为模式的名称。在项目根目录创建一个名为 `.env.partBuild` 的文件，那么在这个文件里声明过的变量就只会在 `partBuild` 模式下被载入。
+
+`NODE_ENV`
+
+```
+"part-build": "vue-cli-service build --mode partBuild",
+```
+
+### 部分打包
+
+第一步：根目录新建文件 `.env.partBuild`， 因为 Node_ENV 会被覆盖为 partBuild，因此需要重新设置为 production，这样就可以构建出生产环境应用，并且获得了`process.env.VUE_APP_PARTBUILD`的变量值。
+
+```bash
+NODE_ENV=production 
+VUE_APP_PARTBUILD = true
+```
+
+第二步：`package.json`里设置`--mode`为`partBuild`
+
+```json
+{
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "partBuild": "vue-cli-service build --mode partBuild"
+  }
+}
+```
+
+第三步：在 JS 文件里进行使用
+```js
+if (process.env.VUE_APP_PERMISSION === 'true') {}
+```
+
+#### 开发环境下开启运维
+
+```js
+/**
+ *  判断是否为开发环境
+ *  @returns Boolean
+ */
+export const isDev = () => process.env.NODE_ENV === 'development';
+/**
+ * @description: 判断是否开启运维
+ * @returns {Boolean}
+ */
+export function isPermission() {
+  // 开发环境根据 process.env 变量去判断
+  if (isDev()) {
+    return process.env.VUE_APP_PERMISSION === 'true' ? true : false;
+  } else {
+    // 非开发环境才去根据 window.__USEPERMISSION__ 去判断是否开发
+    return window.__USEPERMISSION__;
+  }
+}
+```
+
+- [VueCli 环境变量和模式](https://cli.vuejs.org/zh/guide/mode-and-env.html#%E6%A8%A1%E5%BC%8F)
+
+### axios 取消请求
+
+取消 http 请求，axios 文档里提供了两种用法：
+
+```js
+// 第一种：使用 CancelToken
+const { CancelToken, isCanCel } = axios;
+const source = CancelToken.source();
+
+axios
+  .get('/user/12345', {
+    cancelToken: source.token
+  })
+  .catch(thrown => {
+    if (isCancel(thrown)) {
+      // 获取 取消请求 的相关信息
+      console.log('Request canceled', thrown.message);
+    } else {
+      // 处理其他异常
+    }
+  });
+
+axios.post(
+  '/user/12345',
+  {
+    name: 'new name'
+  },
+  {
+    cancelToken: source.token
+  }
+);
+
+// 取消请求。参数是可选的，参数传递一个取消请求的相关信息，在 catch 钩子函数里能获取到
+source.cancel('Operation canceled by the user.');
+
+// 第二种：给构造函数 CancelToken 传递一个 executor 函数作为参数。这种方法的好处是，可以用同一个 cancel token 来取消多个请求
+const CancelToken = axios.CancelToken;
+let cancel;
+
+axios.get('/user/12345', {
+  cancelToken: new CancelToken(function executor(c) {
+    // 参数 c 也是个函数
+    cancel = c;
+  })
+});
+
+// 取消请求，参数用法同上
+cancel();
+```
+
+项目中用法示例
+在一个真实的项目中，一般都会对 axios 进行二次封装，针对请求、响应、状态码、code 等做处理。贴一个项目里常用的 request.js:
+
+```js
+import axios from 'axios';
+import store from '@/store';
+import { getToken } from '@/utils/auth';
+
+// 创建一个 axios 实例，并改变默认配置
+const service = axios.create({
+  baseURL: process.env.BASE_API, // api 的 base_url
+  timeout: 5000 // request timeout
+});
+
+// 请求拦截
+service.interceptors.request.use(
+  config => {
+    // Do something before request is sent
+    if (store.getters.token) {
+      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+      config.headers['X-Token'] = getToken();
+    }
+    return config;
+  },
+  error => {
+    // Do something with request error
+    console.log(error); // for debug
+    Promise.reject(error);
+  }
+);
+
+// 响应拦截
+service.interceptors.response.use(
+  response => response,
+  error => {
+    alert(error);
+    return Promise.reject(error);
+  }
+);
+
+export default service;
+```
+
+对于某一个请求添加取消的功能，要在调用 api 时，加上 cancelToken 选项，使用时的示例：
+
+```js
+// api.js
+import request from 'request'
+export function getUsers(page, options) {
+  return request({
+    url: 'api/users',
+    params: {
+      page
+    },
+    ...options
+  })
+}
+
+
+// User.vue
+import { CancelToken, isCancel } from 'axios'
+import { getUsers } from 'api'
+
+...
+
+cancel: null
+
+...
+
+toCancel() {
+  this.cancel('取消请求')
+}
+
+getUsers(1,
+  {
+    cancelToken:  new CancelToken(c => (this.cancel = c))
+  }
+)
+.then(...)
+.catch(err => {
+  if (isCancel) {
+    console.log(err.message)
+  } else {
+    ...
+  }
+})
+```
+
+以上，我们就可以顺顺利利地使用封装过的 axios，取消某一个请求了。其原理无非就是把 cancelToken 的配置项，在调用 api 时加上，然后就可以在业务代码取消特定请求了
+
+- 参考资料：https://github.com/ohhoney1/notes/issues/3
+
 ## 九月
 
 ### 如何重新加载一个页面
 
 JavaScript 1.0
+
 ```js
 // creates a history entry
-window.location.href = window.location.pathname + window.location.search + window.location.hash
+window.location.href =
+  window.location.pathname + window.location.search + window.location.hash;
 ```
 
 JavaScript 1.1
+
 ```js
 // does not create a history entry
-window.location.replace(window.location.pathname + window.location.search + window.location.hash)
+window.location.replace(
+  window.location.pathname + window.location.search + window.location.hash
+);
 ```
 
 JavaScript 1.2
+
 ```js
 // 从服务器加载所有的内容
-window.location.reload(true)
+window.location.reload(true);
 ```
-
 
 ### vuecli3 新建项目，main.js 引入 iview 样式报错
 
- No PostCSS Config found
- 原因：应该是 vuecli3 对 postcss 没做处理。
- 解决：把 postcss.config 删除即可。
+No PostCSS Config found
+原因：应该是 vuecli3 对 postcss 没做处理。
+解决：把 postcss.config 删除即可。
 
 ### 实现两个组件的互斥效果
 
@@ -41,19 +265,24 @@ window.location.reload(true)
 
 #### 自定义脚本
 
-**脚本1:**
+**脚本 1:**
+
 ```bash
 find . "(" -name "*.m" -or -name "*.mm" -or -name "*.cpp" -or -name "*.h" -or -name "*.rss" ")" -print | xargs wc -l
 ```
+
 缺点：
+
 - 需要自定义脚本：不同的编程语言，有不同的文件后缀名，需要自行配置；
 - 不能过滤掉注释；
 - 不能过滤掉空行
 
-**脚本2**
+**脚本 2**
+
 ```bash
 find . -name "*.m" -or -name "*.h" -or -name "*.xib" -or -name "*.c" |xargs grep -v "^$"|wc -l
 ```
+
 改进：
 去掉空行
 `xargs grep -v "^$"`
@@ -64,21 +293,23 @@ find . -name "*.m" -or -name "*.h" -or -name "*.xib" -or -name "*.c" |xargs grep
 
 [cloc](https://github.com/AlDanial/cloc) 是一个 perl 脚本，它可以统计很多种编程语言的代码文件中的空行、注释以及实际的代 码行数。
 
-CLOC是Count Lines of Code的意思，可以计算空行数、注释行数、各种语言的有效行数，还可以比较两个代码库在各种行数之间的不同。CLOC是完全由Perl实现的，不依赖第三方组件，移植性强。
+CLOC 是 Count Lines of Code 的意思，可以计算空行数、注释行数、各种语言的有效行数，还可以比较两个代码库在各种行数之间的不同。CLOC 是完全由 Perl 实现的，不依赖第三方组件，移植性强。
 
 下载安装 cloc.
+
 ```bash
  brew install cloc
 ```
 
 查看命令
+
 ```js
 cloc --help
 ```
 
 #### 拓展
 
-- [git 代码统计](https://segmentfault.com/a/1190000008542123) —— 可以统计本地Git仓库中不同贡献者的代码行数的一些方法
+- [git 代码统计](https://segmentfault.com/a/1190000008542123) —— 可以统计本地 Git 仓库中不同贡献者的代码行数的一些方法
 
 ### iframe 跨域通信
 
@@ -86,14 +317,13 @@ cloc --help
 
 `window.postMessage` 的功能是允许浏览器跨域在两个窗口间发送数据信息。它不是浏览器跟服务器之间交互，而是在两个客户端之间通信。
 
-`postMessage`是挂载在`window对象上`的，所以等`iframe`加载完毕后，用`iFrame.contentWindow`获取到`iframe`的`window`对象，然后调用`postMessage`方法，相当于给子页面发送了一条消息。我们只需要在子页面监听message事件，并且设置好回调函数即可
+`postMessage`是挂载在`window对象上`的，所以等`iframe`加载完毕后，用`iFrame.contentWindow`获取到`iframe`的`window`对象，然后调用`postMessage`方法，相当于给子页面发送了一条消息。我们只需要在子页面监听 message 事件，并且设置好回调函数即可
 
 > MDN 文档 [window.postMessage
-](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage)
-
-
+> ](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage)
 
 技术难点：
+
 - iframe 重新设置 src 不会重新加载的问题
 - iframe 所在的页面中通知父页面关闭魔胎框以及其他操作的问题（父子通信）
 
@@ -116,11 +346,12 @@ onmessage(res) {
 
 ### iframe 在更改了 src 之后对应的网页并未刷新
 
-子系统是通过 iframe 嵌入到父系统的，父系统会通过子系统发送的消息 URL，会直接访问子系统。出现了iframe 在更改了 src 之后对应的网页并不是对应的内容。于是看了网上的方案，在更改 `iframe src` 属性值之前加上这一句。
+子系统是通过 iframe 嵌入到父系统的，父系统会通过子系统发送的消息 URL，会直接访问子系统。出现了 iframe 在更改了 src 之后对应的网页并不是对应的内容。于是看了网上的方案，在更改 `iframe src` 属性值之前加上这一句。
 
 ```js
 document.getElementId('iframeId').contentWindow.location.reload(true);
 ```
+
 `window.Location.reload` 是重新加载当前需要的所有内容，`Location.reload()` 方法用来刷新当前页面。该方法只有一个参数，当值为 `true`时，将强制浏览器从服务器加载页面资源，当值为 `false` 或者未传参时，浏览器则可能从缓存中读取页面。引用 MDN [Location.reload()
 ](https://developer.mozilla.org/zh-CN/docs/Web/API/Location/reload)
 
@@ -129,6 +360,7 @@ document.getElementId('iframeId').contentWindow.location.reload(true);
 // 大多数浏览器可以通过设置在打开开发者工具时禁用缓存实现无缓存需求）
 window.location.reload(true);
 ```
+
 与之对应的方法是 `window.Re`
 
 通过上面的设置后，仍然不能实现效果。继续往下分析
@@ -136,6 +368,7 @@ window.location.reload(true);
 #### 解决
 
 由于系统的技术是 Vue，通过排查问题后，让子系统是立即监听路由的变化，来加载对应的组件。
+
 ```js
 watch: {
   id: {
@@ -155,14 +388,13 @@ watch: {
 ```
 
 并且在父系统上，把已有的 iframe 先移除，再重新加载，避免使用 `reload` 不生效的情况。
+
 ```js
 this.dataeyeShow = false; // 先关闭
-    this.$nextTick(() => {
-      this.enterdataeyeUrl = `${
-        this.$store.getters.config.DATAEYE
-      }releasePage/${pageId}`;
-      this.dataeyeShow = true; // 后开启，重新渲染
-    });
+this.$nextTick(() => {
+  this.enterdataeyeUrl = `${this.$store.getters.config.DATAEYE}releasePage/${pageId}`;
+  this.dataeyeShow = true; // 后开启，重新渲染
+});
 ```
 
 #### iframe 有哪些缺点？
@@ -186,22 +418,23 @@ this.dataeyeShow = false; // 先关闭
 
 - 直接给组件添加`disabled`属性，但是这样的话，如果需要禁用多个组件的话，就很很麻烦了。因此，我们需要用指令来代替。
 - 改写现有的指令，提供颜色。
-  
+
 - 自定义指令
-动态判断。
+  动态判断。
+
 ```js
 export default {
   inserted(el, binding) {
     if (binding.value && binding.value.disabled) {
-      el.classList.add("system-model-disabled");
+      el.classList.add('system-model-disabled');
     }
   },
   // 所在组件  vnode 更新时调用
   update(el, binding) {
     if (binding.value && binding.value.disabled) {
-      el.classList.add("system-model-disabled");
-    } else if (el.classList.contains("system-model-disabled")) {
-      el.classList.remove("system-model-disabled");
+      el.classList.add('system-model-disabled');
+    } else if (el.classList.contains('system-model-disabled')) {
+      el.classList.remove('system-model-disabled');
     }
   }
 };
@@ -209,7 +442,7 @@ export default {
 
 #### 参考资料
 
-- [如何disabled禁用所有表单input输入框元素](https://www.zhangxinxu.com/wordpress/2019/04/disabled-all-form-elements/)
+- [如何 disabled 禁用所有表单 input 输入框元素](https://www.zhangxinxu.com/wordpress/2019/04/disabled-all-form-elements/)
 
 ### 节点的属性
 
@@ -218,6 +451,7 @@ export default {
 - 是否可以取消选中
 
 应用
+
 ```js
  handleClickItem(data) {
     const { id } = data;
@@ -253,9 +487,11 @@ export default {
 ```
 
 在 vue 中，动态设置节点属性的话，要用`$set`才能保持响应式。
+
 ```js
-if (!data.hasData) { // 设置禁用
-  this.$set(data, "disabled", true);
+if (!data.hasData) {
+  // 设置禁用
+  this.$set(data, 'disabled', true);
 }
 ```
 
@@ -267,7 +503,7 @@ if (!data.hasData) { // 设置禁用
 
 #### 导语
 
-日常中，我们可能会遇到不少跨域通信的问题，其中一个可以实现跨域通信的方案是通过`postMessage iframe 跨域`来通信，但是我不希望`iframe`元素占用我的CSS 布局，我想要视觉上隐藏它，但是不能影响它的正常功能如通信。用 CSS 隐藏页面元素有许多种方法，
+日常中，我们可能会遇到不少跨域通信的问题，其中一个可以实现跨域通信的方案是通过`postMessage iframe 跨域`来通信，但是我不希望`iframe`元素占用我的 CSS 布局，我想要视觉上隐藏它，但是不能影响它的正常功能如通信。用 CSS 隐藏页面元素有许多种方法，
 
 - opacity 设为 0
 - visibility 设置 hidden。
@@ -283,7 +519,9 @@ if (!data.hasData) { // 设置禁用
   opacity: 0;
 }
 ```
+
 除了用来隐藏元素外，我们可以用 `opacity` 实现一些体验比较好的动画。
+
 ```css
 .o-hide {
   opacity: 0;
@@ -299,7 +537,7 @@ if (!data.hasData) { // 设置禁用
 
 第二个属性 `visibility` ，将它的值设为 `hidden` 将隐藏我们的元素。跟 `opacity` 属性一样，被隐藏的元素依然会对我们的网页布局起作用。与 `opacity` 不同的是它不会响应任何用户交互。
 
-注意：如果一个元素的 `visibility` 被设置为 `hidden`，同时想要显示它的某个子孙元素A，只要将这个 A 的 `visibility` 显式设为 `visible` 即可。
+注意：如果一个元素的 `visibility` 被设置为 `hidden`，同时想要显示它的某个子孙元素 A，只要将这个 A 的 `visibility` 显式设为 `visible` 即可。
 
 #### Display
 
@@ -310,27 +548,30 @@ if (!data.hasData) { // 设置禁用
 #### Position
 
 假设有一个元素你想要与它交互，但是你又不想让它影响你的网页布局，没有合适的属性可以处理这种情况（opacity 和 visibility 影响布局， display 不影响布局但又无法直接交互。在这种情况下，你只能考虑将元素移出可视区域。这个办法既不会影响布局，有能让元素保持可以操作。下面是采用这种办法的 CSS：
+
 ```css
 .hide {
-   position: absolute;
-   top: -9999px;
-   left: -9999px;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
 }
 ```
+
 用 DOM 模拟复选框和单选按钮，但用这个方法隐藏真正的 checkbox 和 radio 元素来“接收”焦点切换.
 
 #### Clip-path
 
 隐藏元素的另一种方法是通过剪裁它们来实现。在以前，这可以通过 clip 属性来实现，但是这个属性被废弃了，换成一个更好的属性叫做 clip-path。
+
 ```css
 .hide {
-  clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px);
+  clip-path: polygon(0px 0px, 0px 0px, 0px 0px, 0px 0px);
 }
 ```
 
 #### 参考资料
 
-- [用 CSS 隐藏页面元素的 5种方法](https://75team.com/post/five-ways-to-hide-elements-in-css.html)
+- [用 CSS 隐藏页面元素的 5 种方法](https://75team.com/post/five-ways-to-hide-elements-in-css.html)
 
 ### 正则表达式验证——过滤掉带有分析方式的名称
 
@@ -348,17 +589,19 @@ this.indicatorNames = indicatorNames.filter(item => {
 #### 安装
 
 ```bash
-yarn add vuepress-plugin-zooming 
+yarn add vuepress-plugin-zooming
 ```
 
 #### 使用
 
 在配置文件中引入`vuepress-plugin-zooming`。
+
 ```js
 // .vuepress/config.js
 module.esxports = {
-   plugins: [
-    'vuepress-plugin-zooming', {
+  plugins: [
+    'vuepress-plugin-zooming',
+    {
       // 支持点击缩放的图片元素的选择器
       selector: 'img',
       // 进入一个页面后，经过一定延迟后使页面中的图片支持缩放
@@ -368,11 +611,11 @@ module.esxports = {
       // 默认值: {}
       options: {
         bgColor: 'black',
-        zIndex: 10000,
+        zIndex: 10000
       }
     }
   ]
-}
+};
 ```
 
 #### 参考
@@ -402,6 +645,7 @@ function contains(selector, text) {
 
 检测文件时，跑 lint，从多个文件进行处理。
 （场景：检测是否带有 es6 语法导致创建微件错误，低版本浏览器）
+
 ```js
 yarn lint widgets/**/Widget.js
 ```
@@ -415,7 +659,7 @@ yarn lint widgets/**/Widget.js
 
 要实现这样的一个需求，渲染多个组的表单，每组包含相同的表单控件，需要对表单进行双向绑定，之所以要绑定是因为要实现历史的条件的恢复，也就是默认的选中功能。下面通过两个业务场景来阐述。
 
-抽象：输入➡️输出
+抽象：输入 ➡️ 输出
 对应：存入以及取出
 
 ### 双向绑定
@@ -426,7 +670,7 @@ yarn lint widgets/**/Widget.js
 
 问题：一开始没有绑定唯一的 key 时，会出现这样的情况。选择一个下拉框时，其他下拉框的值也被同步设定了，因为它们的 key 值相同。
 
-解决方案一：动态生成每个下拉框需要的 key 值，然后通过 v-model 进行双向绑定，存到父组件的一个对象selectedRule 里，当前一个组件几十个一个 key不会出现页面卡顿的情况，如果超过几百个的话可能会有操作延迟的情况。
+解决方案一：动态生成每个下拉框需要的 key 值，然后通过 v-model 进行双向绑定，存到父组件的一个对象 selectedRule 里，当前一个组件几十个一个 key 不会出现页面卡顿的情况，如果超过几百个的话可能会有操作延迟的情况。
 
 解决方案二：不用 v-model 绑定。
 
@@ -449,72 +693,65 @@ yarn lint widgets/**/Widget.js
 
 #### 导语
 
-需要针对指标项进行分类，后台把所有的指标项都返回，数据格式为数组形式，数组里包含指标对象，分类文件通过前端 JSON 配置。因此在渲染的时候（这里我最终渲染的UI为树），需要求它们的交集，也就是抽象成为求两个数组的交集。
+需要针对指标项进行分类，后台把所有的指标项都返回，数据格式为数组形式，数组里包含指标对象，分类文件通过前端 JSON 配置。因此在渲染的时候（这里我最终渲染的 UI 为树），需要求它们的交集，也就是抽象成为求两个数组的交集。
+
 ```js
 // 获取的信息
 const a = [
-  { 
-    id: 1, 
+  {
+    id: 1,
     title: '耕地面积',
     dims: []
-  }, 
-  { 
-    id: 2, 
+  },
+  {
+    id: 2,
     title: '常住人口',
     dims: []
   }
 ];
 // 配置文件
-const b = [ 
+const b = [
   {
-    title: "分类一", 
-    value: [ 
-      {id: 1, title: '耕地面积'} 
-    ]
+    title: '分类一',
+    value: [{ id: 1, title: '耕地面积' }]
   },
   {
-    title: "分类二", 
-    value: [ 
-      {id: 2, title: '常住人口'} 
-    ]
+    title: '分类二',
+    value: [{ id: 2, title: '常住人口' }]
   }
-]
+];
 // 目标输出
 const target = [
   {
-    title: "分类一", 
-    children: [ 
-      {id: 1, title: '耕地面积'} 
-    ]
+    title: '分类一',
+    children: [{ id: 1, title: '耕地面积' }]
   },
   {
-    title: "分类二", 
-    children: [ 
-      {id: 2, title: '常住人口'} 
-    ]
+    title: '分类二',
+    children: [{ id: 2, title: '常住人口' }]
   }
-]
+];
 ```
 
 #### 解决方案
 
 一开始考虑用原生 JS 这样实现，但是发现不行，因为我的需求是希望通过比对数组里的对象某个属性，下面这种方式既无法比较对象，也无法比较到对象里面的值。
+
 ```js
-let intersection = a.filter(v => b.includes(v))
+let intersection = a.filter(v => b.includes(v));
 ```
 
 由于业务的关系，先使用了 lodash 提供了这个 api，传入两个数组以及它们共同的属性即可。
+
 ```js
-intersectionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x');
+intersectionBy([{ x: 1 }], [{ x: 2 }, { x: 1 }], 'x');
 ```
 
 具体业务实现
+
 ```js
 const data = [];
- const [
-  indexDataCategory,
-  indicators
-] = await Promise.all([
+const [indexDataCategory, indicators] = await Promise.all([
   this.fetchIndexDataCategory(),
   this.fetchIndicators()
 ]);
@@ -524,11 +761,7 @@ const data = [];
 indexDataCategory.forEach(item => {
   const obj = {};
   obj.title = item.label;
-  obj.children = this.$lodash.intersectionBy(
-    indicators,
-    item.value,
-    "title"
-  );
+  obj.children = this.$lodash.intersectionBy(indicators, item.value, 'title');
   data.push(obj);
 });
 ```
@@ -543,6 +776,7 @@ indexDataCategory.forEach(item => {
 ### Vue CLI 请求本地的 JSON 文件
 
 有些时候，需要在前端配置 JSON 文件，通常是把静态文件放到本地项目的 static 文件夹下。我们可以通过使用 axios 进行请求，具体如下：
+
 ```js
 async fetchIndustryApplication() {
   try {
@@ -561,18 +795,21 @@ async fetchIndustryApplication() {
 
 结论：其实放到哪里都没关系，当我们 `npm install` 的时候两种包都会下载。但是如果将 NODE_ENV 设置为 produciton 就只会安装 dependencies，这样在持续集成的时候，进行自动化部署的时候就会花更少的时间。(但是如果要在线上跑测试的话，就需要 npm install 安装所有依赖。因为测试框架 Jest 安装在开发依赖对象里。）
 这里当然我们也可以使用下面的命令：
+
 ```bash
 npm install  - -prod[uction] 安装 dependencies 或 NODE_ENV=production npm install
 npm install  - -dev[elopment] 安装 devDependencies
 ```
+
 这里是社区的建议：
+
 - dependencies
   - 框架：React，AngularJS，Vue.js
   - 工具库：lodash
-- devDependencies  
+- devDependencies
   - 测试框架：Jest，Mocha，Jasmine
   - 格式化工具：ESLint，Prettier
-  - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。） 
+  - 构建工具、预处理器：webpack，Babel（因为生产环境的代码已经被转换和压缩过了。）
 
 ### axios 不会对 URL 中的功能性字符进行编码
 
@@ -582,39 +819,43 @@ npm install  - -dev[elopment] 安装 devDependencies
 `http://10.10.67.67/dgp-server-web-nr/rest/pas/v1/naturalRes/indicator/dimension/date?ids[]=500565`
 
 在 axios 中的 GET 基本使用
+
 ```js
-axios.get('/user', {
+axios
+  .get('/user', {
     params: {
       ID: 12345
     }
   })
-  .then(function (response) {
+  .then(function(response) {
     console.log(response);
   })
-  .catch(function (error) {
+  .catch(function(error) {
     console.log(error);
   })
-  .then(function () {
+  .then(function() {
     // always executed
-  });  
+  });
 ```
 
 这里是对 GET 进行了一个此封装。
 
 实际中的调用：
+
 ```js
 // xxxx/module.js 模块封装的函数
-import { GET } from "@/plugins/axios";
+import { GET } from '@/plugins/axios';
 export function getCityByIndicators(params) {
   return GET(
     `rest/pas/v1/naturalRes/indicator/dimension/city`,
-    "根据指标获取以行政区排序的城市数据",
+    '根据指标获取以行政区排序的城市数据',
     params
   );
-} 
+}
 ```
 
 在实际的 Vue 组件中进行请求
+
 ```js
 // xxx.vue
 async getCityRegionData() {
@@ -629,11 +870,13 @@ async getCityRegionData() {
     }
   },
 ```
+
 经过排查后，发现是 axios 中会对 get 请求的整个 url 进行 encodeURI，导致有些 get 方法不能传 []。
 
 #### URL 包含特殊字符
 
 在请求中如果 url 包含特殊字符的话，可能导接口接收参数失败，所以前端需要对特殊自负进行 encode，方法有两种：
+
 - encodeURI()
 
 对整个 url 进行编码，会避开 url 中的功能性字符，例如，&?[]
@@ -689,7 +932,6 @@ interceptors(instance = this.instance) {
 
 - 掘金文章：[vueCli 本地开发设置个区分明显的 favicon](https://juejin.im/post/5d61566c5188251e69336f3b)
 
-
 ## 七月
 
 ### Vue 执行默认选中
@@ -718,8 +960,6 @@ methods: {
 }
 ```
 
-
-
 ### async/await 使用
 
 #### 捕获错误
@@ -735,7 +975,7 @@ async function asyncAwaitTryCatch() {
     console.log('Error was not thrown');
 
     const photo = await api.getPhoto(user.id);
-    console.log('async/await', { user, friends, photo })
+    console.log('async/await', { user, friends, photo });
   } catch (err) {
     console.log(err);
   }
@@ -745,6 +985,7 @@ async function asyncAwaitTryCatch() {
 #### 组合
 
 - 调用 async 函数作为一个 promise 对象来返回数据
+
 ```js
 async function getUserInfo() {
   const api = new Api()
@@ -758,7 +999,7 @@ function promiseUserInfo() {
   getUserInfo().then({ user, friends, photo }) => {
     console.log('promiseUserInfo', { user, friends, photo })
   }
-} 
+}
 
 // 或者继续使用 async/await 语法
 async function awaitUserInfo () {
@@ -768,24 +1009,27 @@ async function awaitUserInfo () {
 ```
 
 - 检索前十个用户的所有数据
+
 ```js
 async function getLotsOfUserData() {
-  const users = []
-  while(users.length < 10) {
-    users.push(await getUserInfo())
+  const users = [];
+  while (users.length < 10) {
+    users.push(await getUserInfo());
   }
-  console.log('getLotsOfUserData', users)
+  console.log('getLotsOfUserData', users);
 }
 ```
+
 - 并发请求
+
 ```js
 async function getLotsOfUserDataFaster() {
   try {
-    const userPromises = Array(10).fill(getUserInfo())
-    const users = await Promise.all(userPromises)
-    console.log('getLotsOfUserDataFaster', users)
+    const userPromises = Array(10).fill(getUserInfo());
+    const users = await Promise.all(userPromises);
+    console.log('getLotsOfUserDataFaster', users);
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 ```
@@ -793,13 +1037,14 @@ async function getLotsOfUserDataFaster() {
 ### transform 对 fixed 的影响
 
 - 需求：需要对 iview 的模态框的样式进行自定义覆盖，因此就是 transfer:false 把 Modal 渲染到父组件内。此时会出现问题。
-- 症状：使用了 iview Modal 组件时，如果设置了 transfer: false 属性时，有时候会出现无法打开Modal 框的现象，原因可能在于父元素设置了
-transform 属性。因此
-- 原因：应用了transform属性的元素会导致该元素形成一个新的包含块，然后其后代元素如果有fixed定位的属性，那么其元素将会以该父元素作为包含块。
+- 症状：使用了 iview Modal 组件时，如果设置了 transfer: false 属性时，有时候会出现无法打开 Modal 框的现象，原因可能在于父元素设置了
+  transform 属性。因此
+- 原因：应用了 transform 属性的元素会导致该元素形成一个新的包含块，然后其后代元素如果有 fixed 定位的属性，那么其元素将会以该父元素作为包含块。
 - 分析：iview 使用了 transfer-dom 指令来解决上面的问题，把 modal 移动到 body 下面。
 - 解决：因此如果需要自定义覆盖 modal 的样式，又不能渲染到父组件内，要想避免污染全局样式，此时建议通过类名去限制作用域。
 
 测试样例
+
 ```html
 <div style="transform: translateX(-50%); height: 900px;">
   <div>
@@ -808,35 +1053,35 @@ transform 属性。因此
 </div>
 ```
 
-### flex布局中使用iview的table表格的宽度会计算出错,导致很长的宽度
+### flex 布局中使用 iview 的 table 表格的宽度会计算出错,导致很长的宽度
 
 场景：两边固定，中间自适应
 
-- 原因：设置了flex-grow元素的子级宽度问题
+- 原因：设置了 flex-grow 元素的子级宽度问题
 - 解决：给该子元素设置 `overflow: auto;` 或 `width: 0;`
 
 ```css
-  .container {
-    display: flex;
-    height: 100%;
-  }
-  .left {
-    width: 300px;
-    /* flex: 0 0 300px; */
-    flex-shrink: 0;
-    background: chocolate;
-  }
-  .right {
-    width: 200px;
-    flex-shrink: 0;
-    /* flex: 0 0 200px; */
-    background: cadetblue;
-  }
-  .content {
-    flex-grow: 1;
-    background: hotpink;
-    overflow: hidden;
-  }
+.container {
+  display: flex;
+  height: 100%;
+}
+.left {
+  width: 300px;
+  /* flex: 0 0 300px; */
+  flex-shrink: 0;
+  background: chocolate;
+}
+.right {
+  width: 200px;
+  flex-shrink: 0;
+  /* flex: 0 0 200px; */
+  background: cadetblue;
+}
+.content {
+  flex-grow: 1;
+  background: hotpink;
+  overflow: hidden;
+}
 ```
 
 ### 了解 babel
@@ -845,18 +1090,18 @@ transform 属性。因此
 2. babel-preset-env: 包含 es6、7 等版本的语法转化规则
 3. babel-polyfill: es6 内置方法和函数转化垫片
 4. babel-plugin-transform-runtime: 避免 polyfill 污染全局变量
-需要注意的是, babel-loader和babel-polyfill。前者负责语法转化，比如：箭头函数；后者负责内置方法和函数，比如：new Set()。
+   需要注意的是, babel-loader 和 babel-polyfill。前者负责语法转化，比如：箭头函数；后者负责内置方法和函数，比如：new Set()。
 
 #### babel
 
-Babel什么都不做，它的行为就像const Babel = code => code;通过解析代码，然后再次生成相同的代码。您将需要为Babel添加一些插件来执行诸如置换es6、JSX之类的操作
+Babel 什么都不做，它的行为就像 const Babel = code => code;通过解析代码，然后再次生成相同的代码。您将需要为 Babel 添加一些插件来执行诸如置换 es6、JSX 之类的操作
 
 #### babel-core
 
-如果你想在你的真实项目中使用babel，你需要安装babel但是
+如果你想在你的真实项目中使用 babel，你需要安装 babel 但是
 没有 `babel` 包可用。
 
-babel将它分成两个独立的包：`babel-cli`和`babel-core`
+babel 将它分成两个独立的包：`babel-cli`和`babel-core`
 **babel-cli**：可用于从命令行编译文件。
 **babel-core**：如果你想使用 Node API，你可以安装`babel-core`
 ，与“babel-cli”相同，除非您在应用程序内以编程方式使用它。
@@ -869,7 +1114,7 @@ babel将它分成两个独立的包：`babel-cli`和`babel-core`
 
 #### babel-preset-es2015
 
-`babel-preset-env`支持es2015特性，并取代了es2015、es2016、es2017和最新版本。因此，使用`babel-preset-env`，它的行为与`babel-preset-latest`完全相同(或者将babel-preset-es2015、babel-preset-es2016和babel-preset-es2017放在一起)。
+`babel-preset-env`支持 es2015 特性，并取代了 es2015、es2016、es2017 和最新版本。因此，使用`babel-preset-env`，它的行为与`babel-preset-latest`完全相同(或者将 babel-preset-es2015、babel-preset-es2016 和 babel-preset-es2017 放在一起)。
 
 #### babel-preset-react
 
@@ -877,32 +1122,32 @@ babel将它分成两个独立的包：`babel-cli`和`babel-core`
 
 #### babel-polyfill
 
-没有`babel-polyfill`, babel只允许您使用箭头函数、析构、默认参数和ES6中引入的其他特定于语法的特性。新的ES6内置组件(如Set、Map和Promise)必须是polyfill，以包含应用程序入口点顶部需要的polyfill。
+没有`babel-polyfill`, babel 只允许您使用箭头函数、析构、默认参数和 ES6 中引入的其他特定于语法的特性。新的 ES6 内置组件(如 Set、Map 和 Promise)必须是 polyfill，以包含应用程序入口点顶部需要的 polyfill。
 
 #### babel-loader
 
-你理解了babel-core，babel-cli，以及为什么需要预设，插件，现在
-你每次都是从`babel-cli`逐个文件地编译ES6到ES5。
+你理解了 babel-core，babel-cli，以及为什么需要预设，插件，现在
+你每次都是从`babel-cli`逐个文件地编译 ES6 到 ES5。
 要摆脱这个，你需要捆绑任务`/ js`文件。 因此你需要用`WebPack`。
 
-`loader` 有点像任务，它们通过将各种文件转换为webpack可以处理的有效模块，为各种文件提供了利用webpack捆绑功能的能力。
+`loader` 有点像任务，它们通过将各种文件转换为 webpack 可以处理的有效模块，为各种文件提供了利用 webpack 捆绑功能的能力。
 
-Webpack通过`Babel -loader`提供了强大的Babel支持。
+Webpack 通过`Babel -loader`提供了强大的 Babel 支持。
 
 #### devDependencies
 
-当您部署应用程序时，需要安装依赖项中的模块，否则应用程序将无法工作。devDependencies中的模块不需要安装在生产服务器上，因为您不是在这台机器上开发的。
+当您部署应用程序时，需要安装依赖项中的模块，否则应用程序将无法工作。devDependencies 中的模块不需要安装在生产服务器上，因为您不是在这台机器上开发的。
 
 这些包只用于开发和测试。
 
 #### 难道没有任何单一的依赖来取代它们吗？
 
-当您阅读上述时，您的确需要一些预置和加载器来转换es2015或JSX文件。
+当您阅读上述时，您的确需要一些预置和加载器来转换 es2015 或 JSX 文件。
 
 #### babel -> @babel
 
-从`Babel 7`开始，Babel团队就开始使用[scoped包](https://babeljs.io/docs/en/next/v7-migration#scoped-packages)，这样做是为了更好地区分哪些包是官方的，哪些包是第三方的。
-所以你现在必须使用@ babel / core而不是babel-core。
+从`Babel 7`开始，Babel 团队就开始使用[scoped 包](https://babeljs.io/docs/en/next/v7-migration#scoped-packages)，这样做是为了更好地区分哪些包是官方的，哪些包是第三方的。
+所以你现在必须使用@ babel / core 而不是 babel-core。
 
 您的依赖项需要像这样修改：
 
@@ -1265,8 +1510,6 @@ server.listen(8080);
 
 <!-- ### postMessage 实现跨域通信 -->
 
-
-
 ## 四月
 
 ### 多维数组指定子项扁平化函数
@@ -1478,6 +1721,7 @@ async function test() {
 ### eslint+lint-staged 禁用老项目中的 ES6
 
 用惯了 es6，在编写广州一体化中，会在有些地方使用了 es6 语法，导致在低版本的浏览器中出现微件加载错误。于是我就用了 eslint 在提交的代码时进行语法检查。列下步骤，复习下。
+
 1. 步骤一：本地仓库安装 yarn add eslint 或者 npm install eslint
 2. 步骤二：安装后，进行初始化 eslint —init，生成配置文件 .eslintrc.js
 
@@ -1522,5 +1766,3 @@ module.exports = {
 }
 
 ```
-
-
