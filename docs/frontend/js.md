@@ -4,6 +4,28 @@
 
 ## 基础
 
+### 浏览器操作及其它
+
+#### 返回指定函数的生效样式
+
+```js
+const getStyle = (el, ruleName) => getComputedStyle(el)[ruleName];
+getStyle(document.querySelector('p'), 'font-size')
+```
+
+#### smoothScroll: 滚动到指定元素区域
+
+该代码块可将指定元素滚动到浏览器窗口的可见区域。
+```js
+const smoothScroll = element => {
+  document.querySeletor(element).scrollIntoView({
+    behavior: 'smooth'
+  });
+}
+smoothScroll('#fooBar')
+smoothScroll('.fooBar')
+```
+
 ## 事件
 
 ### 事件绑定
@@ -50,7 +72,6 @@ let p = new Rectangle();
 // ReferenceError
 class Rectangle {}
 ```
-下面是应用例子
 
 #### jQuery 的链式调用
 

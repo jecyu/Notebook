@@ -82,3 +82,16 @@ npm config get registry
 
 - ^ 会匹配安装最新的大版本依赖包，比如^1.2.3会匹配所有1.x.x的包，包括1.3.0，但是不包括2.0.0
 
+## yarn add 
+
+大多数的包会从 `npm registry` 目录里以包名来安装。
+1. yarn add package-name 会安装 latest 最新版本。
+2. yarn add package-name@1.2.3 会从 registry 里安装这个包的指定版本。
+3. yarn add package-name@tag 会安装某个 “tag” 标识的版本（比如 beta、next 或者 latest）。
+
+指定不同路径的包：
+1. yarn add file:/path/to/local/folder 从本地系统里安装一个包，可以用这种方式测试还没发布的包。
+2. yarn add file:/path/to/local/tarball.tgz 安装一个 gzipped 压缩包，此格式可以用于在发布之前分享你的包。
+3. yarn add <git remote url> 从远程 git repo 里安装一个包。
+4. yarn add <git remote url>#<branch/commit/tag> 从一个远程 git 仓库指定的 git 分支、git 提交记录或 git 标签安装一个包。
+5. yarn add https://my-project.org/package.tgz 用一个远程 gzipped 压缩包来安装。

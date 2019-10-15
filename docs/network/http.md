@@ -136,3 +136,4 @@ XML-RPC 协议简单、功能够用，各种语言的实现都有。它的使用
 ## 参考资料
 
 - [HTTP请求方法详解](https://juejin.im/entry/5b004085f265da0b886daf7c)
+- [MIME 类型](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types) -- 浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理 URL。

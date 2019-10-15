@@ -28,6 +28,10 @@ Promise.resolve(1)
   })
 ```
 
+## 类
+
+### Class 的继承
+
 ## 模块
 
 ### 命名导出（Named exports）
@@ -82,9 +86,9 @@ console.log(diag(4, 3)); // 5
 
 无论怎样导出，引入的时候都需要`{} `
 
-## 导入
+### 导入
 
-### 常规导入
+#### 常规导入
 
 ```js
 import { square, diag } from 'a.js';	
