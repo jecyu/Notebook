@@ -1,4 +1,4 @@
-# vue
+# Vue
 
 ## 插槽
 
@@ -243,6 +243,183 @@ localStorage.save(PRODUCTROUTERPARAMS, {
 获取配置的路由
 ```js
 vm.$router.options.routes
+```
+
+## 权限路由
+
+流程：
+1. 获取权限路由（进行扁平化格式化）➡ 获得格式化的路由 permissionMap
+2. 获得本地设置的路由，递归遍历路由每个 route，在 permissionMap 寻找是否存在 route，如果存在则返回该 permissionInfo 的信息。
+3. 获得合并后的路由 accessRoutes ，然后在路由拦截里动态添加路由
+```js
+/** *
+ * @description 格式化权限信息，将array转为hash
+ * @param {Array} permission [权限信息]
+ * @param {Object} permissionMap [转换后权限对象]
+ */
+const formatPermission = (permission, permissionMap = {}) => {
+  if (Array.isArray(permission)) {
+    permission.forEach((item, index) => { 
+      const { title, name, type, meta, code } = item;
+      if (type === "route") {
+        const permissionInfo = { ...meta, title, code, index };
+        const rotueKey = String(name).toLowerCase();
+        permissionMap[rotueKey] = permissionInfo;
+
+        if (item.children && Array.isArray(item.children)) {
+          const { route, component, operation } = separateChildren(
+            item.children,
+            code
+          );
+          permissionInfo.components = component;
+          permissionInfo.operations = operation;
+          if (route && Array.isArray(route)) {
+            route.map(routeItem => {
+              routeItem.code = routeItem.code || code;
+            });
+            formatPermission(route, permissionMap);
+          }
+        }
+      }
+    });
+  }
+  return permissionMap;
+};
+
+/**
+ * @description 根据权限对象来判断是否有权限访问当前路由
+ * @param {Object} routeInfo [路由信息]
+ * @param {Object} permissionMap [权限对象]
+ * @returns {Object} permissionInfo [权限信息]
+ */
+const hasPermission = (routeInfo, permissionMap) => {
+  const permissionInfo = permissionMap[String(routeInfo.name).toLowerCase()];
+  return permissionInfo;
+};
+
+/**
+ * @description 获取有权限访问的路由
+ * @param {Array} asyncRoutes [本地动态路由]
+ * @param {Array} permission [后台返回带路由信息的功能结构列表]
+ */
+export const generateAsyncRoutes = (asyncRoutes, permission) => {
+  const permissionMap = formatPermission(permission);
+
+  return filterAsyncRoutesByPermissionMap(asyncRoutes, permissionMap);
+};
+
+/**
+ * @description: 根据运维路由权限，过滤本地路由文件
+ * @param {Array} asyncRoutes 本地设置的路由
+ * @param {Object} permissionMap 扁平化的权限路由规则对象
+ * @return: array 过滤后的本地路由文件
+ */
+const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
+  const res = [];
+  asyncRoutes.forEach(route => {
+    // if (route.path === "*") {
+    //   res.push(tmp)
+    // }
+    const tmp = { ...route };
+    let permissionInfo = hasPermission(tmp, permissionMap);
+
+    if (permissionInfo) {
+      tmp.meta = tmp.meta || {};
+      let filteredPermissionInfo = filterObject(permissionInfo); //  删除对象为空的属性
+      tmp.meta = Object.assign(tmp.meta, filteredPermissionInfo); // 合并对象
+      tmp.meta.navTitle = tmp.meta.title; // route.meta混入权限信息
+      if (tmp.children) {
+        tmp.children = filterAsyncRoutesByPermissionMap(
+          tmp.children,
+          permissionMap
+        );
+      }
+      // 按运维配置顺序对路由进行排序
+      res[tmp.meta.index] = tmp;
+    }
+  });
+
+  return res.filter(item => !!item);
+};
+```
+
+### 当出现重定向的问题时如何解决 404 的问题
+
+运维把一级系统的子系统路由删掉了，但是一级系统设置了 redirect 属性值为子系统路由，这种情况如何处理？
+方案一：首先判断`tmp.redirect`是否存在，该一级系统的这个重定向子系统是否存在（路由信息），不存在的话，顺位直接寻找下一个，然后设置 `tmp.redirect= { name: firstChildName } ` 
+都不存在的话，则把这个删除重定向的属性`delete tmp.redirect`。
+
+原则是：需要把要重定向的系统路由放到第一位。针对这个痛点，解决方案是先判断对应的 redirect 的路由权限是否存在，不存在再走下面的逻辑。
+注意要处理：redirect 的两种情况，它有可能是字符串 path 形式，也可能是对象 `{name: 'xxx'}` 形式。
+```js
+const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
+  const res = [];
+  asyncRoutes.forEach(route => {
+    const tmp = { ...route };
+    let permissionInfo = hasPermission(tmp, permissionMap);
+
+    if (permissionInfo) {
+      tmp.meta = tmp.meta || {};
+      let filteredPermissionInfo = filterObject(permissionInfo);
+      tmp.meta = Object.assign(tmp.meta, filteredPermissionInfo);
+      tmp.meta.navTitle = tmp.meta.title; // route.meta混入权限信息
+
+      if (tmp.children) {
+        // 当有重定向的字段redirect时
+        if (tmp.children.length > 0 && tmp.hasOwnProperty("redirect")) {
+          let routeInfo = {};
+          if (typeof tmp.redirect === "object") {
+            routeInfo = tmp.redirect;
+          } else if (typeof tmp.redirect === "string") {
+            const strArr = tmp.redirect.split("/");
+            routeInfo = {
+              name: strArr[strArr.length - 1]
+            };
+          } else {
+            console.log("本地路由redirect字段值设置错误");
+          }
+          const isHasRedirectPermisson = hasPermission(
+            routeInfo,
+            permissionMap
+          );
+          // 本地设置的重定向路由不存在运维里权限路由
+          if (!isHasRedirectPermisson) {
+            // 取出该路由节点下第一个有权限的子节点
+            let firstChildrenHasPermission = null;
+            for (let i = 0; i < tmp.children.length; i++) {
+              const childRouter = tmp.children[i];
+              const childPermissionInfo = hasPermission(
+                childRouter,
+                permissionMap
+              );
+              if (childPermissionInfo) {
+                firstChildrenHasPermission = childPermissionInfo;
+                break;
+              }
+            }
+            if (firstChildrenHasPermission) {
+              tmp.redirect = {
+                name: firstChildrenHasPermission.name
+              };
+            } else {
+              console.log(tmp);
+              // 没有权限，删除重定向字段
+              delete tmp.redirect;
+            }
+          }
+        }
+        tmp.children = filterAsyncRoutesByPermissionMap(
+          tmp.children,
+          permissionMap
+        );
+      }
+      // 按运维配置顺序对路由进行排序
+      res[tmp.meta.index] = tmp;
+    }
+  });
+
+  return res.filter(item => !!item);
+};
 ```
 
 ### query 与 params 的区别与使用

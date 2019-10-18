@@ -12,7 +12,8 @@ module.exports = {
         bgColor: 'black',
         zIndex: 10000,
       }
-    }
+    },
+    'vuepress-plugin-smooth-scroll'
   ],
   base: "/Notebook/",
   title: "Jecyu's Notebook",
@@ -57,12 +58,21 @@ module.exports = {
       },
       {
         text: "🔗Github",
-        link: "https://github.com/Jecyu"
+        items: [
+          {
+            text: "Jecyu github",
+            link: "https://github.com/Jecyu"
+          },
+          {
+            text: "英语学习",
+            link: "https://jecyu.github.io/language-learning/"
+          },
+          {
+            text: "前端自动化测试",
+            link: "https://jecyu.github.io/Fe-Auto-Testing/"
+          },
+        ]
       },
-      {
-        text: "英语学习",
-        link: "https://github.com/Jecyu"
-      }
     ],
     // sidebar: "auto",
     sidebar: {
@@ -127,7 +137,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: ["", "architecture", "chrome", "browser", "noJQ", "css", 'js', "es6", "performance", "vue", "npm", "lodash"]
+          children: ["js", "", "react", "architecture", "chrome", "browser", "noJQ", "css",  "es6", "performance", "vue", "npm", "lodash"]
         }
       ],
       "/network/": [

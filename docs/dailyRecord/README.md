@@ -2,10 +2,37 @@
 
 ## 十月
 
+### 使用JavaScript获取Base64 PNG的像素颜色
+
+https://stackoverflow.com/questions/3528299/get-pixel-color-of-base64-png-using-javascript
+原理：通过把图片画到 canvas 上，通过 `getImageData` 获得。
+```js
+var image = new Image();
+image.onload = function() {
+    var canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    var context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    // Now you can access pixel data from imageData.data.
+    // It's a one-dimensional array of RGBA values.
+    // Here's an example of how to get a pixel's color at (x,y)
+    var index = (y*imageData.width + x) * 4;
+    var red = imageData.data[index];
+    var green = imageData.data[index + 1];
+    var blue = imageData.data[index + 2];
+    var alpha = imageData.data[index + 3];
+};
+```
+
+
 ### 计算容器顶部的高度
 
 `Element.getBoundingClientRect()`
-
 
 ### webpack 编译时与运行时
 
@@ -13,13 +40,13 @@
 
 编译时
 
-编译时顾名思义就是正在编译的时候，什么叫编译呢？就是编译器帮你把源代码翻译成机器能识别的代码。（当然只是一般意义上这么说，实际上可能只是翻译成某个中间状态的语言。比如 Java 只有 JVM 识别的字节码。）编译时就是简单的作一些翻译工作，词法分析、语法分析之类的。
+编译时顾名思义就是正在编译的时候，什么叫编译呢？就是编译器帮你把源代码翻译成机器能识别的代码。（**当然只是一般意义上这么说，实际上可能只是翻译成某个中间状态的语言。**比如 Java 只有 JVM 识别的字节码，React 的 JSX 代码经过 babel + react 编译。 ）编译时就是简单的作一些翻译工作，词法分析、语法分析之类的。
 
 运行时
 
 代码跑起来，被载入内存中，在内存中做些操作，做些判断。
 
-例子
+例子一：
 
 例如，常见的 C+和 C# 数组越界检查的例子，编译器编译时没有语法错误，但是运行时，数组越界了。
 
