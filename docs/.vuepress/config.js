@@ -13,7 +13,8 @@ module.exports = {
         zIndex: 10000,
       }
     },
-    'vuepress-plugin-smooth-scroll'
+    'vuepress-plugin-smooth-scroll',
+    'vuepress-plugin-table-of-contents'
   ],
   base: "/Notebook/",
   title: "Jecyu's Notebook",
@@ -137,7 +138,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: ["js", "", "react", "architecture", "chrome", "browser", "noJQ", "css",  "es6", "performance", "vue", "npm", "lodash"]
+          children: [ "css", "js", "", "react", "architecture", "chrome", "browser", "noJQ",  "es6", "performance", "vue", "npm", "lodash"]
         }
       ],
       "/network/": [

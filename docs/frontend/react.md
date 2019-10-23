@@ -320,6 +320,23 @@ class Title extends Component {
 ```
 React.js 的事件监听方法需要手动 bind 到当前实例，这种模式在 React.js 中非常常用。
 
+
+### 生命周期
+
+### setState
+
+### 性能优化
+
+### 通信
+
+#### 父子通信
+
+#### 兄弟组件通信
+
+#### 跨多层次组件通信
+
+#### 任意组件
+ 
 ## 参考资料
 
 - [深入 JSX](https://zh-hans.reactjs.org/docs/jsx-in-depth.html#___gatsby)

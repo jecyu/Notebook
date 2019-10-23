@@ -2,33 +2,59 @@
 
 ## 十月
 
-### 使用JavaScript获取Base64 PNG的像素颜色
+### 用户登录认证
+
+公钥加密，私钥解密
+
+```js
+async userLogin({ commit }, { loginname, loginpwd }) {
+  const key = await getRsaKey();
+  // rsa加密
+  const encrypt = new JSEncrypt();
+  encrypt.setPublicKey(key);
+  const rsapwd = encrypt.encrypt(loginpwd);
+  const data = await loginRsa({
+    loginName: loginname,
+    loginPwd: rsapwd
+  });
+  const { userCode, ownRegion } = data;
+  commit(SET_USER_INFO, data);
+  commit(SET_LOGIN_STATUS, true);
+  commit(SET_USER_SESSION, userCode); // todo
+  setSession(userCode); // todo
+  setUserRegionCode(ownRegion);
+  setUserMapExtent(ownRegion);
+  return data;
+},
+```
+
+### 使用 JavaScript 获取 Base64 PNG 的像素颜色
 
 https://stackoverflow.com/questions/3528299/get-pixel-color-of-base64-png-using-javascript
 原理：通过把图片画到 canvas 上，通过 `getImageData` 获得。
+
 ```js
 var image = new Image();
 image.onload = function() {
-    var canvas = document.createElement('canvas');
-    canvas.width = image.width;
-    canvas.height = image.height;
+  var canvas = document.createElement('canvas');
+  canvas.width = image.width;
+  canvas.height = image.height;
 
-    var context = canvas.getContext('2d');
-    context.drawImage(image, 0, 0);
+  var context = canvas.getContext('2d');
+  context.drawImage(image, 0, 0);
 
-    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
-    // Now you can access pixel data from imageData.data.
-    // It's a one-dimensional array of RGBA values.
-    // Here's an example of how to get a pixel's color at (x,y)
-    var index = (y*imageData.width + x) * 4;
-    var red = imageData.data[index];
-    var green = imageData.data[index + 1];
-    var blue = imageData.data[index + 2];
-    var alpha = imageData.data[index + 3];
+  // Now you can access pixel data from imageData.data.
+  // It's a one-dimensional array of RGBA values.
+  // Here's an example of how to get a pixel's color at (x,y)
+  var index = (y * imageData.width + x) * 4;
+  var red = imageData.data[index];
+  var green = imageData.data[index + 1];
+  var blue = imageData.data[index + 2];
+  var alpha = imageData.data[index + 3];
 };
 ```
-
 
 ### 计算容器顶部的高度
 
@@ -75,7 +101,7 @@ Todo: webpack 配置打包编译，vuecli 到 webpack，yarn permission 等
 第一步：根目录新建文件 `.env.partBuild`， 因为 Node_ENV 会被覆盖为 partBuild，因此需要重新设置为 production，这样就可以构建出生产环境应用，并且获得了`process.env.VUE_APP_PARTBUILD`的变量值。
 
 ```bash
-NODE_ENV=production 
+NODE_ENV=production
 VUE_APP_PARTBUILD = true
 ```
 
@@ -92,8 +118,10 @@ VUE_APP_PARTBUILD = true
 ```
 
 第三步：在 JS 文件里进行使用
+
 ```js
-if (process.env.VUE_APP_PERMISSION === 'true') {}
+if (process.env.VUE_APP_PERMISSION === 'true') {
+}
 ```
 
 #### 开发环境下开启运维
@@ -357,7 +385,7 @@ cloc --help
 
 ### iframe 跨域通信
 
-- 操作 iframe 的dom 元素
+- 操作 iframe 的 dom 元素
   contetnWindow
 - 操作 iframe 的父级元素
 
