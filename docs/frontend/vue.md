@@ -316,9 +316,26 @@ provide() {
 
 ## 框架原理
 
-## vue 组件重置状态（强制刷新）
+### vue 的 diff 算法
 
-### 父子组件，可以访问组件的情况下
+#### 虚拟 dom
+
+所谓的 `vitural dom`，也就是虚拟节点。它通过 JS 的 Object 对象模拟 DOM 中的节点，然后再通过特定的 `render` 方法将其渲染成真实的 DOM 节点。`dom diff` 是 通过 JS 层面的计算，返回一个 `patch` 对象，即补丁对象，再通过特定的操作解析 `patch` 对象，完成页面的重新渲染。
+
+![](../.vuepress/public/images/dom-diff.png)
+
+- 实现步骤
+  - 用 JavaScript 对象模拟 DOM
+  - 把此虚拟 DOM 转成真实 DOM 并插入页面中
+  - 如果有事件发生修改了虚拟 DOM
+  - 比较两棵虚拟 DOM 树的差异，得到差异对象
+  - 把差异对象应用到真正的 DOM 树上。 
+
+
+
+### vue 组件重置状态（强制刷新）
+
+#### 父子组件，可以访问组件的情况下
 
 - 子组件对外提供重置方法或Prop
 - V-if 强制刷新
@@ -326,27 +343,27 @@ provide() {
 
 通过 key,v-if 整体刷新用户体验不太友好。
 
-### 跨级组件
+#### 跨级组件
 
 如实现互斥关系（eventBus 太多也乱）
 
-## nextTick 事件队列
+### nextTick 事件队列
 
-### 前置知识
+#### 前置知识
 
-### CPU 
+#### CPU 
 
-### 进程
+#### 进程
 
-### 线程
+#### 线程
 
-### 浏览器时多进程
+#### 浏览器时多进程
 
-### 浏览器包含了哪些进程？
+#### 浏览器包含了哪些进程？
 
-### 浏览器内核（渲染进程）
+#### 浏览器内核（渲染进程）
 
-### 从 Event Loop 看 JS 的运行机制
+#### 从 Event Loop 看 JS 的运行机制
 
 查看已选功能
 
@@ -385,7 +402,7 @@ localStorage.save(PRODUCTROUTERPARAMS, {
 - 如果 `props` 依赖的值是异步传递的，那么这个时候在 `created()` 里能否拿到这个值?
 - 业务组件与基础组件的 `props` 区别
 
-## 权限路由
+### 权限路由
 
 流程：
 1. 获取权限路由（进行扁平化格式化）➡ 获得格式化的路由 permissionMap
@@ -483,7 +500,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 };
 ```
 
-### 当出现重定向的问题时如何解决 404 的问题
+#### 当出现重定向的问题时如何解决 404 的问题
 
 运维把一级系统的子系统路由删掉了，但是一级系统设置了 redirect 属性值为子系统路由，这种情况如何处理？
 方案一：首先判断`tmp.redirect`是否存在，该一级系统的这个重定向子系统是否存在（路由信息），不存在的话，顺位直接寻找下一个，然后设置 `tmp.redirect= { name: firstChildName } ` 
@@ -562,7 +579,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 };
 ```
 
-### query 与 params 的区别与使用
+#### query 与 params 的区别与使用
 
 ### 记录用户的历史页面
 
@@ -575,7 +592,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 这样就不用写对象格式化参数的逻辑或者用`qs`库，vue-router 确实很贴心了。
 
 
-## 双向绑定
+### 双向绑定
 
 - v-model
   父可以改变子（数据）， 但子不能直接改变父（数据）！， 父中数据的变动只能由它自己决定
@@ -607,4 +624,5 @@ handleClick(name) {
 - [前端组件设计原则](https://juejin.im/post/5c49cff56fb9a049bd42a90f#heading-4)
 - [https://juejin.im/post/5bb355dae51d450ea4020b42](https://juejin.im/post/5bb355dae51d450ea4020b42)
 - [从event loop规范探究javaScript异步及浏览器更新渲染时机](https://github.com/aooy/blog/issues/5)
-- [深入理解vue中的slot与slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2)
+- [深入理解vue中的slot与slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2) 
+- [面试官：你了解 vue 的diff算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。

@@ -138,7 +138,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: [ "css", "js", "", "react", "architecture", "chrome", "browser", "noJQ",  "es6", "performance", "vue", "npm", "lodash"]
+          children: [ "css", "js", "", "react", "vue", "architecture", "authentication", "chrome", "browser", "noJQ",  "es6", "performance", "npm", "lodash"]
         }
       ],
       "/network/": [
@@ -172,7 +172,6 @@ module.exports = {
       ]
     },
     lastUpdated: "Last Updated",
-    sidebarDepth: 2
-  },
- 
+    sidebarDepth: 4
+  }
 };
