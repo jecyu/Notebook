@@ -320,10 +320,91 @@ class Title extends Component {
 ```
 React.js 的事件监听方法需要手动 bind 到当前实例，这种模式在 React.js 中非常常用。
 
+### 组件的 state 和 setState
+
+#### state
+
+一个组件的显示状态是可以由它数据状态和配置参数决定的。一个组件可以拥有自己的状态，就像一个点赞按钮，可以有“已点赞”和“未点赞”状态，并且可以在这两种状态之间进行切换。React.js 的 `state` 就是用来存储这种可变化的状态的。
+```js
+// 点赞、取消按钮
+class LikeButton extends Component {
+  constructor() {
+    super()
+    this.state = { isLiked: false }
+  }
+  handleClickOnLikeButton() {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+  render() {
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? '取消' : '点赞'}
+      </button>
+    )
+  }
+}
+```
+
+#### setState 接受对象参数
+
+`setState` 方法由父类`Component`提供。当我们调用这个函数的时候，React.js 会更新组件的状态`state`，并且重新调用`render`方法，然后再把`render`方法渲染的最新的内容显示到页面上。
+
+注意，当我们要改变组件的状态的时候，不能直接用`this.state=xxx`这种方式来修改，如果这样做 React.js 就没办法知道你修改了组件的状态，它也就没有办法更新页面。所以，一定要使用 React.js 提供的 `setState` 方法，它接受一个对象或者函数作为参数。
+
+传入一个对象的时候，这个对象表示改组件的新状态。但你只需要传入需要更新的部分就可以了，而不需要传入整个对象。
+```js
+...
+  constructor() {
+    super()
+    this.state = { name: 'Jecyu', isLiked: false }
+  }
+  handleClickOnLikeButton() {
+    this.setState({
+      isLiked: !this.state.isLiked  /// name 不需要传入
+    })
+  }
+...
+```
+
+#### setState 接受函数参数
+
+这里还有要注意的是，当你调用 `setState` 的时候，React.js 并不会马上修改 state。而是把这个对象放到一个更新队列里面，稍后才会从队列当中把新的状态提取出来合并到 state 当中，然后再触发组件更新。
+
+```js
+....handleClickOnLikeButton() {
+  this.setState({ count: 0}) // => this.state.counte 还是 undefined
+  this.setState({ count: this.state.count + 1}) // => undefined + 1 = NaN
+  this.setState({ count: this.state.count + 2}) // => undefined + 2 = NaN
+}
+```
+上面的代码的运行结果并不能达到我们的预期，我们希望 `count` 的运行结果是 3，最后得到却是 `NaN`。但是这种后续操作依赖前一个 `setState` 的结果的情况并不罕见。
+
+因此，这里引出 `setState` 的第二种使用方式，可以接受一个函数作为参数。React.js 会把上一个 `setState` 的结果传入这个函数，你就可以使用该结果进行运算、操作，然后返回一个对象作为更新 `state` 的对象
+```js
+....handleClickOnLikeButton() {
+  this.setState(prevState => return { count: 0}) // => this.state.counte 还是 undefined
+  this.setState(prevState => return { count: prevState.count + 1}) // => undefined + 1 = NaN
+  this.setState(prevState => return { count: prevState.count + 2}) // => undefined + 2 = NaN
+}
+```
+
+#### setState 合并
+
+上面我们进行了三次 `setState`，但是实际上组件只会重新渲染一次，而不是三次；**这是因为在 React.js 内部会把 JavaScript 事件循环中的消息队列的同一个消息中的`setState`都进行合并以后再重新更新渲染组件**。因此，在使用 React.js 的时候，并不需要担心多次进行 `setState` 会带来性能问题。
+
+### 配置组件的 props
+
+组件是相互独立、可复用的单元，一个组件可能在不同地方被用到。但是在不同的场景下对这个组件的需求可能会根据情况有所不同，例如一个点赞按钮上面显示的文本。如何让组件能适应不同场景下的需求，我们就需要让组件具有一定的“可配置”性。
+ 
+React.js 的 `props` 就可以帮助我们达到这个效果。每个组件都可以接受一个 `props` 参数，它是一个对象，包含了所有你对这个组件的配置。
+
+#### 默认配置 defaultProps
+
+#### props 不可变
 
 ### 生命周期
-
-### setState
 
 ### 性能优化
 
@@ -336,6 +417,8 @@ React.js 的事件监听方法需要手动 bind 到当前实例，这种模式�
 #### 跨多层次组件通信
 
 #### 任意组件
+
+## 进阶
  
 ## 参考资料
 

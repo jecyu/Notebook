@@ -560,6 +560,35 @@ smoothScroll('.fooBar');
 [1, 2, 3, 4, 5].join();
 ```
 
+### JS生成某个范围的随机整数
+
+> js没有提供一个现成的函数直接生成某个范围的随机数。
+js只有一个Math.random() 函数返回一个浮点, 伪随机数在范围[0，1)。
+
+我们只有利用Math.random() 函数，自己封装一些函数，实现生成某个范围的随机数。
+实现生成某个范围色随机数也需要与一下函数配合使用：
+- Math.ceil() 向上取整
+- Math.floor() 向下取整
+- Math.round() 四舍五入
+
+#### 以 0 ～ 10 为例理解生成某个范围的随机数
+
+首先我们以0～10为例，对生成某一个返回有一个简单的理解：
+Math.random() * 10 会随机生成[0, 10]，但是是浮点数；
+
+生成[0,10]的随机整数，Math.round(Math.random()*10)，通过四舍五入可以将大于9.5的数值转换为10；
+生成[0,10)的随机整数，Math.floor(Math.random() * 10); // 向下取整数
+生成(0,10]的随机整数，Math.ceil(Math.random() * 10); // 向上取整数
+
+#### 生成随机整数的四种情况
+
+1. min≤r≤max
+```js
+function Random(min, max) {
+  return Math.round(Math.random() * (max - min)) + min;
+}
+```
+
 ### 内存管理
 
 ## 参考资料

@@ -23,6 +23,7 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
+      // { text: "技术分享", link: "/dailyRecord/" },
       {
         text: "开发者",
         items: [

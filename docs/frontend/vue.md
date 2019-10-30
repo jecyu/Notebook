@@ -180,6 +180,7 @@ vm.$router.options.routes
 
 ## 进阶
 
+### inject
 
 ### watch 高级应用
 

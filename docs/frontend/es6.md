@@ -30,7 +30,23 @@ Promise.resolve(1)
 
 ## 类
 
-### Class 的继承
+## Class 的继承
+
+### super 关键字
+
+`super`既可以当作函数使用，也可以当作对象使用。
+
+第一种情况，`super`作为函数调用时，代表父类的构造函数。ES6 要求，子类的构造函数必须执行一次 `super` 函数
+
+```js
+class A {}
+class B extends A {
+  constructor() {
+    super()
+  }
+}
+```
+注意，`super` 虽然代表了父类 A 的构造韩素好，但是返回的是子类 B 的实例，即`super`内部的 `this` 指的是 B 的实例，因此 `super()` 在这里相当于 `A.prototype.connstructor.call(this)`
 
 ## 模块
 
