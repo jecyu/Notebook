@@ -399,11 +399,162 @@ class LikeButton extends Component {
 组件是相互独立、可复用的单元，一个组件可能在不同地方被用到。但是在不同的场景下对这个组件的需求可能会根据情况有所不同，例如一个点赞按钮上面显示的文本。如何让组件能适应不同场景下的需求，我们就需要让组件具有一定的“可配置”性。
  
 React.js 的 `props` 就可以帮助我们达到这个效果。每个组件都可以接受一个 `props` 参数，它是一个对象，包含了所有你对这个组件的配置。
+```js
+...
+render() {
+    const likedText = this.props.likedText || '取消';
+    const unlikedText = this.props.unlikedText || '点赞';
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? likedText : unlikedText}
+      </button>
+    )
+  }
+...
+```
+从 `rendner` 函数可以看出，组件内部是通过 `this.props` 的方式获取组件的参数的，如果 `this.props` 里面有需要的属性我们就采用相应的属性，没有的话就用默认的属性。
+
+那么，怎么把 `props` 传进去呢？在使用一个组件的时候，可以把参数放在标签的属性当中，所有的属性都会作为 `props`  对象的键值：
+```js
+class Index extends Component {
+  render() {
+    return (
+      <div>
+        <LikeButton likedText='已赞' unlikedText='赞' />
+      </div>
+    )
+  }
+}
+```
+就像你在用普通的 `HTML` 标签的属性一样，可以把参数放在表示组件的标签上，组件内部就可以通过 `this.props` 来访问这些配置参数。前面说过JSX 的表达式可以在标签属性上使用。因此可以把任何类型的数据作为组件的参数，包括字符串、数字、对象、数组、甚至是函数等等。
+
+```js
+class LikeButton extends Component {
+  constructor() {
+    super()
+    this.state = { name: 'Jecyu', isLiked: false }
+  }
+  handleClickOnLikeButton() {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+  render() {
+    const wordings = this.props.wordings || {
+      likedText: '取消',
+      unlikedText: '点赞'
+    }
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? wordings.likedText : wordings.unlikedText}
+      </button>
+    )
+  }
+}
+```
+
+```js
+class Index extends Component {
+  render () {
+    return (
+      <div>
+        <LikeButton
+          wordings={{likedText: '已赞', unlikedText: '赞'}}
+          onClick={() => console.log('Click on like button!')}/>
+      </div>
+    )
+  }
+}
+```
+当每次点击按钮的时候，控制台显示'Click on like button!'。但这个行为不是点赞组件自己实现的，而是我们传进去的。所以，一个组件的行为、显示形态都可以用`props`来控制，就可以达到很好的可配置性。
 
 #### 默认配置 defaultProps
 
-#### props 不可变
+上面的组件默认配置我们是通过 `||`操作符来实现。这种需要默认配置的情况在 React.js 中非常常见，所以 React.js 提供了一种方式 `defaultProps`，可以方便做到默认配置。
 
+```js
+class LikeButton extends Component {
+  // 默认配置 defaultProps
+  static defaultProps = {
+    wordings: {
+      likedText: '取消',
+      unlikedText: '点赞'
+    }
+  }
+
+  constructor() {
+    super()
+    this.state = { name: 'Jecyu', isLiked: false }
+  }
+  handleClickOnLikeButton() {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+  render() {
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? this.props.wordings.likedText : this.props.wordings.unlikedText}
+      </button>
+    )
+  }
+}
+``` 
+`defaultProps` 作为点赞按钮组件的类属性，里面是对`props`中各个属性的默认配置。这样我们就不需要判断配置属性是否传进来了：如果没有传进来，会直接实用 `defaultProps` 中的默认属性。所以，在 `render` 函数中，我们会直接实用 `this.props` 而不需要再做判断。
+
+#### props 不可变
+ 
+`props` 一旦传入进来就不改变。但是如果这个 props 是引用类型的话，则可以改变它的子属性。直接赋值才会报错。
+```js
+...
+handleClickOnLikeButton() {
+    // this.props.wordings = {} // 报错
+    // this.props.wordings.likedText = '暂时' // 不会报错
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+...
+```
+你不能改变一个组件被渲染的时候传进来的 `props`。React.js 希望一个组件在输入确定的 `props` 的时候，能够输出确定的 UI 显示形态。如果 `props` 渲染过程中可以被修改，那么就会导致这个组件显示形态喝行为变得不可预测，这样可能给组件使用者带来困惑。
+
+但这并不意味着由 `props` 形态不能被修改，组件的使用者可以主动地通过重新渲染的方式把新的 `props` 传入组件当中，这样这个组件由 `props` 决定的显示形态也会得到相应的改变。
+
+```js
+class Index extends Component {
+  constructor () {
+    super()
+    this.state = {
+      likedText: '已赞',
+      unlikedText: '赞'
+    }
+  }
+
+  handleClickOnChange () {
+    this.setState({
+      likedText: '取消',
+      unlikedText: '点赞'
+    })
+  }
+
+  render () {
+    return (
+      <div>
+        <LikeButton
+          likedText={this.state.likedText}
+          unlikedText={this.state.unlikedText} />
+        <div>
+          <button onClick={this.handleClickOnChange.bind(this)}>
+            修改 wordings
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
+```
+通过 setState 重新渲染，所以 `LikeButton` 会接收到新的 `props`，并且重新渲染，于是它的显示形态也会得到更新。（这个跟 Vue 是不一样的）
+ 
 ### 生命周期
 
 ### 性能优化

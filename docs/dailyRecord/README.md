@@ -2,6 +2,43 @@
 
 ## 十月
 
+### 什么时候使用 Try Catch
+
+### 如何处理垂直的高度自适应分配
+
+场景：垂直的三个模块，如何自适应分布浏览器的高度。
+calc 需要知道准确的高度，比较麻烦
+
+可以通过 flex 布局来解决
+```html
+<div class="container">
+  <div class="header">header</div>
+  <div class="main">main</div>
+</div>
+```
+```css
+.container {
+    height: 500px;
+    background: gray;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    height: 100px;
+    background: yellow;
+    border: 1px solid red;   
+  }
+  .main {
+    /* 这个时候 main height 实际高度是多少，header + main 的总高度是否大于 500px */
+    /* height: 100%; */
+    border: 1px solid red;   
+    background: skyblue;
+    flex-grow: 1;
+  }
+```
+
+但是上面的方法有风险，如果 header 的值是动态的话，那么 main 的高度也会跟着变化。
+
 ### 用户登录认证
 
 公钥加密，私钥解密

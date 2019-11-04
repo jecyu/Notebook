@@ -161,6 +161,39 @@ export default {
 </template>
 ```
 
+### transition 使用
+
+```html
+ <!-- 上传页面 -->
+<transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+  <UploadFile
+    v-if="modalStatus.isShowUploadModal"
+    @close="modalStatus.isShowUploadModal = false"
+  >
+  </UploadFile>
+</transition>
+```
+
+```css
+.fadeIn {
+  animation: fadeIn 0.2s linear;
+}
+.fadeOut {
+  animation: fadeIn 0.2s linear;
+  animation-direction: reverse;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+```
+
 ### 组件
 
 ### 自定义指令
