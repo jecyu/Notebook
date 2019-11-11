@@ -810,6 +810,11 @@ git config --local --list (当前目录)
 git config --global --list (全局)
 ```
 
+让 git 记录不忽视大小写，避免驼峰命名更改没变化。
+```sh
+git config --global core.ignorecase false
+```
+
 ## 展示忽略的文件
 
 ```sh

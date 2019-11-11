@@ -139,7 +139,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: [ "css", "js", "", "react", "vue", "architecture", "authentication", "chrome", "browser", "noJQ",  "es6", "performance", "npm", "lodash"]
+          children: [ "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome", "browser", "noJQ", "performance", "npm", "lodash"]
         }
       ],
       "/network/": [
@@ -153,7 +153,7 @@ module.exports = {
         {
           title: "算法",
           collapsable: false,
-          children: ["computerBasics"]
+          children: ["computerBasics", "dataStructure"]
         }
       ],
       "/dataBase/": [

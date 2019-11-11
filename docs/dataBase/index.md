@@ -123,3 +123,8 @@ MySQL 为关系型数据库，这种所谓的“关系型”可以理解为“�
 - 数据的例子 一个数据的实例
 
 - [数据字典功能](https://blog.csdn.net/weixin_42476601/article/details/84261992) -- 数据字典详细应用
+
+## 实战
+
+- [Mongodb分片集群搭建](https://www.cnblogs.com/chenmh/p/8832902.html) -- 理论实践结合。
+- mongodb的安全使用（如果把它当做成rdbms使用会有什么问题）

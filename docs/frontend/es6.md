@@ -1,5 +1,23 @@
 # ES6 
 
+## 函数
+
+### rest 参数
+
+ES6引入 rest 参数（形式为 `...变量名`），用于获取函数的多余参数，这样就不需要使用`arguments` 对象了。rest 参数搭配的变量是一个数组，该变量将多余的参数放入数组中。
+```js
+// arguments 变量的写法
+function sortNumbers() {
+  return Array.prototype.slice.call(arguments).sort();
+}
+
+// rest 参数的写法
+const sortNumbers = (...numbers) => numbers.sort();
+```
+arguments对象不是数组，而是一个类似数组的对象。所以为了使用数组的方法，必须使用`Array.prototype.slice.call`先将其转为数组。rest 参数就不存在这个问题，它就是一个真正的数组，数组特有的方法都可以使用。
+
+注意，rest 参数之后不能再有其他参数（即只能是最后一个参数）
+
 ## Promise 基础
 
 Promise: 三个状态、两个过程、一个方式

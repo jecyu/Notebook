@@ -1,43 +1,183 @@
 # 2019
 
+## 十一月
+
+### vue 当前页面刷新或跳转时提示保存
+
+最近做的一个需求，用户上传本地数据后，在跳转页面时，本地数据的缓存会被清空，这里能不能在刷新或者切换的时候给个提示，“本地数据将会被清空，确定离开此页面？”这样的需求，跟用户填写一半的表单想离开一样。
+
+首先 [Vue-Router](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html#%E7%BB%84%E4%BB%B6%E5%86%85%E7%9A%84%E5%AE%88%E5%8D%AB) 的路由钩子可以分为全局的，单个路由独享的以及组件级别的。当前的本地数据页面是一个组件，我们可以使用 vue 提供的组件内的路由守卫。组件级别路由分为三种：
+- beforeRouterEnter：当你成功获取并能进入路由（在渲染该组件的对应路由被 confirm 前）
+- beforeRouteUpdate：在当前路由改变，但是该组件被复用时调用
+- beforeRouteLeave：导航离开该组件的对应路由时调用。
+```js
+const Foo = {
+  template: `...`,
+  beforeRouterEnter (to, from, next) {
+    // 在渲染该组件的对应路由被 confirm 前调用
+    // 不！能！获取组件实例 `this`
+    // 因为当守卫执行前，组件实例还没被创建
+  },
+  beforeRouteUpdate (to, from, next) {
+    // 在当前路由改变，但是该组件被复用时调用
+    // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+    // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+   // 可以访问组件实例 `this` 
+  },
+  beforeRouteLeave (to, from, next) {
+    // 导航离开该组件的对应路由时调用
+    // 可以访问组件实例 `this`
+  }
+}
+```
+通过 `beforeRouteLeave` 这个路由钩子，我们可以在用户要离开此页面时候进行提示了。
+```js
+ // 离开当前组件
+beforeRouteLeave(to, from, next) {
+  if (this.formType !== "本地数据" || this.localIndicators.length === 0) {
+    next();
+    return;
+  }
+  this.$Modal.confirm({
+    title: "离开页面",
+    content: "本地数据将会被清空，确定离开此页面？",
+    onOk: () => {
+      next();
+    },
+    onCancel: () => {
+      next(false);
+    }
+});
+```
+但是，`beforeRouteLeave` 无法监听浏览器的刷新、页面关闭事件。因此，这里还有使用到 `window.onbeforeunload` 进行监听，就可以满足需求了。遗憾是，浏览器不提供入口自定义弹框的样式。
+```js
+mounted() {
+  window.addEventListener("beforeunload", this.handleBeforeunload);
+},
+beforeDestroy() {    
+  window.removeEventListener("beforeunload", this.handleBeforeunload);
+},
+methods: {
+ // 浏览器刷新
+  handleBeforeunload(event) {
+    if (this.formType !== "本地数据" || this.localIndicators.length === 0) {
+      return;
+    }
+    event.preventDefault();
+    event.returnValue = "本地数据将会被清空，确定刷新此页面？";
+    return "本地数据将会被清空，确定刷新此页面？";
+  },
+}
+```
+
+补充：对于Vue 组件内路由守卫，还可以完成像基础产品卷帘权限控制功能，这样就可以做到具体页面的具体工具的权限控制。
+```js
+beforeRouteEnter(...args) {
+  return toolBarControllBeforeEnter(...args);
+},
+beforeRouteLeave(...args) {
+  return toolBarControllBeforeLeave(...args);
+}
+methods: {
+  // 思路：先拿到静态文件数据
+  // 遍历静态数据，用产品名称去匹配，得到该产品需要过滤掉用具
+  // 不在静态数据key类工具下的产品，说明不需要key类的工具
+  async function toolBarControllBeforeEnter(to, from, next) {
+    const controlToolbarInfo = await getControlMapToolbarInfo(); // 先拿到静态文件数据
+    const { productName } = localStorage.get(PRODUCTROUTERPARAMS);
+    const noNeedToolbarArr = [];
+
+    Object.keys(controlToolbarInfo).forEach(key => {
+      const productToolbar = controlToolbarInfo[key];
+      if (!productToolbar[productName]) {
+        // 需要过滤掉的工具类（比如：Swipe）
+        noNeedToolbarArr.push(key);
+      }
+    });
+
+    if (noNeedToolbarArr.length > 0) {
+      const { components } = to.meta;
+      // 拿到对应的工具栏组件
+      const toolBar = components.find(v => v.name === "ToolBar");
+      if (
+        toolBar &&
+        Array.isArray(toolBar.children) &&
+        toolBar.children.length > 0
+      ) {
+        toolBarInfoCache = toolBar.children.slice();
+        toolBar.children = toolBar.children.filter(
+          v => !noNeedToolbarArr.includes(v.name) // 过滤掉不需要的工具
+        );
+      }
+    }
+
+    next();
+  }
+}
+```
+
+### Vue项目通过配置文件实现主题切换
+
 ## 十月
+
+### 前端导出 Excel 文件
+
+起因：iview 的表格只能导出
 
 ### 什么时候使用 Try Catch
 
 ### 如何处理垂直的高度自适应分配
 
-场景：垂直的三个模块，如何自适应分布浏览器的高度。
-calc 需要知道准确的高度，比较麻烦
-
-可以通过 flex 布局来解决
+项目中经常会遇到这样一种请求，几个 div 需要在垂直高度上分配完整个屏幕高度，整理下几种常用的方法。
+Html 结构，首先 header 的高度是一定的。
 ```html
 <div class="container">
   <div class="header">header</div>
   <div class="main">main</div>
 </div>
-```
+```       
+1. 通过 flex 布局
 ```css
 .container {
-    height: 500px;
-    background: gray;
-    display: flex;
-    flex-direction: column;
-  }
-  .header {
-    height: 100px;
-    background: yellow;
-    border: 1px solid red;   
-  }
-  .main {
-    /* 这个时候 main height 实际高度是多少，header + main 的总高度是否大于 500px */
-    /* height: 100%; */
-    border: 1px solid red;   
-    background: skyblue;
-    flex-grow: 1;
-  }
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  height: 100px;
+}
+.main {
+  flex-grow: 1;
+}
+``` 
+但是 `flex` 方法有风险，如果 header 的值是动态的话，那么 main 的高度也会跟着变化。
+1. 通过绝对定位
+```css
+   .container {
+      position: relative;
+      height: 100%;
+    }
+    .header {
+      height: 100px;
+    }
+    .main {
+      top: 100px;
+      position: absolute;
+      bottom: 0;
+    }
 ```
-
-但是上面的方法有风险，如果 header 的值是动态的话，那么 main 的高度也会跟着变化。
+3. 利用 calc 属性
+```css
+.main {
+  height: calc(100% - 100px);
+}
+```
+场景：垂直的三个模块，如何自适应分布浏览器的高度。
+calc 需要知道准确的高度，比较麻烦。
+4. JS 计算：还有会遇到一种情况就是，当该容器 container 的里面的内容总高度 contentHeight 超过整个屏幕剩余的高度时，才会让这个容器撑满剩余的屏幕，让它出现滚动条。这个时候就需要通过 JS 动态获取整个屏幕的高度，然后减去它上面的 header 元素的高度，得到当前的剩余高度进行赋值即可。
+```js
+if (剩余高度小于container 的内容高度) 则（containerHeight = 剩余高度remainHeight），从而出现滚动条来查看。满足要求。
+```
 
 ### 用户登录认证
 
