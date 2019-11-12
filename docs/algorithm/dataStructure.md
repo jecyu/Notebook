@@ -162,7 +162,7 @@ public class Main {
 3. 这时调用并进入 setName() 方法内部执行完毕后，之后从栈中拿出 B 地址，返回到 Student 函数内部继续执行。
 4. Student 函数执行完毕后，然后从栈中继续拿出 A 地址，进入到一开始的 main 函数内部执行，至此完毕。
 
-![](../.vuepress/dist/images/cpu-stack.png)
+![](../.vuepress/public/images/cpu-stack.png)
 ![](../.vuepress/public/images/functioncall.png)
 
 #### 内存区域
