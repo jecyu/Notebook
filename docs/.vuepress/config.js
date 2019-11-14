@@ -153,7 +153,7 @@ module.exports = {
         {
           title: "算法",
           collapsable: false,
-          children: ["computerBasics", "dataStructure", "algorithm"]
+          children: ["computerBasics",  "c", "dataStructure", "algorithm"]
         }
       ],
       "/dataBase/": [

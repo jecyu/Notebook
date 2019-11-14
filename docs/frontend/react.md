@@ -5,6 +5,10 @@
 React.js 是一个帮助你构建页面的 UI 的库。React.js 不是一个框架，它只是一个库。它只提供 **UI （view）**层面的解决方案。React.js 将帮助我们将界面分成了各个独立的小块，每一个块就是组件，这些组件之间可以组合、嵌套，就成了我们的页面。
 
 在实际的项目中，它并不能解决我们所有的问题，需要结合其他的库，例如 Redux、React-route 等来协助完整的解决方法。
+通过命令快速生成一个 React 应用。
+```bash 
+npx create-react-app comment-app
+```
 
 ## 基础
 
@@ -596,6 +600,112 @@ const HelloWorld = (props) => {
 }
 ```
 以前一个组件是通过继承 `Component` 来构建，一个子类就是一个组件。而用函数式的组件编写方式就是一个函数就是一个组件，你可以和以前一样通过`<HelloWorld/>` 使用该组件。不同的是，函数式组件只能接受 `props` 而无法像类组件一样可以在 `contructor`里面初始化 `state`。函数式组件就是一种只能接受 `props` 合提供 `render` 方法的类组件。
+
+### 渲染列表数据
+
+#### 渲染存放 JSX 元素的数组
+
+假设现在我们有这么一个用户列表数据，存放在一个数组当中：
+```js
+const users = [
+  {
+    username: "Jerry", age: 21, gender: "male"  
+  },
+  {
+    username: "Crazy", age: 19, gender: "male"  
+  },
+  {
+    username: "Lily", age: 221, gender: "female"  
+  },
+]
+```
+
+如果现在要把这个数组里面的数据渲染页面上要怎么做？回忆下，JSX 的表达式插入 `{}` 里面可以放任何数据，如果我们往 `{}` 里面存放一个 `JSX` 元素的数组会怎么样？
+```js
+...
+class Index extends Component {
+  constructor() {
+    super()
+    this.state = {
+      likedText: '已赞',
+      unlikedText: '赞'
+    }
+  }
+  handlClickOnChange() {
+    this.setState({
+      likedText: '取消',
+      unlikedText: '点赞'
+    })
+  }
+  render() {
+    return (
+      <div>
+         {
+           [
+             <span>React.js</span>,
+             <span>is</span>,
+             <span>good</span>
+           ]
+         }
+      </div>
+    )
+  }
+}
+...
+```
+
+我们往 JSX 里面塞了一个数组，这个数组里面放了一些 JSX 元素（其实就是 JavaScript 对象）。到浏览器中，在页面上将会被渲染。
+```html
+<div>
+  <span>React.js</span>
+  <span>is</span>
+  <span>good</span>
+</div>
+```
+React.js 把插入表达式数组里面的每一个 JSX 元素一个个罗列下来，渲染到页面上。所以这里有个关键点：如果你往`{}`放一个数组，React.js 会帮你把数组里面一个个元素罗列并且渲染出来。
+
+#### 使用 map 渲染列表数据
+
+知道这一点以后你就可以知道怎么用循环把元素渲染到页面上：循环上面用户数组里面的每一个用户，为每个用户数据构建一个 JSX，然后把 JSX 放到一个新的数组里面，再把新的数组插入 `render` 方法的 JSX 里面。
+
+```js
+class User extends Component {
+  render() {
+    const { user } = this.props;
+    return (
+      <div>
+        <div>姓名：{user.username}</div>
+        <div>年龄：{user.age}</div>
+        <div>性别：{user.gender}</div>
+      </div>
+    )
+  }
+}
+class Index extends Component {
+  constructor() {
+    super()
+    this.state = {
+      likedText: '已赞',
+      unlikedText: '赞'
+    }
+  }
+  render() {
+    return (
+      <div>
+        <div>{ users.map((user, index) => <User user={user} key={index} />)}</div>
+      </div>
+    )
+  }
+}
+```
+
+### 实战分析：评论功能（一）
+
+#### 组件划分
+
+React.js 中一切都是组件，用 React.js 构建的功能其实也就是由各种组件组合而成。所以拿到一个需求以后，我么要做的第一件事就是理解需求、分析需求、划分这个需求由哪些组件构成。
+
+组件的划分没有特别明确的标准。划分组件的目的性是为了代码可复用性、可维护性。只要某个部分有可能复用到别的地方，你都可以把它抽离出来当成一个组件；或者把某一部分抽离出来对代码的组织和管理带来帮助，你也可以毫不犹豫地把它抽离出来。
  
 ### 生命周期
 
