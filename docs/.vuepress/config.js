@@ -139,7 +139,7 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: [ "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome", "browser", "noJQ", "performance", "npm", "lodash"]
+          children: [ "browser", "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
         }
       ],
       "/network/": [
