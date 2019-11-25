@@ -27,7 +27,8 @@ module.exports = {
       {
         text: "开发者",
         items: [
-          { text: "💻大前端", link: "/frontend/" },
+          { text: "💻大前端", link: "/frontend-web/" },
+          { text: "🤔复盘", link: "/rethink/" },
           { 
             text: "️️🧘算法修炼", 
             items: [ 
@@ -135,11 +136,18 @@ module.exports = {
           children: ["excel", "ps"]
         }
       ],
-      "/frontend/": [
+      "/frontend-web/": [
         {
           title: "前端",
           collapsable: false,
           children: [ "browser", "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+        }
+      ],
+      "/rethink/": [
+        {
+          title: "思维",
+          collapsable: false,
+          children: ["index"]
         }
       ],
       "/network/": [
@@ -153,7 +161,7 @@ module.exports = {
         {
           title: "算法",
           collapsable: false,
-          children: ["computerBasics",  "c", "dataStructure", "algorithm"]
+          children: ["computerBasics",  "c", "dataStructure", "algorithm", "patterns"]
         }
       ],
       "/dataBase/": [

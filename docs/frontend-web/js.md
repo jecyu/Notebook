@@ -7,6 +7,8 @@
 
 ## 基础
 
+### 面向对象与原型
+
 ### ajax
 
 ![ajax](../.vuepress/public/images/ajax.png)
@@ -327,6 +329,8 @@ jQuery.eq().show();
 
 ## 进阶
 
+### setTimeout, setInterval 和 requestAnimationFrame
+
 ### this, call, apply 和 bind
 
 #### this 的指向
@@ -474,31 +478,408 @@ ES6 中的箭头函数不会使用四条标准的绑定规则，而是根据当�
 
 ### Promise
 
+#### 回调
+
+JavaScript 是单线程的，这意味者任何两句代码都不能同时运行，它们得一个接一个来。在浏览器中，JavaScript 和 其他任务共享一个线程，不同的浏览器略有差异，但大体上这些和 JavaScript 共享线程的任务包括重绘、更新样式、用户交互等，所有这些任务操作都会阻塞其他任务。
+
+作为人类，你是多线程的。你可以用多个手指同时敲键盘，也可以一边开车一边听电话。唯一的全局阻塞函数是打喷嚏，打喷嚏期间所有其他事务都会暂停。
+
+你应该用事件加回调的办法来处理这类情况：
+```js
+var img1 = document.querySelector('.img-1');
+ 
+img1.addEventListener('load', function() {
+  // woo yey image loaded
+});
+ 
+img1.addEventListener('error', function() {
+  // argh everything's broken
+});
+```
+上面的例子唯一的问题是，事件有可能在我们绑定监听器之前就已经发生，所以我们先要检查图片的 complete 属性：
+```js
+
+var img1 = document.querySelector('.img-1');
+ 
+function loaded() {
+  // woo yey image loaded
+}
+ 
+if (img1.complete) {
+  loaded();
+}
+else {
+  img1.addEventListener('load', loaded);
+}
+ 
+img1.addEventListener('error', function() {
+  // argh everything's broken
+});
+```
+这样还不够，如果在添加监听函数之前图片加载发生错误，我们的监听函数还是白费，不幸的是 DOM 也没有为这个需求提供解决方法。而且，这只是处理一张图片的情况，如果有一堆图片要处理那就更麻烦了。
+
+初次之外，你还可能会遇到这种情况，回调的不断嵌套。
+```js
+input.onblur = isUserTooYoung;
+function isUserTooYoung(id, callback) {
+   openDatabase(db, 'users', function(col) {
+     find(col, { 'id': id}, function(result) {
+       result.filter(function(user) {
+         callback(user.age < cutoffAge);
+       })
+     })
+   })
+ }
+```
+
+#### Promise
+
+事件不是万金油
+
+事件机制最适合处理同一个对象上反复发生的事情——keyup、touchstart 等等。你不需要考虑当绑定监听器之前所发生的事情，当碰到异步请求成功/失败的时候，你想要的通常是这样：
+```js
+img1.callThisIfLoadedOrWhenLoaded(function() {
+  // loaded
+}).orIfFailedCallThis(function() {
+  // failed
+})
+
+// and ..
+whenAllTheseHaveLoaded([img1, img2]).callThis(function() {
+  // all loaded
+}).orIfSomeFailedCallThis(function() {
+  // one or more failed
+});
+```
+
+这就是 Promise。如果 HTML 图片元素有一个 ready() 方法的话，我们就可以这样：
+```js
+img1.ready().then(function() {
+  // loaded
+}, function() {
+  // failed
+})
+
+// and...
+Promise.all([img1.ready(), img2.ready()]).then(function() {
+  // all loaded
+}, function() {
+  // one or more failed
+})
+```
+
+基本上 Promise 还是有点像事件回调，除了：
+- 一个 Promise 只能成功或失败一次，并且状态无法改变（不能从成功变为失败，反之亦然）
+- 如果一个 Promise 成功或失败之后，你为其添加针对成功/失败的回调，则相应的回调函数会立即执行。
+
+这些特性非常适合处理异步操作的成功/失败情景，你无需担心事件发生的时间点，而只需对其做出响应。
+
+#### Promise 相关术语
+
 `Promise` 是一个对象，它代表了一个异步操作的最终完成或者失败。
 本质上，Promise 是一个被某些函数传出的对象，我们附加回调函数（callback）使用它，而不是将回调函数传入那些函数内部。
 
-例子：假设现在有一个名为 createAudioFileAsync() 的函数，如果给出一些配置和两个回调函数，这个函数能异步生成音频文件。一个回调函数时文件成功地创建时的回调，另一个则是出现异常时的回调。
-Before:
-```js
-// 成功时的回调
-function successCallback(result) {
-  console.log('音频文件创建成功：' + result);
-}
+一个 Promise 的状态可以是：
+- 确认（fulfilled）：成功了。
+- 否定（rejected）：失败了。
+- 等待（pending）：还没有确认活着否定，进行中。
+- 结束（settled）：已经确认或者否定了。
 
-// 失败的回调函数
-function failureCallback(error) {
-  console.log('音频文件创建失败：' + error);
-}
+#### 实战
 
-createAudioFileAsync(audioSettings, successCallback, failureCallback); // 传入回调函数
-```
-After: 返回一个 promise 对象，使得你可以将你的回调函数绑在该 Promise 上：
+- 显示一个加载指示图标
+- 加载一篇小说的 JSON，包含小说名和每一章内容的 URL。
+- 在页面中填上小说名
+- 加载所有章节正文
+- 在页面中添加章节正文
+- 停止加载指示
+...这个过程中如果发生了什么错误要通知用户，并且把加载指示停掉，不然它就会不停转下去。**这个模式是典型的 API 请求模式：获取多个数据，当它们全部完成之后再做一些事件。**
+
+**将 Promise 用于 XMLHttpRequest**
 ```js
-const promise = createAudioFileAsync(audioSettings);
-promise.then(successCallback, failureCallback);
+function get(url) {
+    // 返回一个 Promise
+    return new Promise(function(resolve, reject) {
+      const req = new XMLHttpRequest();
+      req.open('GET', url);
+
+      req.onload = function() {
+        if (req.status === 200) {
+          resolve(req.response);
+        } else {
+          reject(Error(req.statusText));
+        }
+      }
+
+      // 处理网络错误
+      req.onerror = function() {
+        reject(Error('Network Error'));
+      }
+
+      // 发起请求
+      req.send();
+    })
+  }  
+
+  // 调用
+  get('story.json').then(function(response) {
+    console.log('Success!', response);
+  }, function(error) {
+    console.log('Failed! :', error);
+  })
 ```
+
+**链式调用：**
+
+1. 处理值
+```js
+// 调用
+    get('story.json').then(function(response) {
+      console.log('Success!', response);
+      return JSON.parse(response); // JSON 解析
+    }).then(function(response) {
+      console.log('Yey JSON!', response);
+    })
+```
+2. 处理异步
+```js
+function getJSON(url) {
+   return get(url).then(JSON.parse);
+}
+getJSON('story.json').then(function(response) {
+      console.log('Success!', response);
+      return getJSON(response.chapterUrls[0])
+    }).then(function(response) {
+      console.log('Got chapter 1', response);
+    })
+```
+**错误处理**
+```js
+ // 调用
+ getJSON('story.json').then(function(response) {
+   console.log('Success!', response);
+   // return getJSON(response.chapterUrls[01])
+   return getJSON(response.chapterUrls[03]) // 测试请求失败
+   // 如果请求 story.chapterUrls[0] 失败（http 500 或者用户掉线什么的）了，它会跳过之后所有针对成功的回调，包括 getJSON 中将响应解析为 JSON 的回调，和这里把第一张内容添加到页面里的回调。JavaScript 的执行会进入 catch 回调。
+ }).then(function(response) {
+   console.log('Got chapter 1', response);
+   addHtmlToPage(response.html);
+ }).catch(function(err) {
+   console.log(err); 
+   // 如果只是要捕捉异常做记录输出，不打算在用户界面上对错误进行反馈的话，只要抛出 Error 就行了
+   // throw (err);
+   addTexdtToPage('Failed to show chapter')
+ }).then(function() { // 捕获完错误后，下面的代码继续执行
+   document.querySelector('.spinner-border').style.display = "none";
+ })
+```
+**串行请求**
+```js
+ // 调用
+ getJSON('story.json').then(function(response) {
+   console.log('Success!', response);
+   // 利用 reduce 及 Promise.resolve() 并法队列调用，按照加入的顺序，浏览器按顺序进行请求
+   return response.chapterUrls.reduce(function(sequence, chapterUrl) {
+     return sequence.then(function() {
+       // 获取下一章节
+       return getJSON(chapterUrl);
+     }).then(function(chapter) {
+       addHtmlToPage(chapter.html);
+     });
+   }, Promise.resolve());
+ }).then(function(response) {
+     addTextToPage("All done");
+   }).catch(function(err) {
+     console.log('err', err);
+     addTextToPage('Failed to show chapter')
+   }).then(function() {
+     document.querySelector('.spinner-border').style.display = "none";
+   })
+```
+**并行请求**
+```js
+// 调用
+getJSON('story.json').then(function(response) {
+  console.log('Success!', response);
+  return Promise.all(response.chapterUrls.map(getJSON));
+}).then(function(chapters) {
+  chapters.forEach(function(chapter) {
+    addHtmlToPage(chapter.html);
+  })
+  addTextToPage("All done");
+}).catch(function(err) {
+  console.log('err', err);
+  addTextToPage('Failed to show chapter')
+}).then(function() {
+  document.querySelector('.spinner-border').style.display = "none";
+})
+```
+
+#### Promise 和 Generator
+
+[Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)，允许函数在特定地方像 return 一样退出，但是稍后又能恢复到这个位置和状态上继续执行。
+
+注意函数名前的星号，这表示该函数是一个 Generator。关键字 yield 标记了暂停/继续的位置
+```js
+function *addGenerator() {
+   let i = 0;
+   while(true) {
+     i += yield i;
+   }
+ }
+
+ const adder = addGenerator(); // 生成器对象
+ console.log(adder.next().value); // 0
+ console.log(adder.next(5).value); // 5
+ console.log(adder.next(5).value); // 10
+ console.log(adder.next(5).value); // 15
+ console.log(adder.next(50).value); // 65
+```
+
+这对 Promise 有什么用呢？可以使用这种暂停/继续的机制写出来和同步代码看起来差不多的代码，假设如下使用：
+```js
+function *main() {
+  let ret = yield step1();
+
+  try {
+    ret = yield step2(ret);
+  } catch(err) {
+    ret = yield step2Failed( err )
+  }
+
+  ret = yield Promise.all( [
+    step3a(ret),
+    step3b(ret),
+    step3c(ret)
+  ])
+
+  yield step4(ret)
+}
+```
+
+**具体实现**：
 
 #### 手写 Promise
+
+### Async/Await
+
+#### 什么是 Async/Await
+
+Async - 定义异步函数（`async function someName(）{...}`)
+- 自动把函数转为 Promise
+- 当调用异步函数时，函数返回值会被 resolve 处理
+- 异步函数内部可以使用 await 
+
+Await - 暂停异步函数的执行（`var result = await someAsyncCall()`）
+- 当使用在 Promise 前面时，`await`等待 Promise 完成，并返回 Promise 的结果。
+- `await` 只能和 Promise 一起使用，不能和 callback 一起使用
+- `await` 只能用在 `async` 函数中。
+
+#### Async/Await 是否会取代 Promise
+
+不会。
+
+- Async/Await 底层依然使用了 Promise。
+- 多个异步函数同时执行时，需要借助 `Promise.all`
+
+每次遇到 await 关键字时，Promise 都会停下在，一直到运行结束。`await` 把异步代码变成了同步代码。
+```js
+ (async function() {
+    try {
+      let story = await getJSON('story.json');
+      addHtmlToPage(story.heading);
+
+      // 1. 串行请求按顺序执行
+      // for (let url of story.chapterUrls) {
+      //   let chapter = await getJSON(url); // 返回 promise.resolve 的值
+      //   addHtmlToPage(chapter.html);
+      // }
+      
+      // 2. 并行请求
+      let chapterPromises = story.chapterUrls.map(getJSON);
+      const chapters = await Promise.all(chapterPromises);
+      chapters.forEach(chapter => {
+        addHtmlToPage(chapter.html);
+      })
+      addTextToPage('All done');
+    } catch (err) {
+      addTextToPage('broken' + err.message);
+    }
+    document.querySelector('.spinner-border').style.display = 'none';
+  })();
+```
+
+#### 捕获错误
+
+```js
+async function asyncAwaitTryCatch() {
+  try {
+    const api = new Api();
+    const user = await api.getUser();
+    const friends = await api.getFriend();
+
+    await api.throwError();
+    console.log('Error was not thrown');
+
+    const photo = await api.getPhoto(user.id);
+    console.log('async/await', { user, friends, photo });
+  } catch (err) {
+    console.log(err);
+  }
+}
+```
+
+#### 组合
+
+- 调用 async 函数作为一个 promise 对象来返回数据
+
+```js
+async function getUserInfo() {
+  const api = new Api()
+  const user = await api.getUser()
+  const friends= await api.getFriends(user.id)
+  const photo = await api.getPhoto(user.id)
+  return {user, friends, photo }
+}
+
+function promiseUserInfo() {
+  getUserInfo().then({ user, friends, photo }) => {
+    console.log('promiseUserInfo', { user, friends, photo })
+  }
+}
+
+// 或者继续使用 async/await 语法
+async function awaitUserInfo () {
+  const { user, friends, photo } = await getUserInfo()
+  console.log('awaitUserInfo', { user, friends, photo })
+}
+```
+
+- 检索前十个用户的所有数据
+
+```js
+async function getLotsOfUserData() {
+  const users = [];
+  while (users.length < 10) {
+    users.push(await getUserInfo());
+  }
+  console.log('getLotsOfUserData', users);
+}
+```
+
+- 并发请求
+
+```js
+async function getLotsOfUserDataFaster() {
+  try {
+    const userPromises = Array(10).fill(getUserInfo());
+    const users = await Promise.all(userPromises);
+    console.log('getLotsOfUserDataFaster', users);
+  } catch (err) {
+    console.log(err);
+  }
+}
+```
 
 ### 事件循环和任务队列
 
@@ -956,6 +1337,15 @@ require(["./vendor/multi"], function(multi) {
 
 ## 工具函数大全
 
+### 类型判断
+
+#### 判断字符串类型是否为数字
+```js
+const isNumberStr = function (str) {
+  return !isNaN(Number(str));
+}
+```
+
 ### 数组
 
 > 参考实现：lodash https://lodash.com/docs/4.17.15#intersection
@@ -1063,3 +1453,4 @@ function Random(min, max) {
 - [Javascript模块化编程（一）：模块的写法](http://www.ruanyifeng.com/blog/2012/10/javascript_module.html) -- 简洁、清晰、透彻
 - [谈谈Js前端模块化规范](https://segmentfault.com/a/1190000015991869#articleHeader0) -- 详细的 JS 模块化规范对比。
 - [npm + webpack + es6 初体验](npm + webpack + es6 初体验)
+- [JavaScript Promise：去而复返](https://www.cnblogs.com/rubylouvre/p/3495286.html) -- 目前看过最好的 Promise 文章，讲解从为什么到怎么做。s

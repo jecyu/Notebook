@@ -10,6 +10,114 @@ React.js 是一个帮助你构建页面的 UI 的库。React.js 不是一个框�
 npx create-react-app comment-app
 ```
 
+## 入门
+
+### 前端组件化
+
+抽象公共组件类，不需要说实现其他组件，也要重新 setState 等方法
+```js
+// 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
+  const createDOMFromString = domString => {
+    const div = document.createElement('div');
+    div.innerHTML = domString;
+    return div;
+  };
+  
+  class Component {
+    constructor(props) {
+      this.props = props; // 定制化配置
+    }
+    setState(state) {
+      const oldEl = this.el;
+      this.state = state;
+      this._renderDOM();
+      if (this.onStateChange) this.onStateChange(oldEl, this.el);
+    }
+    /**
+     * @description: 构建 DOM 元素并监听 onClick 事件
+     * @param {type}
+     * @return: el
+     */
+    _renderDOM() {
+      this.el = createDOMFromString(this.render());
+      if (this.onClick) {
+        this.el.addEventListener('click', this.onClick.bind(this), false);
+      }
+      return this.el;
+    }
+  }
+  /**
+   * @description: 把组件的 DOM 元素插入到页面中
+   * @param {Object}
+   * @param {Object}
+   * @return: null
+   */
+  const mount = (component, wrapper) => {
+    wrapper.appendChild(component._renderDOM());
+    component.onStateChange = (oldEl, newEl) => {
+      wrapper.insertBefore(newEl, oldEl);
+      wrapper.removeChild(oldEl);
+    };
+  };
+```
+
+业务组件类：
+```js
+  class LikeButton extends Component {
+    constructor(props) {
+      super(props); // 调用父类的构造函数
+      this.state = { isLiked: false };
+    }
+    onClick() {
+      this.setState({
+        isLiked: !this.state.isLiked
+      });
+    }
+    /**
+     * @description: 返回 HTML 字符串
+     * @param {type}
+     * @return:
+     */
+    render() {
+      return `
+        <button id='like-btn' style="background-color: ${
+          this.props.bgColor
+        }">
+          <span class="like-text">${
+            this.state.isLiked ? '取消' : '点赞'
+          }</span>
+          <span>👍</span>
+        </button>
+      `;
+    }
+  }
+  
+  class RedBlueButton extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        color: 'red'
+      };
+    }
+    onClick() {
+      this.setState({ color: 'blue' });
+    }
+    render() {
+      return `
+        <div style="color: ${this.state.color};">${this.state.color}</div>
+      `
+    }
+  }
+```
+
+实际应用：
+```js
+  const wrapper = document.querySelector('.wrapper');
+  mount(new LikeButton({ bgColor: 'green' }), wrapper);
+  mount(new RedBlueButton(), wrapper);
+```
+
+
 ## 基础
 
 ### 使用 JSX 描述 UI 信息

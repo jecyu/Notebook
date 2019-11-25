@@ -122,6 +122,8 @@
 
 而且注意下，**JS 引擎是单线程的**，这一点的本质仍然未改变，Worker 可以理解是浏览器给 JS 引擎开的外挂，专门用来解决那些大量计算问题。
 
+根据2017年新版的HTML规范，浏览器包含2类事件循环：browsing contexts 和 web workers。 链接：[HTML Standard](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop)
+
 ### WebWorker 与 SharedWorker
 
 - WebWorker 只属于某个页面，不会和其他页面的 Render 进程（浏览器内核进程）共享
@@ -358,9 +360,243 @@ container bgColor rgb(255, 255, 0)
 
 补充：除了一个 JS 文件外，针对 JS 文件里面的代码层级，可以是通过异步编程（promise）来解决同步阻塞的问题。
 
-## 事件处理
+## 从 Event Loop 谈 JS 的运行机制
 
-从 Event Loop 谈 JS 的运行机制
+单线程 == 一个调用栈 == one thing at a time（一个时间点做一件事）
+
+我们知道 JS 引擎是单线程的，这里会用到上文中的几个概念：
+
+- JS 引擎线程
+- 事件触发线程
+- 定时触发器线程
+
+然后再理解一个概念：
+
+- JS 分为同步任务和异步任务。
+- 同步任务都在主线程上执行难，形成一个`执行栈`。
+- 主线程之外，**事件触发线程**管理着一个`任务队列`，只要异步任务有了运行结果，就在`任务队列`之中放置一个事件。
+- 一旦`执行栈`中的所有同步任务执行完毕（此时 JS 引擎空闲），系统就会读取`任务队列`，将可运行的异步任务添加到可执行栈中，开始执行。 
+
+![event-loop-1](../.vuepress/public/images/event-loop-1.png)
+
+看到这里，应该可以理解了：为什么有时候 setTimeout 推入的事件不能准时执行？因为可能在它推入到事件列表时，主线程还不空闲，正在执行其他代码，所以自然有误差。
+
+### 事件循环机制的进一步补充
+
+![event-loop-2](../.vuepress/public/images/event-loop-2.png)
+
+上图描述就是：
+
+- 主线程运行时会产生<strong>执行栈</strong>，栈中的代码调用某些 api 时，（当满足触发条件后，如 ajax 请求完毕）它们会在事件任务队列中添加各种事件。
+- 而栈中的代码执行完毕，就会读取事件队列中的事件，去执行那些回调。
+- 如此循环，“读取-处理-读取”
+- 注意，总是要等待栈中的代码执行完毕后才会去读取事件队列中的事件。
+
+可以进入可视化工具[loupe](http://latentflip.com/loupe/?code=bGV0IGEgPSAxOwogY29uc29sZS5sb2coYSkKICBmdW5jdGlvbiBtdWx0aXBseShhLCBiKSB7CiAgICAgIHJldHVybiBhICogYjsKICAgIH0gIAogICAgZnVuY3Rpb24gc3F1YXJlKG4pIHsKICAgICAgcmV0dXJuIG11bHRpcGx5KG4sIG4pOwogICAgfQogICAgZnVuY3Rpb24gcHJpbnRTdXFhcmUobikgewogICAgICBjb25zdCBzcXVhcmVkID0gc3F1YXJlKG4pOwogICAgICBjb25zb2xlLmxvZyhzcXVhcmVkKTsKICAgIH0KICAgIHByaW50U3VxYXJlKDQpOw%3D%3D!!!PGJ1dHRvbj5DbGljayBtZSE8L2J1dHRvbj4%3D)，粘贴下面代码，看事件循环工作流程。
+```js
+// 事件循环
+console.log('hi');
+// setTimeout(function() {
+//   console.log('there');
+// }, 5000);
+setTimeout(function() {
+  console.log('there');
+}, 0);
+console.log("Jecyu");
+```
+
+### 单独说说定时器
+
+上述事件机制的核心是：JS 引擎线程和事件触发线程。
+
+但事件上，里面还有一些隐藏细节，譬如调用 `setTimeout` 后，是如何等待特定时间后才添加到事件队列中的？
+
+它不是由 JS 引擎检测的，而是由<strong>定时器线程</strong>控制。
+
+为什么要单独的定时器线程？因为 JavaScript 引擎是单线程的，如果处于阻塞状态就会影响记时器的准确，因此很有必要单独开一个线程用来计时。
+
+什么时候会用到定时器线程？当使用 `setTimeout` 或 `setInterval` 时，它需要定时器线程计时，计时完成后就会将特定的事件推入事件队列中。
+
+```js
+setTimeout(function() {
+  console.log('Jecyu');
+}, 1000);
+console.log("Hi");
+```
+这段代码的作用是当 `1000` 毫秒计时完毕后（由定时器线程计时），将回调函数推入事件队列中，等待主线程执行
+
+```js
+setTimeout(function() {
+  console.log('Jecyu');
+}, 0);
+console.log("Hi");
+```
+这段代码的效果是最快的时间内将回调函数推入事件队列中，等待主线程执行。
+
+注意：
+- 执行结果：先`Hi` 后，`Jecyu`。
+- 虽然代码的本意是0毫秒后就推入事件队列，但是 W3C 在 HTML 标准中规定，规定要求 `setTimeout` 中低于4ms的时间间隔算为4ms。（不过也有一说是不同浏览器有不同的最小时间设定)
+- 就算不等待 4ms，就算假设0毫秒就推入事件队列，也会先执行`Hi`（因为只有可执行栈内空了后才会主动读取事件队列）。
+
+### setTimeout 而不是 setInterval
+
+用 `setTimeout` 模拟定期计时和直接使用 `setInterval` 是有区别的。
+
+```js
+function run() {
+  console.log('Hi') // 执行代码需要时间，会导致误差
+  setTimeout(function() {
+    run();
+  }, 1000)
+}  
+run();  
+```
+
+因为每次 setTimeout 计时到后就会去执行，然后执行一段时间后才会继续 setTimeout，中间就多了误差（误差多少与代码执行时间有关）
+
+而 setInterval 则是每次都精确的隔一段时间推入一个事件（但是，事件的实际执行时间不一定就准确，还有可能是这个事件还没执行完毕，下一个事件就来了。
+```js
+setInterval(function() {
+ // 如果这里花费时间很长的话（超过1s），将会导致一个问题，当前的事件还没执行完，后续的事件继续添加进来。
+ // 那么后续的回调执行事件频率会小于 1s 的间隔进行触发，解决：可以使用 setTimeout 来模拟 setInterval 执行。
+ setTimeout(function() { // 模拟执行时间
+   console.log('Hi') 
+ }, 2000);
+}, 1000); 
+```
+执行分析如图：
+
+而且 `setInterval` 有一些比较致命的问题就是：
+
+- 累计效应（上面提到的），如果 `setInterval` 代码再（`setInerval`）再次添加到队列之前还没有完成执行，就会导致定时器代码连续运行好几次，而之间没有间隔。就算正常间隔执行，多个 setInterval 的代码执行时间可能会比预期小（因为代码执行需要一定时间）。
+- 而且把浏览器最小化显示等操作时，`setInterval` 并不是不执行程序，它会把 `setInterval` 的回调函数放到队列中，等浏览器窗口再次打开时，一瞬间全部执行完。
+
+所以，鉴于这么多问题，目前一般认为的最佳方案是：用 `setTimeout` 模拟 `setInterval`，或者特殊场合（做动画）直接用 `requestAnimationFrame`。
+
+补充：JS
+
+## 事件循环进阶：macrotask 与 microtask
+
+上文中将 JS 事件循环机制梳理了一遍，在 ES5 的情况是够用了，但是在 ES6 盛行的现在，仍然会遇到一些问题，譬如下面这题：
+```js
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0)
+
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');
+```
+它的正确执行顺序是这样子的：
+```
+script start
+script end
+promise1
+promise2
+setTimeout
+```
+
+为什么呢，因为 Promise 里有了一个新的概念：`microtask`。
+
+或者，进一步，JS 中分为两种任务类型：`macrotask` 和 `microtask`，在 ECMAScript 中，microtask 称为 `jobs`，macrotask 可称为 `task`。
+
+### 它们的定义？区别？简单点可以按如下理解：
+
+- macrotask（又称为宏任务），可以理解是每次执行栈执行的代码就是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行）
+  - 每一个 `task` 会从头到尾将这个任务执行完毕，不会执行其它。
+  - 浏览器为了能够使得 JS 内部 task 与 DOM 任务能够有序的执行，会在一个 `task`执行结束后，在下一个 `task` 执行开始前，对页面进行重新渲染（`task->渲染->task->...`）。
+- micortask（又称为微任务），可以理解是在当前 `task` 执行结束后立即执行的任务。
+  - 也就是说，在当前 `task` 任务后，下一个 `task` 之前，在渲染之前
+  - 所以它的响应速度比 `setTimeout` （setTimeout 是 `task`），会更快，因为无需等渲染。
+  - 也就是说，在某一个 `microtask` 执行完后，就会将它执行期间产生的所有 `micortask` 都执行完毕（在渲染前）。
+微任务使得我们能够在重新渲染 UI 之前执行指定的行为，避免不必要的 UI 重绘，UI 重绘会使应用状态不连续。
+```js
+for (macroTask of macroTaskQueue) {
+  // 1. Handle current MACRO-TASK
+  handleMacroTask();
+
+  // 2. Handle all MICRO-TASK
+  for (microTask of microTaskQueue) {
+      handleMicroTask(microTask);
+  }
+}
+```
+
+### 分别是什么样的场景会形成 macrotask 和 microtask 呢？
+
+`macrotask` 和 `micortask` 表示异步任务的两种分类，在挂起时，JS 引擎回将所有的任务按照类别分到这两个队列中。
+- **macrotask：**script（整体代码），`setTimeout`，`setInterval`，`setImmediate`，I/O，UI rendering等（可以看到，事件队列中的每一个事件都是一个 macrotask）。
+- **microtask：**`Promise`（这里指浏览器实现的原生的 Promise），`process.nextTick` 、`Object.observe`、`MutationObserver`等。
+
+补充：**在 node 环境下，process.nextTick 的优先级高于 Promise，**也就是可以简单理解为：在宏任务结束后会先执行微任务队列中的 `nextTickQueue` 部分呢，然后才会执行微任务中的 `Promise` 部分。
+
+看下面的例子输出：
+```js
+process.nextTick(function() {
+  console.log(4);
+});
+
+new Promise(function (resolve) { // 注意，new Promise是同步的，会马上执行function参数中的事情。
+  console.log(1);
+  resolve();
+  console.log(2);
+}).then(function() {
+  console.log(5);
+});
+
+process.nextTick(function() {
+  console.log(3);
+})
+/// 这段代码运行的结果是 1 2 4 3 5
+/// process.nexTick 永远大于 promise.then，原因是在 Node 中，_tickCallback 在每一次执行完 TaskQueue 中的一个任务后被调用，而这个 _tickCallback 中实质上干了两件事：
+// 1. nextTickQueue 中所有任务执行掉
+// 2. 第一步执行完后执行 _runMicroTasks 函数，执行 microtask 中的部分（promise.then 注册的回调）
+// 所以 process.nextTick > promise.then
+
+```
+
+### 结合线程来理解
+
+- `macrotask` 中的事件都是放在一个事件队列中的，而这个队列由<strong>事件触发线程</strong>维护。
+- `micortask` 中的所有微任务都是添加到微任务队列（Job Queues）中，等待当你 `macrotask `执行完毕后执行，而这个队列由 `JS 引擎线程维护`（因为它是在主线程下无缝执行的）。
+如这里
+
+所以，总结下运行机制：
+
+一个浏览器环境（浏览器内核）只能有一个事件循环（Event loop），而一个事件循环可以有多个<strong>任务队列（Task queue）</strong>，每个任务都有一个任务源（Task source）（timer 的回调、鼠标事件等）
+- 相同任务源的任务，只能放到一个任务队列中。
+- 不同任务源的任务，可以放到不同任务队列中。
+- 同一个任务队列中的任务必须按先进先出的顺序执行。
+
+具体看 HTML 规范，HTML的事件循环吧。
+[6.1.4 Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)
+
+执行流程：
+- 执行一个宏任务（栈中没有就从时间队列中获取）。
+- 执行过程中如果遇到微任务，就将它添加到微任务的任务队列中。
+- 宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行）。
+- 当前宏任务执行完毕，开始检查渲染，然后 GUI 线程接管渲染。
+- 渲染完毕后，JS 线程继续接管，开始下一个宏任务（从事件队列中获取）。
+
+如图：
+
+![](../.vuepress/public/images/event-loop-3.png)
+
+另外，请注意下 `Promise` 的 `polyfill` 与官方版本的区别：
+
+- 官方版本中，是标准的 `microtask` 的形式。
+- polyfill，一般都是通过 `setTimeout` 模拟的，所以是 `macrotask` 形式。
+- 请特别注意这两点区别
+
+注意，有一些浏览器执行结果不一样（因为它们可能把 microtask 当成 macrotask 来执行了），请记住，有些浏览器可能不标准。
+
+### 使用 MutationObserver 实现 microtask
 
 ## cookie 和 token 都存放在 header 中，为什么不会劫持 token？
 
