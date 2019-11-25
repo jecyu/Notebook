@@ -147,7 +147,7 @@ module.exports = {
         {
           title: "思维",
           collapsable: false,
-          children: ["index"]
+          children: [""]
         }
       ],
       "/network/": [
