@@ -63,6 +63,8 @@ yarn help COMMAND
   </tbody>
 </table>
 
+升级依赖包，直接 `yarn add xxx` 即可覆盖。
+
 ## npm 换源
 
 一、使用淘宝镜像
