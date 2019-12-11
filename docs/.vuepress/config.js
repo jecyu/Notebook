@@ -176,7 +176,7 @@ module.exports = {
         {
           title: "GIS",
           collapsable: false,
-          children: ["", "layer", "handleFile"]
+          children: ["index", "layer", "handleFile"]
         }
       ]
     },

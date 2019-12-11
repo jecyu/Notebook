@@ -1,5 +1,11 @@
 # 概览
 
+
+## GIS 组成要素
+
+如果放大后查看大图仍不清晰，请右键新标签页打开。
+<img :src="$withBase('/images/gis-component.png')" class="my-img">
+
 ## Arcgis 软件介绍
 
 ### Arcgis 的起源与发展
