@@ -1366,6 +1366,32 @@ array.push.apply(array, elements);
 console.info(array); // ['a', 'b', 0, 1, 2]
 ```
 
+#### 遍历树结构返回新树
+
+```js
+// 处理数据给后端 { title: xxxx, children: []} // 父子关系
+function recursive(node, parentNode) {
+  if (node === null) {
+    return;
+  }
+  if (node.children && node.children.length > 0) {
+    parentNode.children = [];
+    for (let i = 0; i < node.children.length; i++) {
+      let obj = {}; // 先建立节点 new node()
+      obj.title = node.children[i].title;
+      parentNode.children.push(obj);
+      recursive(node.children[i], obj);
+    }
+  }
+}
+this.indicators.forEach(val => {
+  let obj = {}; // 新建节点
+  obj.title = val.title;
+  category.push(obj);
+  recursive(val, obj);
+});
+```
+
 ### 浏览器操作及其它
 
 #### 检查是否位浏览器环境
