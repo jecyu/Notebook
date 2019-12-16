@@ -1,5 +1,102 @@
 # 2019
 
+## 十二月
+
+### 文件流下载
+
+#### 前端设置
+
+#### 后端设置
+
+
+
+```js
+const requestForDownload = async (
+  method,
+  url,
+  serviceName,
+  params,
+  headers
+) => {
+  const { config } = await getConfig();
+  const { API, API_FILE_DIR } = config;
+  const BASEURL = API + API_FILE_DIR || "";
+  return new Promise((resolve, reject) => {
+    const dataKey = method === "get" ? "params" : "data";
+    axios({
+      baseURL: BASEURL,
+      url,
+      method: method,
+      [dataKey]: params,
+      headers: headers,
+      responseType: "blob"
+    })
+      .then(res => {
+        const { headers, data } = res;
+        console.log(res);
+        const type = data.type;
+        if (type.includes("application/json")) {
+          // 如果是json类型，则说明下载出错，需要提取错误信息
+          const fileReader = new FileReader();
+          fileReader.onload = e => {
+            const { message } = JSON.parse(e.target.result);
+            reject(message);
+            iview.Message.error(message);
+          };
+          fileReader.readAsText(data);
+        } else {
+          const reg = /filename=(\S.*?\.\w+)$/;
+          const fileInfo = headers["content-disposition"];
+          console.log(fileInfo);
+          const filename = fileInfo && fileInfo.match(reg);
+          resolve({
+            blob: data,
+            name: filename ? decodeURI(filename[1]) : "DistTemplate"
+          });
+        }
+      })
+      .catch(error => {
+        reject(error);
+        throw new Error(`请求---${serviceName}---接口失败`);
+      });
+  });
+};
+```
+
+### 关于 vue 组件默认样式的写法
+
+关于组件的默认样式写法，不记得是什么时候，默认新开一个组件时都设置了{ height：100% ， width：100% }，通常这样设定是为了布局上的自适应，为了满足让它填满父容器。例如嵌入一个 iframe 组件，为了让它随着父窗口自适应。但是遇到另外一种情况，如果这个容器里还有另一个并列的元素的时候，就会导致这个它们的高度和大于父亲的高度和，这个在设置自适应高度需要滚动条的时候很致命。这个时候只能把另外的元素拖离文档流，例如设置：position：absolute 等。
+因此，一定要根据组件的特性以及要融入的父亲来设定。
+        
+#### 关于 UI 布局
+
+整体的页面布局的话，采用 iview 的 24 栏布局可以快速处理整个界面的响应式布局。
+
+![](../.vuepress/public/images/iview-24-column.png)
+        
+局部布局的话采用 flex 布局。其中高度自适应分配的样式，
+建议使用flex 布局中的关键属性 `flex-grow: 1` 来解决，它能够自动分配完父容器的剩余高度。
+对于需要容器自适应高度，但是又需要在容器的内容过长时，出现滚动条。因此需要显示设定容器的 px 高度，才能实现超过容器高度出现滚动。当然采用过 JS 计算也可以达到，但是也可以通过下面这种 CSS 的方式设置 `positon: absolute` 绝对定位。
+
+```scss
+.search-tree { // 父容器
+  position: relative;
+  height: 100%;
+  width: 100%;
+  .input-wrapper { // 子元素1
+    padding: 15px 15px 0 15px;
+  }
+  &-content { // 子元素2
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 3rem;
+    bottom: 2rem;
+    overflow: auto; // 滚动
+  }
+}
+```
+
 ## 十一月
 
 ### vue 当前页面刷新或跳转时提示保存

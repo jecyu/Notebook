@@ -1,4 +1,4 @@
-# Arcgis-Server
+# Arcgis Server
 
 ## 什么是 ArcGIS Server?
 
@@ -21,6 +21,10 @@
 |GIS 内容所在的文件夹和地理数据库|创建组织的 GIS 内容的可搜索索引|ArcMap|
 
 如果不希望立即发布（例如，如果你无法直接访问服务器计算机），可改为保存服务定义文件并稍后发布。<u>服务定义中包括稍后发布服务所需的所有数据路径和属性。</u>你甚至可以选择包含所有源数据，使你能够真正将服务打包成一个可传输的文件。
+
+![](../.vuepress/public/images/gis-services.png)
+
+![](../.vuepress/public/images/git-service-resource.png)
 
 ## ArcGIS Server 组件
 

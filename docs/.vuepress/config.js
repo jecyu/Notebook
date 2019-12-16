@@ -176,7 +176,7 @@ module.exports = {
         {
           title: "GIS",
           collapsable: false,
-          children: ["index", "layer", "handleFile"]
+          children: ["", "layer", "argis-server", "handleFile"]
         }
       ]
     },

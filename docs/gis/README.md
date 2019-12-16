@@ -1,6 +1,5 @@
 # 概览
 
-
 ## GIS 组成要素
 
 如果放大后查看大图仍不清晰，请右键新标签页打开。
@@ -131,13 +130,62 @@ ArcGIS for Desktop 提供了一系列的扩展模块，使得用户可以实现�
 
 ArcGIS Pro 是一款全新的桌面应用程序，它改变了桌面 GIS 的工作方式。给专业 GIS 人员使用。二三维一体化。
 
-### ArcGIS for Server
+#### ArcGIS for Server
 
+ArcGIS for Server 通过帮助用户在组织机构内搭建 ArcGIS 平台来实现 WebGIS 应用模式，这种部署方式使得组织机构里的每个人都能够随时随地使用任何设备来发现、创建和分享 GIS 内容。ArcGIS for Server 可运行在<u>云中基础设施、本地私有或者虚拟的环境里，</u>，并能够与现有的 IT 基础设施和企业安全系统共同工作。从概念上讲，ArcGIS for Server 包括三层——服务层、访问层和 App 层。
 
+![](../.vuepress/public/images/arcgis-for-server.png)
 
-### ArcGIS Online
+服务层（Servers）：包括 GIS 服务器，GIS 服务器使得 GIS 资源能够以 Web 服务的方式分享。
 
-### ESRI CityEngine
+访问层（Access）：包括门户，可以部署自己的基础设施中（内部部署或在云中部署）。
+
+App层：包括一系列即拿即用的可运行在 Web 端和移动端。
+
+Arcgis for Server 的用户：
+
+- 专业用户。
+- ArcGIS for Server 站点管理员。
+- ArcGIS for Desktop 内容创作者和发布者。
+- 应用开发人员。（专门从事应用开发的人员可以应用专业用户发布的服务来创建或者定制应用而不必深刻理解 GIS 知识）。
+- 领导和业务人员。（GIS 系统使用者）
+- IT 管理人员。
+
+Arcgis for Server 的功能：
+
+- 支持具有空间能力的数据库。
+- 空间数据管理。
+- 创建和管理 GIS Web 服务。
+- Web 地图应用程序。（ArcGIS online 、Portal for ArcGIS、Web AppBuilder 或使用 ArcGIS for JavaScript 来自定义）
+- 移动应用程序。
+- 以地图为和兴的内容管理（Portal）
+- 影响处理和分析。
+- 在线编辑。
+- 可视化3D 内容。
+- 空间分析和地理处理。
+- 实时数据分析。（车载 GPS）
+
+#### ArcGIS Online
+
+ArcGIS Online 是基于云的协作式平台，允许组织成员使用、创建和共享地图、应用程序和数据，以及访问权威性底图和 ArcGIS 应用程序。http://www.arcgis.com。
+
+可以将数据发布为 Web 图层，讲要素和地图切片作为 Web 图层发布到 A如此GIS Online。
+
+#### CityEngine
+
+ESRI CityEngine 是三维城市建模的首选软件。
+
+#### ArcGIS 开发产品
+
+可以通过各种运行时 SDK 来开发产品。
+
+## OWS 服务体系
+
+- **地理数据服务（Data Service）：**提供对空间数据的服务，主要有 `WFS` （Web Feature Service，矢量数据服务）和 `WCS` （Web Coverage Service、栅格数据服务）。地理数据服务返回的结果通常是带有空间参照体系的数据。
+- **地理描绘服务（Portrayal Sevice）：**提供对空间数据的描绘，主要 `WMS` （Web Map Service，地图服务），其中地图可以由多个图层组合起来，每个地图可以用 SLD（Styled Layer Descriptor）来对地图进行描述。地图服务的返回结果通常是矢量图形或栅格图形。
+- **过程处理服务（Processing Service）：**提供地理数据的查找、索引等服务，主要有 Geocoder（地学编码服务）、Gazetteer（地名索引服务）、Coordinate Transfer Service （坐标转化服务）等。
+- **发布注册服务（Registry）：**提供对各种服务的注册服务，以便于服务的发现。其中包括数据类型、数据实例、服务类型、服务实例的注册服务。注册服务提供了各个注册项的登记、更新及查找服务。
+- 客户端应用：即客户端的基本应用，如地图的显示、地图浏览以及其他一些增值服务。
 
 ## 问题
 

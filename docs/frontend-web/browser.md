@@ -622,6 +622,8 @@ process.nextTick(function() {
 1. 尝试从cookie中获取session-key，如果有则继续判断是否具有用户信息和用户权限。如果无session-key则直接跳转到登录页。
 2. 如果获取用户信息和用户权限的过程失败了，则清除session-key,并且跳转到登录页。 这个session-key是在用户登录成功后存入cookie的，过期时间为0.5天。
 
+## 输入一个url到浏览器页面展示都经历了哪些过程
+
 ## 参考资料
 
 - [浏览器内核分析2 -- Webkit和Chromium源码结构](https://blog.csdn.net/u013510838/article/details/55211033)-- 简明清晰分析浏览器的内核源码
