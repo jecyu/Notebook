@@ -72,7 +72,7 @@ git config --global color.ui auto
 
 ### 设定 用户名/电子邮件地址
 
-如果不添加--global 选项，此设定只对该数据库有效。
+如果不添加`--global` 选项，此设定只对该数据库有效。
 
 ```sh
 git config --global user.name "username"

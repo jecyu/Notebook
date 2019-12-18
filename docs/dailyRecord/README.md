@@ -2,13 +2,72 @@
 
 ## 十二月
 
+### 拖拽目标元素，让容器跟随滚动
+
+场景：在容器的元素过多时，需要滑动滚动条来查看内容。这种情况下，需要拖拽节点到不可见的位置时，就需要通过代码实现容器的滚动条位置跟随鼠标拖拽的位置进行处理。
+
+思路：通过动态获取拖拽原始目标的节点的 top 位置（通过 `getBoundingClientRect()` 获取），以及鼠标 drapover 事件的 eventY 视口坐标。拿到 eventY - top 的距离，然后赋值给容器的 scrollTo 值即可。
+
+![](../.vuepress/public/images/scrollbyMouse-drap.png)
+
+```js
+  mounted() {
+    this.nrSearchTreeClientRect = this.$refs.nrSearchTree.$el.getBoundingClientRect(); //
+    // this.nrSearchTreeScrollHeight =
+    console.log(this.nrSearchTreeClientRect);
+  },
+  methods: {
+    /**
+      * 拖拽over
+      * @param {Object} draggingNode vue 组件
+      */
+    handleNodeDragOver(draggingNode, dropNodeData, event) {
+      const target = draggingNode.$el; // 取得拖拽元素
+      const targetTop = target.getBoundingClientRect().top; // 获得可视窗口的坐标top
+      const { left, right, top } = this.nrSearchTreeClientRect;
+      const distance = event.clientY - targetTop; // 获取滚动移动的距离
+      // 确保鼠标位于指定区域内
+      if (
+        event.clientX > left &&
+        event.clientX < right &&
+        event.clientY > top
+      ) {
+        const throttleCached = this.$lodash.throttle(() => {
+          // 返回函数
+          this.playAnimate(
+            this.$refs.nrSearchTree.$el.scrollTop,
+            distance,
+            this.$refs.nrSearchTree.$el
+          );
+        }, 300);
+        throttleCached();
+      }
+    },
+    playAnimate(from, to, listCon) {
+      animate.play({
+        from,
+        to,
+        during: 350,
+        type: "easeOutQuad",
+        callback: v => {
+          listCon.scrollTop = v;
+        }
+      });
+    }
+  },
+
+
+```
+
 ### 文件流下载
 
 #### 前端设置
 
+前端在实用 ajax 请求时，设置 response.type = “blob” 即可拿到 javaScript 描述的流。之后采用 fileSaver 提供的 saveAs 处理即可
+
 #### 后端设置
 
-
+后端通过返回一个字符流的文件，并且把文件信息放置到 Content-Composition 里，并设置允许浏览器端能够访问到这个头信息，必须要设置 Access-Control-Expose-Headers: Content-Disposition。否则前端的 response 里拿不到这个值。
 
 ```js
 const requestForDownload = async (
