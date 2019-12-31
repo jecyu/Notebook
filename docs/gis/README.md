@@ -11,9 +11,9 @@
 
 - 美国环境系统研究所公司（Environmental Systems Research Institute,Inc），简称 ESRI 公司。
 
-- 在 1995年，为了满足了 BtoB 市场的需要，ESRI 推出了 **SDE**，这样空间数据和表格数据可以同时存储在商业的关系性数据库管理系统（DBMS）中。
+- 在 1995 年，为了满足了 BtoB 市场的需要，ESRI 推出了 **SDE**，这样空间数据和表格数据可以同时存储在商业的关系性数据库管理系统（DBMS）中。
 
-- Arcgis 10.3 
+- Arcgis 10.3
   - 以用户为中心（Named User）的授权模式。
   - 3D 场景创建。
   - Web builder。
@@ -41,12 +41,12 @@
 Named User: Named User 是登入新一代 Web GIS 平台的密钥。
 门户（Portal）：ArcGIS 平台的访问控制中枢，是用户是心啊多维内容管理、跨部门协同分享、精细化访问控制，以及便捷地发现和使用 GIS 资源的渠道。
 
-
-服务器（Server）：Server 包括 ArcGIS for Server、Content 和 Services。它是空间数据和GIS 分析能力在 Web 中发挥价值的关键。负责将数据转换为 GIS 服务（GIS Service），通过浏览器和多种设备将服务带到更多人身边。
+服务器（Server）：Server 包括 ArcGIS for Server、Content 和 Services。它是空间数据和 GIS 分析能力在 Web 中发挥价值的关键。负责将数据转换为 GIS 服务（GIS Service），通过浏览器和多种设备将服务带到更多人身边。
 
 ### ArcGIS for Desktop
 
 主要程序包括：
+
 - ArcMap
 - ArcCatalog
 - ArcToolbox
@@ -56,6 +56,7 @@ Named User: Named User 是登入新一代 Web GIS 平台的密钥。
 - 扩展模块等。
 
 提供功能：
+
 - 空间分析
 - 数据管理
   - 用户可以轻松集成所有类型的数据进行可视化和分析。
@@ -74,11 +75,13 @@ Named User: Named User 是登入新一代 Web GIS 平台的密钥。
 
 ArcMap 集成传统的空间数据编辑、查询、显示、分析、报表、制图。
 ArcMap 提供两种类型的操作界面:
+
 - 地理数据视图
   - 能对地理图层进行符号化显示、分析和编辑 GIS 数据集。
 - 地理布局视图
+
   - 可以处理地图的版面，包括地理数据视图和比例尺、图例、指北针等地图元素。
-  
+
 #### ArcCatalog
 
 ArcCatalog 是地理数据的资源管理器，用于组织和管理所有 GIS 数据，它包含一组供具用于浏览和查找地理数据、记录和浏览元数据、快速显示数据集，以及为地理数据定义数据结构。帮助用户组织和管理所有的 GIS 信息，如地图、数据集、模型、元数据、服务等。
@@ -102,7 +105,7 @@ ArcToolbox 是一个地理数据处理工具的集合，涵盖数据处理、转
 
 ![ArcToolbox 界面](../.vuepress/public/images/ArcToolbox.png)
 
-#### ArcGlobe 
+#### ArcGlobe
 
 ArcGlobe 是 ArcGIS for Desktop 中 3D 分析扩展模块中的一个部分，提供了全球地理信息的连续、多分辨率的交互式浏览功能。像 ArcMap 一样， ArcGlobe 也是使用 GIS 数据层，显示 Geodatabase 和所有支持的 GIS 数据格式中的信息的。ArcGlobe 具有地理信息的动态 3D 视图。ArcGlobe 创建的 Globe 文档可以使用 ArcGIS for Server 将其发布为服务，通过 ArcGIS for Server 球体服务（Globe Service）向众多 3D 客户端提供服务。
 
@@ -140,7 +143,7 @@ ArcGIS for Server 通过帮助用户在组织机构内搭建 ArcGIS 平台来实
 
 访问层（Access）：包括门户，可以部署自己的基础设施中（内部部署或在云中部署）。
 
-App层：包括一系列即拿即用的可运行在 Web 端和移动端。
+App 层：包括一系列即拿即用的可运行在 Web 端和移动端。
 
 Arcgis for Server 的用户：
 
@@ -161,7 +164,7 @@ Arcgis for Server 的功能：
 - 以地图为和兴的内容管理（Portal）
 - 影响处理和分析。
 - 在线编辑。
-- 可视化3D 内容。
+- 可视化 3D 内容。
 - 空间分析和地理处理。
 - 实时数据分析。（车载 GPS）
 
@@ -169,7 +172,7 @@ Arcgis for Server 的功能：
 
 ArcGIS Online 是基于云的协作式平台，允许组织成员使用、创建和共享地图、应用程序和数据，以及访问权威性底图和 ArcGIS 应用程序。http://www.arcgis.com。
 
-可以将数据发布为 Web 图层，讲要素和地图切片作为 Web 图层发布到 A如此GIS Online。
+可以将数据发布为 Web 图层，讲要素和地图切片作为 Web 图层发布到 A 如此 GIS Online。
 
 #### CityEngine
 

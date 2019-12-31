@@ -1,5 +1,9 @@
 # HTML
 
+## 页面布局
+
+整体使用 Layout 布局，次级使用 Grid 布局，具体细节 flex 布局。参考[iview ui](https://www.iviewui.com/components/layout#CBBJ) 
+
 ## 标签
 
 ### base 标签

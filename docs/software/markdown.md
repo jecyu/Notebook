@@ -50,3 +50,8 @@
 npm i doctoc -g //install 简写 i
 ```
 
+### 方法三：vuepress 自带处理
+
+```
+[[toc]]
+```

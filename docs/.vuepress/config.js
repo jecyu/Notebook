@@ -45,11 +45,11 @@ module.exports = {
           { text: "️️🐛网络工程", link: "/network/",  },
         ]
       },
+      { text: "✔️编码规范&协同开发", link: "/lint/" },
       { text: "设计", items: [
         { text: "🖌️UI", link: "/design/" }]
       },
       { text: "🏷书签整理", link: "/bookmark/" },
-      { text: "✔️编码规范&协同开发", link: "/lint/" },
       {
         text: "📖知识脑图",
         link:
@@ -93,18 +93,18 @@ module.exports = {
       ],
       "/lint/": [
         {
-          title: "代码审查",
-          collapsable: true,
+          title: "代码回顾",
+          collapsable: false,
           children: ["codeReview"]
         },
         {
           title: "编码规范",
-          collapsable: true,
+          collapsable: false,
           children: ["", "es6", "vue"]
         },
         {
           title: "协同开发",
-          collapsable: true,
+          collapsable: false,
           children: ["gitBase", "gitWorkFlow", "collaborative", "gitCommit"]
         }
       ],
@@ -176,7 +176,7 @@ module.exports = {
         {
           title: "GIS",
           collapsable: false,
-          children: ["", "layer", "argis-server", "handleFile"]
+          children: ["",  "arcgis-for-js", "layer", "argis-server", "handleFile"]
         }
       ]
     },
