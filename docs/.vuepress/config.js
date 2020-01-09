@@ -43,6 +43,7 @@ module.exports = {
           { text: "🌍GIS", link: "/gis/" },
           { text: "️️🖱️软件", link: "/software/" },
           { text: "️️🐛网络工程", link: "/network/",  },
+          { text: "🚶不止前端", link: "/programming-language/" },
         ]
       },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
@@ -141,6 +142,13 @@ module.exports = {
           title: "前端",
           collapsable: false,
           children: [ "browser", "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+        }
+      ],
+      "/programming-language/": [
+        {
+          title: "🚶不止前端",
+          collapsable: false,
+          children: [""]
         }
       ],
       "/rethink/": [
