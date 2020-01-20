@@ -34,10 +34,21 @@ C# 是专为公共语言基础结构（CLI）设计的。CLI 由可执行代码�
 - LINQ 和 Lambda 表达式
 - 集成 Window
 
-### 环境
+### 环境：C#和 .NET 框架
 
-C# 是 .Net 框架的一部分，且用于编写 .Net 应用程序。
-Net 框架是一个创新的平台，能帮您编写出下面类型的应用程序：
+C# 是在为微软公司的 .NET 框架上开发程序而设计的，它属于 .NET 框架的一部分。
+
+![](../.vuepress/public/images/net-compose.png)
+
+编程工具涵盖乐编码和调试需要的一切，包括一下几点：
+- Visual Studio 集成开发环境（IDE）。
+- .NET 兼容的编译器（例如：C#、Visual Basic .NET、F#、IronRuby和托管的 C++）
+- 调试器
+- 网站开发服务端技术，比如 ASP.NET 或 WCF。
+  
+BCL （Base Class Libray，基类库）是 .NET 框架使用的一个大的类库，而且也可以在你的程序中使用。
+
+.Net 框架是一个创新的平台，能帮您编写出下面类型的应用程序：
 
 - Windows 应用程序
 - Web 应用程序
@@ -58,6 +69,54 @@ Net 框架是一个创新的平台，能帮您编写出下面类型的应用程�
 - Windows 显示基础（Windows Presentation Foundation）
 - Windows 通信基础（Windows Communication Foundation - WCF）
 - LINQ
+
+#### 大大改进的编程环境
+
+1. 面向对象的开发环境
+2. 自动垃圾手机
+3. 互操作性
+4. 不需要 COM
+5. 简化的部署，不需要使用注册表注册。
+6. 类型安全性。
+7. 基类库（Base Class Library，BCL）。在写自己的程序时，可以使用其中的类：
+   - 通用基础类。文件操作、字符串操作、安全和加密。
+   - 集合类。列表、字典、散列表以及位数组。
+   - 线程和同步类。创建多线程。
+   - XML 类。操作 XML 文档。
+
+#### 编译成 CIL
+
+.NET 语言的编译器接受源代码文件，并生成名为程序集的输出文件。
+- 程序集要么是可执行的，要么是 DLL。
+- 程序集里的代码并不是本机代码，而是一种名称为 CIL（Common Intermediate Language，公共中间语言）的中间语言。
+- 程序集包含的信息中，包括下列项目：
+  - 程序的 CIL；
+  - 程序中使用的类型的元数据；
+  - 对其他程序集引用的元数据。
+
+![](../.vuepress/public/images/c-sharp-compile.png)
+
+#### 编译成本机代码并执行
+
+程序的 CIL 直到它被调用时才会被编译成本机代码。在运行时，CLR 执行下面的步骤：
+1. 检查程序集的安全特性；
+2. 在内存中分配空间。
+3. 把程序集中的可执行代码发送给实时（Just-in-Time，JIT）编译器，把其中的一部分编译成本机代码。
+
+![](../.vuepress/public/images/c-sharp-compile-execute.png)
+
+一旦 CIL 被编译成本机代码，CLR 就在它运行时管理它，执行像释放无主内存、检查数组边界、检查参数类型和管理异常之类的任务。
+
+#### 编译时和运行时
+
+![c-sharp-compiletime-runtime](../.vuepress/public/images/c-sharp-compiletime-runtime.png)
+
+#### CLR
+
+.NET 框架的核心组件是 CLR，它在操作系统的顶层，负责管理程序的执行。CLR 还提供下列服务：
+- 自动垃圾收集；
+- 安全和认证；
+- 通过访问 BCL 得到广泛的编程功能呢，包括如 Web 服务和数据服务之类的功能。
 
 ### 程序结构
 
