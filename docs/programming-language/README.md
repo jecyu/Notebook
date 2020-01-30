@@ -1,4 +1,4 @@
-# C#
+# C
 
 ## 基础知识
 
@@ -40,7 +40,7 @@ C# 是在为微软公司的 .NET 框架上开发程序而设计的，它属于 .
 
 ![](../.vuepress/public/images/net-compose.png)
 
-编程工具涵盖乐编码和调试需要的一切，包括一下几点：
+编程工具涵盖了编码和调试需要的一切，包括一下几点：
 
 - Visual Studio 集成开发环境（IDE）。
 - .NET 兼容的编译器（例如：C#、Visual Basic .NET、F#、IronRuby 和托管的 C++）
@@ -1078,10 +1078,12 @@ namespace MyClass
 #### 参数数组
 
 参数数组允许零个或多个实参对应一个特殊的形参。
+
 - 在一个参数列表中只能有一个参数数组。
 - 由参数数组表示的所有参数都必须具有相同的类型。
 
 声明一个参数数组必须做的事如下。
+
 - 在数据类型前使用 `params` 修饰符。
 - 在数据类型后放置一组空的方括号。
 
@@ -1126,6 +1128,7 @@ namespace MyClass
 ```
 
 在使用一个为参数数组分离的调用时，编译器做下面的事：
+
 - 接受实参列表，用它们在堆中创建并初始化一个数组。
 - 把数组的引用保存到栈中的数组。
 - 如果在对应的形参数组的位置没有实参，编译器会创建一个有零个元素的数组来使用。
@@ -1177,6 +1180,7 @@ class MyClass {
 C# 还允许可选参数（optional parameter）。所谓可选参数就是我们可以在调用方法的时候包含这个参数，也可以省略它。
 
 对于可选参数的声明，我们需要知道如下几种重要事项：
+
 - 不是所有的参数都可作为可选参数。
   - 只要值类型的默认值在编译的时候可以确定，就可以使用值类型作为可选参数。
   - 只有默认值是 null 的时候，引用类型才可以作为可选参数来使用。
@@ -1188,6 +1192,7 @@ C# 还允许可选参数（optional parameter）。所谓可选参数就是我�
 ![](../.vuepress/public/images/optional-parameter2.png)
 
 注意：
+
 - 不能随意省略可选参数的组合，避免使用哪些可选参数不明确。你可以省略最后 n 个可选参数，但是不可以随意选择省略任意的可选参数，省略必须从最后开始。
 - 如果需要随意省略可选参数列表中的可选参数，而不是从列表的最后开始，那么必须使用可选参数的名字来消除赋值的歧义。
 
@@ -1233,19 +1238,1182 @@ C# 还允许可选参数（optional parameter）。所谓可选参数就是我�
 
 #### 静态字段
 
+除了实例字段，类还可以拥有静态字段。
 
+- 静态字段被类的所有实例共享，所有实例都访问同一内存位置。因此，如果该内存位置的值被一个实例改变了，这种改变对所有的实例都可见。
+- 可以使用 `static` 修饰符将字段声明为静态。
 
-#### 构造函数
+```cs
+class D {
+    int Mem1; // 实例字段
+    static int Mem2; // 静态字段
+}
+```
+
+注意：静态成员 Mem2 是与所有实例的存储分开保存的，所以不能通过实例名字访问该静态成员。
+
+#### 从类的外部访问静态成员
+
+在前一章中，我们可以使用点运算符可以从类的外部访问 public 实例成员。点运算符由实例名、点和成员组成。
+
+就像实例成员，静态成员也可以使用点运算符从类的外部访问。但因为没有实例，所以必须使用类名。
+
+```cs
+// 静态字段
+using System;
+namespace MyClass
+{
+    class MyClass7
+    {
+        int Mem1; // 实例字段
+        public static int Mem2;  // 静态字段
+    }
+    class Program7
+    {
+        public static void main()
+        {
+
+            MyClass7 d1 = new MyClass7();
+            MyClass7 d2 = new MyClass7();
+            MyClass7.Mem2 = 10;
+            Console.WriteLine("After method call: {0}", MyClass7.Mem2);
+        }
+    }
+}
+```
+
+##### 静态成员的生存期
+
+静态成员的生命期与实例成员的不同。
+
+- 之前我们已经看到了，只有实例创建之后才产生实例成员，在实例销毁之后实例成员也就不存在了。
+- 但是即使类没有实例，也存在静态成员，并且可以访问。
+
+```cs
+using System;
+namespace MyClass
+{
+    class MyClass7
+    {
+        int Mem1; // 实例字段
+        public static int Mem2;  // 静态字段
+    }
+    class Program7
+    {
+        public static void main()
+        {
+
+            MyClass7.Mem2 = 10;
+            Console.WriteLine("After method call: {0}", MyClass7.Mem2);
+        }
+    }
+}
+```
+
+#### 静态函数成员
+
+除了静态字段，还有静态函数成员。
+
+- 如同静态字段，静态函数成员独立于任何实例。即使没有类的实例，仍然可以调用静态方法。
+- 静态函数成员不能访问实例成员。然而，它们能访问其他静态成员。
+
+![](../.vuepress/public/images/static-method.png)
+
+#### 其他静态成员
+
+![](../.vuepress/public/images/static-class-member.png)
+
+#### 成员常量
+
+成员变量类似前一章所述的本地常量，只是它们被声明在类声明中而不是方法内。
+
+```cs
+class MyClass {
+    const int IntVal = 100;
+}
+```
+
+与 C 和 C++ 不同，在 C# 中没有全局变量。每个常量都必须声明在类型内。
+
+#### 常量与静态量
+
+然而，成员常量比本地常量更有趣，因为它们表现得像静态值。它们对类的每个实例都是“可见的”，而且即使没有类的实例也可以使用。与真正的静态量不同，常量没有自己的存储位置，而且是编译时被编译器替换。
+
+```cs
+// 静态字段
+using System;
+namespace MyClass
+{
+    class MyClass7
+    {
+        int Mem1; // 实例字段
+        public static int Mem2;  // 静态字段
+        public const int intVal = 100;
+    }
+    class Program7
+    {
+        public static void main()
+        {
+
+            MyClass7.Mem2 = 10; // 可以访问静态字段
+            Console.WriteLine("After method call: {0}, {1}", MyClass7.Mem2, MyClass7.intVal); // 10 100
+        }
+    }
+}
+```
+
+#### 属性
+
+属性是代表类的实例或类中的一个数据项的成员。使用属性看起来非常像写入或读取一个字段，语法是相同的。从语法上无法区分它们。
+
+```cs
+MyClass mc = new MyClass();
+mc.MyField = 5; // 给字段赋值
+mc.MyProperty = 10; // 给属性赋值
+```
+
+与字段类似，属性有如下特征：
+
+- 它是命名的类成员。
+- 它有类型。
+- 它可以被赋值和读取。
+
+**然而与字段不同，属性是一个函数成员。**
+
+- 它不为数据存储分配内存。
+- 它执行代码。
+
+属性是指定的一组两个匹配的、称为访问器的方法。
+
+- set 访问器为属性赋值。
+- get 访问器从属性获取值。
+
+```cs
+int Value {
+    set {
+        SetAccessorCode
+    }
+    get {
+        GetAccessorCode
+    }
+}
+```
+
+##### 属性声明和访问器
+
+set 和 get 访问器有预定义的语法。可以把 set 访问器想象成一个方法，带有单一的参数“设置”属性的值。get 访问器没有参数并从属性返回一个值。
+
+- set 访问器总是：
+  - 拥有一个单独的、隐式的值参，名称为 `value`，与属性的类型相同；
+  - 拥有一个返回类型的 `void`。
+- get 访问器总是：
+  - 没有参数；
+  - 拥有一个与属性类型相同的返回类型。
+
+set 访问器中的隐式参数 `value` 是一个普通的值参。和其他值参一样，可以用它发送数据到方法体或这种情况中的访问器块。在块的内部，可以像普通变量那样使用 value，包括对它赋值。
+
+访问器的其他重点如下：
+
+- get 访问器的所有执行路径必须包含一条 `return` 语句，返回一个属性的值。
+- 访问器 `set` 和 `get` 可以以任何顺序声明，并且，除了这两个访问器外在属性上不允许有其他方法。
+
+##### 使用属性
+
+```cs
+// 属性
+using System;
+namespace MyClass
+{
+  class MyClass8
+  {
+    private int TheRealValue; // 后备字段：内存分配
+    public int MyValue // 属性：未分配内存
+    {
+      set
+      {
+        TheRealValue = value;
+      }
+      get
+      {
+        return TheRealValue;
+      }
+    }
+  }
+  class Program8
+  {
+    public static void main()
+    {
+
+      MyClass8 mc = new MyClass8();
+      mc.MyValue = 5; // 赋值：隐式调用 set 方法
+      int test = mc.MyValue; // 表达式：隐式调用 get 方法
+      Console.WriteLine("After Property set: {0}, {1}", mc.MyValue, test);
+    }
+  }
+}
+```
+
+##### 属性和关联字段
+
+（PS：这个属性的作用跟 vue 的计算属性的作用和相似。）属性常和字段关联，如上面的一节。一种常见的方式是在类中将字段声明为 `private` 以封装该字段，并声明一个 `public` 属性来控制从类的外部对该字段的访问。和属性关联的字段被称为后备字段或后备存储。
+
+##### 执行其他计算
+
+属性访问符并不局限于仅仅对关联的后备字段传进传出数据。访问器 get 和 set 能执行任何计算，或不执行任何计算。唯一必须的行为是 get 访问器需要返回一个属性类型的值。
+
+```cs
+// 属性
+using System;
+namespace MyClass
+{
+  class MyClass8
+  {
+    private int TheRealValue; // 后备字段：内存分配
+    public int MyValue // 属性：未分配内存
+    {
+      set
+      {
+        TheRealValue = value > 100 ? 100 : value;
+      }
+      get
+      {
+        return TheRealValue;
+      }
+    }
+  }
+  class Program8
+  {
+    public static void main()
+    {
+
+      MyClass8 mc = new MyClass8();
+      mc.MyValue = 5; // 赋值：隐式调用 set 方法
+      int test = mc.MyValue; // 表达式：隐式调用 get 方法
+      Console.WriteLine("After Property set: {0}, {1}", mc.MyValue, test);
+    }
+  }
+}
+```
+
+##### 只读和只写属性
+
+要想不定义属性的某个访问器，可以忽略访问器的声明。
+
+- 只有 get 访问器的属性称为只读属性。只读属性是一种安全的，把一项数据从类或类的实例中传出，而不允许太多访问方法。
+- 只有 set 访问器的属性称为只写属性。只写属性是一种安全的，把一项数据从类的外部传入类，而不允许太多访问的方法。
+- 两个访问器中至少有一个必须定义，否则编译器会产生一条错误信息。
+
+##### 属性与公共字段
+
+##### 自动实现属性
+
+##### 静态属性
+
+#### 实例构造函数
+
+实例构造函数是一个特殊的方法，它在创建类的每个新实例时执行。
+
+- 构造函数用于初始化类实例的状态。
+- 如果希望从类的外部创建类的实例，需要将构造函数声明为 `public`。
+
+```cs
+class MyClass {
+  public MyClass() { // 没有返回类型
+  }
+}
+```
+
+- 构造函数的名称和类名相同。
+- 构造函数不能有返回值。
+
+##### 带参数的构造函数
+
+构造函数在下列方法和其他方法相似。
+
+- 构造函数可以带参数。参数的语法和其他方法完全相同。
+- 构造函数可以被重载。
+
+在使用创建对象表达式创建类的新实例时，要使用 new 运算符，后面跟着类的某个构造函数。new 运算符使用该构造函数创建类的实例。
+
+```cs
+// 实例构造函数
+using System;
+namespace MyClass
+{
+  class Class10
+  {
+    int Id;
+    string Name;
+    public Class10()
+    {
+      Id = 28;
+      Name = "Jecyu";
+    }
+    public Class10(int Val) // 设置 public 在类的外部也能创建类的实例
+    {
+      Id = Val;
+      Name = "Jecyu";
+    }
+    public Class10(String name)
+    {
+      Name = name;
+    }
+    public void SoundOff()
+    {
+      Console.WriteLine("Name {0}, Id {1}", Name, Id);
+    }
+  }
+  class Program10
+  {
+    public static void main()
+    {
+
+      Class10 mc1 = new Class10();
+      Class10 mc2 = new Class10(7);
+      Class10 mc3 = new Class10("linjy");
+      mc1.SoundOff();
+      mc2.SoundOff();
+      mc3.SoundOff();
+
+    }
+  }
+}
+
+```
+
+##### 默认构造函数
+
+如果在类的声明中没有显式地提供实例构造函数，那么编译器会提供一个隐式的默认构造函数，它有以下特征：
+
+- 没有参数。
+- 方法体为空。
+
+如果你为类声明了任何构造函数，那么编译器就不会为该类定义默认构造函数。
+
+- 因为已经至少有一个显式定义的构造函数，编译器不会创建任何额外的构造函数。
+- 在 Main 中，试图使用不带参数的构造函数创建新的实例。因为没有无参数的构造函数，所以编译器会产生一条错误信息。
+
+#### 静态构造函数
+
+构造函数也可以声明为 `static`。实例构造函数初始化类的每个新实例，而 static 构造函数初始化类级别的项。通常，静态构造函数初始化类的静态字段。
+
+- 初始化类级别的项。
+  - 在引用任何静态成员之前。
+  - 在创建类的任何实例之前。
+- 静态构造函数在以下方面与实例构造函数相似。
+  - 静态构造函数的名称必须和类名相同。
+  - 构造函数不能返回值。
+- 静态构造函数在以下方面与实例构造函数不同。
+  - 静态函数声明中使用 `static` 关键字。
+  - 类只能有一个静态构造函数，而且不能带参数。
+  - 静态构造函数不能有访问修饰符。
+
+```cs
+// 静态构造函数
+using System;
+namespace MyClass
+{
+  class RandomNumberClass
+  {
+    private static Random RandomKey; // 私有静态字段
+    static RandomNumberClass() // 静态构造函数
+    {
+      RandomKey = new Random(); // 初始化 RandomKey
+    }
+    public int GetRandomNumber()
+    {
+      return RandomKey.Next();
+    }
+  }
+  class Program11
+  {
+    public static void main()
+    {
+
+      RandomNumberClass mc1 = new RandomNumberClass();
+      RandomNumberClass mc2 = new RandomNumberClass();
+
+      Console.WriteLine("Next Random #: {0}", mc1.GetRandomNumber());
+      Console.WriteLine("Next Random #: {0}", mc2.GetRandomNumber());
+    }
+  }
+}
+
+```
+
+关于静态函数的其他重要内容。
+
+- 类既可以有静态构造函数也可以有实例构造函数。
+- 如同静态方法，静态构造函数不能访问所在类的实例成员，因此也不能使用 this 访问器。
+- 不能从程序显式调用静态构造函数，系统会自动调用它们，在：
+  - 类的任何实例被创建之前；
+  - 类的任何静态成员被引用之前。
+
+#### 对象初始化语句
+
+在此之前的内容中你已经看到，对象创建表达式由关键字 `new` 后面跟着一个类构造函数及其参数列表组成。**对象初始化语句**扩展了创建语法，在表达式的尾部放置了一组成员初始化语句。这允许你在创建新的对象实例时，设置字段和属性的值。
+
+该语法有两种形式，一种形式包括构造函数的参数列表，另一种不包括。
+
+```bash
+new TypeName  {FieldOrProp = InitExpr, FieldOrProp = InitExpr, ...}
+new TypeName(ArgList)  {FieldOrProp = InitExpr, FieldOrProp = InitExpr, ...}
+```
+
+关于对象初始化语句要了解的重要内容如下：
+
+- 创建对象的代码必须能够访问要初始化的字段和属性。例如，在下面的代码中，X，Y 必须设置 public 。
+- 初始化发生在构造方法执行之后，因此在构造方法中设置的值可能会在之后对象初始化中重置为相同或不相同的值。
+
+```cs
+// 对象初始化语句
+using System;
+namespace MyClass
+{
+  class Point
+  {
+    public int X = 1;
+    public int Y = 2;
+  }
+  class Program12
+  {
+    public static void main()
+    {
+
+      Point mc1 = new Point();
+      Point mc2 = new Point { X = 5, Y = 6 };
+
+      Console.WriteLine("Next Random #: {0}, {1}", mc1.X, mc1.Y); // 1，2
+      Console.WriteLine("Next Random #: {0}, {1}", mc2.X, mc2.Y); // 5，6
+    }
+  }
+}
+
+```
+
+#### 析构函数
+
+析构函数（destructor）执行在类的实例被销毁之前需要的清理或释放非托管资源的行为。非托管资源是指通过 Win32 API 获得的文件句柄，或非托管模块。
+
+#### readonly 修饰符
+
+字段可以用 `readonly` 修饰符声明。其作用类似于将字段声明为 const，一旦值被设定就不能被改变。
+
+- const 字段只能在字段的声明初始化语句中初始化，而 readonly 字段可以在下列任意位置设置它的值。
+- const 字段的值必须在编译时决定，而 readonly 字段的值可以在运行时决定。这种增加的自由性允许你在不同的环境或不同的构造函数中设置不同的值。
+- 它可以是实例字段，也可以是静态字段。
+- 它在内存中有存储位置。
+
+#### this 关键字
+
+this 关键字在类中使用，是对当前实例的引用。它只能被用在下列类成员的代码块中。
+
+- 实例构造函数。
+- 实例方法。
+- 属性和索引器的实例访问器。
+
+很明显，因为静态成员不是实例的一部分，所以不能在任何静态函数成员的代码中使用 this 关键字。更适当地说，this 用于下列目的：
+
+- 用于区分类的成员和本地变量或参数；
+- 作为调用方法的实参。
+
+```cs
+// this 关键字
+using System;
+namespace MyClass
+{
+  class MyClass13
+  {
+    int Var1 = 10;
+    public int ReturnMaxSum(int Var1)
+    {
+      return Var1 > this.Var1 ? Var1 : this.Var1;
+    }
+  }
+  class Program13
+  {
+    public static void main()
+    {
+
+      MyClass13 mc = new MyClass13();
+      Console.WriteLine("Max: {0}", mc.ReturnMaxSum(30));
+      Console.WriteLine("Max: {0}", mc.ReturnMaxSum(5));
+
+    }
+  }
+}
+
+```
+
+#### 索引器
+
+##### 什么是索引器
+
+索引器是一组 get 和 set 访问器，与属性类似。
+
+##### 索引器和属性
+
+索引器和属性有很多方面是相似的。
+- 和属性一样，索引器不用分配内存来存储。
+- 索引器和属性都主要用来访问其他数据成员，它们与这些成员关联，并为它们提供获取和设置访问。
+  - 属性通常表示单独的数据成员。
+  - 索引器通常表示多个数据成员。
+
+说明：可以认为索引器是为类的多个数据成员提供 set 和 get 的属性。通过提供索引器，可以在许多可能的数据成员进行选择。索引器本身可以是任何类型，不仅仅是数值类型。
+
+关于索引器，还有一些注意事项如下。
+- 和属性一样，索引器可以只有一个访问器，也可以两个都有。
+- 索引器总是实例成员，因此不能声明为 `static`。
+- 和属性一样，实现 get 和 set 访问器的代码不必一定要关联到某个字段或属性。这段代码可以做任何事情或者什么也不做，只要 get 访问器返回某个指定类型的值即可。
+
+##### 声明索引器
+
+声明索引器的语法如下：
+- 索引器没有名称。在名称的位置是关键字 this。
+- 参数列表在参数中间。
+- 参数列表中必须至少声明一个参数。
+
+```cs
+ReturnType this [Type param1, ...] {
+  get {}
+  set {}
+}
+```
+
+##### 索引器的 set 访问器
+
+当索引器被用于赋值时，set 访问器被调用，并接受两项数据。如下：
+- 一个隐式参数，名称为 value，value 持有要保存的数据；
+- 一个或更多索引参数，表示数据要保存到哪里。
+
+在 set 的访问器中的代码必须检查索引参数，以确定数据应该存往何处，然后保存它。
+- 它的返回类型为 void。
+- 它使用的参数列表和索引器声明中的相同。
+- 它有一个名称 value 的隐含参数，值参类型和索引类型相同。
+
+![](../.vuepress/public/images/set-accessor.png)
+
+##### 索引器的 get 访问器
+
+当使用索引器获取值时，可以通过一个或多个索引参数，确定它表示的是哪个字段，并返回该字段的值。
+
+![](../.vuepress/public/images/get-accessor.png)
+
+##### 关于索引器的补充
+
+和属性一样，不能显式调用 get 和 set 访问器。取而代之，当索引器用在表达式取值时，将自动调用 get 访问器。当使用赋值语句对索引器赋值时，将自动调用 set 访问器。
+
+##### 一个示例
+
+```cs
+// 索引器
+using System;
+namespace MyClass
+{
+  class Employee
+  {
+    public string LastName; // 调用字段 0
+    public string FirstName; // 调用字段 1
+    public string CityOfBirth; // 调用字段 2
+    public string this[int index]
+    {
+      set
+      {
+        switch (index)
+        {
+          case 0:
+            LastName = value;
+            break;
+          case 1:
+            FirstName = value;
+            break;
+          case 2:
+            CityOfBirth = value;
+            break;
+          default:
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+      }
+      get
+      {
+        switch (index)
+        {
+          case 0: return LastName;
+          case 1: return FirstName;
+          case 2: return CityOfBirth;
+          default: throw new ArgumentOutOfRangeException(nameof(index));
+        }
+      }
+    }
+  }
+  class Program14
+  {
+    public static void main()
+    {
+
+      Employee mc = new Employee();
+      mc[0] = "Lin";
+      mc[1] = "Jecyu";
+      mc[2] = "WC";
+      Console.WriteLine("Person: {0}, {1}, {2}", mc[0], mc[1], mc[2]);
+    }
+  }
+}
+```
+
+##### 索引器重载
+
+只要索引器的参数列表不同，类就可以有任意多个索引器。这叫做索引器重载，因为所有的索引器都有相同的“名称”：this 访问引用。
+
+```cs
+class MyClass { 
+  public string this [int index] {
+    get {...}
+    set {...}
+  }
+  public string this [int index1, int index2] {
+    get {...}
+    set {...}
+  }
+  public int this [float index] {
+    get {...}
+    set {...}
+  }
+}
+```
+
+请记住，类中重载的索引器必须有不同的参数列表。
+
+#### 访问器的访问修饰符
+
+默认情况下，成员的两个访问器有自身相同的访问级别。也就是说，如果一个属性有 public 级别，那么它的两个访问器都有同样的访问级别，对索引也一样。
+
+不过，你可以为两个访问器分配不同的访问级别。如下代码为 set 访问器声明为 `private`，为 get 访问器声明为 public。注意，在这段代码中，尽管可以从类的外部读取属性，但却只能在类的内部设置它。这是一个非常重要的封装工具。
+
+```cs
+class Person {
+  public string Name {
+    get;
+    private set;
+  }
+  public Person(string name) {
+    Name = name;
+  }
+}
+
+class Program {
+  static public void Main() {
+    Person p = new Person("Jecyu");
+    Console.WriteLine("Person's name is {0}", p.Name)
+  }
+}
+```
+
+访问器的访问修饰符有几个限制：
+- 仅当成员（属性或索引器）既有 get 访问器也有 set 访问器时，其访问器才能有访问修饰符。
+- 虽然两个访问器都必须出现，但它们中只能有一个访问修饰符。
+- 访问器的访问修饰符必须比成员的访问级别有更严格的限制性。
+
+![](../.vuepress/public/images/accessor-limit-level.png)
+
+如果一个属性的访问级别是 `public`，在图里较低的4个级别中，可以把任意的一个级别给它的一个访问器。但如果属性的访问级别是 `protected`，唯一能够对访问器使用的访问修饰符是 `private`。
+
+#### 分部类和分部类型
+
+类的声明可以分割为几个类的声明。
+- 每个分部类的声明都包含一些类成员的声明。
+- 类的分部类声明可以在同一个文件也可以在同一个文件中。
+
+每个局部声明必须被标为 `partial class`，而不是单独的关键字 `class`。分部类声明看起来和普通类声明相同，除了那个附加的类型修饰符 `partial`。
+
+```cs
+// 分部方法
+using System;
+namespace MyClass
+{
+  partial class MyClass15
+  {
+    partial void PrintSum(int x, int y); // 定义分部方法
+    public void Add(int x, int y)
+    {
+      PrintSum(x, y);
+    }
+  }
+
+  partial class MyClass15
+  {
+    partial void PrintSum(int x, int y) // 实现分部方法
+    {
+      Console.WriteLine("Sum is {0}", x + y);
+
+    }
+  }
+
+  class Program15
+  {
+    public static void main()
+    {
+      MyClass15 mc = new MyClass15();
+      mc.Add(5, 6);
+    }
+  }
+}
+
+```
+
+#### 分部方法
+
+分部方法是声明在分部类中不同部分的方法。分部部分的不同部分可以声明在不同的分部类中，也可以声明在同一个类中。分部方法的两个部分如下：
+- 定义分部方法声明。
+  - 给出签名和返回类型。
+  - 声明的实现部分只是一个分号。
+- 实现分部方法声明。
+  - 给出签名和返回类型。
+  - 是以正常形式的语句块实现。
+
+关于分部方法需要了解的重要内容如下：
+- 定义声明和实现声明的签名和返回类型必须匹配。签名和返回类型有如下特征：
+  - 返回类型必须是 void。
+  - 签名不能包括访问修饰符，这使部分方法是隐式私有的。
+  - 参数列表不能包含有 out 参数。
+  - 在定义声明和实现声明中都必须包含上下文关键字 `partial`，直接放在关键字 void 之前。
+- 可以有定义部分而没有实现部分。在这种情况下，编译器把方法的声明以及方法内部任何对方法的调用都移除。不能只有分部方法的实现部分而没有定义部分。
 
 ### 类和继承
 
-## 进阶运用
+#### 类继承
 
-## 项目实战
+通过继承我们可以定义一个新类，新类纳入一个已经声明的类并进行扩展。
 
-## 底层原理
+- 可以使用一个已经存在的类作为新类的基础。已存在的类称为基类（base class），新类称为派生类（derived class）。派生类的组成成员如下：
+  - 本身声明中的成员；
+  - 基类的成员。
+- 要声明一个派生类，需要在类名后加入基类规格说明。**基类规格说明由冒号和后面用作基类的类名称组成。**派生类被描述为直接继承自列出的基类。
+- 派生类扩展它的基类，因为它包含了基类的成员，加上它在本身声明中的新增功能。、
 
-## 参考资料
+```cs
+class otherClass : SomeClass {
+  ...
+}
+```
 
-- [官方文档](https://docs.microsoft.com/zh-cn/dotnet/csharp)
-- 《C# 图解教程》
+#### 访问继承的成员
+
+继承的成员可以被访问，就像它们是派生类自己声明一样。
+
+```cs
+// 类和继承——访问继承的成员
+using System;
+namespace MyClass
+{
+  class SomeClass // 基类
+  {
+    public string Field1 = "base class field";
+    public void Method1(string value)
+    {
+      Console.WriteLine("Base class--Method1:  {0}", value);
+    }
+  }
+  class otherClass : SomeClass // 派生类
+  {
+    public string Field2 = "derived class field";
+    public void Method2(string value)
+    {
+      Console.WriteLine("Derived class--Method2: {0}", value);
+    }
+
+  }
+
+
+  class Program16
+  {
+    public static void main()
+    {
+      otherClass mc = new otherClass();
+      mc.Method1(mc.Field1); // 以基类字段为参数的基类方法
+      mc.Method1(mc.Field2); // 以派生字段为参数的基类方法
+      mc.Method2(mc.Field1); // 以基类字段为参数的派生方法
+      mc.Method2(mc.Field2);  // 以派生字段为参数的派生方法
+    }
+  }
+}
+
+```
+
+#### 所有类都派生自 object
+
+除了特殊的类 `object` ，所有类都是派生类，即使它们没有基类规格说明。类 object 是唯一的非派生类，因为它是继承层次结构的基础。
+
+没有基类规格说明的类隐式地直接派生自类 `object`。不加基类规格说明只是指定 obecjt 为基类的简写。
+
+```cs
+class SomeClass{}
+
+// 等价于
+class SomeClass : object {}
+```
+
+关于类继承的其他重要内容如下：
+- 一个类声明的基类规格说明中只能有一个单独的类，这称为单独类。
+- 虽然类只能直接继承一个基类，但是继承的层次没有限制。也就是说作为基类的类可以派生自另外一个类，而这个类又派生自另外一个类，一直下去，直至最终达到 `object`。
+- 所以，通常我们称一个类为派生类时，我们的意思是它直接派生自某类而不是 object。
+
+```cs
+class SomeClass{}
+class OtherClass : SomeClass {}
+class MyNewClass : OtherClass {}
+```
+
+#### 屏蔽基类的成员
+
+虽然派生类不能删除它继承的任何成员，但可以用与基类成员名称相同的成员来屏蔽（mask）基类成员。这是继承的主要功能之一，非常实用。
+
+例如，我们要继承包含某个特殊方法的基类。该方法适合声明它的类，但却不一定适合派生类。在这种情况下，我们希望在派生类中声明新成员以屏蔽基类的方法。在派生类中屏蔽基类成员的一些要点如下：
+- 要屏蔽一个继承的数据成员，需要声明一个新的相同类型的成员，并使用相同的名称。
+- 通过在派生类中声明新的带有相同签名的函数成员，可以隐藏或屏蔽继承的函数成员。请记住，签名由名称和参数列表组成，不包括返回类型。
+- 要让编译器知道你在故意屏蔽继承的成员，使用 new 修饰符。否则，程序可以成功编译，但编译器会警告你隐藏了一个继承的成员。
+- 也可以屏蔽静态成员。
+
+```cs
+// 类和继承——屏蔽基类的访问
+using System;
+namespace MyClass
+{
+  class SomeClass2 // 基类
+  {
+    public string Field1 = "base class field";
+    public void Method1(string value)
+    {
+      Console.WriteLine("Base class--Method1:  {0}", value);
+    }
+  }
+  class otherClass2 : SomeClass // 派生类
+  {
+    new public string Field1 = "derived class field";
+    new public void Method1(string value)
+    {
+      Console.WriteLine("Derived class--Method2: {0}", value);
+    }
+
+  }
+
+
+  class Program17
+  {
+    public static void main()
+    {
+      otherClass2 mc = new otherClass2();
+      mc.Method1(mc.Field1); // 以基类字段为参数的基类方法
+    }
+  }
+}
+
+```
+
+#### 基类的访问
+
+如果派生类必须完全地访问被隐藏的继承成员，可以使用基类访问（base access）表达式访问隐藏的继承成员。基类访问表达式由关键字`base`后面跟一个点和成员的名称组成，如下：
+
+```cs
+// 类和继承——屏蔽基类的访问
+using System;
+namespace MyClass
+{
+  class SomeClass2 // 基类
+  {
+    public string Field1 = "base class field";
+    public void Method1(string value)
+    {
+      Console.WriteLine("Base class--Method1:  {0}", value);
+    }
+  }
+  class otherClass2 : SomeClass // 派生类
+  {
+    new public string Field1 = "derived class field";
+    new public void Method1(string value)
+    {
+      Console.WriteLine("Derived class--Method2: {0}", value);
+    }
+    public void PrintField1()
+    {
+      Console.WriteLine(Field1); // 访问派生类
+      Console.WriteLine(base.Field1); // 访问基类
+    }
+
+  }
+
+
+  class Program17
+  {
+    public static void main()
+    {
+      otherClass2 mc = new otherClass2();
+      mc.Method1(mc.Field1); // 以基类字段为参数的基类方法
+      mc.PrintField1();
+    }
+
+  }
+}
+
+```
+
+如果你的程序代码经常使用这个特性（即访问隐藏的继承成员），你可能想要重新评估类的设计。一般来说能有更好的设计，但是没有其他办法的时候也可以使用这个特性。
+
+#### 使用基类的引用
+
+派生类的实例由基类的实例加上派生类新增的成员组成。派生类的引用指向整个类对象，包括基类部分。
+
+如果一个派生类对象的引用，就可以获取该对象基类部分的引用（使用类型转换运算符把该引用转换为基类类型）。类型转换运算符放置在对象引用的前面，由圆括号括起的要被转换成的类名组成。
+
+```cs
+// 类和继承——使用基类的引用
+using System;
+namespace MyClass
+{
+  class MyBaseClass // 基类
+  {
+    public void Print()
+    {
+      Console.WriteLine("This is the base class.");
+    }
+  }
+  class MyDerivedClass : MyBaseClass
+  {
+    new public void Print()
+    {
+      Console.WriteLine("This is the derived class.");
+    }
+  }
+
+  class Program18
+  {
+    public static void main()
+    {
+      MyDerivedClass derivedClass = new MyDerivedClass();
+      MyBaseClass mybc = (MyBaseClass)derivedClass; // 转换成基类
+      derivedClass.Print(); // 从派生类部分调用 Print
+      mybc.Print(); // 从基类部分调用 Print
+    }
+
+  }
+}
+
+```
+
+##### 虚方法和覆写方法
+
+在上一节看到，当使用基类引用派生类对象时，得到的是基类的成员。虚方法可以使基类的引用“升至”派生类内。
+
+可以使用基类的引用调用派生类（derived class）的方法，只需满足下面的条件：
+- 派生类的方法和基类的方法有相同的签名和返回类型。
+- 基类的方法使用 `virtual` 标注。
+- 派生类的方法使用 `override` 标注。
+
+```cs
+// 类和继承——使用基类的引用
+using System;
+namespace MyClass
+{
+  class MyBaseClass2 // 基类
+  {
+    virtual public void Print()
+    {
+      Console.WriteLine("This is the base class.");
+    }
+  }
+  class MyDerivedClass2 : MyBaseClass2
+  {
+    override public void Print()
+    {
+      Console.WriteLine("This is the derived class.");
+    }
+  }
+
+  class Program19
+  {
+    public static void main()
+    {
+      MyDerivedClass2 derivedClass = new MyDerivedClass2();
+      MyBaseClass2 mybc = (MyBaseClass2)derivedClass;
+      derivedClass.Print();
+      mybc.Print(); // 调用了 MyDerivedClass2 的方法
+    }
+
+  }
+}
+
+```
+
+![](../.vuepress/public/images/virtual-override-method.png)
+
+其他关于 `virtual` 和 `override` 修饰符的重要信息如下：
+- 覆写和被覆写的方法必须有相同的可访问性。换一种说法，被覆写的方法不能是 `private`，而覆写的方法是 `public`。
+- 不能覆写 `static` 方法或非虚方法。
+- 方法、属性和索引器，以及另一种成员类型事件，都可以被声明为 `virtual` 和 `override`。
+
+##### 覆写标记为 override 的方法
+
+覆写方法可以在继承的任何层次出现。
+- 当使用对象基类部分的引用调用一个覆写的方法时，方法的调用被沿派生层次上溯执行，一直到标记为 `override` 的方法的最高派生（most-derived）版本。
+- 如果在更高的派生级别有该方法的其他声明，但没有被标记为 `override`，那么它们不会被调用。
+
+```cs
+// 类和继承——使用基类的引用
+using System;
+namespace MyClass
+{
+  class MyBaseClass3 // 基类
+  {
+    virtual public void Print()
+    {
+      Console.WriteLine("This is the base class.");
+    }
+  }
+  class MyDerivedClass3 : MyBaseClass3
+  {
+    override public void Print()
+    {
+      Console.WriteLine("This is the derived class.");
+    }
+  }
+  class SecondDerivedClass : MyDerivedClass3
+  {
+    override public void Print()
+    {
+      Console.WriteLine("This is the Second derived class.");
+    }
+  }
+  class Program20
+  {
+    public static void main()
+    {
+      SecondDerivedClass derivedClass = new SecondDerivedClass();
+      MyBaseClass3 mybc = (MyBaseClass3)derivedClass;
+      derivedClass.Print(); // This is the Second derived class.
+      mybc.Print(); // This is the Second derived class.
+    }
+
+  }
+}
+
+```
+
+##### 覆盖其他成员类型
+
+在之前的几节中，我们已经学习了如何在方法上使用 `virtual/override`。其实在属性事件以及索引器也是一样的。
+
+```cs
+// 类和继承——覆盖其他成员类型
+using System;
+namespace MyClass
+{
+  class MyBaseClass4 // 基类
+  {
+    private int _myInt = 5;
+    virtual public int MyProperty
+    {
+      get
+      {
+        return _myInt;
+      }
+    }
+  }
+  class MyDerivedClass4 : MyBaseClass4
+  {
+    private int _myInt = 10;
+    public override int MyProperty
+    {
+      get
+      {
+        return _myInt;
+      }
+    }
+
+  }
+  class Program21
+  {
+    public static void main()
+    {
+      MyDerivedClass4 derivedClass = new MyDerivedClass4();
+      MyBaseClass4 mybc = (MyBaseClass4)derivedClass;
+      Console.WriteLine(derivedClass.MyProperty); // 10
+      Console.WriteLine(mybc.MyProperty); // 10
+    }
+
+  }
+}
+
+```
+
+#### 构造函数的执行
+
+- 继承层次链中每个类在执行它自己的函数构造函数体之前执行它的基类构造函数。
+- 要创造对象的基类对象部分，需要隐式调用基类的某个构造函数作为创建实例过程的一部分。
+
+创建一个实例过程中完成的第一件事就是初始化对象的所有实例成员。在此之后，调用基类的构造函数，然后才执行该类自己的构造函数体。
+
+![](../.vuepress/public/images/object-create-process.png)
+
+```cs
+class MyDerivedClass: MyBaseClass {
+  int MyField1 = 5; // 1. 成员初始化
+  int MyField2;  // 成员初始化
+
+  public MyDerivedClass() {}  // 3. 构造函数体执行
+}
+
+class MyBaseClass {
+  public MyBaseClass {  // 2. 基类构造函数调用
+
+  }
+}
+```
+
+##### 构造函数初始化语句
+
+默认情况下，在构造对象时，将调用基类的无参构造函数。但构造函数可以重载，所以基类可能有一个以上的构造函数。如果希望派生类使用一个指定的基类构造函数而不是无参构造函数，必须在构造函数初始化语句中指定它。
+
+有两种形式的构造函数初始化语句。
+- 第一种形式使用关键字 base 并指明使用哪一个基类构造函数。
+- 第二种形式使用关键字 this 并指明应该使用当前类的哪一个构造函数。
+
+基类构造函数初始化语句放在冒号后面，冒号紧跟着类的构造函数声明的参数列表。构造函数初始化语句由关键字 base 和要调用的基类构造函数的参数列表组成。
+
+```cs
+public MyDerivedClass(int x, string s) : base(s, x) {
+  ...
+}
+```
+
+另一种方式（后续补充）
+
+##### 类访问修饰符
+
+类可以被系统其他类看到并访问。
+
+可访问的（accessible）有时也称为可见的（visible），它们可以互换使用。类的可访问性有两个级别：`public` 和 `internal`。
+- 标记为 `public` 的类可以被系统内任何程序集中的代码访问。要使一个类对其他`程序集`可见，使用 `public` 访问修饰符。
+- 标记为 `internal` 类只能被它自己所在的程序集内的看到。
+  - 这是默认的可访问级别，所以，除非在类的声明中显式的指定修饰符 `public`，程序集外部的代码不能访问该类。
+  - 可以使用 `inernal` 访问修饰符显式地声明一个类为内部的。
+
+```cs
+public class MyBaseClass {}
+internal class MyBaseClass {}
+```
+
+![](../.vuepress/public/images/class-accessible.png)
+
+#### 程序集间的继承
+
+#### 成员访问修饰符
+
+#### 抽象成员
+
+#### 抽象类
+
+#### 密封类
+
+#### 静态类
+
+#### 扩展方法
