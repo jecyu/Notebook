@@ -2852,28 +2852,784 @@ string 类型对象也是引用类型，但它的比较方式不同。比较字�
 
 #### 递增运算符和递减运算符
 
+递增运算符对操作数加1。递减运算符对操作数减1。
+
+
+|运算符| 名称|描述|
+|--|--|:--|
+|++|前置递增++var|变量的值+1并保存，返回变量的新值|
+||后置递增var++|变量的值+1并保存，返回变量递增之前的旧值|
+|--|前置递减--var|变量的值-1并保存，返回变量的新值|
+||后置递增var--|变量的值-1并保存，返回变量递增之前的旧值|
+
+比较这两种运算符的前置和后置形式
+- 无论运算符使用前置形式还是后置形式，在语句执行之后，最终存放在操作数的变量中的值是相同的。
+- 唯一不同的是运算符返回给表达式的值。
+
+|运算符| 表达式：x=10|返回给表达式的值|计算后变量的值|
+|--|--|--|--|
+|前置递增|++x|11|11|
+|后置递增|x++|10|11|
+|前置递减|--x|9|9|
+|后置递增|x--|10|9|
 
 #### 条件逻辑运算符
 
+逻辑运算符用于比较或否定它们的操作数的逻辑值，并返回结果逻辑值。
+
+逻辑与（AND）和逻辑或（OR）运算符是二元左结合运算符。逻辑非（NOT）是一元运算符。
+
+|运算符| 名称|描述|
+|--|--|--|
+|&&|与|如果两个操作数都是 true，结果为 true；否则为 fale|
+|\|\||或|如果至少一个操作数是 true，结果为 true；否则为 false|
+|!|非|如果操作数是 false，结果为 true；否则为 false|
+
+条件逻辑运算符使用“短路”（short circuit）模式操作，意思是，如果计算 Expr1 之后结果已经确定，那么它就会跳过 Expr2 的值。
+
+由于这种短路行为，不要在 Expr2 中放置带副作用的表达式（比如改变一个值），因为可能不会计算。
+
+```cs
+bool bVal; 
+int iVal = 10;
+bVal = (1 == 2) && (9 == iVal++); // 结果 bVal = false，iVal = 10
+```
+
+#### 逻辑运算符
+
+按位逻辑运算符常用于设置位置组（bit pattern）的方法参数。这些运算符，除按位非运算符以外，都是二元左结合运算符，按位非是一元运算符。
+
+|运算符| 名称|描述|
+|--|--|--|--|
+|&|位与|产生两个操作数的按位与。仅当两个操作位都为1时结果位才是1|
+|\||位或|产生两个操作数的按位或。只要任意一个操作位为1结果位就是1|
+|^||位异或|产生两个操作数的按位异或。仅当一个而不是两个操作数为1时结果位为1|
+|~||位非|操作数的每个位都取反。该操作得到操作数的二进制反码（数字的反码是其二进制形式按位取反的结果。也就是说，每个0都变成1，每个1都变成0）|
+
+![](../.vuepress/public/images/bitwise-logical-operator.png)
+
 #### 移位运算符
 
+按位移位运算向左或向右把位组移动指定数量个位置，空出的位用0或1填充。
+
+移位运算符是二元左结合运算符。按位移位运算符如下所示。移动的位置数由 Count 给出。
+```cs
+Operand << Count // 左移
+Operand >> Count // 右移
+```
+
+|运算符| 名称|描述|
+|--|--|--|--|
+|<<|左移|将位组向左移动给定数目个位置。位从左边移出并丢失。右边打开的位位置用0填充|
+|>>|右移|将位组向右移动给定数目个位置。位从右边移出并丢失|
+ 
 #### 赋值运算符
+
+赋值运算符对运算符右边的表达式求值，并用该值设置运算符左边的变量表达式的值。
+
+|运算符|描述|
+|--|--|
+|=|简单赋值，计算右边表达式的值，并把返回值赋给左边的变量或表达式|
+|*=|复合赋值，var*=expr 等价于 var = var*(expr)|
+|/=|复合赋值，var/=expr 等价于 var = var/(expr)|
+|%=|复合赋值，var%=expr 等价于 var = var%(expr)|
+|+=|复合赋值，var+=expr 等价于 var = var+(expr)|
+|-=|复合赋值，var-=expr 等价于 var = var-(expr)|
+|<<=|复合赋值，var<<=expr 等价于 var = var<<(expr)|
+|>>=|复合赋值，var>>=expr 等价于 var = var>>(expr)|
+|&=|复合赋值，var&=expr 等价于 var = var&(expr)|
+|^=|复合赋值，var^=expr 等价于 var = var^(expr)|
+|\|=|复合赋值，var\|=expr 等价于 var = var\|(expr)|
 
 #### 条件运算符
 
+条件运算符是一种强大且简洁的方法，基于条件的结果，返回两个值之一。
+
+|运算符| 名称|描述|
+|--|--|--|--|
+|?:|条件运算符|对一个表达式求值，并根据表达式是否返回 true 或 false，返回两个值之一|
+
+条件运算符的语法如下所示。它有一个测试表达式和两个结果表达式。
+- Condition 必须返回一个 bool 类型的值。
+- 如果 Condition 求值为 true，那么对 Expression1 求值并返回。否则，对 Expression2 求值并返回。
+
+`Condition ? Expression1 : Expression2`
+
+说明：`if...else` 语句是控制流语句，它应当用来做两个行为中的一个。条件运算符返回一个表达式，它应当用于返回两个值中的一个。
+
 #### 一元算术运算符
+
+一元算数运算符设置数字值的符号。
+- 一元正运算符简单返回操作数的值。
+- 一元负运算符返回减操作数得到的值。
+
+|运算符| 名称|描述|
+|--|--|--|--|
+|+|正号|返回操作数的数值|
+|-|负号|返回减操作数得到的值|
+
+```cs
+int x = +10; // x = 10
+int y = -x; // y = -10
+int z = -y; // z = 10
+```
 
 #### 用户定义类型的转换
 
+- 可以为自己的类和结构定义隐式转换和显式转换。这允许把用户定义类型的对象转换成某个其他类型，反之亦然。
+- C# 提供隐式转换和显式转换。
+  - 对于`隐式转换`，当决定在特定上下文中使用特定类型时，如有必要，编译器会自动执行转换。
+  - 对于`显式转换`，编译器只在使用显式转换运算符时才执行转换。
+
+
 #### 运算符重载
 
+如你所见，C#运算符被定义为使用预定义类型作为操作数来工作。如果面对一个用户定义类型，运算符还不知道如何处理它。运算符重载允许你定义 C# 运算符应该如何操作自定义类型的操作数。
+- 运算符重载只用于类和结构。
+
+详细内容后续补充。
+
 #### typeof 运算符
+
+`typeof` 运算符返回其参数的任何类型的 `System.Type` 对象。通过这个对象，可以了解类型的特征。`typeof`是一元运算符。
+
+|运算符| 描述|
+|--|--|
+|typeof|返回已知类型的 System.Type 值|
+
+```cs
+// typeof 运算符
+using System;
+using System.Reflection; // 使用反射命名空间来全面利用检测类型信息的功能
+namespace classdemo.expressionsOperators
+{
+  class SomeClass
+  {
+    public int Field1;
+    public int Field2;
+    public void Method1()
+    {
+
+    }
+    public int Method2()
+    {
+      return 1;
+    }
+  }
+  class Program
+  {
+    public static void main()
+    {
+      Type t = typeof(SomeClass);
+      FieldInfo[] fi = t.GetFields();
+      MethodInfo[] mi = t.GetMethods();
+      foreach (FieldInfo f in fi)
+      {
+        Console.WriteLine("Field: {0}", f.Name);
+      }
+      foreach (MethodInfo m in mi)
+      {
+        Console.WriteLine("Method: {0}", m.Name);
+      }
+      SomeClass s = new SomeClass();
+      Console.WriteLine("Type s: {0}", s.GetType().Name); 
+    }
+  }
+}
+
+// 输出
+// Field: Field1
+// Field: Field2
+// Method: Method1
+// Method: Method2
+// Method: Equals
+// Method: GetHashCode
+// Method: GetType
+// Method: ToString
+// Type s: SomeClass
+
+```
 
 #### 其他运算符
 
 ### 语句
 
+#### 什么是语句
+
+C# 中的语句跟 C 和 C++ 中的语句非常类似。
+- 语句是描述某个类型或让程序执行某个动作的源代码指令。
+- 语句的种类主要有3种，如下所示：
+  - 声明语句 声明类型和变量；
+  - 嵌入语句 执行动作或管理控制流。
+  - 标签语句 控制跳转。
+
+嵌入语句，它不声明类型、变量或实例。相反，它们使用表达式和控制流结构与由声明语句声明的对象一起工作。
+- 简单语句由一个表达式和后面跟着的分号组成。
+- `块`是由一对大括号括起来的语句序列。括起来的语句可以包括：
+  - 声明语句；
+  - 嵌入语句；
+  - 标签语句；
+  - 嵌套块。
+
+```cs
+int x = 10; // 简单声明
+int z; // 简单声明
+{ // 块
+  int y = 20; // 简单声明
+  z = x + y; // 嵌入语句
+  top: y = 30; // 标签语句
+  ... 
+  {
+
+  }
+}
+```
+
+说明：块在语法上算作一个单条嵌入语句。在任何语法上需要一个嵌入语句的地方，都可以使用块。
+
+`空语句` 仅由一个分号组成。可以把空语句用在以下情况的任意位置：语言的语法需要一条嵌入语句而程序逻辑又不需要任何动作。
+```cs
+if (x < y) {
+  ;
+} else {
+  z = a + b;
+}
+```
+
+#### 表达式语句
+
+表达式返回值，但它们也有副作用。
+- 副作用是一种影响程序状态的行为。
+- 许多表达式求值只是为了它们的副作用。
+
+可以在表达式后面放置语句终结符（分号）来创建一个表达式创建一条语句。表达式返回的任何值都会被丢弃。例如，下面的代码展示了一个表达式语句。它由赋值表达式（一个赋值运算符和两个操作数）和后面跟着的一个分号组成。它做下面两件事。
+- 该表达式把运算符右边的值赋值给变量 x 引用的内存位置。虽然这可能是这条语句的主要动机，但却被视为副作用。
+- 设置了 x 的新值之后，表达式返回 x 的新值。但没有什么东西接收这个返回值，所以它被忽略了。
+
+```cs
+x = 10; // 计算这个表达式的全部原因就是完成这个副作用。
+```
+
+#### 控制流语句
+
+C# 提供与现代编程语言相同的控制流结构。
+- `条件执行`依据一个条件执行或跳过一个代码片段。条件执行语句如下：
+  - if；
+  - if...else；
+  - switch
+- `循环语句`重复执行一个代码片段。
+  - while；
+  - do；
+  - for；
+  - foreach；
+- `跳转语句`把控制流从一个代码片段改变到另一个代码片段中的指定语句。
+  - break；
+  - continue；
+  - return；
+  - goto；
+  - throw。
+
+说明：与 C 和 C++ 不同，测试表达式必须返回 bool 型值。数字在 C# 中没有布尔意义。
+
+#### if 语句
+
+`if` 语句实现按条件执行。
+- TestExpr 必须计算成 bool 型值。
+- 如果 TestExpr 求值为 true，执行 Statement。
+- 如果求值为 false，则跳过 Statement。
+
+#### if...else 语句
+
+`if...else` 语句实现双路分支。`if...else` 语句的语法如下。
+- 如果 TestExpr 求值为 true，执行 Statement1。
+- 如果求值为 false，执行 Statement2。
+
+```cs
+if (TestExpr)
+  Statement1
+else 
+  Statement2
+```
+
+#### while 循环
+
+`while` 是一种简单循环结构，其测试表达式在循环的顶部执行。
+- 首先对 TestExpr 求值。
+- 如果 TestExpr 求值为 false，将继续执行在 while 循环结尾之后的语句。
+- 否则，当 TestExpr 求值为 true 时，执行 Statement，并且再次对 TestExpr 求值。每次 TestExpr 求值为 true 时，Statement 都要再执行一次。循环在 TestExpr 求值为 true 时结束。
+
+![](../.vuepress/public/images/while-loop.png)
+
+```cs
+int x = 3;
+while (x > 0) {
+  Console.WriteLine("x: {0}", x);
+  x--;
+}
+Console.WriteLine("Out of loop.");
+```
+
+#### do 循环
+
+`do` 循环是一种简单循环结构，其测试表达式在循环的底部执行。
+- 首先，执行 Statement。
+- 然后，对 TestExpr 求值。
+- 如果 TestExpr 返回 true，那么再次执行 Statement。
+- 每次 TestExpr 返回 true，都将再次执行 Statement。
+- 当 TestExpr 返回 false 时，控制传递到循环结构结尾之后的那条语句。
+
+![](../.vuepress/public/images/do-loop.png)
+
+do 循环有几个特征，使它与其他控制流结构相区分。
+- 循环体 Statement 至少执行一次，即使 TestExpr 初始化为 false，这是因为在循环底部才会对 TestExpr 求值；
+- 在测试表达式的关闭圆括号之后需要一个分号。
+
+```cs
+// 结构
+do
+  Statement;
+while( TestExpr );
+
+// 实例
+int x = 0;
+do 
+  Console.WriteLine("x is {0}", x++)
+while( x > 3); // 分号必须加上
+```
+
+#### for 循环
+
+只要测试表达式在循环体顶端计算时返回 true， for 循环结构就会执行循环体。
+- 在 for 循环的开始，执行一次 Initializer。
+- 然后对 TestExpr 求值。
+- 如果它返回 true，执行 Statement，接着是 IterationExpr。
+- 然后返回到循环的顶端，再次对 TestExpr 求值。
+- 只要 TestExpr 返回 true，Statement 和 IterationExpr 都将被执行。
+- 一旦 TestExpr 返回 false，就继续执行 Statement 之后的语句。
+
+```cs
+for (Initializer; TextExpr; IterationExpr)
+  Statement
+```
+
+语句中的一些部分是可选的，其他部分是必需的。
+- Initializer、TestEpr 和 IterationExpr 都是可选的。它们的位置可以空着。如果 TestExpr 位置是空的，那么测试就被假定返回 true。因此，要避免进入无限循环，必须有某种其他退出该语句的方法。
+- 作为字段分隔符，两个分号是必需的，即使其他部分都省略了。
+
+![](../.vuepress/public/images/for-loop.png)
+
+- Initializer 只执行一次，在 for 结构的任何其他部分之前。它常被用于声明和初始化循环中使用的本地变量。
+- 对 TestExpr 求值以后决定应该执行 Statement 还是跳过。它必须计算成 bool 类型的值。如前所述，如果 TestExpr 为空白，将永远返回 true。
+- IterationExpr 在 Statement 之后并且在返回循环顶端 TestExpr 之前立即执行。
+
+```cs
+for (int i = 0; i < 3; i++) {
+  Console.WriterLine("Inside loop. i: {0}", i);
+}
+```
+
+##### for 循环语句中变量的作用域
+
+任何声明在 initializer 中的变量只在该 for 语句的内部可见。
+- 这与 C 和 C++ 不同，C 和 C++ 中声明把变量引入到外围的块。
+
+##### 初始化和迭代表达式中的多表达式
+
+初始化表达式和迭代表达式都可以包含多个表达式，只要它们用逗号隔开。
+
+```cs
+static void Main() {
+  const int MaxI = 5;
+  for (int i = 0, j = 10; i < MaxI; i++, j += 10) {
+    Console.WriteLine("{0}, {1}", i, j);
+  }
+}
+```
+
+#### switch 语句
+
+`switch` 语句实现多路分支。
+- `switch` 语句包含0个或多个分支。
+- 每个分支以一个或多个分支标签开始。
+- 每个分支的末尾必须为 break 语句或其他4种跳转语句。
+  - 跳转语句包括 break、return、continue、goto 和 throw。
+  - 对于这5种跳转语句，break 最常用于 switch 分支的末尾。break 语句将执行过程跳转到 `switch` 语句的尾部。
+
+分支标签将按顺序求值。如果是某个标签与测试表达式的值匹配，就执行该分支，然后跳转到 `switch` 语句的尾部。
+
+![](../.vuepress/public/images/switch-loop.png)
+
+switch 标签的形式如下：
+`case ConstantExpression:`
+- 测试表达式 TestExpr 在结构的顶端求值。
+- 如果 TestExpr 的值等于第一个分支标签中的常量表达式 ConstExpr1 的值，将执行该分支标签后面的语句列表，直到遇到一个跳转语句结束。
+- default 分支是可选的，但如果包括了，就必须以一条跳转语句结束。通常用于处理异常。
+
+#### 跳转语句
+
+当控制流到达跳转语句时，程序执行被无条件转移到程序的另一部分。跳转语句包括：
+- break；
+- continue；
+- return；
+- goto；
+- throw。
+
+#### break 语句
+
+break 语句除了可以被用到 swtich 语句中，还可以被用在下列语句中：
+- for；
+- foreach；
+- while；
+- do。
+
+在这些语句体中，break 导致执行`跳出`最内层封装语句（innermost enclosing statement）。
+
+```cs
+int x = 0;
+while (true) {
+  x++;
+  if ( x >= 3) {
+    break;
+  }
+}
+```
+
+#### continue 语句
+
+continue 语句导致程序执行转到下列类型循环的最内层封装语句的顶端。
+- for；
+- foreach；
+- while；
+- do。
+
+```cs
+for (int x = 0; x < 5; i++) { // 执行循环5次
+  if (x < 3) { // 先执行3次
+    continue; // 直接回到循环开始处
+  }
+  // 当 x >= 3 时执行下面的语句
+  Console.WriteLine("Value of x is {0}", x);
+}
+```
+
+#### 标签语句
+
+标签语句由一个标识符后面跟着一个冒号再跟着一个语句组成。它有下面的形式。
+
+```bash
+Identifier: Statement
+```
+
+标签语句的执行完全如同标签不存在一样，并仅执行 Statement 部分。
+- 给语句增加一个标签允许控制从代码的其他部分转移到该语句。
+- 标签语句只允许用在块内部。
+
+##### 标签
+
+标签它们有自己的命名空间，所以标签语句中的标识符可以是任何有效的标识符，包括那些可能已经在重叠的作用域内声明的标识符，比如本地变量和参数。
+
+```cs
+int xyz = 0;
+xyz: Console.WriteLine("No problem.");
+```
+
+然而，也存在一些限制。该标识符不能是：
+- 关键字；
+- 在重叠范围内和另一个标签标识符相同。
+
+##### 标签语句的作用域
+
+标签语句不能从它的声明所在的块的外部可见（或可访问）。标签语句的作用域为：
+- 它声明所在的块；
+- 任何嵌套在该块内部的块。
+
+![](../.vuepress/public/images/scope-of-label.png)
+
+#### goto 语句
+
+`goto` 语句无条件转移控制到一个标签语句。它的一般形式如下，其中 `Identifier` 是标签语句的标识符：
+```cs
+goto Identifier;
+```
+
+例子：
+```cs
+bool thingsAreFine;
+while(true) {
+  thingsAreFine = GetNuClearReactorCondition();
+  if (thingsAreFine) {
+    Console.WriteLine("Things are fine.");
+  } else {
+    goto NotSoGood;
+  }
+}
+NotSoGood: Console.WriteLine("We have a problem.");
+```
+
+goto 语句必须在标签语句的作用域之内。
+- goto 语句可以跳到它本身所在块内的任何标签内，或跳出到任何它被嵌套的块内的标签语句。
+- goto 语句不能跳入任何嵌套在该语句本身所在块内部的任何块。
+
+警告：使用 goto 语句是非常不好的，因为它会导致弱结构化、难以调试和维护代码。
+
+##### goto 语句在 switch 语句内部
+
+还有另外两种 goto 语句的形式，用在 switch 语句内部。这些 goto 语句把控制转移到 switch 语句内部相应命名的分支标签。
+```bash
+goto case ConstantExpression;
+got default;
+```
+
+#### using 语句
+
+某些类型的非托管对象有数量限制或很耗费系统资源。在代码使用完它们后，尽可能快地释放它们是非常重要。using 语句有助于简化该过程并确保这些资源被适当地处置（dispose）。
+
+资源是指一个实现了 `System.IDisposable` 接口的类或结构。
+- 分配资源；
+- 使用资源；
+- 处置资源。
+
+##### 资源的包装使用
+
+##### 多个资源和嵌套
+
+##### using 语句的另一种形式
+
+#### 其他语句
+
+|语句| 描述 |
+|--|--|
+|checked、unchecked|控制溢出检查上下文|
+|foreach|遍历一个集合的每个成员|
+|tyr、throw、finally|处理异常|
+|return|将控制返回到调用函数的成员，而且还能返回一个值|
+|yield|用于迭代|
+
+### 结构
+
+#### 什么是结构
+
+结构是程序员定义的数据类型，与类非常类似。它们有数据成员和函数成员。虽然与类相似，但是有许多重要的区别。最重要的区别是：
+- 类是引用类型而结构是值类型；
+- 结构是隐式密封的，这意味着它们不能被派生。
+
+声明结构和声明类类似：
+```cs
+struct StructName {
+  MemberDeclarations
+}
+```
+
+```cs
+using System;
+namespace classdemo.Struct
+{
+  struct Point
+  {
+    public int X;
+    public int Y;
+  }
+  class Program
+  {
+    public static void main()
+    {
+      Point first, second, third;
+      first.X = 10;
+      first.Y = 10;
+      second.X = 20;
+      second.Y = 20;
+      third.X = first.X + second.Y;
+      third.Y = first.Y + second.Y;
+      Console.WriteLine("first: {0}, {1}", first.X, first.Y);
+      Console.WriteLine("second: {0}, {1}", second.X, second.Y);
+      Console.WriteLine("third: {0}, {1}", third.X, third.Y);
+    }
+  }
+}
+
+```
+
+#### 结构是值类型
+
+和所有值类型一样，结构类型变量含有自己的数据。因此：
+- 结构类型的变量不能为 null；
+- 两个结构变量不能引用同一对象。
+
+```cs
+class CSimple {
+  public int x;
+  public int y;
+}
+
+struct Simple {
+  public int x;
+  public int y;
+}
+
+static void Main() {
+  CSimple cs = new CSimple();
+  Simple ss = new Simple();
+}
+```
+
+![](../.vuepress/public/images/class-vs-struct-memory.png)
+
+#### 对结构赋值
+
+把一个结构赋值给另一个结构，就将一个结构的值复制给另一个结构。这和复制变量不同，复制类变量时只复制引用。
+
+```cs
+using System;
+namespace classdemo.Struct
+{
+  class CSimple
+  {
+    public int X;
+    public int Y;
+  }
+
+  struct Simple
+  {
+    public int X;
+    public int Y;
+  }
+  class Program2
+  {
+    public static void main()
+    {
+      CSimple cs1 = new CSimple();
+      CSimple cs2 = null;
+      Simple ss1 = new Simple();
+      Simple ss2 = new Simple();
+
+      cs1.X = ss1.X = 5;
+      cs1.Y = ss1.Y = 10;
+
+      cs2 = cs1; // 赋值结构实例
+      ss2 = ss1; // 赋值类实例
+    }
+  }
+}
+
+```
+
+#### 构造函数和析构函数
+
+结构可以允许有实例构造函数和静态构造函数，但不允许有析构函数。
+
+##### 实例构造函数
+
+语言隐式地为每个结构提供一个无参数的构造函数。这个构造函数把结构的每个成员设置为该类型的默认值。值成员设置成它们的默认值，引用成员设置成 null。
+
+预定义的无参数构造函数对每个结构都存在，而且不能删除或重定义。但是，可以创建另外的构造函数，只要它们有参数。注意，这和类不同。对于类，编译器只在没有其他构造函数声明时提供隐式的无参数构造函数。
+
+调用一个构造函数，包括隐式无参数构造函数，要使用 new 运算符。注意，即使不从堆中分配内存也要使用 new 运算符。
+
+```cs
+using System;
+namespace classdemo.Struct
+{
+
+  struct Simple2
+  {
+    public int X;
+    public int Y;
+    public Simple2(int a, int b) // 带有参数的构造函数
+    {
+      X = a;
+      Y = b;
+    }
+  }
+  class Program3
+  {
+    public static void main()
+    {
+      Simple2 s1 = new Simple2(); // 调用隐式构造函数
+      Simple2 s2 = new Simple2(5, 10);
+      Console.WriteLine("s1: {0}, {1}", s1.X, s1.Y);
+      Console.WriteLine("s1: {0}, {1}", s2.X, s2.Y);
+      // s1: 0, 0
+      // s1: 5, 10
+    }
+  }
+}
+
+```
+
+也可以不使用 new 运算符创建结构的实例。然而，如果这样做，有一些限制，如下：
+- 在显式设置数据成员之后，才能使用它们的值；
+- 在对所有数据成员赋值之后，才能使用任何函数成员。
+
+```cs
+struct Simple {
+  public int X;
+  public int Y;
+}
+
+class Program {
+  static void Main() {
+    Simple s1, s2;
+    Console.WriteLine("{0}, {1}", s1.X, s2Y); // 编译错误
+
+    s2.X = 5；
+    s2.Y = 10;
+    Console.WriteLine("{0}, {1}", s2.X, s2.Y); // 没问题
+  }
+}
+```
+
+##### 静态构造函数
+
+与类相似，结构的静态构造函数创建并初始化静态数据成员，而且不能引用实例成员。结构的静态构造函数遵从与类的静态构造函数一样的规则。
+以下两种行为，任意一种发生之前，将会调用静态构造函数。
+- 调用显式声明的构造函数。
+- 引用结构的静态成员。
+
+#### 字段初始化语句是不允许的
+
+在结构中字段初始化语句是不允许的，如下所示。
+```cs
+struct Simple {
+  public int x = 0; // 编译错误
+  public int y = 0; // 编译错误
+}
+```
+
+#### 结构是密封的
+
+结构总是隐式密封的，因此，不能从它们派生其他结构。
+
+由于结构不支持继承，个别类成员修饰符用在结构成员上将没有意义。因此不能在结构声明时使用。不能用于结构的修饰符如下：
+- protected
+- internal
+- abstract
+- virtual
+
+结构本身派生自 `System.ValueType`，`System.ValueType` 派生自 `object`。
+
+#### 装箱和拆箱
+
+如同其他值类型数据，如果想将一个结构实例作为引用类型对象，必须创建装箱（boxing）的副本。装箱的过程就是制作值类型变量的引用类型副本。装箱和拆箱（unboxing）后续再作详细阐述。
+
+#### 结构作为返回值和参数
+
+结构可以用作返回值和参数。
+- 返回值 当结构用作返回值时，将创建它的副本并从函数成员返回。
+- 值参数 当结构被用作值参数时，将创建实参结构的副本。该副本用于方法的执行中。
+- ref 和 out 参数 如果把一个结构用作 `ref` 或 `out` 参数，传入方法的是该结构的一个引用，这样就可以修改其数据成员。
+
+#### 关于结构的其他信息
+
+对结构进行分配比创建类的实例开销小，所以使用结构代替类有时可以提高性能，但要注意到装箱和拆箱的高代价。
+
+最后，关于结构，需要知道的最后一些事情如下：
+- 预定义简单类型（int、short、long，等等），尽管在 .NET 和 C# 中被视为原始类型，它们实际上在 .NET 都实现为结构。
+- 可以使用与声明分部类相同的方法声明分部结构。
+- 结构和类一样，可以实现接口。后续作阐述。
+
 ### 枚举
+
+
 
 ### 数组
 
