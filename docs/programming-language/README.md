@@ -4219,9 +4219,710 @@ namespace classdemo.Array
 
 ### 委托
 
+#### 什么是委托
 
+可以认为委托是持有一个或多个方法的对象。当然，正常情况下你不会想要“执行”一个对象，但委托与典型的对象不同。可以执行委托，这时委托会执行它所“持有” 的方法。
+
+解决的问题：如何使用委托将可执行的代码从一个方法传递到另一个，以及为什么这样做是非常有用的。
+
+```cs
+using System;
+namespace classdemo.Delegate
+{
+  delegate void MyDel(int value); // 1.声明委托类型
+  class Progarm
+  {
+    void PrintLow(int value)
+    {
+      Console.WriteLine("{0} - Low Value", value);
+    }
+    void PrintHigh(int value)
+    {
+      Console.WriteLine("{0} - High Value", value);
+    }
+    public static void main()
+    {
+      Progarm program = new Progarm();
+      MyDel del; // 2.声明委托变量
+
+      // 创建随机整数生成器对象，并得到0到99之间的一个随机数
+      Random rand = new Random();
+      int randomValue = rand.Next(99); // 0-99
+
+      // 3. 创建一个包含 PrintLow 或 PrintHigh 的委托对象并将其赋值给 del 变量
+      del = randomValue < 50
+        ? new MyDel(program.PrintLow)
+        : new MyDel(program.PrintHigh);
+      del(randomValue); // 4.执行委托
+    }
+  }
+}
+
+```
+
+#### 委托概述
+
+委托和类一样，是一种用户自定义的类型。但类表示的是数据和方法的集合，**而委托则持有一个或多个方法，以及一系列预定义操作**。
+
+可以通过以下操作步骤来使用委托。
+1. 声明一个委托类型。委托声明看上去和方法声明类似，只是没有实现块。
+2. 使用该委托类型声明一个委托变量。
+3. 创建委托类型的对象，把它赋值给委托变量。新的委托对象包括指向某个方法的引用，这个方法和第一步定义的签名和返回类型一致。
+4. 你可以选择为委托对象增加其他方法。这些方法必须与第一步中定义的委托类型有相同的签名和类型。
+5. 在代码中你可以像调用方法一样调用委托。在调用委托的时候，其包含的每一个方法都会被执行。
+
+![](../.vuepress/public/images/csharp-class-vs-delegate.png)
+
+你可以把 `delegate` 看做一个包含有序方法列表的对象，这些方法具有相同的签名和返回类型。
+- 方法的列表称为调用列表。
+- 委托保存的方法可以来自任何类或结构，只要它们在下面两点匹配：
+  - 委托的返回类型；
+  - 委托的签名（包括 ref 和 out 修饰符）。
+- 调用列表中的方法可以是实例方法也可以是静态方法。
+- 在调用委托的时候，会执行其调用列表中的所有方法。
+
+![](../.vuepress/public/images/delegate-as-methods.png)
+
+#### 声明委托类型
+
+正如上面所述，委托是类型，就好像类是类型一样。与类一样，委托类型必须在被用来创建变量以及类型的对象之前声明。如下示例代码声明了委托类型。
+```cs
+delegate void MyDel(int value);
+```
+
+委托类型的声明看上去与方法的声明很类似，有返回类型和签名。返回类型和签名指定了委托接受的方法的形式。
+
+委托类型声明在两个方面与方法声明不同。委托类型声明：
+- 以 delegate 关键字开头；
+- 没有方法主体。
+
+说明：虽然委托类型声明看上去和方法的声明一样，但它不需要在类内部声明，因为它是类型声明。
+
+#### 创建委托对象
+
+委托是引用类型，因此有引用和对象。在委托类型声明之后，我们可以声明变量并创建类型的对象。如下代码演示了委托类型的变量声明：
+
+```cs
+MyDel delVar;
+```
+
+有两种创建委托对象的方式，第一种是使用带 `new` 运算符的对象创建表达式，如下面代码所示。`new` 运算符的操作数的组成如下。
+- 委托类型名。
+- 一组圆括号，其中包含作为调用列表中第一个成员的方法的名字。方法可以是实例方法或静态方法。
+
+```cs
+delVar = new MyDel(myInsObj.MyM1);
+dVar = new MyDel(SClass.otherM2); // 创建委托并保存引用
+```
+
+第二种使用快捷语法，它仅由方法说明符构成。这种快捷语法能够工作是因为在方法名称和其相应的委托类型之间存在隐式转换。
+
+```cs
+delVar = myInsObj.MyM1;
+dVar = SClass.otherM2; // 创建委托并保存引用
+```
+
+#### 给委托赋值
+
+由于委托是引用类型，我们可以通过给它赋值来改变包含在委托变量中的引用。旧的委托对象会被垃圾回收器回收。
+
+```cs
+MyDel delVar;
+delVar = myInsObj.MyM1; // 创建委托对象并赋值
+delVar = SClass.OtherM2; // 创建新的委托对象并赋值
+```
+
+#### 组合委托
+
+迄今为止，我们见过的所有委托在调用列表中都只有一个方法。委托可以使用额外的运算符来“组合”。这个运算最终会创建一个新的委托，其调用列表连接了作为操作数的两个委托的调用列表副本。
+
+例如，如下代码创建了3个委托。第3个委托由前两个委托组合而成。
+
+```cs
+MyDel delA = myInstObj.MyM1;
+MyDel delB = SClass.OtherM2;
+
+MyDel delC = delA + delB; // 组合调用列表
+```
+
+尽管术语组合委托（combing delegate）让我们觉得好像操作数委托被修改了，其实它们并没有被修改。事实上，委托是恒定的。委托对象被创建后不能再被改变。
+
+![](../.vuepress/public/images/combing-delegate.png)
+
+#### 为委托添加方法
+
+尽管通过上一节的内容我们知道了委托其实是不变的，不过 C# 提供了看上去可以为委托添加方法的语法，即使用 `+=` 运算符。
+
+例如，如下代码为委托的调用列表“增加” 了两个方法。方法加在了调用列表的底部。
+```cs
+MyDel delVar = inst.MyM1; // 创建并初始化
+delVar += SCl.m3; // 增加方法
+delVar += X.Act; // 增加方法
+```
+
+在使用 `+=` 运算符时，实际发生的是创建了一个新的委托，其调用列表是左边的委托加上右边方法的组合。然后将这个新的委托赋值给 delVar。
+
+你可以委托添加多个方法。每次添加都会调用列表中创建一个新的元素。
+
+#### 从委托移除方法
+
+我们还可以用`-=`运算符从委托解除方法。如下代码演示了`-=` 运算符的使用。
+
+```cs
+delVar -= SCl.m3; // 从委托移除方法
+```
+
+与为委托增加方法一样，其实是创建了一个新的委托。新的委托是旧的委托的副本——只是没有了已经被移除方法的引用。
+
+如下是移除委托时需要记住的一些事项：
+- 如果在调用列表中的方法有多个实例，`-=` 运算符将从列表最后开始搜索，并且移除第一个与方法匹配的实例。
+- 试图删除委托中不存在的方法没有效果。
+- 试图调用空委托会抛出异常。我们可以通过把委托和`null` 进行比较来判断委托的调用列表是否为空。如果调用列表为空，则委托是`null`。
+
+#### 调用委托
+
+可以像调用方法一样简单调用委托。用于调用委托的参数将会用于调用调用列表中的每一个方法。（除非有输出参数）
+
+```cs
+MyDel delVar = inst.MyM1;
+delVar += SCl.m3;
+delVar += X.Act;
+...
+delVar(55);
+```
+
+![](../.vuepress/public/images/combing-delegate.png)
+
+如果一个方法在调用列表中出现多次，当委托被调用时，每次在列表中遇到这个方法时它都会被调用一次。
+
+#### 委托的示例
+
+```cs
+using System;
+namespace classdemo.Delegate
+{
+  // 定义一个没有返回值和参数的委托类型
+  delegate void PrintFunction(); // 1.声明委托类型
+  class Test
+  {
+    public void Print1()
+    {
+      Console.WriteLine("Print1-- instance.");
+    }
+    public static void Print2()
+    {
+      Console.WriteLine("Print2 -- static.");
+    }
+  }
+  class Progarm2
+  {
+    public static void main()
+    {
+      Test t = new Test(); // 创建一个测试类的实例
+      PrintFunction pf; // 创建一个空委托
+      pf = t.Print1; //3. 实例化并初始化该委托；
+
+      // 给委托添加另外3个方法
+      pf += Test.Print2;
+      pf += t.Print1;
+      pf += Test.Print2;
+
+      // 4.执行委托
+      if (null != pf)
+      {
+        pf();
+      }
+      else
+      {
+        Console.WriteLine("Delegate is empty.");
+      }
+    }
+  }
+}
+// 输出
+// Print1-- instance.
+// Print2 -- static.
+// Print1-- instance.
+// Print2 -- static.
+
+
+```
+
+#### 调用带返回值的委托
+
+如果委托有返回值并且在调用列表中有一个以上的方法，会发生下面的情况：
+- 调用列表中最后一个方法返回的值就是委托调用返回的值。
+- 调用列表中所有其他方法的返回值都会被忽略。
+
+```cs
+// 委托——调用带返回值的委托
+using System;
+namespace classdemo.Delegate
+{
+  // 定义一个没有返回值和参数的委托类型
+  delegate int MyDel2(); // 1.声明带有返回值的委托类型
+  class Test2
+  {
+    int IntValue = 5;
+    public int Add2()
+    {
+      IntValue += 2;
+      return IntValue;
+    }
+    public int Add3()
+    {
+      IntValue += 3;
+      return IntValue;
+    }
+  }
+  class Progarm3
+  {
+    public static void main()
+    {
+      Test2 t = new Test2(); // 创建一个测试类的实例
+      MyDel2 mDel = t.Add2; //2. 实例化并初始化该委托；
+      mDel += t.Add3;
+      mDel += t.Add2;
+
+
+      // 3.执行委托
+      if (null != mDel)
+      {
+        Console.WriteLine("Value: {0}", mDel());
+      }
+      else
+      {
+        Console.WriteLine("Delegate is empty.");
+      }
+    }
+  }
+}
+// 输出：
+// Value: 12
+
+```
+
+#### 调用带引用参数的委托
+
+如果委托有引用参数，参数值会根据调用列表中的一个或多个方法的返回值而改变。
+- 在调用委托列表中的下一个方法时，参数的新值（不是初始值）会传给下一个方法。
+
+例如，如下代码调用了具有引用参数的委托。
+
+```cs
+// 委托——调用带引用参数的委托
+using System;
+namespace classdemo.Delegate
+{
+  // 定义一个没有返回值和参数的委托类型
+  delegate void MyDel3(ref int X); // 1.声明带有返回值的委托类型
+  class Progarm4
+  {
+    public void Add2(ref int x)
+    {
+      x += 2;
+    }
+    public void Add3(ref int x)
+    {
+      x += 2;
+    }
+    public static void main()
+    {
+      Progarm4 program = new Progarm4();
+      MyDel3 mDel = program.Add2;
+      mDel += program.Add3;
+      mDel += program.Add2;
+
+      int x = 5;
+      // 执行委托
+      if (null != mDel)
+      {
+        mDel(ref x);
+        Console.WriteLine("Value: {0}", x);
+      }
+      else
+      {
+        Console.WriteLine("Delegate is empty.");
+      }
+    }
+  }
+}
+
+```
+
+#### 匿名方法
+
+至此，我们已经见过了使用静态方法或实例方法来初始化委托。对于这种情况，方法本身可以被代码的其他部分显式调用。当然，这个部分也必须是某个类或结构的成员。
+
+然而，如果方法只会被使用一次——用来初始化委托会怎么样呢？在这种情况下，除了创建委托的语法需要，没有必要创建独立的具名方法。匿名方法允许我们避免使用独立的具名方法。
+- 匿名方法（anonymous method）是在初始化委托时内联（inline）声明的方法。
+
+![](../.vuepress/public/images/anonymous-vs-named-method.png)
+
+##### 使用匿名方法
+
+我们可以在以下地方使用匿名方法。
+- 声明委托变量时作为初始化表达式。
+- 组合委托时在赋值语句的右边。
+- 为委托增加事件时在赋值语句的右边。
+
+##### 匿名方法的语法
+
+匿名方法表达式的语法包含以下组成部分：
+- delegate 类型关键字。
+- 参数列表，如果语句块没有任何使用参数则可以省略。
+- 语句块，它包含了匿名方法的代码。
+
+```cs
+delegate (Parameters) { ImplementationCode}
+```
+
+1. 匿名方法不会显式声明返回值。然而，实现代码本身的行为必须通过返回一个在类型上与委托的返回类型相同的值来匹配委托的返回类型。如果委托有 `void` 类型的返回值，匿名方法就不能返回值。
+2. **参数**
+除了数组参数，匿名方法的参数必须在如下方面与委托匹配：
+- 参数数量；
+- 参数类型及位置；
+- 修饰符。
+
+我们可以通过使圆括号为空或省略圆括号来简化匿名方法的参数列表，但必须满足以下两个条件：
+- 委托的参数列表不包含任何 out 参数；
+- 匿名方法不使用任何参数。
+
+例如，如下代码声明了没有任何 out 参数的委托，匿名方法也没有使用任何参数。由于两个条件都满足了，我们就可以省略匿名方法的参数列表。
+```cs
+delegate void SomeDel( int X); // 声明委托类型
+SomeDel SDel = delegate { // 省略的参数列表
+  PrintMessage(); 
+  CleanUp();
+}
+```
+
+3. params 参数
+
+如果委托声明的参数列表包含了 params 参数，那么匿名方法的参数列表将忽略 params 关键字。例如，在如下列代码中：
+- 委托类型声明指定最后一个参数为 params 类型的参数；
+- 然而，匿名方法列表忽略了 params 关键字。
+
+```cs
+delegate void SomeDel(int X, params int[] Y);
+SomeDel mDel = delegate(int X, int[] Y) {};
+```
+
+##### 变量和参数的作用域
+
+变量以及声明在匿名方法内部的局部变量的作用域限制在实现方法的主体内。
+1. 外部变量
+
+- 与委托的具名方法不同，匿名方法可以访问它们外围作用域的局部变量和环境。
+- 外围作用域的变量叫做`外部变量（outer variable）`。
+- 用在匿名方法实现代码中的变量称为方法`捕获（captured）`。
+
+![](../.vuepress/public/images/anonymous-params-scope.png)
+
+2. 捕获变量的生命周期的扩展。
+只要捕获方法还是委托的一部分，即使变量已经离开了作用域，捕获的外部变量也会一直有效。
+
+![](../.vuepress/public/images/anonymous-method-captured.png)
+
+#### Lambda 表达式 
+
+我们刚刚已经看到了，C# 2.0 引入了匿名方法。然而它的语法有一点麻烦，而且需要一些编译器已经知道的信息。C# 3.0 引入了 Lambda 表达式，简化了匿名方法的语法，从而避免包含这些多余的信息。
+
+在匿名方法的语法中，delegate 关键字是有点多余，因为编译器已经知道我们在将方法赋值给委托。我们可以很容易通过以下步骤把匿名方法转换为 Lambda 表达式。
+- 删除 delegate 关键字。
+- 在参数列表和匿名方法主体之间方 Lambda 运算符`=>`。Lambda 运算符读作“goes to”。
+
+
+编辑器还可以从委托的声明中知道委托参数的类型，因此 Lambda 表达式允许我们省略类型参数，如 le2 的赋值代码所示。
+- 带有参数类型的参数列表称为显式类型。
+- 省略类型的参数列表称为隐式类型。
+- 如果只有一个隐式参数，我们可以省略周围的圆括号，如 le3 的赋值代码所示。
+- 最后，Lambda 表达式允许表达式的主体是语句块或表达式。如果语句块包含了一个返回语句，我们可以将语句替换为 `return` 关键字后的表达式，如 le4 的赋值代码表达式。
+
+```cs
+// 委托——匿名方法和 Lambda 表达式
+using System;
+namespace classdemo.Delegate
+{
+  // 定义一个有返回值和参数的委托类型
+  delegate double MyDel4(int par); // 1.声明带有返回值的委托类型
+  class Progarm5
+  {
+    public static void main()
+    {
+      MyDel4 del = delegate (int x) { return x + 1; }; // 匿名方法
+      MyDel4 le1 = (int x) => { return x + 1; }; // Lambda 表达式
+      MyDel4 le2 = (x) => { return x + 1; };
+      MyDel4 le3 = x => { return x + 1; };
+      MyDel4 le4 = x => x + 1;
+      // 执行委托 
+      if (null != del)
+      {
+        Console.WriteLine("Value: {0}", del(12));
+        Console.WriteLine("Value: {0}", le1(12));
+        Console.WriteLine("Value: {0}", le2(12));
+        Console.WriteLine("Value: {0}", le3(12));
+        Console.WriteLine("Value: {0}", le4(12));
+      }
+      else
+      {
+        Console.WriteLine("Delegate is empty.");
+      }
+    }
+
+  }
+}
+
+```
+
+- 表达式的参数列表的参数不一定需要包含类型（隐式类型），除非委托有 `ref` 或 `out` 参数。——此时必须注明类型（显式类型）。
+- 如果只有一个参数，并且是隐式类型的，周围的圆括号可以被省略，否则必须有括号。
+- 如果没有参数，必须使用一组空的圆括号。 
 
 ### 事件
+
+#### 发布者和订阅者
+
+很多程序都有一个共同的需求，即当一个特定的程序事件发生时，程序的其他部分可以得到该事件已经发生的通知。
+
+`发布者/订阅者模式（publisher/subscriber pattern）`可以满足这种需求。在这种模式中，`发布者`类定义了一系列程序的其他部分可能感兴趣的事件。其它类可以`”注册“`，以便在这些事件发生时发布者可以通知它们。这些`订阅者`类通过向发布者提供一个方法来“注册”以获取通知。当事件发生时，发布者`“触发事件”`，然后执行订阅者提交的所有事件。
+
+由订阅者提供的方法称为`回调方法`，因为发布者通过执行这些方法来“往回调用订阅者的方法”。还可以将它们称为事件处理程序，因为它们是为处理事件而调用的代码。
+
+![](../.vuepress/public/images/publisher-subscriber.png)
+
+下面是一些有关事件的重要事项：
+- **发布者（publisher）**发布某个事件的类或结构，其他类可以在该事件发生时得到通知。
+- **订阅者（subscriber）**注册并在事件发生时得到通知的类或结构。
+- **事件处理程序（event handler）**由订阅者注册到事件的方法，在发布者触发事件时执行。
+- **触发（raise）事件、调用（invoke）或触发（fire）事件的术语** 当事件触发时，所有注册到它的方法都会被依次调用。
+
+前面一章介绍了委托。事件的很多部分都与委托类似。实际上，事件就像是专门用于某种特殊用途的简单委托。委托和事件的行为之所以相似，是有充分理由的。事件包含了一个私有的委托。
+
+![](../.vuepress/public/images/event-delegate.png)
+
+有关事件的私有委托需要了解的重要事项如下：
+- 事件提供了对它的私有控制委托的结构化访问。也就是说你无法直接访问委托。
+- 事件中可用的操作比委托要少，对于事件我们只可以添加、删除或调用事件处理程序。
+- 事件被触发时，它调用委托来依次调用调用列表中的方法。
+
+![](../.vuepress/public/images/event-struction.png)
+ 
+#### 源代码组件概览
+
+需要在事件中使用的代码有5部分。
+- **委托类型声明** 事件和事件处理程序必须有共同的签名和返回类型，它们通过委托类型进行描述。
+- **事件处理程序声明** 订阅者类会在事件触发时执行的方法声明。它们不一定是有显式命名的方法，还可以是匿名方法或 Lambda 表达式。
+- **事件声明** 发布类必须声明一个订阅者可以注册的事件成员。当声明的事件为 `public` 时，称为发布了事件。
+- **事件注册** 订阅者必须订阅事件才能在它被触发时得到通知。
+- **触发事件的代码** 发布者类中“触发”事件并导致调用注册的所有事件处理程序的代码。
+
+![](../.vuepress/public/images/c-sharp-use-event-component.png)
+
+#### 声明事件
+
+发布者类必须提供事件对象。创建事件比较简单——只需要委托类型和名字。事件声明的语法如下代码所示，代码中声明了一个叫做 CountedADozen 的事件。注意如下有关 CountedADozen 事件的内容。
+- 事件声明在一个类中。
+- 它需要委托类型的名称，任何附加到事件（如注册）的处理程序都必须与委托类型的签名和返回类型相匹配。
+- 它声明为 `public`，这样其他类和结构可以在它上面注册事件处理程序。
+- 不能使用对象创建表达式（new 表达式）来创建它的对象。
+
+##### 事件是成员
+
+一个常见的误解是把事件认为是类型，然而它不是。和方法、属性一样，事件是类或结构的成员，这一点引出了几个重要的特性。
+- 由于事件是成员：
+  - 我们不能在一段可执行代码中声明事件；
+  - 它必须声明在类或结构中，和其他成员一样。
+- 事件成员被隐式自动初始化 null。
+事件声明需要委托类型的名字，我们可以声明一个委托类型或者使用已存在的。如果我们声明一个委托类型，它必须指定事件保存的方法的签名和返回类型。
+
+BCL 声明了一个叫做 `EventHandler` 的委托，专门用于系统事件。
+
+#### 订阅事件
+
+订阅者向事件添加事件处理程序。对于一个要添加到事件的事件处理程序来说，它必须具有与事件的委托相同的返回类型和签名。
+- 使用 `+=` 运算符来为事件增加事件处理程序，如下面代码所示。事件处理程序位于该运算符的右边。
+- 事件处理程序的规范可以是以下任意一种：
+  - 实例方法的名称；
+  - 静态方法的名称；
+  - 匿名方法；
+  - Lambda 表达式。
+
+```cs
+incrementer.CountedADozen += IncrementDozensCount; // 实例方法
+incrementer.CountedADozen += Class.CounterHandleB; // 静态方法
+...
+```
+
+#### 触发事件
+
+事件成员本身只是保存了需要被调用的事件处理程序。如果事件没有被触发，什么都不会发生。我们需要确保在合适的时候有代码来做这事情。
+
+- 在触发事件之前和`null` 进行比较，从而查看是否包含事件处理程序，如果事件是 `null`，则表示没有，不能执行。
+- 触发事件的语法和调用方法一样：
+  - 使用事件名称，后面跟的参数列表包含在圆括号中；
+  - 参数列表必须与事件的委托类型相匹配。
+
+```cs
+using System;
+namespace classdemo.Event
+{
+  delegate void Handler(); // 1. 声明委托
+  // 发布者
+  class Incrementer
+  {
+    public event Handler CountedADozen; // 2. 创建事件并发布
+    public void DoCount()
+    {
+      for (int i = 1; i < 100; i++)
+      {
+        if (i % 12 == 0 && CountedADozen != null)
+        {
+          CountedADozen(); // 5. 每增加12个计数触发事件一次
+        }
+      }
+    }
+  }
+  // 订阅者
+  class Dozens
+  {
+    public int DozensCount
+    {
+      get;
+      private set;
+    }
+    // 构造函数
+    public Dozens(Incrementer incrementer)
+    {
+      DozensCount = 0;
+      incrementer.CountedADozen += IncrementDozensCount; // 3. 订阅事件
+    }
+    // 4. 声明事件处理程序
+    void IncrementDozensCount() 
+    {
+      DozensCount++;
+    }
+  }
+  class Program
+  {
+    public static void main()
+    {
+      Incrementer incrementer = new Incrementer();
+      Dozens dozensCounter = new Dozens(incrementer); // 注册事件
+      incrementer.DoCount(); // 触发事件
+      Console.WriteLine("Number of dozens = {0}", dozensCounter.DozensCount); // 8
+    }
+  }
+}
+
+```
+
+#### 标准事件的用法
+
+GUI 编程是事件驱动，也就是说在程序运行时，它可以在任何时候被事件打断，比如点击按钮、按下按键或系统定时器。在这些情况发生时，程序需要处理事件然后继续其他事情。
+
+显然，程序事件的异步处理是使用 C# 事件的绝佳场景。Window GUI 编程如此广泛地使用了事件，对于事件的使用，.NET 框架提供了一个标准模式。事件使用的标准模式的根本就是 `System` 命名空间的 `EventHandler` 委托类型。`EventHandler` 委托类型的声明如下代码所示。关于声明需要注意以下几点：
+- 第一个参数用于保存触发事件的对象的引用。由于是 `object` 类型的，所以可以匹配任何类型的实例；
+- 第二个参数用来保存状态信息，指明什么类型适用于该应用程序。
+- 返回类型是 `void`。
+
+```cs
+public delegate void EventHandler(object sender, EventArg e);
+```
+
+`EventHandler` 第二个参数是 `EventArgs` 类的对象，它声明在 System 命名空间中。你可能会想，既然第二个参数用于传递数据，`EventArgs` 类的对象应该可以保存一些类型的数据，你可能错了。
+- `EventArgs` 设计为不能传递任何数据。它用于不需要传递数据的事件处理程序——通常会被忽略。
+- 如果你希望传递数据，必须声明一个派生自 `EventArgs` 的类，使用合适的字段来保存需要传递的数据。
+
+尽管`EventArgs` 类实际上并不传递数据，但它是使用 `EventHandler` 委托模式的重要部分。不管参数使用的实际类型是什么，object 类和 EventArgs 总是基类。这样 EventHandler 就能提供一个对所有事件和事件处理器都通用的签名，只允许两个参数，而不是各自都有不同签名。
+
+```cs
+using System;
+namespace classdemo.Event
+{
+  // 发布者
+  class Incrementer2
+  {
+    // 使用系统定义的 EventHandler 委托
+    public event EventHandler CountedADozen; // 创建事件并发布
+    public void DoCount()
+    {
+      for (int i = 1; i < 100; i++)
+      {
+        if (i % 12 == 0 && CountedADozen != null)
+        {
+          // 触发事件时使用 EventHandler 的参数
+          CountedADozen(this, null); // 每增加12个计数触发事件一次
+        }
+      }
+    }
+  }
+  // 订阅者
+  class Dozens2
+  {
+    public int DozensCount
+    {
+      get;
+      private set;
+    }
+    // 构造函数
+    public Dozens2(Incrementer2 incrementer)
+    {
+      DozensCount = 0;
+      incrementer.CountedADozen += IncrementDozensCount;
+    }
+    // 声明事件处理程序
+    void IncrementDozensCount(object source, EventArgs e) // 事件处理程序的签名必须与委托的签名匹配
+    {
+      DozensCount++;
+    }
+  }
+  class Program2
+  {
+    public static void main()
+    {
+      Incrementer2 incrementer = new Incrementer2();
+      Dozens2 dozensCounter = new Dozens2(incrementer); // 注册事件
+      incrementer.DoCount(); // 触发事件
+      Console.WriteLine("Number of dozens = {0}", dozensCounter.DozensCount); // 8
+    }
+  }
+}
+
+```
+
+##### 通过扩展 EventArgs 来传递数据
+
+待泛型篇章后补充。
+
+##### 移除事件处理程序
+
+在用完了事件处理程序之后，可以从事件中把它移除。可以利用 `-=` 运算符把事件处理程序从事件中移除，如下所示：
+```cs
+p.SimpleEvent -= s.MethodB;
+```
+
+#### 事件访问器
+
+之前提过，`+=` 和 `-=` 运算符是事件允许的唯一运算符。看到这里我们应该知道，这些运算符有预定义的行为。
+
+然而，我们可以修改这些运算符的行为，并且使用它们时可以让事件执行任何我们希望的自定义代码。
+
+要改变这两个运算符的操作，可以为事件定义事件访问器。
+- 有两个访问其：add 和 remove。
+- 声明事件的访问器看上去和声明一个属性差不多。
+
+下面的示例演示了具有访问器的事件声明。两个访问器都有叫做`value` 的隐式值参数，它接受实例或静态方法的引用。
+```cs
+public event EventHandler CountedADozen {
+  add{} // 执行 += 运算符的代码
+  remove {} // 执行 -= 运算符的代码
+}
+```
+
+声明了事件访问器之后，事件不包含任何内嵌委托对象。我们必须实现自己的机制来存储和移除事件注册的方法。
+
+事件访问器表现为 void 方法，也就是不能使用包含返回值的 return 语句。
 
 ### 接口
 
@@ -4246,6 +4947,8 @@ namespace classdemo.Array
 ### 其他主题
 
 ## 进阶活用
+
+### 修改事件运算符的行为
 
 ## 项目实战
 
