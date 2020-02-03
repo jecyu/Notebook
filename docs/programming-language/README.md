@@ -2794,11 +2794,11 @@ string st3 = "Add\x000ASome\u0007Interest";
 - 除赋值运算符以外，其他二元运算符是左结合的。
 - 赋值运算符和条件运算符是右结合的。
 
-|运算符类型| 结合性|
-|--|--|
-|赋值运算符|右结合|
-|其他二元运算符|左结合|
-|条件运算符|右结合|
+| 运算符类型     | 结合性 |
+| -------------- | ------ |
+| 赋值运算符     | 右结合 |
+| 其他二元运算符 | 左结合 |
+| 条件运算符     | 右结合 |
 
 可以使用圆括号显式地设定子表达式的求值顺序。括号内的子表达式：
 - 覆盖优先级和结合性规则；
@@ -2806,20 +2806,20 @@ string st3 = "Add\x000ASome\u0007Interest";
 
 #### 简单算术运算符
 
-|运算符| 名称|描述|
-|--|--|:--|
-|+|加|计算两个操作数的和|
-|-|减|从第一个操作数中减去第二个操作数|
-|*|乘|求两个操作数的和|
-|/|除|用第二个操作数除第一个。整数除法，截取整数部分到最近的整数|
+| 运算符 | 名称 | 描述                                                       |
+| ------ | ---- | :--------------------------------------------------------- |
+| +      | 加   | 计算两个操作数的和                                         |
+| -      | 减   | 从第一个操作数中减去第二个操作数                           |
+| *      | 乘   | 求两个操作数的和                                           |
+| /      | 除   | 用第二个操作数除第一个。整数除法，截取整数部分到最近的整数 |
 
 #### 求余运算符
 
 求余运算符（%）用第二个操作数除第一个操作数，忽略掉商，并返回余数。
 
-|运算符| 名称|描述|
-|--|--|:--|
-|%|求余|用第二个操作数除第一个操作数并返回余数|
+| 运算符 | 名称 | 描述                                   |
+| ------ | ---- | :------------------------------------- |
+| %      | 求余 | 用第二个操作数除第一个操作数并返回余数 |
 
 求余运算符还可以用于实数以得到实余数。
 
@@ -2827,14 +2827,14 @@ string st3 = "Add\x000ASome\u0007Interest";
 
 关系比较运算符和相等比较运算符是二元运算符，比较它们的操作数并返回 bool 型值。
 
-|运算符| 名称|描述|
-|--|--|:--|
-|<|小于|如果第一个操作数小于第二个操作数，返回 true，否则返回 false|
-|>|大于|如果第一个操作数大于第二个操作数，返回 true，否则返回 false|
-|<=|小于等于|如果第一个操作数小于等于第二个操作数，返回 true，否则返回 false|
-|>=|大于等于|如果第一个操作数大于等于第二个操作数，返回 true，否则返回 false|
-|==|等于|如果第一个操作数等于第二个操作数，返回 true，否则返回 false|
-|!=|不等于|如果第一个操作数不等于第二个操作数，返回 true，否则返回 false|
+| 运算符 | 名称     | 描述                                                            |
+| ------ | -------- | :-------------------------------------------------------------- |
+| <      | 小于     | 如果第一个操作数小于第二个操作数，返回 true，否则返回 false     |
+| >      | 大于     | 如果第一个操作数大于第二个操作数，返回 true，否则返回 false     |
+| <=     | 小于等于 | 如果第一个操作数小于等于第二个操作数，返回 true，否则返回 false |
+| >=     | 大于等于 | 如果第一个操作数大于等于第二个操作数，返回 true，否则返回 false |
+| ==     | 等于     | 如果第一个操作数等于第二个操作数，返回 true，否则返回 false     |
+| !=     | 不等于   | 如果第一个操作数不等于第二个操作数，返回 true，否则返回 false   |
 
 说明：与 C 和 C++ 不同，在 C# 中数字不具有布尔意义。
 
@@ -2857,23 +2857,23 @@ string 类型对象也是引用类型，但它的比较方式不同。比较字�
 递增运算符对操作数加1。递减运算符对操作数减1。
 
 
-|运算符| 名称|描述|
-|--|--|:--|
-|++|前置递增++var|变量的值+1并保存，返回变量的新值|
-||后置递增var++|变量的值+1并保存，返回变量递增之前的旧值|
-|--|前置递减--var|变量的值-1并保存，返回变量的新值|
-||后置递增var--|变量的值-1并保存，返回变量递增之前的旧值|
+| 运算符        | 名称                                     | 描述                             |
+| ------------- | ---------------------------------------- | :------------------------------- |
+| ++            | 前置递增++var                            | 变量的值+1并保存，返回变量的新值 |
+| 后置递增var++ | 变量的值+1并保存，返回变量递增之前的旧值 |
+| --            | 前置递减--var                            | 变量的值-1并保存，返回变量的新值 |
+| 后置递增var-- | 变量的值-1并保存，返回变量递增之前的旧值 |
 
 比较这两种运算符的前置和后置形式
 - 无论运算符使用前置形式还是后置形式，在语句执行之后，最终存放在操作数的变量中的值是相同的。
 - 唯一不同的是运算符返回给表达式的值。
 
-|运算符| 表达式：x=10|返回给表达式的值|计算后变量的值|
-|--|--|--|--|
-|前置递增|++x|11|11|
-|后置递增|x++|10|11|
-|前置递减|--x|9|9|
-|后置递增|x--|10|9|
+| 运算符   | 表达式：x=10 | 返回给表达式的值 | 计算后变量的值 |
+| -------- | ------------ | ---------------- | -------------- |
+| 前置递增 | ++x          | 11               | 11             |
+| 后置递增 | x++          | 10               | 11             |
+| 前置递减 | --x          | 9                | 9              |
+| 后置递增 | x--          | 10               | 9              |
 
 #### 条件逻辑运算符
 
@@ -2881,11 +2881,11 @@ string 类型对象也是引用类型，但它的比较方式不同。比较字�
 
 逻辑与（AND）和逻辑或（OR）运算符是二元左结合运算符。逻辑非（NOT）是一元运算符。
 
-|运算符| 名称|描述|
-|--|--|--|
-|&&|与|如果两个操作数都是 true，结果为 true；否则为 fale|
-|\|\||或|如果至少一个操作数是 true，结果为 true；否则为 false|
-|!|非|如果操作数是 false，结果为 true；否则为 false|
+| 运算符 | 名称 | 描述                                                 |
+| ------ | ---- | ---------------------------------------------------- |
+| &&     | 与   | 如果两个操作数都是 true，结果为 true；否则为 fale    |
+| \|\|   | 或   | 如果至少一个操作数是 true，结果为 true；否则为 false |
+| !      | 非   | 如果操作数是 false，结果为 true；否则为 false        |
 
 条件逻辑运算符使用“短路”（short circuit）模式操作，意思是，如果计算 Expr1 之后结果已经确定，那么它就会跳过 Expr2 的值。
 
@@ -2901,12 +2901,12 @@ bVal = (1 == 2) && (9 == iVal++); // 结果 bVal = false，iVal = 10
 
 按位逻辑运算符常用于设置位置组（bit pattern）的方法参数。这些运算符，除按位非运算符以外，都是二元左结合运算符，按位非是一元运算符。
 
-|运算符| 名称|描述|
-|--|--|--|--|
-|&|位与|产生两个操作数的按位与。仅当两个操作位都为1时结果位才是1|
-|\||位或|产生两个操作数的按位或。只要任意一个操作位为1结果位就是1|
-|^||位异或|产生两个操作数的按位异或。仅当一个而不是两个操作数为1时结果位为1|
-|~||位非|操作数的每个位都取反。该操作得到操作数的二进制反码（数字的反码是其二进制形式按位取反的结果。也就是说，每个0都变成1，每个1都变成0）|
+| 运算符 | 名称 | 描述 |
+| ------ | ---- | ---- ||
+| &      | 位与   | 产生两个操作数的按位与。仅当两个操作位都为1时结果位才是1                                                                           |
+| \|     | 位或   | 产生两个操作数的按位或。只要任意一个操作位为1结果位就是1                                                                           |
+| ^      | 位异或 | 产生两个操作数的按位异或。仅当一个而不是两个操作数为1时结果位为1                                                                   |
+| ~      | 位非   | 操作数的每个位都取反。该操作得到操作数的二进制反码（数字的反码是其二进制形式按位取反的结果。也就是说，每个0都变成1，每个1都变成0） |
 
 ![](../.vuepress/public/images/bitwise-logical-operator.png)
 
@@ -2920,36 +2920,36 @@ Operand << Count // 左移
 Operand >> Count // 右移
 ```
 
-|运算符| 名称|描述|
-|--|--|--|--|
-|<<|左移|将位组向左移动给定数目个位置。位从左边移出并丢失。右边打开的位位置用0填充|
-|>>|右移|将位组向右移动给定数目个位置。位从右边移出并丢失|
+| 运算符 | 名称 | 描述 |
+| ------ | ---- | ---- ||
+| <<     | 左移 | 将位组向左移动给定数目个位置。位从左边移出并丢失。右边打开的位位置用0填充 |
+| >>     | 右移 | 将位组向右移动给定数目个位置。位从右边移出并丢失                          |
  
 #### 赋值运算符
 
 赋值运算符对运算符右边的表达式求值，并用该值设置运算符左边的变量表达式的值。
 
-|运算符|描述|
-|--|--|
-|=|简单赋值，计算右边表达式的值，并把返回值赋给左边的变量或表达式|
-|*=|复合赋值，var*=expr 等价于 var = var*(expr)|
-|/=|复合赋值，var/=expr 等价于 var = var/(expr)|
-|%=|复合赋值，var%=expr 等价于 var = var%(expr)|
-|+=|复合赋值，var+=expr 等价于 var = var+(expr)|
-|-=|复合赋值，var-=expr 等价于 var = var-(expr)|
-|<<=|复合赋值，var<<=expr 等价于 var = var<<(expr)|
-|>>=|复合赋值，var>>=expr 等价于 var = var>>(expr)|
-|&=|复合赋值，var&=expr 等价于 var = var&(expr)|
-|^=|复合赋值，var^=expr 等价于 var = var^(expr)|
-|\|=|复合赋值，var\|=expr 等价于 var = var\|(expr)|
+| 运算符 | 描述                                                           |
+| ------ | -------------------------------------------------------------- |
+| =      | 简单赋值，计算右边表达式的值，并把返回值赋给左边的变量或表达式 |
+| *=     | 复合赋值，var*=expr 等价于 var = var*(expr)                    |
+| /=     | 复合赋值，var/=expr 等价于 var = var/(expr)                    |
+| %=     | 复合赋值，var%=expr 等价于 var = var%(expr)                    |
+| +=     | 复合赋值，var+=expr 等价于 var = var+(expr)                    |
+| -=     | 复合赋值，var-=expr 等价于 var = var-(expr)                    |
+| <<=    | 复合赋值，var<<=expr 等价于 var = var<<(expr)                  |
+| >>=    | 复合赋值，var>>=expr 等价于 var = var>>(expr)                  |
+| &=     | 复合赋值，var&=expr 等价于 var = var&(expr)                    |
+| ^=     | 复合赋值，var^=expr 等价于 var = var^(expr)                    |
+| \|=    | 复合赋值，var\|=expr 等价于 var = var\|(expr)                  |
 
 #### 条件运算符
 
 条件运算符是一种强大且简洁的方法，基于条件的结果，返回两个值之一。
 
-|运算符| 名称|描述|
-|--|--|--|--|
-|?:|条件运算符|对一个表达式求值，并根据表达式是否返回 true 或 false，返回两个值之一|
+| 运算符 | 名称 | 描述 |
+| ------ | ---- | ---- ||
+| ?:     | 条件运算符 | 对一个表达式求值，并根据表达式是否返回 true 或 false，返回两个值之一 |
 
 条件运算符的语法如下所示。它有一个测试表达式和两个结果表达式。
 - Condition 必须返回一个 bool 类型的值。
@@ -2965,10 +2965,10 @@ Operand >> Count // 右移
 - 一元正运算符简单返回操作数的值。
 - 一元负运算符返回减操作数得到的值。
 
-|运算符| 名称|描述|
-|--|--|--|--|
-|+|正号|返回操作数的数值|
-|-|负号|返回减操作数得到的值|
+| 运算符 | 名称 | 描述 |
+| ------ | ---- | ---- ||
+| +      | 正号 | 返回操作数的数值     |
+| -      | 负号 | 返回减操作数得到的值 |
 
 ```cs
 int x = +10; // x = 10
@@ -2995,9 +2995,9 @@ int z = -y; // z = 10
 
 `typeof` 运算符返回其参数的任何类型的 `System.Type` 对象。通过这个对象，可以了解类型的特征。`typeof`是一元运算符。
 
-|运算符| 描述|
-|--|--|
-|typeof|返回已知类型的 System.Type 值|
+| 运算符 | 描述                          |
+| ------ | ----------------------------- |
+| typeof | 返回已知类型的 System.Type 值 |
 
 ```cs
 // typeof 运算符
@@ -3399,13 +3399,13 @@ got default;
 
 #### 其他语句
 
-|语句| 描述 |
-|--|--|
-|checked、unchecked|控制溢出检查上下文|
-|foreach|遍历一个集合的每个成员|
-|tyr、throw、finally|处理异常|
-|return|将控制返回到调用函数的成员，而且还能返回一个值|
-|yield|用于迭代|
+| 语句                | 描述                                           |
+| ------------------- | ---------------------------------------------- |
+| checked、unchecked  | 控制溢出检查上下文                             |
+| foreach             | 遍历一个集合的每个成员                         |
+| tyr、throw、finally | 处理异常                                       |
+| return              | 将控制返回到调用函数的成员，而且还能返回一个值 |
+| yield               | 用于迭代                                       |
 
 ### 结构
 
@@ -4926,7 +4926,1260 @@ public event EventHandler CountedADozen {
 
 ### 接口
 
+#### 什么是接口
+
+接口是指定一组函数成员而不实现它们的引用类型。所以只能类和结构来实现接口。这种描述听起来有点抽象，因此我们先来看看接口能够帮助我们解决的问题，以及是如何解决的。
+
+以下面的代码为例。观察 Program 类的 Main 方法，它创建并初始化了一个 CA 类的对象，并将该对象传递给 PrintInfo 方法。PrintInfo 需要一个 CA 类型的对象，并打印包含在对象中的信息。
+
+```cs
+class CA {
+  public string Name;
+  public int Age;
+}
+
+class CB {
+  public string First;
+  public string Last;
+  public double PersonAge;
+}
+
+class Program {
+  static void PrintInfo(CA item) {
+    Console.WriteLine("Name: {0}, Age {1}", item.Name, item.Age);
+  }
+  static void Main() {
+    CA a = new CA(){ Name = "Jecyu Lin", Age = 25 };
+    PrintInfo(a);
+  }
+}
+```
+
+只要传入的是 CA 类型的对象，PrintInfo 就能正常工作。但如果传入的是CB类（同样是见上面的代码），就不行了。<u>假设 PrintInfo 方法中的算法非常有用，我们能用它操作不同类的对象。</u>
+
+现在的代码不能满足上面的需求，原因有很多。<u>首先，PrintInfo 的形参指明了实参必须为 CA 类型的对象，因此传入 CB 或其他类型的对象将会导致编译错误。</u>但即使我们能绕开这一点使其接受 CB 类型的对象还是会有问题，因为 CB 的结构与 CA 的不同。字段的名称和类型与 CA 不一样，PrintInfo 对这些字段一无所知。
+
+<u>我们能不能创建一个能够成功传入 PrintInfo 的类，并且不管该类是什么样的结构，PirntInfo 都能正常处理呢？接口使这种设想变为可能。</u>
+
+如下代码所示。
+- 首先，它声明了一个 IInfo 接口，包含两个方法——GetName 和 GetAge，每个方法都返回 string。
+- 类 CA 和类 CB 各自实现了 IInfo 接口（将其放到基类列表中），并实现了该接口所需的两个方法。
+- Main 创建了 CA 和 CB 的实例，并传入 PrintInfo。
+- 由于类实例实现了接口，PrintInfo 可以调用那两个方法，每个类实例执行各自的方法，就好像执行自己类声明的方法。
+
+```cs
+// 用接口使 PrintInfo 方法能够用于多个类
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IInfo // 1. 声明接口
+  {
+    string GetName();
+    string GetAge();
+  }
+  class CA : IInfo // 2. 声明实现了接口的 CA 类
+  {
+    public string Name;
+    public int Age;
+    public string GetName()
+    {
+      return Name;
+    }
+    public string GetAge()
+    {
+      return Age.ToString();
+    }
+  }
+  class CB : IInfo // 3. 在 CB 类中实现两个接口方法
+  {
+    public string First;
+    public string Last;
+    public double PersonsAge;
+    public string GetName()
+    {
+      return First + " " + Last;
+    }
+    public string GetAge()
+    {
+      return PersonsAge.ToString();
+    }
+  }
+  class Program
+  {
+    static void PrintInfo(IInfo item) // 4. 传入接口的引用 
+    {
+      Console.WriteLine("Name: {0}, Age {1}", item.GetName(), item.GetAge());
+    }
+    public static void main()
+    {
+      CA a = new CA() { Name = "Jecyu Lin", Age = 25 };
+      CB b = new CB() { First = "Jecyu", Last = "Lin", PersonsAge = 25 };
+      // 5. 对象的引用能自动转换为它们实现的接口的引用
+      PrintInfo(a);
+      PrintInfo(b);
+    }
+  }
+}
+
+```
+
+##### 使用 IComarable 接口的示例
+
+我们已经了解了接口能够解决的问题，接下来看第二个示例并深入一些细节。我们先来看看如下代码，它接受了一个没有排序的整数数组并且按升序进行排序。这段代码的功能如下：
+
+- 第一行代码创建了包含了5个无序整数的数组；
+- 第二行代码使用了 Array 类的静态 Sort 方法来排序元素；
+- 用 foreach 循环输出它们，显示以升序排序的数字。
+
+```cs
+int[] myInt = new int[] {20, 4, 16, 9, 2}; // 创建 int
+Array.Sort(myInt); // 按大小排序
+foreach(int i in myInt) {
+  Console.WriteLine("{0}", i); // 输出它们
+} 
+
+// 输出
+// 2 4 9 16 20 
+```
+
+Sort 方法在 int 数组上工作得很好，但是如果我们尝试在自己的类上使用会发生什么呢？如下所示：
+```cs
+class MyClass {  // 声明一个简单类
+  public int TheValue;
+}
+...
+MyClass[] mc  = new MyClass[5]; // 声明一个有5个元素的数组
+... // 创建并初始化元素
+Array.Sort(mc); // 尝试使用 Sort 排序抛出异常
+```
+
+如果你尝试运行这段代码的话，不会得到排序而是会得到一个异常。<u>Sort 并不能针对 MyClass 对象数组进行排序的原因是它不知道如何比较用于自定义的对象以及如何进行排序。Array 类的 Sort 方法其实依赖于一个叫做 `IComparable` 的接口，它声明在 BCL中，包含唯一的方法 CompareTo。</u>
+
+下面的代码展示了 IComparable 接口的声明。<u>注意，接口主体包含 CompareTo 方法的声明，指定了它接受一个 object 类型的参数。尽管方法具有名称、参数和返回类型，但却没有实现。</u>它的实现用一个分号表示。
+```cs
+public interface IComparable {
+  int CompareTo(object obj);
+}
+```
+
+尽管在接口声明中没有为 CompareTo 方法提供实现，但 IComparable 接口的 .NET 文档中描述了该方法应该做的事情，可以在创建实现接口的类或结构时参考。文档中写道，在调用 CompareTo 方法时，它应该返回以下几个值之一：
+- 负数值 当前对象小于参数对象
+- 正数值 当前对象大于参数对象
+- 零 两个对象在比较时相等
+
+Sort 使用的算法依赖于元素的 CompareTo 方法来决定两个元素的次序。int 类型实现了 IComparable，但是 MyClass 没有，因此当 Sort 尝试调用 MyClass 不存在的 CompareTo 方法时会抛出异常。
+
+我们可以通过让类实现 IComparable 来使 Sort 方法可以用于 MyClass 类型的对象。要实现一个接口，类或结构必须做两件事情：
+- 必须在基类列表后面列出接口名称；
+- 必须为接口的每一个成员提供实现。
+
+如下代码所示
+```cs
+  class MyClass : IComparable // 类实现引用
+  {
+    public int TheValue;
+    public int CompareTo(object obj)
+    {
+      MyClass mc = (MyClass)obj; // 参数类
+      if (this.TheValue < mc.TheValue) // this 当前的实例类，mc 为传进来的类
+      {
+        return -1;
+      }
+      if (this.TheValue > mc.TheValue)
+      {
+        return 1;
+      }
+      return 0;
+    }
+  }
+```
+
+下面显示了更新后的完整代码
+```cs
+// 用接口使 PrintInfo 方法能够用于多个类
+using System;
+namespace classdemo.JecyuInterface
+{
+  class MyClass : IComparable // 类实现引用
+  {
+    public int TheValue;
+    public int CompareTo(object obj)
+    {
+      MyClass mc = (MyClass)obj; // 参数类
+      if (this.TheValue < mc.TheValue) // this 当前的实例类，mc 为传进来的类
+      {
+        return -1;
+      }
+      if (this.TheValue > mc.TheValue)
+      {
+        return 1;
+      }
+      return 0;
+    }
+  }
+  class Program2
+  {
+    static void PrintOut(string s, MyClass[] mc)
+    {
+      Console.Write(s);
+      foreach (var m in mc)
+      {
+        Console.WriteLine("{0}", m.TheValue);
+      }
+      Console.WriteLine("");
+    }
+    public static void main()
+    {
+      var myInt = new[] { 20, 4, 16, 9, 2 };
+      MyClass[] mcArr = new MyClass[5]; // 创建 MyClass 对象的数组
+      for (int i = 0; i < 5; i++)
+      {
+        mcArr[i] = new MyClass();
+        mcArr[i].TheValue = myInt[i];
+      }
+
+      PrintOut("Initial Order: ", mcArr); // 输出初始数组
+      Array.Sort(mcArr);
+      PrintOut("Sorted order: ", mcArr); // 输出排序后的数组
+    }
+  }
+}
+
+```
+
+#### 声明接口
+
+上一节使用的是 BCL 中已经声明的接口。在这部分内容中，我们将来看看如何声明接口。关于声明接口，需要知道的重要事项如下：
+- 接口声明不能包含以下成员
+  - 数据成员。
+  - 静态成员。
+- 接口声明只能包含以下类型的非静态成员函数的声明：
+  - 方法；
+  - 属性；
+  - 事件；
+  - 索引器。
+- <u>这些函数成员的声明不能包含任何实现代码，而在每一个成员声明的主体后必须使用分号。</u>
+- <u>按照惯例，接口名称必须从大写的 I 开始（比如 ISaveable）</u>
+- <u>与类和结构一样，接口声明还可以分隔成分部接口声明。</u>
+
+例如，下面的代码演示了具有两个方法成员接口的声明：
+```cs
+interface IMyInterface1 {
+  int DoStuff(int nVar1, long lVar2);
+  double DoOtherStuff(string s, long x);
+}
+```
+
+接口的访问性和接口成员的访问性之间有一些重要区别。
+- 接口声明可以有任何的访问修饰符 public、protected、internal 或 private。
+- <u>然而，接口的成员是隐式 public的，不允许有任何访问修饰符，包括 public。</u>
+
+```cs
+public interface IMyInterface2 { // 接口允许访问修饰符
+  private int Method1(int nVal1, long lVar2) { // 错误，接口成员不允许访问修饰符
+  }
+}
+```
+
+#### 实现接口
+
+只有类和结构才能实现接口。如 Sort 示例所示，要实现接口，类和结构必须：
+- 在基类列表中包括接口名称；
+- 为每一个接口的成员提供实现。
+
+```cs
+class MyClass : IMyInterface1 {
+  int DoStuff(int nVar1, long lVar2) {
+    ...
+  }
+  double DoOtherStuff(string s, long x) {
+    ...
+  }
+}
+```
+
+关于实现接口，需要了解的重要事项如下：
+- 如果类实现了接口，它必须实现接口的所有成员。
+- <u>如果类从基类继承并实现了接口，基类列表中的基类名称必须放在所有接口之前，如下所示（注意，只能有一个基类，所以列出的其他类型必须为接口名。）</u>
+
+```cs
+class Derived: MyBaseClass, IIfc1, IEnumerable, IComparable {
+  ...
+}
+```
+
+#### 接口是引用类型
+
+接口不仅仅是类或结构要实现的成员列表。它是一个引用类型。
+
+我们不能直接通过类对象的成员访问接口。<u>然而，我们可以通过把类对象引用强制转换为接口类型来获取指向接口的引用。一旦有了接口的引用，我们就可以使用点号来调用接口的方法。</u>
+
+例如，如下代码给出了一个从类对象引用获取接口引用的示例。
+- 在第一个语句中，mc 变量是一个实现了 IIfc1 接口的类对象的引用。语句将该引用强制转换为指向接口的引用，并把它赋值给变量 ifc。
+- 在第二个语句中，使用指向接口的引用来调用方法。
+
+```cs
+IIfc1 ifc = (IIfc1)mc; // 将类对象的引用转换为接口类型的引用
+ifc.PrintOut("interface"); // 调用引用方法
+```
+
+完整代码如下：
+```cs
+// 接口是引用类型
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IIfc1
+  {
+    void PrintOut(string s);
+  }
+  class MyClass2 : IIfc1 // 类实现引用
+  {
+    public void PrintOut(string s)
+    {
+      Console.WriteLine("Calling through: {0}", s);
+    }
+
+  }
+  class Program3
+  {
+
+    public static void main()
+    {
+      MyClass2 mc = new MyClass2(); // 创建类对象
+      mc.PrintOut("object"); // 调用类对象的实现方法
+
+      IIfc1 ifc = (IIfc1)mc; // 将类对象的引用转换为接口类型的引用
+      ifc.PrintOut("interface"); // 调用引用方法
+
+    }
+  }
+}
+
+```
+
+#### 接口和 as 运算符
+
+在上一节中，我们已经知道了<u>可以使用强制转换运算符来获取对象接口的引用，另一个更好的方式是使用 `as` 运算符。</u>
+
+如果我们尝试将类对象引用强制转换类未实现的接口的引用，强制转换操作会抛出一个异常。我们可以通过使用 as 运算符来避免这个问题。具体方法如下所示：
+- 如果类实现了接口，表达式返回指向接口的引用；
+- 如果类没有实现接口，表达式返回 null 而不是抛出异常。
+
+```cs
+//IIfc1 ifc = (IIfc1)mc; // 将类对象的引用转换为接口类型的引用
+  IIfc1 ifc = mc as IIfc1; // 使用 as 运算符
+  if (ifc != null)
+  {
+    ifc.PrintOut("interface"); // 调用引用方法
+  }
+```
+
+#### 实现多个接口
+
+到目前为止，类只实现了单个引用。
+- 类或结构可以实现任意数量的接口。
+- 所有实现的接口必须列在基类列表中并以逗号分隔。（如果有基类名称，则在其之后）。
+
+```cs
+// 实现多个接口
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IDataRetrieve
+  {
+    int GetData();
+  }
+  interface IDataStore
+  {
+    void SetData(int x);
+  }
+  class MyData : IDataRetrieve, IDataStore
+  { // 声明类
+    int Mem1;
+    public int GetData()
+    {
+      return Mem1;
+    }
+    public void SetData(int x)
+    {
+      Mem1 = x;
+    }
+  }
+  class Program4
+  {
+    public static void main()
+    {
+      MyData data = new MyData();
+      data.SetData(5);
+      Console.WriteLine("Value = {0}", data.GetData());
+    }
+  }
+}
+
+```
+
+#### 实现具有重复成员的接口
+
+由于类可以实现任意数量的接口，有可能两个或多个接口都有相同的签名和返回类型。编译器如何处理这样的情况呢？
+
+例如，假设我们有两个接口 IIfc1 和 IIfc2，如下所示。每一个接口都有一个名称为 PrintOut 的方法，具有相同的签名和返回类型。如果我们要创建实现两个接口的类，怎么样处理重复接口的方法呢？
+
+```cs
+interface IIfc1 {
+  void PrintOut(string s);
+}
+interface IIfc2 {
+  void PrintOut(string s);
+}
+```
+
+答案是：如果一个类实现了多个接口，并且其中一些接口有相同签名和返回类型的成员，那么类可以实现单个成员来满足所有包含重复成员的接口。
+
+```cs
+interface IIfc1 {
+  void PrintOut(string s);
+}
+interface IIfc2 {
+  void PrintOut(string s);
+}
+class MyClass: IIfc1, IIfc2 {
+  public void PrintOut(string s) {
+    Console.WriteLine("Calling through: {0}", s);
+  }
+}
+```
+
+#### 多个接口的引用
+
+我们已经在之前的内容知道了接口是引用类型，并且可以通过将对象引用强制转换为接口类型的引用。如果类实现了多个接口，我们可以获取每一个接口的独立引用。
+
+例如，下面的类实现了两个具有单个 PrintOut 方法的接口。Main 中的代码以3种方式调用了 PrintOut。
+- 通过类对象。
+- 通过指向 IIfc1 接口的引用。
+- 通过指向 IIfc2 接口的引用。
+
+```cs
+interface IIfc1 {
+  void PrintOut(string s);
+}
+interface IIfc2 {
+  void PrintOut(string s);
+}
+class MyClass: IIfc1, IIfc2 {
+  public void PrintOut(string s) {
+    Console.WriteLine("Calling through: {0}", s);
+  }
+}
+
+class Progarm {
+  public static void Main() {
+    MyClass mc = new MyClass();
+    IIfc1 ifc1 = (IIfc1) mc;
+    IIfc2 ifc2 = (IIfc2) mc;
+    mc.PrintOut("object");
+    ifc1.PrintOut("object");
+    ifc2.PrintOut("object");
+  }
+}
+```
+
+#### 派生成员作为实现
+
+<u>实现接口的类可以从它的基类继承实现的代码。</u>例如，如下的代码演示了类从它的基类代码继承了实现。
+- IIfc1 是一个具有 PrintOut 方法成员的接口；
+- MyBaseClass 包含了一个叫做 PrintOut 的方法，它和 IIfc3 的方法相匹配。
+- Derived 类有一个空的声明主体，但它派生自 MyBaseClass，并在基类列表中包含了 IIfc3。
+- 即使 Derived 的声明主体是空的，基类中的代码还是能满足实现接口方法的需求。
+
+```cs
+// 派生成员作为实现
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IIfc3
+  {
+    void PrintOut(string s);
+  }
+  class MyBaseClass
+  {
+    public void PrintOut(string s)
+    {
+      Console.WriteLine("Calling through: {0}", s);
+    }
+  }
+  class Derived : MyBaseClass, IIfc3
+  {
+
+  }
+  class Program5
+  {
+    public static void main()
+    {
+      Derived d = new Derived(); // 创建类对象
+      d.PrintOut("object."); // 调用方法
+    }
+  }
+}
+
+
+```
+
+#### 显式接口成员实现
+
+在上一节中，我们已经看到单个类可以实现多个接口需要的成员。
+
+但是，如果我们希望为每一个接口分离实现该怎么做呢？在这种情况下，我们可以创建显式接口成员实现。显式接口成员实现有如下特性：
+- 与所有接口实现类似，位于实现了接口的类或结构中；
+- <u>它使用限定接口名称来声明，由接口名称和成员名称以及它们中间的点分隔符号构成。</u>
+
+```cs
+// 显式接口成员实现
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IIfc4
+  {
+    void PrintOut(string s);
+  }
+  interface IIfc5
+  {
+    void PrintOut(string s);
+  }
+  class MyClass6 : IIfc4, IIfc5
+  {
+    void IIfc4.PrintOut(string s) // 显式接口成员实现
+    {
+      Console.WriteLine("IIfc4: {0}", s);
+    }
+    void IIfc5.PrintOut(string s) // 显式接口成员实现
+    {
+      Console.WriteLine("IIfc5: {0}", s);
+    }
+  }
+  class Program6
+  {
+    public static void main()
+    {
+      MyClass6 mc = new MyClass6(); // 创建类对象
+
+      IIfc4 ifc4 = (IIfc4)mc;
+      IIfc5 ifc5 = (IIfc5)mc;
+      ifc4.PrintOut("interface 1");
+      ifc5.PrintOut("interface 2");
+    }
+  }
+}
+
+
+```
+
+#### 接口可以继承接口
+
+之前我们已经知道接口实现可以从基类被继承，而接口本身也可以从一个或多个接口继承。
+- 要指定某个接口继承其他接口，应在接口声明中把基类以逗号分隔的列表形式放在接口名称的冒号之后，如下所示：
+
+```cs
+// 接口可以继承接口
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface IDataRetrieve2
+  {
+    int GetData();
+  }
+  interface IDataStore2
+  {
+    void SetData(int x);
+  }
+  // 从前两个接口继承
+  interface IDataIO : IDataRetrieve2, IDataStore2
+  {
+
+  }
+  class MyClass7 : IDataIO
+  {
+    int nPrivateData;
+    public int GetData()
+    {
+      return nPrivateData;
+    }
+    public void SetData(int x)
+    {
+      nPrivateData = x;
+    }
+  }
+  class Program7
+  {
+    public static void main()
+    {
+      MyClass7 mc = new MyClass7(); // 创建类对象
+
+      mc.SetData(5);
+      Console.WriteLine("{0}", mc.GetData());
+    }
+  }
+}
+
+
+```
+
+与类不同，它在基类列表中只能有一个类名，而接口可以在基接口列表中有多个接口。
+- 列表中的接口本身可以继承其他接口。
+- 结果接口包含它声明的所有接口和所有接口的成员。
+
+#### 不同类实现同一个接口的示例
+
+如下代码演示了已经介绍过的接口的一些方面。程序声明了一个名称为 Animal 的类，它被作为其他一些类的基类来表示各种类型的动物。它还声明了一个叫做 ILiveBirth 的接口。
+
+Cat、Dog 和 Bird 都从 Animal 基类继承。Cat 和 Dog 都实现了 ILiveBirth 接口，而 Bird 类没有。
+
+在 Main 中，程序创建了 Animal 对象的数组并对3个动物类的对象进行填充。最后，程序遍历数组并使用 as 运算符获取指向 ILiveBirth 接口的引用，并调用了 BabyCalled 方法。
+
+```cs
+
+using System;
+namespace classdemo.JecyuInterface
+{
+  interface ILiveBirth
+  {
+    string BabyCalled();
+  }
+  class Animal { } // 基类
+  class Cat : Animal, ILiveBirth // 声明 Cat 类
+  {
+    string ILiveBirth.BabyCalled()
+    {
+      return "Kitten";
+    }
+  }
+  class Dog : Animal, ILiveBirth // 声明 Dog 类
+  {
+    string ILiveBirth.BabyCalled()
+    {
+      return "puppy";
+    }
+  }
+  class Bird : Animal // 声明 Bird 类
+  {
+
+  }
+
+  class Program8
+  {
+    public static void main()
+    {
+      Animal[] animals = new Animal[3];
+      animals[0] = new Cat();
+      animals[1] = new Dog();
+      animals[2] = new Bird();
+      foreach (Animal a in animals)
+      {
+        ILiveBirth b = a as ILiveBirth;
+        if (b != null)
+        {
+          Console.WriteLine("Baby is called: {0}", b.BabyCalled());
+        }
+      }
+    }
+  }
+}
+
+```
+
 ### 转换
+
+#### 什么是转换
+
+要理解什么是转换，让我们先从声明两个不同类型的变量，然后把一个变量（源）的值赋值给另外一个变量（目标）的简单示例开始讲起。<u>在赋值之前，源的值必须转换成目标类型的值。</u>
+
+![](../.vuepress/public/images/csharp-conversion.png)
+
+- <u>转换（conversion）是接受一个类型的值并使用它作为另一个类型的等价值的过程。</u>
+- <u>转换后的值应和源值一样的，但其类型为目标类型。</u>
+
+例如，图16-2中的代码给出了两个不同类型的变量的声明。
+
+![](../.vuepress/public/images/short-to-sbyte.png)
+
+- var1 是 short 类型的16位有符号整数，初始值为5。var2 是 sbyte 类型的8位有符号整数，初始值为10。
+- 第三行代码把 var1 赋值给 var2。由于它们是两种不同的类型，<u>在进行赋值之前，var1 的值必须先转换与 var2 类型相同的值类型。</u>
+- 还要注意，<u>var1 的类型和值都没有改变。尽管称之为转换，但只是代表源值作为目标类型来使用，不是源值转换为目标类型。</u>
+
+![](../.vuepress/public/images/zero-extension.png)
+
+#### 隐式转换
+
+有些类型的转换不会丢失数据或精度。例如，将8位的值转换为16位是非常容易的，而且不会丢失数据。
+- 语言会自动做这些转换，这叫做`隐式转换`。
+- 从位数更少的源转换为位数更多的目标类型时，目标中多出来的位需要用0或1填充。
+- 当从更小的无符号类型转换为更大的无符号类型时，目标类型多出来的最高位都以0填充，这叫`零扩展（zero extension）`。
+
+对于有符号类型的转换而言，额外的高位用源表达式的符号位进行填充。
+- 这样就维持了被转换的值的正确符号和大小。
+- 这叫做`符号扩展（sign extension）`
+
+![](../.vuepress/public/images/sign-extension.png)
+
+#### 显式转换和强制转换
+
+如果要把短类型转换为长类型，对于长类型来说，保存所有短类型的字符很简单。然而，在其他情况下，目标类型也许无法在不损失数据的情况下提供源值。
+
+例如，假设我们希望把 ushort 的值转化为 byte。
+- ushort 可以保存任何 0～65535 之间的值。
+- byte 只能保存 0～255 之间的值。
+- 只要希望转换的 ushort 值小于256，那么就不会丢失数据。然而，如果更大，最高位的数据会丢失。
+
+![](../.vuepress/public/images/ushort-to-byte.png)
+
+很明显，只有当无符号16位 ushort 的值是一个相对小一些的数字（0.4%）时，才能在不损失数据的情况下安全转换为无符号8位 byte 类型。数据中的其他结果会溢出（overflow），产生其他值。
+
+##### 强制转换
+
+对于预定义的类型，C# 会自动将一个数据类型转换为另一个数据类型，但只是针对那些从源类型到目标类型时会丢失值的情况。也是说，<u>对于源类型的任意值在被转换成目标类型时会丢失值的情况，语言是不会提供这两种类型的自动转换的。</u>如果希望对这样的类型进行转换，就必须使用显式转换。这叫做`强制转换表达式`。
+
+如下代码给出了一个强制转换表达式的示例。它把 var1 的值转换为 sbyte 类型。强制转换表达式的构成如下所示：
+- 一对圆括号，里面是目标类型。
+- 圆括号后是源表达式。
+
+```cs
+(sbyte) var1;
+```
+
+如果我们强制转换表达式，就意味着要承担执行操作可能引起的丢失数据的后果。它从本质上是在说：“不管是否会发生数据丢失，我知道在做什么，总之进行转换吧。”
+
+```cs
+using System;
+namespace classdemo.JecyuConversion
+{
+  public class Program
+  {
+    public static void main()
+    {
+      ushort sh = 10;
+      byte sb = (byte)sh;
+      Console.WriteLine("sb: {0} = Ox{0:X}", sb);
+
+      sh = 1365;
+      sb = (byte)sh;
+      Console.WriteLine("sb: {0} = 0x{0:X}", sb);
+    }
+  }
+}
+// 输出
+// sb: 10 = OxA
+// sb: 85 = 0x55
+
+```
+
+#### 转换的类型
+
+有很多标准的、预定义的用于数字和引用类型的转换。下图演示了不同的转换类型。
+
+![](../.vuepress/public/images/conversion-type.png)
+
+- 除了标准转换，还可以为自定义类型定义隐式转换和显式转换。
+- 还有一个预定义的转换类型，叫做装箱，可以将任何值类型转换为：
+  - object 类型；
+  - System.ValueType 类型。
+- 拆箱可以将一个装箱的值转换为原始类型。
+
+![](../.vuepress/public/images/c-sharp-boxing.png)
+
+#### 数字的转换
+
+任何数字类型都可以转换为其他数字类型。如图所示，一些转换是隐式，而另外一些转换则必须是显式。
+
+![](../.vuepress/public/images/c-sharp-number-conversion.png)
+
+##### 隐式数字转换
+
+图16-9 演示了隐式数字转换。
+- 如果有路径，从源类型到目标类型可以按照箭头进行隐式转换。
+- 任何从源类型到目标类型的箭头方向上没有路径的数字转换都必须是显式转换。
+
+图中所示的，正如我们期望的那样，占据较少位的数字类型可以隐式转换为占据较多位的数字类型。
+
+![](../.vuepress/public/images/Implicit-number-conversion.png)
+
+##### 溢出检测上下文
+
+我们已经知道了，显式转换可能会丢失数据并且不能在目标类型中同等地表示源值。<u>对于整数类型，C# 给我们提供了选择运行时是否应该在进行进行类型转换时检测结果溢出的能力。这将通过 `checked` 运算符和`checked` 语句实现。</u>
+
+- 代码片段是否被检查称作溢出检测上下文。
+  - 如果我们指定一个表达式或一段代码为 `checked`，CLR 会在转换产生溢出时抛出一个 `OverflowException` 异常。
+  - 如果代码不是 `checked`，转换会继续而不管是否产生溢出。
+- 默认的溢出检测是不检查的。
+
+1. checked 和 unchecked 运算符
+checked 和 unchecked 运算符控制表达式的溢出检测上下文。表达式放置在一对圆括号内并不能是一个方法。语法如下所示：
+
+```cs
+checked (表达式)
+unchecked (表达式)
+```
+
+例如，如下代码执行了相同的转换——第一个在 checked 运算符内，第二个在 unchecked 运算符内。
+
+- 在 unchecked 上下文中，会忽略溢出，结果值是 208。
+- 在 checked 上下文中，抛出了 OverflowException 异常。
+
+```cs
+using System;
+namespace classdemo.JecyuConversion
+{
+  public class Program2
+  {
+    public static void main()
+    {
+      ushort sh = 2000;
+      byte sb;
+
+      sb = unchecked((byte)sh);
+      Console.WriteLine("sb: {0}", sb);
+
+      sb = checked((byte)sh);
+      Console.WriteLine("sb: {0}", sb);
+    }
+  }
+}
+
+```
+
+2. checked 语句和 unchecked 语句
+checked 和 unchecked 运算符用于圆括号内的单个表达式。而 checked 和 unchecked 语句执行相同的功能，但控制的是一块代码中的所有转换，而不是单个表达式。
+- checked 语句和 unchecked 语句可以被嵌套在任意层次。
+
+```cs
+ushort sh = 2000;
+byte sb;
+unchecked {
+  sb = (byte)sh;
+  Console.WriteLine("sb: {0}", sb);
+  sb = (byte)sh;
+  Console.WriteLine("sb: {0}", sb);
+}
+```
+
+##### 显式数字转换
+
+我们已经知道了，隐式转换之所以能自动从源表达式转换到目标类型是因为不可能丢失数据。<u>然而，对于显式转换而言，就可能丢失数据。因此，作为一个程序员，知道发生数据丢失时转换会如何处理很重要。</u>
+
+![](../.vuepress/public/images/explicit-number-conversion.png)
+
+1. 整数类型到整数类型
+
+图16-11 显示了从整数到整数的显式转换的行为。在 checked 的情况下，如果转换会丢失数据，操作会抛出一个 OverflowExveption 异常。在 unchecked 的情况下，丢失的位不会发出警告。
+
+![](../.vuepress/public/images/explicit-number-conversion-int-to-int.png)
+
+2. float 或 double 转到整数类型
+   
+当把浮点类型转换为整数类型时，值会舍掉小数截断为最接近的整数。如果截断后的值不在目标类型的范围内：
+- 如果溢出检测上下文是 checked，则 CLR 会抛出 OverflowException 异常；
+- 如果上下文是 unchecked，则 C# 将不定义它的值是什么。
+
+3. decimal 到整数类型
+
+当从 decimal 转换到整数类型时，如果结果值不在目标类型的范围内，则 CLR 会抛出 overflowException。
+
+4. double 到 float 
+
+float 类型的值占32位，而 double 类型的值占64位。double 类型的值被舍入到最接近的 float 类型的值。
+- 如果值太小而不能用 float 表示，那么值会被设置为正或负0；
+- 如果值太大而不能用 float 表示，那么值会被设置为正无穷大或负无穷大。
+
+5. float 或 double 到 decimal
+
+- 如果值太小而不能用 decimal 类型表示，那么值就会被设置为 0。
+- 如果值太大，那么 CLR 就会抛出 overflowException 异常。
+
+6. decimal 到 float 或 double
+
+从 decimal 类型转换到 float 类型总是会成功。然而，可能损失精度。
+
+#### 引用转换
+
+我们已经知道引用类型对象由内存中的两部分组成：引用和数据。
+- 由引用保存的那部分信息是它指向的数据类型。
+- <u>引用转换接受源引用并返回一个指向堆中同一位置的引用，但是把引用“标记”为其他类型。</u>
+
+##### 隐式引用转换
+
+与语言为我们自动实现的隐式数字转换类似，还有隐式引用转换。如图16-18 所示。
+- 所有引用类型可以被隐式转换为 object 类型。
+- 任何类型可以隐式转换到它继承的接口。
+- 类可以隐式转换到：
+  - 它继承链中任何类；
+  - 它实现的任何接口。
+
+![](../.vuepress/public/images/class--interface-implicit-conversiton.png)
+
+委托可以隐式转换成图16-19所示的 .NET BCL 类和接口。Array 数组，其中的元素是 Ts 类型，可以隐式转换成：
+- 图16-19所示的 .NET BCL 类和接口；
+- 另一个数组 ArrayT，其中的元素是 Tt 类型（如果满足下面条件）
+  - 两个数组具有一样的维度；
+  - 元素类型 Ts 和 Tt 都是引用类型，不是值类型。
+  - 在类型 Ts 和 Tt 存在隐式转换。
+
+![](../.vuepress/public/images/implicit-delegate-array-conversion.png)
+
+##### 显式引用转换
+
+显式引用转换是从一个普通类型到一个更精确类型的引用转换。
+- 显式转换包括：
+  - 从 object 到任何引用类型的转换；
+  - 从基类到它继承的类的转换。
+
+如果转换的类型不受限制，很可能会导致我们很容易尝试引用在内存中实际不存在的类成员。然而，编译器确实允许这样的转换，到那时，如果系统在运行时遇到它们则会抛出一个异常。
+
+```cs
+// 引用转换
+using System;
+namespace classdemo.JecyuConversion
+{
+  class A
+  {
+    public int Field1;
+  }
+  class B : A
+  {
+    public int Field2;
+  }
+  public class Program3
+  {
+    public static void main()
+    {
+      A myVal1 = new A();
+      B myVal2 = (B)myVal1; // 不存在，在运行时抛出异常
+    }
+  }
+}
+
+```
+
+##### 有效显式转换
+
+在运行时能成功进行有3种情况（也就是不抛出 InvalidCastException 异常）的显式转换有3种情况。
+1. 第一种情况：显式转换是没有必要的。也就是说，语言已经为我们进行了隐式转换。例如
+```cs
+class A {
+}
+class B: A {}
+B myVar1 = new B();
+A myVar2 = (A) myVar1; // 不必转换，因为 A 是 B的基类
+```
+
+2. 源引用是 null。例如在下面的代码中，即使转换基类的引用到衍生类的引用通常是不安全的，但是由于源引用是 null，这种转换还是允许的。
+
+```cs
+class A {}
+class B: A {}
+...
+A myVal1 = null;
+B myVar2 = (B)myVal1; // 允许转换，因为 myVar1 为空
+```
+
+3. 由源引用指向的实际数据可以被安全地进行隐式转换。
+
+```cs
+B myVal1 = new B();
+A myVar2 = myVal1; // 将 myVal1 隐式转换为 A 类型
+B myVar3 = (B)myVal2;  // 该转换是允许的，因为数据是B类型的
+```
+
+#### 装箱转换
+
+包括值类型在内的所有 C# 类型都派生自 object 类型。然而，值类型是高效轻量的类型，因为默认情况下在堆上不包括它们的对象组件。然而，如果需要对象组件，我们可以使用装箱（boxing）。<u>装箱是一种隐式转换，它接受值类型的值，根据这个值在堆上创建一个完整的引用类型对象并返回对象引用。</u>
+
+例如，图16-22演示3行代码。
+- 前两行代码声明并初始化了值类型变量i 和引用类型变量oi。
+- 在代码的第三行，我们希望把变量 i 的值赋给 oi。<u>但是 oi 是引用类型的变量，我们必须在堆上分配一个对象的引用。然而，变量 i 是值类型，不存在指向堆上某对象的引用。</u>
+- 因此，系统将 i 的值装修如下：
+  - 在堆上创建了 int 类型的对象；
+  - 将 i 的值复制给 int 对象；
+  - 返回 int 对象的引用，让 oi 作为引用保存。
+
+![](../.vuepress/public/images/boxing-value-type-to-reference-type.png)
+
+##### 装箱是创建副本
+
+装箱返回的是值的引用类型副本。在装箱产生后，该值有两份副本——原始值类型和引用类型副本，每一个都可以独立操作。
+
+```cs
+// 装箱转换——装箱创建副本
+using System;
+namespace classdemo.JecyuConversion
+{
+  public class Program4
+  {
+    public static void main()
+    {
+      int i = 10; // 创建并初始化值类型
+      object oi = i; // 对 i 装箱并把引用赋值给 oi
+      Console.WriteLine("i: {0}, oi: {1}", i, oi); // i: 10, oi: 10
+    }
+  }
+}
+
+```
+
+##### 装箱转换
+
+任何值类型 ValueType 都可以被隐式转换为 object 类型、System.ValueType 或 Interface（如果 ValueType 实现了 Interface）
+
+#### 拆箱转换
+
+拆箱（unboxing）是把装箱后的对象转换回值类型的过程。
+- 拆箱是显式转换。
+- 系统把值拆箱成 ValueType 时执行了如下的步骤：
+  - 它检测到要拆箱的对象实际是 ValueType 的装箱值；
+  - 它把对象的值复制到变量。
+
+```cs
+// 装箱转换——装箱创建副本
+using System;
+namespace classdemo.JecyuConversion
+{
+  public class Program4
+  {
+    public static void main()
+    {
+      int i = 10; // 创建并初始化值类型
+      object oi = i; // 对 i 装箱并把引用赋值给 oi
+      Console.WriteLine("i: {0}, oi: {1}", i, oi); // i: 10, oi: 10
+
+      i = 12;
+      oi = 15;
+      Console.WriteLine("i: {0}, oi: {1}", i, oi); // i: 12, oi: 15
+      int j = (int)oi; // 对 oi 拆箱并把值赋值给 j
+      Console.WriteLine("i: {0}, oi: {1}, j: {2}", i, oi, j); // i: 12, oi: 15, j: 15
+    }
+  }
+}
+```
+
+#### 用户自定义转换
+
+除了标准转换，我们还可以为类和结构定义隐式和显式转换。
+用户自定义转换的语法如下代码所示：
+- 除了 implicit 和 explicit 关键字之外，隐式和显式转换的声明语法是一样的。
+- 需要 public 和 static 修饰符。
+
+```cs
+public static implicit operator TargetType(SourceType Identifier) {
+  return ObjectOfTargetType;
+}
+```
+
+示例：
+```cs
+public static implicit operator int(Person p) // 将 person 转换为 int
+{
+  return p.Age;
+}
+```
+
+##### 用户自定义转换的约束
+
+用户自定义转换有一些重要的约束，最重要的如下所示：
+- 只可以为类和结构定义用户自定义转换。
+- 不能重定义标准隐式转换和显式转换。
+- 对于源类型 S 和目标类型 T，如下命题为真：
+  - S 和 T 必须是不同类型。
+  - S 和 T 不能通过继承关联。
+  - S 和 T 都不能是接口类型或者 object 类型。
+  - 转换运算符必须是 S 或 T 的成员。
+- 对于相同的源和目标类型，我们不能声明隐式转换和显式转换。
+
+##### 用户自定义转换的示例
+
+```cs
+// 用户自定义转换的示意
+using System;
+namespace classdemo.JecyuConversion
+{
+
+  class Person
+  {
+    public string Name;
+    public int Age;
+    public Person(string name, int age)
+    {
+      Name = name;
+      Age = age;
+    }
+    public static implicit operator int(Person p) // 将 person 转换为 int
+    {
+      return p.Age;
+    }
+    public static implicit operator Person(int i) // 将 int 转换为 person
+    {
+      return new Person("bill", i);
+    }
+  }
+  class Program5
+  {
+    public static void main()
+    {
+      Person jecyu = new Person("Jecyu", 25);
+      // 把 Person 对象转换为 int
+      int age = jecyu;
+      Console.WriteLine("Person Info: {0}, {1}", jecyu.Name, age);
+
+      // 把 int 转换为 Person 对象
+      Person bill = 26;
+      Console.WriteLine("Person Info: {0}, {1}", bill.Name, bill.Age);
+    }
+  }
+}
+
+```
+
+##### 评估用户自定义转换
+
+到目前为止讨论的用户自定义转换都是在单步内直接把源类型转换为目标类型对象，如图：
+
+![](../.vuepress/public/images/singleStep-user-diy-conversion.png)
+
+
+但是，用户自定义转换在完整转换中最多可以有3个步骤，它们包括：
+- 预备标准转换；
+- 用户自定义转换；
+- 后续标准转换。
+
+![](../.vuepress/public/images/multi-step-user-diy-conversion.png)
+
+
+##### 多步用户自定义转换的示例
+
+- 由于 Employee 继承自 Person，从 Employee 到 Person 有标准转换。
+- 从 int 到 float 是隐式数字转换，也是标准转换。
+
+```cs
+// 多步用户自定义转换的示例
+using System;
+namespace classdemo.JecyuConversion
+{
+
+  class Person2
+  {
+    public string Name;
+    public int Age;
+    public static implicit operator int(Person2 p) // 将 person 转换为 int
+    {
+      return p.Age;
+    }
+  }
+  class Employee : Person2 { }
+  class Program6
+  {
+    public static void main()
+    {
+      Employee bill = new Employee
+      {
+        Name = "William",
+        Age = 25
+      };
+      // 把 Employee 类型转换 float 
+      float fVar = bill;
+      Console.WriteLine("Person Info: {0}, {1}", bill.Name, fVar);
+    }
+  }
+}
+
+```
+
+#### is 运算符
+
+之前说过了，有些转换是不成功的，并且会在运行时抛出一个 InvalidCastException 异常。我们可以使用 is 运算符来检查转换是否会成功完成，从而避免盲目尝试转换。
+
+is 运算符的语法如下，Expr 是源表达式：
+```cs
+Expr is TargetType
+```
+
+```cs
+// 多步用户自定义转换的示例
+using System;
+namespace classdemo.JecyuConversion
+{
+
+  class Person3
+  {
+    public string Name = "Anonymous";
+    public int Age = 25;
+  }
+  class Employee2 : Person3 { }
+  class Program7
+  {
+    public static void main()
+    {
+      Employee2 bill = new Employee2();
+      Person3 p;
+
+      // 检测变量 bill 是否能够转换为 Person 类型
+      if ((bill != null) && (bill is Person3))
+      {
+        p = bill;
+        Console.WriteLine("Person Info: {0}, {1}", p.Name, p.Age);
+      }
+    }
+  }
+}
+
+```
+
+
+#### as 运算符
+
+as 运算符和强制转换运算符类似，只是它不抛出异常。如果转换失败，它返回 null 而不是抛出异常。
+
+as 运算符的语法如下：
+- Expr 是源表达式；
+- TargetType 是目标类型，它必须是引用类型。
+
+```cs
+Expr as TargetType
+```
+
+```cs
+// 多步用户自定义转换的示例
+using System;
+namespace classdemo.JecyuConversion
+{
+
+  class Person3
+  {
+    public string Name = "Anonymous";
+    public int Age = 25;
+  }
+  class Employee2 : Person3 { }
+  class Program7
+  {
+    public static void main()
+    {
+      Employee2 bill = new Employee2();
+      Person3 p;
+
+      // 检测变量 bill 是否能够转换为 Person 类型
+      //if (bill is Person3)
+      //{
+      //  p = bill;
+      //  Console.WriteLine("Person Info: {0}, {1}", p.Name, p.Age);
+      //}
+
+      // as 运算符
+      p = bill as Person3;
+      if (p != null)
+      {
+        Console.WriteLine("Person Info: {0}, {1}", p.Name, p.Age);
+      }
+    }
+  }
+}
+
+```
 
 ### 泛型
 
@@ -4947,6 +6200,8 @@ public event EventHandler CountedADozen {
 ### 其他主题
 
 ## 进阶活用
+
+<!-- 进阶可以引用博客文章 -->
 
 ### 修改事件运算符的行为
 
