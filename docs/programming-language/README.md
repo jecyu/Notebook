@@ -2631,6 +2631,10 @@ namespace MyClass
 
 #### 扩展方法
 
+在迄今为止的内容中，你看到的每个方法都和声明它的类关联。<u>扩展方法特性扩展了这个边界，允许编写的方法和声明它的类之外的类关联。</u>
+
+想知道如何使用这个特性，请看下面的代码。它包含类 MyData，该类存储3个 double 类型的值，并含有一个构造函数和一个名称为 Sum 的方法，该方法返回3个存储值的和。
+
 ```cs
 // 类和继承——扩展方法
 using System;
@@ -6183,9 +6187,1071 @@ namespace classdemo.JecyuConversion
 
 ### 泛型
 
+#### 什么是泛型
+
+使用已经学习的语言结构，我们已经可以建立多种不同类型的强大对象。大部分情况下是声明类，然后封装需要的行为，最后创建这些类的实例。
+
+到现在为止，所有类声明中用到类型都是特定的类型——或许是程序员定义的，或许是语言或 BCL 定义的。然而，很多时候，<u>我们可以把类的行为提取或重构出来，使之不仅能应用到它们编码的数据类型上，而且还能应用到其他类型上的话，类就会更有用</u>。
+
+有了泛型就可以做到这一点了。我们可以重构代码并且额外增加一个抽象层，对于这样的代码来说，数据类型就不用硬编码了。这是专门为多段代码在不同的数据类型上执行相同指令的情况专门设计的。
+
+也许听起来很抽象，让我们看一个示例，这样更清晰：
+
+##### 一个栈的示例
+
+假设我们首先创建了如下的代码，它声明了一个叫做 MyIntStack 的类，该类实现了一个 int 类型的栈。它允许我们把 int 压入栈中，以及把它们弹出。
+
+```cs
+class MyIntStack  // int 类型的栈
+{
+  int StackPointer = 0;
+  int[] StackArray; // int 类型数组
+
+  public void Push(int x) {} // 参数类型 int 
+  public int Pop() // 返回类型 innt 
+}
+```
+
+假设现在希望将相同的功能应用于 float 类型的值，可以有一种方式来实现，一种方式是按照下面的步骤产生后续的代码。
+- 剪切并粘贴 MyIntStack 类的代码。
+- 把类名改为 MyFloatStack。
+- 把整个类声明中相应的 int 声明改为 float 声明。
+
+```cs
+class MyFloatStack  // int 类型的栈
+{
+  int StackPointer = 0;
+  float[] StackArray; // int 类型数组
+
+  public void Push(float x) {} // 参数类型 int 
+  public float Pop() // 返回类型 innt 
+}
+```
+
+这个方法当然可行，但是很容易出错而且有如下缺点：
+- 我们需要仔细检查类的每一个部分来看哪些类型的声明需要修改，哪些类型的声明需要保留。
+- 每次需要新类型（long、double、string 等）的栈类时，我们都需要重复这个过程。
+- 在这些过程后，我们有了很多几乎相同代码的副本，占据了额外的空间。
+- 调试和维护这些相似的实现不但复杂而且容易出错。
+
+#### C# 中的泛型
+
+泛型（generic）特性提供了一种更优雅的方式，可以让多个类型共享一组代码。泛型允许我们声明类型参数化（type-parametertype-parameterized）的代码，可以用不同的类型进行实例化。也就是说，<u>我们可以用“类型占位符”来写代码，然后创建类的实例时指明真实的类型。</u>
+
+读到这里，我们应该很清楚类型不是对象而是对象的模版这个概念了。同样地，<u>泛型类型也不是类型，而是类型的模版。</u>
+
+![](../.vuepress/public/images/generic-type-template.png)
+
+C# 提供了5种泛型：类、结构、接口、委托和方法。注意，前面4个是类型，而方法是成员。
+
+![](../.vuepress/public/images/generic-and-user-diy.png)
+
+##### 继续栈的例子
+
+在栈的示例中，MyIntStack 和 MyFloatStack 两个类的主体声明都差不多，只不过在处理由栈保存的类型时有不同。
+- 在 MyIntStack 中，这些位置使用 int 类型占据。
+- 在 MyFloatStack 中，这些位置被 float 占据 。
+
+通过如下步骤我们可以从 MyIntStack 创建一个泛型类。
+1. 在 MyIntStack 类定义中，使用类型占位符 T 而不是 float 来替换 int。
+2. 修改类名称为 MyStack。
+3. 在类名后放置`<T>`。
+
+结果就是如下的泛型声明。<u>由尖括号和T构成的字符串表明T是类型的占位符。（也不一定是字母 T，它可以是任何标识符。）</u>在类声明的主体中，每一个T都会被编译器替换为实际类型。
+
+```cs
+class MyStack<T> {
+  int StackPointer = 0;
+  T[] StackArray;
+  public void Push(T x) {...}
+  public T Pop() {...}
+}
+```
+
+#### 泛型类
+
+既然已经见过泛型类，让我们再来详细了解一下它，并看看如何创建和使用它。
+
+创建和使用常规的、非泛型的类有两个步骤：声明类和创建类的实例。但是泛型类不是实际的类，而是类的模版，所以我们必须先从它们构建实际类实例。
+
+![](../.vuepress/public/images/generic-real-tyep.png)
+
+#### 声明泛型类
+
+声明一个简单的泛型类和声明普通类差不多，区别如下。
+- 在类名之后放置一组尖括号。
+- 在尖括号中用逗号分隔的占位符字符串来表示希望提供的类型。这叫做类型参数（type parameter）。
+- 在泛型声明的主体中使用类型参数来表示应该替代的类型。
+
+```cs
+class SomeClass<T1, T2>
+{
+  public T1 SomeVar = new T1();
+  public T2 OtherVar = new T2();
+}
+```
+ 
+#### 创建构造类型
+
+一旦创建了泛型类型，我们就需要告诉编译器能使用哪些真实类型来替代占位符。（类型参数）编译器获取这些真实类型并创建构造类型（用来创建真实类对象的模版）。
+
+创建构造类型的语法如下，包括列出类名并在尖括号中提供真实类型来替代类型参数。要替代类型参数的真实参数叫做类型实参（type argument）。
+
+```cs
+SomeClass<int, short>
+```
+
+编译器接受了类型实参并且替换泛型类主体中的相应类型参数，产生了构造类型——从它创建真实类型的实例。
+
+#### 创建变量和实例
+
+```cs
+using System;
+namespace classdemo.JecyuGeneric
+{
+
+  class MyStack<T>
+  {
+    T[] StackArray;
+    int StackPointer = 0;
+
+    public void Push(T x)
+    {
+      if (!IsStackFull)
+      {
+        StackArray[StackPointer++] = x;
+      }
+    }
+    public T Pop()
+    {
+      return (!IsStackEmpty)
+        ? StackArray[--StackPointer]
+        : StackArray[0];
+    }
+
+    const int MaxStack = 10;
+    // 是否满
+    bool IsStackFull
+    {
+      get
+      {
+        return StackPointer >= MaxStack;
+      }
+    }
+    // 是否为空
+    bool IsStackEmpty
+    {
+      get
+      {
+        return StackPointer <= 0;
+      }
+    }
+    public MyStack()
+    {
+      StackArray = new T[MaxStack];
+    }
+    public void Print()
+    {
+      for (int i = StackPointer - 1; i >= 0; i--)
+      {
+        Console.WriteLine(" Value: {0}", StackArray[i]);
+      }
+    }
+
+  }
+  class Program
+  {
+    public static void main()
+    {
+      MyStack<int> StackInt = new MyStack<int>();
+      MyStack<string> StackString = new MyStack<string>();
+
+      StackInt.Push(3);
+      StackInt.Push(5);
+      StackInt.Push(7);
+      StackInt.Push(9);
+      StackInt.Print();
+
+      StackString.Push("This is fun");
+      StackString.Push("Hi there");
+      StackString.Print();
+    }
+  }
+}
+
+```
+
+##### 比较泛型和非泛型栈
+
+![](../.vuepress/public/images/generic-stack-vs-not-generic-stack.png)
+
+#### 类型参数的约束
+
+在泛型栈的示例中，栈除了保存和弹出它包含的一些项之外没有做任何事情。它不会尝试添加、比较或做其他任何需要用到项本身的运算符的事情。理由还是很恰当的，由于泛型栈不会知道它们保存的项的类型是什么。理由还是很恰当的，<u>由于泛型栈不会知道它们保存的项的类型是什么，它不会知道这些类型实现的成员。</u>
+
+<u>然而，所有的 C# 对象最终都从 object 类继承，因此，栈可以确认的是，这些保存的项都实现了 object 类的成员。它们包括 ToString、Equals以及 GetType</u>。除了这些，它不知道还有哪些成员可用。
+
+只要我们的代码不妨问它处理的一些类型的对象（或者只要它始终是object 类型的成员），泛型类就可以处理任何类型。符合约束的类型参数叫做未绑定的类型参数（unbounded type parameter）。然而，<u>如果代码尝试使用其他成员，编译器就会产生一个错误信息。</u>
+
+例如，如下代码声明了一个叫做 Simple 的类，它有一个叫做 LessThan 的方法，接受了两个泛型类型的变量。<u>LessThan 尝试用小于运算符返回的结果。但是由于不是所有的类都实现了小于运算符，也就不能用任何类代替T，所以编译器会产生一个错误信息。</u>
+
+```cs
+class Simple<T> {
+  static public bool LessThan(T i1, T i2) {
+    return i1 < i2;
+  }
+}
+```
+
+要让泛型变得更有用，我们需要提供额外的信息让编译器知道参数可以接受哪些类型。这些额外的信息叫做`约束（constrain）`。只有符合约束的类型才能替代给定的类型参数，来产生构造类型。
+
+##### Where 子句
+
+约束使用 `where` 子句列出。
+- 每一个有约束的类型参数有自己的 where 子句。
+- 如果形参有多个约束，它们在 where 子句中使用逗号分隔。
+
+where 子句的语法如下：
+`where TypeParam: constraint, constrain, ...`
+
+有关 where 语句的要点如下：
+- 它们在类型参数列表的关闭尖括号之后。
+- 它们不使用逗号或其他符号分隔。
+- 它们可以以任何次序列出。
+- where 是上下文关键字，所以可以在其他上下文使用。
+
+例如，如下泛型类有3个类型参数。T1 是未绑定的，对于 T2，只有 Customer 类型或从 Customer 继承的类型的类才能用作类型实参，而对于 T3，只有实现了 IComparable 接口的类才能用于类型实参。
+
+```cs
+class MyClass<T1, T2, T3>
+          where T2: Customer // T2 的约束
+          where T3: IComparable // T3 的约束
+```
+
+##### 约束类型和次序
+
+共有5种类型的约束。
+
+![](../.vuepress/public/images/constraint-type.png)
+
+where 语句可以以任何次序列出。然而，where 子语句中的约束必须有特定的顺序。
+- 最多只能有一个主约束，如果有则必须放在第一位。
+- 可以有任意多的接口名约束。
+- 如果存在构造函数约束，则必须放在最后。
+
+![](../.vuepress/public/images/constraint-order.png)
+
+#### 泛型方法
+
+```cs
+// 泛型方法
+using System;
+namespace classdemo.JecyuGeneric
+{
+
+  class Simple  // 非泛型类
+  {
+    public static void ReverseAndPrint<T>(T[] arr) // 泛型方法
+    {
+      Array.Reverse(arr);
+      foreach (T item in arr)
+      {
+        Console.Write("{0} ", item.ToString());
+      }
+      Console.WriteLine("");
+    }
+  }
+  class Program2
+  {
+    public static void main()
+    {
+      // 创建各种类型数组
+      int[] intArray = new int[] { 3, 5, 7, 9, 11 };
+      string[] stringArray = new string[] { "first", "second", "third" };
+      double[] doubleArray = new double[] { 3.567, 7.891, 2.345 };
+
+      Simple.ReverseAndPrint<int>(intArray); // 调用方法
+      Simple.ReverseAndPrint(intArray); // 推断类型并调用
+
+      Simple.ReverseAndPrint<string>(stringArray);
+      Simple.ReverseAndPrint(stringArray); // 推断类型并调用
+
+      Simple.ReverseAndPrint<double>(doubleArray);
+      Simple.ReverseAndPrint(doubleArray);
+    }
+  }
+}
+
+```
+
+#### 扩展方法和泛型类
+
+```cs
+// 泛型——扩展方法
+using System;
+namespace classdemo.JecyuGeneric
+{
+
+  static class ExtendHolder
+  {
+    public static void Print<T>(this Holder<T> h)
+    {
+      T[] vals = h.GetValues();
+      Console.WriteLine("{0},\t{1}, \t{2}", vals[0], vals[1], vals[2]);
+    }
+  }
+  class Holder<T>
+  {
+    T[] Vals = new T[3];
+    public Holder(T v0, T v1, T v2)
+    {
+      Vals[0] = v0;
+      Vals[1] = v1;
+      Vals[2] = v2;
+    }
+    public T[] GetValues()
+    {
+      return Vals;
+    }
+  }
+  class Program3
+  {
+    public static void main()
+    {
+      Holder<int> intHolder = new Holder<int>(3, 5, 7);
+      Holder<string> stringHolder = new Holder<string>("a1", "b2", "c3");
+      intHolder.Print();
+      stringHolder.Print();
+    }
+  }
+}
+
+```
+
+#### 泛型结构
+
+```cs
+// 泛型结构
+using System;
+namespace classdemo.JecyuGeneric
+{
+  struct PieceOfData<T>
+  {
+    public PieceOfData(T value)
+    {
+      _data = value;
+    }
+    private T _data;
+    public T Data
+    {
+      get
+      {
+        return _data;
+      }
+      set
+      {
+        _data = value;
+      }
+    }
+  }
+
+  class Program4
+  {
+    public static void main()
+    {
+      PieceOfData<int> intData = new PieceOfData<int>(10);
+      PieceOfData<string> stringData = new PieceOfData<string>("Hi there.");
+
+      Console.WriteLine("intData = {0}", intData.Data);
+      Console.WriteLine("stringData = {0}", stringData.Data);
+    }
+  }
+}
+
+```
+
+#### 泛型委托
+
+```cs
+// 泛型委托
+using System;
+namespace classdemo.JecyuGeneric
+{
+  delegate void MyDelegate<T>(T value);// 泛型委托
+  class Simple2
+  {
+    static public void PrintString(string s) // 方法匹配委托
+    {
+      Console.WriteLine(s);
+    }
+    static public void PrintUpperString(string s) // 方法匹配委托
+    {
+      Console.WriteLine("{0}", s.ToUpper());
+    }
+  }
+  class Program5
+  {
+    public static void main()
+    {
+      MyDelegate<string> myDel = new MyDelegate<string>(Simple2.PrintString); // 创建委托的实例
+      myDel += Simple2.PrintUpperString; // 添加方法
+
+      myDel("Hi there."); // 调用委托
+    }
+  }
+}
+
+```
+
+##### 添加上返回类型的泛型
+
+```cs
+// 泛型委托
+using System;
+namespace classdemo.JecyuGeneric
+{
+  delegate TR Func<T1, T2, TR>(T1 p, T2 p2);// 泛型委托
+  class Simple3
+  {
+    public static string PrintString(int p1, int p2) // 方法匹配委托
+    {
+      int total = p1 + p2;
+      return total.ToString();
+    }
+  }
+  class Program6
+  {
+    public static void main()
+    {
+      Func<int, int, string> myDel = new Func<int, int, string>(Simple3.PrintString); // 创建委托的实例
+      Console.WriteLine("Total: {0}", myDel(15, 13));
+    }
+  }
+}
+
+```
+
+#### 泛型接口
+
+```cs
+// 泛型接口
+using System;
+namespace classdemo.JecyuGeneric
+{
+  interface IMyfc<T> // 泛型接口
+  {
+    T ReturnIt(T intValue);
+  }
+  // 非泛型类
+  class Simple4 : IMyfc<int>, IMyfc<string> // 源于同一泛型接口的两个不同接口
+  {
+    public int ReturnIt(int intValue)
+    {
+      return intValue;
+    }
+    public string ReturnIt(string stringValue)
+    {
+      return stringValue;
+    }
+  }
+  class Program7
+  {
+    public static void main()
+    {
+      Simple4 trival = new Simple4();
+      Console.WriteLine("{0}", trival.ReturnIt(5));
+      Console.WriteLine("{0}", trival.ReturnIt("Hi there."));
+    }
+  }
+}
+
+```
+
+
+#### 协变
+
+后续补充
+
+#### 逆变
+
+##### 接口的协变和逆变
+
+##### 有关可变性的更多内容
+
 ### 枚举器和迭代器
 
+#### 枚举器和可枚举类型
+
+在前面，我们已经知道可以使用 foreach 语句来遍历数组中的元素。在本章中，我们会进一步探讨数组，来看看为什么它们可以被foreach 语句处理。我们还会研究如何用迭代器为用户自定义的类增加这个功能。
+
+##### 使用 foreach 语句
+
+当我们为数组使用 foreach 语句时，这个语句为我们依次取出了数组中的每一个元素，允许我们读取它的值。例如，如下的代码声明了一个有4个元素的数组，然后使用 foreach 来循环打印这些项的值：
+
+```cs
+int[] arr1 = {10, 11, 12, 13}; // 定义数组
+foreach(int item in arr1) {
+  Console.WriteLine("Item value: {0}", item);
+}
+// 输出
+// Item value：10
+// Item value：11
+// Item value：12
+// Item value：13
+```
+
+为什么数组可以这么做？<u>原因是数组可以按需提供一个叫做枚举器（enumerator）的对象。</u>枚举器可以依次返回请求的数组中的元素。枚举器“知道”项的次序并且跟踪它在列中的位置，然后返回请求的当前项目。
+
+对于有枚举器的类型而言，必须有一个方法来获取它。<u>获取一个对象枚举器的方法是调用对象的 `GetEnumerator` 方法。实现 `GetEnumerator` 方法的类型叫做可枚举类型（enumerable type 或 enumerable）。</u>数组是可枚举类型。
+
+![](../.vuepress/public/images/enumerable-type-enumerator.png)
+
+foreach 结构设计用来和可枚举类型一起使用。只要它的遍历对象是可枚举类型，比如数组，它就会执行如下行为：
+- 通过调用 GetEnumerator 方法获取对象的枚举器；
+- 从枚举器中请求每一项并且把它作为迭代变量（ieration variable），代码可以读取该变量但不可以改变。
+
+#### IEumerator 接口
+
+实现了 IEnumerator 接口的枚举器包含3个函数成员：Current、MoveNext以及 Reset。
+- Current 是返回序列中当前位置项的属性。
+  - 它是只读属性；
+  - 它返回 object 类型的引用，所以可以返回任何类型。
+- MoveNext 是把枚举器位置前进到集合中下一项的方法。它也返回布尔值，指示新的位置是有效位置还是已经超过了序列的尾部。
+  - 如果新的位置还是有效，方法返回 true。
+  - 如果新的位置是无效的（比如当前位置到达了尾部），方法返回 false。
+  - 枚举器的原始位置在序列中的第一项之前，因此 MoveNext 必须在第一次使用 Current 之前调用。
+- Reset 是把位置重置为原始状态的方法。
+
+![](../.vuepress/public/images/enumerator-little-collection.png)
+
+枚举器与序列中的当前项保持联系的方式完全取决于实现。可以通过对象引用、索引值或其他方式来实现。对于内置的一维数组来说，就使用项的索引。对于内置的一维数组，就使用项的索引。
+
+![](../.vuepress/public/images/enumerator-status.png)
+
+有了集合的枚举器，我们就可以使用 MoveNext 和 Current 成员来模仿 foreach 循环遍历中的项。如下。
+
+```cs
+using System;
+using System.Collections;
+
+namespace classdemo.JecyuEnumerator
+{
+  class Program
+  {
+    public static void main()
+    {
+      int[] MyArray = new int[] { 10, 11, 12, 13 };
+      IEnumerator ie = MyArray.GetEnumerator();
+
+      while (ie.MoveNext()) // 手动模拟
+      {
+        int i = (int)ie.Current;
+        Console.WriteLine("{0}", i); // 输出
+      }
+    }
+  }
+}
+
+```
+
+#### IEnumerable 接口
+
+可枚举类型是指实现了 IEnumerable 接口的类。IEnumerable 只有一个成员——GetEnumerator方法，它返回对象的枚举器。
+
+下面的代码展示了一个可枚举类的完整示例，该类叫做 Spectrum，它的枚举器类为 Color-Enumerator。Program 类在 Main 方法中创建了一个 Spectrum 实例，用于 foreach 循环。
+
+```cs
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace classdemo.JecyuEnumerator
+{
+  // 枚举器
+  class ColorEnumerator : IEnumerator
+  {
+    string[] _colors;
+    int _position = -1;
+    // 构造函数
+    public ColorEnumerator(string[] theColors)
+    {
+      _colors = new string[theColors.Length]; // 构造函数
+      for (int i = 0; i < theColors.Length; i++)
+      {
+        _colors[i] = theColors[i];
+      }
+    }
+    // 当前项
+    public object Current
+    {
+      get
+      {
+        if (_position == -1)
+        {
+          throw new InvalidCastException();
+        }
+        if (_position >= _colors.Length)
+        {
+          throw new InvalidCastException();
+        }
+        return _colors[_position];
+      }
+    }
+    // 移动到下一项
+    public bool MoveNext()
+    {
+      if (_position < _colors.Length - 1)
+      {
+        _position++;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    // 重置状态
+    public void Reset() // 实现 reset
+    {
+      _position = -1;
+    }
+  }
+  // 可枚举类
+  class Spectrum : IEnumerable
+  {
+    string[] colors = { "violet", "blue", "cyan", "green", "yellow", "orange", "red" };
+    public IEnumerator GetEnumerator()
+    {
+      return new ColorEnumerator(colors);
+    }
+  }
+  class Program2
+  {
+    public static void main()
+    {
+      Spectrum spectrum = new Spectrum();
+      foreach (string color in spectrum)
+      {
+        Console.WriteLine(color);
+      }
+    }
+  }
+}
+
+```
+
+#### 泛型枚举接口
+
+目前我们描述的都是非泛型版本。实际上，在大多数情况下你应该使用泛型 `IEnumerable<T>` 和 `IEnumerator<T>`。它们叫做泛型是因为使用了 C# 泛型。
+
+两者的本质区别如下所示。
+- 对于非泛型接口形式：
+  - IEnumberable 接口的 GetEnumerator 方法返回实现 IEnumerator枚举器类的实例。
+  - 实现 IEnumerator 的类实现了 Current 属性，它返回 object 的引用，然后我们必须把它转化为实际类型的对象。
+- 对于泛型接口形式：
+  - `IEnumberable<T>`接口的 GetEnumerator 方法返回实现 `IEnumerator<T>`枚举器类的实例。
+  - 实现 `IEnumerator<T>` 的类实现了 Current 属性，它返回实际类型的对象，而不是 object 基类的引用。
+
+需要重点注意的是，我们目前看到的所有的非泛型接口的实现不是类型安全的。<u>它们返回 object 类型的引用，然后必须转换为实际类型。</u>
+
+<u>而泛型接口的枚举器是安全的，它返回实际类型的引用。</u>如果要创建自己的可枚举类，应该实现这些泛型接口。非泛型版本可用于C# 2.0 以前没有泛型的遗留代码。
+
+实现代码待后续补充。
+
+#### 迭代器
+
+可枚举类和枚举器在 .NET 集合类中被广泛使用，所以熟悉它们如何工作重要。不过，虽然我们已经知道如何创建自己的可枚举类和枚举器了，但是我们还是很高兴听到，C#从2.0版本开始提供了更简单的创建枚举器和可枚举类型的方式。<u>实际上，编译器将为我们创建它们。这种结构叫做迭代器。我们可以把手动编码的可枚举类型和枚举器替换为由迭代器生成的可枚举类型和枚举器。</u>
+
+在解释细节之前，我们先来看两个示例。下面的方法声明了一个产生和返回枚举器的迭代器。
+- 迭代器返回一个泛型枚举器，该枚举器返回3个 string 类型的项。
+- yield return 语句声明这是枚举中的下一项。
+
+```cs
+public IEnumerator<string> BlackAndWhite() // 迭代器
+{
+  yield return "black";
+  yield return "gray";
+  yield return "white";
+}
+```
+
+##### 迭代器块
+
+迭代器块是有一个或多个 yield 语句的代码块。
+- 方法主体；
+- 访问器主体；
+- 运算符主体。
+
+##### 使用迭代器来创建枚举器
+
+```cs
+// 泛型枚举器
+using System;
+using System.Collections.Generic; // 引入泛型
+
+namespace classdemo.JecyuEnumerator
+{
+  class MyClass
+  {
+    // 返回泛型枚举器，它返回的是字符串对象
+    public IEnumerator<string> GetEnumerator()
+    {
+      return BlackAndWhite(); // 返回枚举器
+    }
+    public IEnumerator<string> BlackAndWhite() // 迭代器
+    {
+      yield return "black"; // 如果方法在第一个 yield 返回，后面两条语句永远不会达到
+      yield return "gray";  
+      yield return "white";
+    }
+  }
+  class Program4
+  {
+    public static void main()
+    {
+      MyClass mc = new MyClass();
+      foreach (string shade in mc)
+      {
+        Console.WriteLine(shade);
+      }
+    }
+  }
+}
+
+```
+
+##### 使用迭代器来创建可枚举类型
+
+```cs
+// 泛型枚举器
+using System;
+using System.Collections.Generic; // 引入泛型
+
+namespace classdemo.JecyuEnumerator
+{
+  class MyClass
+  {
+    // 返回泛型枚举器，它返回的是字符串对象
+    public IEnumerator<string> GetEnumerator()
+    {
+      // 引用可枚举类型的接口对象
+      IEnumerable<string> myEnumerable = BlackAndWhite(); // 获取可枚举类型
+      return myEnumerable.GetEnumerator(); // 获取枚举器
+    }
+    // 返回可枚举类型
+    public IEnumerable<string> BlackAndWhite() 
+    {
+      yield return "black"; // 如果方法在第一个 yield 返回，后面两条语句永远不会达到
+      yield return "gray";  
+      yield return "white";
+    }
+  }
+  class Program4
+  {
+    public static void main()
+    {
+      MyClass mc = new MyClass();
+      foreach (string shade in mc)
+      {
+        Console.WriteLine(shade);
+      }
+
+      foreach (string shade in mc.BlackAndWhite())
+      {
+        Console.WriteLine(shade);
+      }
+    }
+  }
+}
+```
+
+#### 常见迭代器模式
+
+前面两节的内容显示了，我们可以创建迭代器返回可枚举类型或枚举器。
+- 当我们实现返回枚举器的迭代器时，必须通过实现 GetEnumerator 让类可枚举，它返回由迭代器返回的枚举器。
+- 如果我们在类中实现迭代器返回可枚举类型，我们可以让类实现 GetEnumerator 来让类本身可被枚举，或不实现 GetEnumerator，让类不可枚举。
+  - 如果实现 GetEnumerator ，让它调用迭代器方法以获取自动生成的实现 IEnumerable 的类实例。然后，从 IEnumerable 对象返回由 GetEnumerator 创建的枚举器。
+  - 如果通过不实现 GetEnumerator 使类本身不可枚举，仍然可以使用由迭代器返回的可枚举类，只需要直接调用迭代器方法。
+
+![](../.vuepress/public/images/common-iterator-mode.png)
+
+#### 产生多个可枚举类型
+
+#### 将迭代器作为属性
+
+#### 迭代器的实质
+
 ### LINQ
+
+#### 什么是 LINQ
+
+在关系型数据库系统中，数据被组织放入规范化很好的表中，并且通过简单而又强大的语法 SQL 来进行访问。SQL 可以和数据库中的任何数据配合使用，因为数据被放入表中，并遵从一些严格的规则。
+
+<u>然而，在程序中却与数据库相反，保存在类对象或结构中的数据差异很大。</u>因此，没有通用的查询语言从数据结构中获取数据。从对象获取数据的方法一直都是作为程序的一部分而设计的。然而使用 LINQ 可以很轻松地查询对象集合。
+
+如下是 LINQ 的重要高级特性。
+- LINQ（发音 link）代表语言集成查询（Language Intergrated Query）。
+- <u>LINQ是 .NET 框架的扩展，你可以从数据库、程序对象的集合以及 XML 文档中查询数据。</u>
+- <u>使用 LINQ，你可以从数据库、程序对象的集合以及 XML 文档中查询数据。</u>
+
+如下代码演示了一个简单的使用 LINQ 的示例。在这段代码中，被查询的数据是简单的 int 数组。<u>语句中查询的定义就是 from 和 select 关键字。尽管查询在语句中定义，但直到最后的 foreach 语句请求结果的时候才执行。</u>
+
+```cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace classdemo.JecyuLINQ
+{
+  public class Program
+  {
+    public static void main()
+    {
+      int[] numbers = { 2, 12, 5, 15 }; // 数据源
+      IEnumerable<int> lowNums = from n in numbers
+                                 where n < 10
+                                 select n;
+      foreach (int x in lowNums)
+      {
+        Console.Write("{0}, ", x);
+      }
+    }
+  }
+}
+```
+
+#### LINQ 提供程序
+
+在之前的示例中，数据源只是 int 数组，它是程序在内存中的对象。然而，LINQ 还可以和各种类型的数据源一起工作，比如 SQL 数据库、XML 文档，等等。然而，<u>每一种数据类型，在其背后一定有根据该数据源类型实现 LINQ 查询的代码块。这些代码模块叫做 LINQ 提供程序（provider）。</u>有关 LINQ 的要点如下：
+- 微软为一些常见的数据源类型提供了 LINQ 程序，如图所示。
+- 我们可以使用任何支持 LINQ 的语言（在着这里是 C#）来查询有 LINQ 提供程序的数据源类型。
+- 第三方在不断提供对各种数据源类型的 LINQ 提供程序。 
+
+![](../.vuepress/public/images/LINQ-system.png)
+
+##### 匿名类型
+
+在介绍LINQ 查询特性之前，让我们先学习一个允许我们创建无名类类型的特性。不足为奇，它叫做“anonymous type”。匿名类型经常用于 LINQ 查询的结果之中。
+
+前面介绍了`对象初始化语句`，它允许我们在使用对象创建表达式时初始化新类实例的字段和属性。只是提醒一下，这种形式的对象创建表达式由三部分组成：<u>new 关键字、类名或构造函数以及对象初始化语句。</u>对象初始化语句在一组大括号内包含了以逗号分隔的成员初始化列表。
+
+创建匿名类型的变量使用相同的形式，但是没有类名和构造函数。如下的代码行演示了匿名类型的对象创建表达式。
+
+`new {FieldProp = InitExpr, FieldProp = InitExpr, ...}` 
+
+如下代码给出了一个创建和使用匿名类型的示例。它创建了一个叫做 student 的变量，这是一个有3个 string 属性和一个 int 属性的匿名类型。注意，在 WriteLine 语句中， 可以像访问具名类型的成员那样访问实例的成员。
+
+```cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace classdemo.JecyuLINQ
+{
+  public class Program2
+  {
+    public static void main()
+    {
+      var student = new { Name = "Jecyu", Age = 22, Major = "Digital" };
+      Console.WriteLine("{0}, Age:{1}, Major:{2}", student.Name, student.Age,
+      student.Major);
+    }
+  }
+}
+// Jecyu, Age:22, Major:Digital
+```
+
+需要了解的有关匿名类型的重要事项如下：
+- 匿名类型只能和局部变量配合使用，不能用于类成员。
+- 由于匿名类型没有名字，我们必须使用 var 关键字作为变量类型。
+- 不能设置匿名类型对象的属性。编译器为匿名类型创建的属性是只读的。
+
+<u>当编译器遇到匿名类型的对象初始化语句时，它创建了一个有名字的新类类型。</u>对于每一个成员初始化语句，它推断其类型并创建一个只读属性来访问它的值。属性和成员初始化语句具有相同的名字。<u>匿名类型被构造后，编译器创建了这个类型的对象。</u>
+
+除了对象初始化语句的赋值形式，匿名类型的对象初始化语句还有其他两种允许的形式：<u>简单标识符和成员访问表达式。</u>这两种形式叫做`投影初始化语句（projection initializer）`
+
+下面的变量声明演示了所有的3种形式。第一个成员初始化语句是赋值形式，第二个是成员访问表达式，第三个是标识符形式。
+
+```cs
+var student = new {Age = 19, Other.Name, Major }; // 赋值形式 Age = 19，成员访问 Other.Name，标识符 Major
+```
+
+例如，如下代码使用了所有的3种类型。注意，投影初始化语句必须定义在匿名类型声明之前。Major 是一个局部变量，Name 是 Other 类的静态字段。
+
+```cs
+using System;
+namespace classdemo.JecyuLINQ
+{
+  class Other
+  {
+    static public string Name = "Jecyu";
+  }
+  public class Program3
+  {
+    public static void main()
+    {
+      string Major = "History";
+      var student = new { Age = 19, Other.Name, Major };
+      Console.WriteLine("{0}, Age:{1}, Major:{2}", student.Name, student.Age,
+   student.Major);
+    }
+  }
+}
+```
+
+刚才演示的映射初始化语句形式和这里给出的赋值形式的结果一样：
+```cs
+var student = new {Age = 19, Name = Other.Name, Major = Major}; // 赋值形式 Age = 19，成员访问 Other.Name，标识符 Major
+```
+
+如果编译器遇到了另一个具有相同的参数名、相同的推断类型和相同顺序的匿名类型，它会重用这个类型并直接创建新的实例，不会创建新的匿名类型。
+
+#### 方法语法和查询语法
+
+我们在写 LINQ 查询时可以使用两种形式的语法：查询语法和方法语法。
+- 方法语法（method syntax）使用标准的方法调用。这些方法是一组叫做标准查询运算符的方法，本章稍后介绍。
+- 查询语法（query syntax）看上去和 SQL 语句很相似，使用查询表达式形式书写。
+- 在一个查询中可以组合两种形式。
+
+<u>查询语法是声明式（declarative）的，也就是说，查询描述的是你想要返回的东西，但并没有指明如何执行这个查询。方法语法是命令式（imperative）的，它指明了查询语法调用的顺序。</u>**编译器会将使用查询语法表示的查询翻译为方法调用的形式。这两种形式在运行时没有性能的差异。**
+
+微软推荐使用查询语法，因为它更易读，能更清晰地表明查询意图，因此也更不容易出错。然而，有些运算符必须使用方法语法来书写。
+
+如下代码演示了这两种形式以及它们的组合。对于方法语法的那部分代码，注意 Where 方法的参数使用了 Lambda 表达式。
+
+```cs
+using System;
+using System.Linq;
+
+namespace classdemo.JecyuLINQ
+{
+
+  public class Program4
+  {
+    public static void main()
+    {
+      int[] numbers = { 2, 5, 28, 31, 17, 16, 42 };
+      var numsQuery = from n in numbers // 查询语法
+                      where n < 20
+                      select n;
+      var numsMethod = numbers.Where(x => x < 20); // 方法语法
+      int numsCount = (from n in numbers // 两种形式的结合
+                       where n < 20
+                       select n).Count();
+      foreach (var x in numsQuery)
+      {
+        Console.Write("{0} ", x);
+      }
+      Console.WriteLine("");
+      foreach (var x in numsMethod)
+      {
+        Console.Write("{0} ", x);
+      }
+    }
+  }
+}
+
+```
+
+#### 查询变量
+
+LINQ 查询可以返回两种类型的结果——可以是一个`枚举`，它满足查询参数的项列表；也可以是一个叫做`标量（scalar）`的单一值，它是满足查询条件的结果的某种摘要形式。
+
+如下示例代码进行了这些工作。
+- 第一个语句创建了 int 的数组并且使用3个值进行初始化。
+- 第二个语句返回一个 IEnumerable 对象，它可以用来枚举查询的结果。
+- 第三个语句执行一个查询，然后调用一个方法（Count）来返回从查询返回的总数。
+
+```cs
+int[] numbers = { 2, 5, 28 }; // 数据源
+  IEnumerable<int> lowNums = from n in numbers
+                             where n < 20
+                             select n;
+int numsCount = (from n in numbers // 两种形式的结合
+                 where n < 20
+                 select n).Count();
+```
+
+<u>第二条和第三条语句等号左边的变量叫做查询变量。</u>
+
+理解查询变量的用法很重要。在执行前面的代码，<u>lowNums 查询变量不会包含查询的结果。</u>相反，编译器会创建能够执行这个查询的代码。
+
+查询变量 numCount 包含的是真实的整数值，它只能通过真实运行查询后的结果。区别在于查询执行的时间，可以总结如下。
+- <u>如果查询表达式返回枚举，查询一直到处理枚举时才会执行。</u>
+- <u>如果枚举被处理多次，查询就会执行多次。</u>
+- 如果在进行遍历之后，查询执行之前数据有改动，则查询会使用新的数据。
+- <u>如果查询表达式返回标量，查询立即执行，并且把结果保存在查询变量中。</u>
+
+#### 查询表达式的结构
+
+如图19-2所示，查询表达式由查询体后的 from 子句组成。有关查询表达式需要了解的一些重要事项如下。
+- 子句必须按照一定的顺序出现。
+- <u>`from` 子句和`select...group` 子句这两部分是必需的。</u>
+- 其他子句是可选的。
+- <u>在 LINQ 查询表达式中，select 子句在表达式最后。这与SQL的 SELECT语句在查询的开始处不一样。C#这么做的原因之一是让 Visual Studio 智能感应能在我们输入代码时给我们更多选项。</u>
+- 可以有任意多的 from...let...where 子句，如图19-2所示。
+
+![](../.vuepress/public/images/LINQ-Query-Statement.png)
+
+##### from 子句
+
+##### join 子句
+
+#### 标准查询运算符
+
+标准查询运算符由一系列API方法组成，它能让我们查询任何 .NET 数组或集合。有关标准查询运算符的重要性如下。
+- 被查询的集合对象叫做序列，它必须实现 `1IEnumerable<T>` 接口，T是类型。
+- 标准查询运算符使用方法语法。
+- <u>一些运算符返回 `Ienumerable` 对象（或其他序列），而其他的一些运算符返回标量。返回标量的运算符立即执行，并返回一个值，而不是可枚举类型对象。</u>
+- 很多操作符都以一个谓词作为参数。谓词是一个方法，它以对象作为参数，根据对象是否满足某个条件而返回 true 或 false。
+
+```cs
+using System;
+using System.Linq;
+
+namespace classdemo.JecyuLINQ
+{
+
+  class Program5
+  {
+    static int[] numbers = new int[] { 2, 4, 6 };
+    public static void main()
+    {
+      int total = numbers.Sum();
+      int howMany = numbers.Count();
+      Console.WriteLine("Total: {0}, Count: {1}", total, howMany);
+    }
+  }
+}
+
+// Total: 12, Count: 3
+```
+
+#### LINQ to XML
+
+可扩展标记语言（XML）是存储和交换数据的重要方法。LINQ 为语言增加了一些特性，使得 XML 用起来比 XPath 和 XSLT 容易得多。如果你熟悉这些方法的话，会很高兴 LINQ to XML 在许多方面简化了 XML 的创建、查询和操作。当然，还包括以下几个方面。
+- 我们可以使用单一语句自顶向下创建 XML 树。
+- 我们可以不使用包含数的 XML 文档在内存中创建并操作 XML。
+- 我们可以不使用 Text 子节点来创建和操作字符串节点。
+- <u>一个最大的不同（改进）是，在搜索一个 XML 树时，不需要遍历它。相反只需要查询树并让它返回想要的结果。</u>
+
+尽管我不会完整介绍 `XML`，但是在介绍一些 LINQ 提供的 XML 操作特性之前，我会先简单介绍一下 `XML`。
+
+##### 标记语言
+
+<u>标记语言（markup language）是文档中的一组标签，它提供有关稳定的信息并组织其内容。也就是说，<u>标记标签不是文档的数据——它们包含关于数据的数据。有关数据的数据称为元数据。</u>
+
+<u>标记语言是被定义的一组标签，旨在传递有关文档内容的特定类型的元数据。</u>
+
+##### XML 基础
+
+##### XML 类
+
+##### 使用 XML 特性
+
+##### 节点的其他类型
+
+##### 使用 LINQ to XML 的 LINQ查询
 
 ### 异步编程
 
