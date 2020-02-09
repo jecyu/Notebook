@@ -2,7 +2,7 @@
 
 ## 基础知识
 
-### 简介
+### 第一章 简介
 
 C# 是一个现代的、通用的、面向对象的编程语言，它是由微软（Microsoft）开发的，由 Ecma 和 ISO 核准认可的。
 
@@ -2073,7 +2073,7 @@ class MyNewClass : OtherClass {}
 例如，我们要继承包含某个特殊方法的基类。该方法适合声明它的类，但却不一定适合派生类。在这种情况下，我们希望在派生类中声明新成员以屏蔽基类的方法。在派生类中屏蔽基类成员的一些要点如下：
 - 要屏蔽一个继承的数据成员，需要声明一个新的相同类型的成员，并使用相同的名称。
 - 通过在派生类中声明新的带有相同签名的函数成员，可以隐藏或屏蔽继承的函数成员。请记住，签名由名称和参数列表组成，不包括返回类型。
-- 要让编译器知道你在故意屏蔽继承的成员，使用 new 修饰符。否则，程序可以成功编译，但编译器会警告你隐藏了一个继承的成员。
+- <u>要让编译器知道你在故意屏蔽继承的成员，使用 new 修饰符。否则，程序可以成功编译，但编译器会警告你隐藏了一个继承的成员。</u>
 - 也可以屏蔽静态成员。
 
 ```cs
@@ -7039,7 +7039,7 @@ namespace classdemo.JecyuLINQ
 
 `new {FieldProp = InitExpr, FieldProp = InitExpr, ...}` 
 
-如下代码给出了一个创建和使用匿名类型的示例。它创建了一个叫做 student 的变量，这是一个有3个 string 属性和一个 int 属性的匿名类型。注意，在 WriteLine 语句中， 可以像访问具名类型的成员那样访问实例的成员。
+如下代码给出了一个创建和使用匿名类型的示例。它创建了一个叫做 student 的变量，这是一个有3个 `string` 属性和一个 `int` 属性的匿名类型。注意，在 WriteLine 语句中， 可以像访问具名类型的成员那样访问实例的成员。
 
 ```cs
 using System;
@@ -7188,8 +7188,8 @@ int numsCount = (from n in numbers // 两种形式的结合
 - 子句必须按照一定的顺序出现。
 - <u>`from` 子句和`select...group` 子句这两部分是必需的。</u>
 - 其他子句是可选的。
-- <u>在 LINQ 查询表达式中，select 子句在表达式最后。这与SQL的 SELECT语句在查询的开始处不一样。C#这么做的原因之一是让 Visual Studio 智能感应能在我们输入代码时给我们更多选项。</u>
-- 可以有任意多的 from...let...where 子句，如图19-2所示。
+- <u>在 LINQ 查询表达式中，`select` 子句在表达式最后。这与SQL的 SELECT语句在查询的开始处不一样。C#这么做的原因之一是让 Visual Studio 智能感应能在我们输入代码时给我们更多选项。</u>
+- 可以有任意多的 `from...let...where` 子句，如图19-2所示。
 
 ![](../.vuepress/public/images/LINQ-Query-Statement.png)
 
@@ -7203,7 +7203,7 @@ int numsCount = (from n in numbers // 两种形式的结合
 - 被查询的集合对象叫做序列，它必须实现 `1IEnumerable<T>` 接口，T是类型。
 - 标准查询运算符使用方法语法。
 - <u>一些运算符返回 `Ienumerable` 对象（或其他序列），而其他的一些运算符返回标量。返回标量的运算符立即执行，并返回一个值，而不是可枚举类型对象。</u>
-- 很多操作符都以一个谓词作为参数。谓词是一个方法，它以对象作为参数，根据对象是否满足某个条件而返回 true 或 false。
+- 很多操作符都以一个谓词作为参数。谓词是一个方法，它以对象作为参数，根据对象是否满足某个条件而返回 `true` 或 `false`。
 
 ```cs
 using System;
@@ -7225,7 +7225,12 @@ namespace classdemo.JecyuLINQ
 }
 
 // Total: 12, Count: 3
+
 ```
+
+##### 将委托作为参数
+
+- 泛型委托用于给运算符提供用户自定义的代码。
 
 #### LINQ to XML
 
@@ -7239,7 +7244,7 @@ namespace classdemo.JecyuLINQ
 
 ##### 标记语言
 
-<u>标记语言（markup language）是文档中的一组标签，它提供有关稳定的信息并组织其内容。也就是说，<u>标记标签不是文档的数据——它们包含关于数据的数据。有关数据的数据称为元数据。</u>
+标记语言（markup language）是文档中的一组标签，它提供有关稳定的信息并组织其内容。也就是说，<u>标记标签不是文档的数据——它们包含关于数据的数据。有关数据的数据称为元数据。</u>
 
 <u>标记语言是被定义的一组标签，旨在传递有关文档内容的特定类型的元数据。</u>
 
@@ -7255,15 +7260,935 @@ namespace classdemo.JecyuLINQ
 
 ### 异步编程
 
+#### 什么是异步
+
+#### async/await 特性的结构
+
+#### 什么是异步方法
+
+##### 异步方法的控制流
+
+##### await 表达式
+
+##### 取消一个异步操作
+
+##### 异步处理和 await 表达式
+
+##### 在调用方法中同步地等待任务
+
+##### 在异步方法中异步地等待任务
+
+##### Task.Delay 方法
+
+#### GUI 程序中的异步操作
+
+#### 使用异步的 Lambda 表达式
+
+#### 一个完整的 GUI 示例
+
+#### BackgroundWorker 类
+
+#### 并行循环
+
+#### 其他异步编程模式
+
+#### BeginInvoke 和 EndInvoke
+
+#### 计时器
+
 ### 命名空间和程序集
+
+在第一章中，我们在高层次上观察了编译过程。<u>编译器接受源代码文件并生成名称为程序集的输出文件</u>。这一章中，我们将详细阐述程序集以及它们是如何生成和部署的。你还会看到命名空间是如何帮助组织类型的。
+
+在迄今为止所看到的所有程序中，大部分都声明并使用它们自己的类。然而，在许多项目中，你会想使用来自其他程序集的类或类型。<u>这些其他的程序集可能来自 BCL，或来自一个第三方供应商，或你自己创建了它们。这些程序集称为类库，而且它们的程序集文件的名称通常以 `.dll` 扩展名结尾而不是 `.exe` 扩展名。</u>
+
+例如，假设你想创建一个类库，它包含可以被其他程序集使用的类和类型。一个简单库的源代码如下面示例中所示，它包含在名称 SuperLib.cs 的文件中。该库含有单独一个名称为 `SquareWidget` 的公有类。
+
+```cs
+using System;
+namespace JecyuLib
+{
+  public class SquareWidget
+  {
+    public double SideLength = 0;
+    public double Area
+    {
+      get
+      {
+        return SideLength * SideLength;
+      }
+    }
+
+    public double SideLegth { get; set; }
+  }
+}
+
+```
+
+`SuperLib.cs` ➡️ C# 编译器 ➡️ SuperLib程序集（SuperLib.dll）
+
+要使用 Visual Studio 创建类库，在已安装的 Windows 模版中创建类库模版。具体来说，在 Visual Studio 中进行的操作步骤如下。
+1. 选择 File➡New➡Project，然后会打开 New Project 窗口。
+2. 左边的面板，在 Installed ➡ Templates 面板中找到 Visual C# 节点并选中。
+3. 在中间的面板中选择 Class Library 模版。
+
+#### 引用其他程序集
+
+假设你还要写一个名称为 MyWidgets 的程序，想要使用 SquareWidget 类。程序的代码在一个名称为 MyWidget.cs 的文件中，如下面的示例所示。这段代码简单创建一个类型为 SquareWidget 的对象并使用该对象的成员。
+
+```cs
+using System;
+{
+  class Program
+  {
+    public static void main()
+    {
+      SquareWidget sq = new SquareWidget(); // 来自 SuperLib 类库
+      sq.SideLength = 5.0;
+      Console.WriteLine(sq.Area);
+    }
+  }
+}
+
+```
+
+注意，这段代码没有声明类 SquareWidget。相反，使用的是定义在 SuperLib 的类。然而，当你编译 MyWidgets 程序时，编译器必须知道你的代码在使用程序集 SuperLib，这样它才能得到关于类 SquareWidget 的信息。要实现这点，需要给编译器一个到该程序集的引用，给出它的名称和位置。
+
+在 Visual Studio 中，可以用下面的方法把引用添加到项目。
+- 选择 Solution Explorer，并在该项目名下找到 References 目录。References 目录包含项目使用的程序集的列表。
+- 右键单击 References 目录并选择 Add Reference。有5个可以从中选择的标签页，允许你以不同的方法找到类库。
+- 对于我们的程序，选择 Browser 标签，浏览到包含 SquareWidget 类定义的 DLL 文件，并选择它。
+- 点击 OK 按钮，引用就被加入到项目了。
+
+![](../.vuepress/public/images/refer-assembly.png)
+
+现在假设你的程序已经很好地用 SuqareWidget 类工作了，但你想扩展它的能力以使用一个名称为 CircleWidget 的类，它被定义在另一个名称为 UltraLib 的程序集中。MyWidgets 的源代码看上去像下面这样。它创建一个 SquareWidget 对象和一个 CircleWidget 对象，它们分别定义在 SuperLib 中和 UltraLib 中。
+
+```cs
+class WidgetProgram {
+  static void Main() {
+    SquareWidget q = new SquareWidget(); // 来自 SuperLib
+    CircleWidget circle = new CircleWidget(); // 来自 UltralLib
+  }
+}
+```
+
+类库 UltralLib的源代码如下面的示例所示。注意，除了类 CircleWidget 之外，就像库 SuperLib，它还声明了一个名称为 SquareWidget 的类。
+
+```cs
+public class SquareWidget {
+  ...
+}
+public class CircleWidget {
+  public double Radius = 0;
+  public double Area {
+    get {...}
+  }
+}
+```
+
+因为两个库都含有名称 SquareWidget 的类，当你试图编译程序 MyWidgets 时，编译器产生一条错误消息，因为它不知掉使用类 SquareWidget 的哪个版本。
+
+#### 命名空间
+
+在 MyWidget 示例中，由于你有源代码，你能通过在 SuperLib 源代码或 UltralLib 源代码仅仅改变 SquareWidget 类的名称来解决命名冲突。<u>但是，如果这些类是由不同的公司开发的，而且你还不能拥有源代码会怎么样呢？</u>假设 SuperLib 由一个名称为 MyCorp 的公司生产，UltralLib 由ABCCorp 公司生产。在这种情况下，如果你使用任何有冲突的类或类型，你将不能把这两个库放在一起使用。
+
+但是，假设 MyCorp 有一个策略，让所有类的前缀都是公司名字加上类产品名和描述名。并且进一步假设 ABCCorp 也有相同的策略。这样的话，我们示例中的3个类名就可能是 MyCorpSquareWidget、ABCCorpSquareWidget和 ABCCorpCircleWidget。
+
+但是，在我们的示例程序中，需要使用冗长的名字，看上去如下所示。
+
+```cs
+class WidgetProgram {
+  static void Main() {
+    SquareWidget q = new MyCorpSquareWidget(); // 来自 SuperLib
+    CircleWidget circle = new ABCCorpCircleWidget(); // 来自 UltralLib
+  }
+}
+```
+
+尽管这可以解决冲突问题，但是即使有智能感知，这些新的、已消除歧义的名字还是难以阅读。
+
+不过，假设除了标识符中一般允许的字符，还可以在字符串中使用点——尽管不是在类名的最前面或最后面，那么这些名字就更好理解了，比如 MyCorp.SquareWidget。
+
+**这就给了我们命名空间名和命名空间的定义。**
+- 你可以把命名空间视为一个字符串（在字符串中可以使用点），它加在类名或类型名的前面并且通过点进行分隔。
+- 包括命名空间名、分隔点，以及类名的完整字符串叫做类的完全限定名。
+- 命名空间是共享命名空间名的一组类和类型。
+
+你可以使用命名空间垃圾把一组类型组织在一起并且给它们起一个名字。一般而言，命名空间名描述的是命名空间中包含的类型，并且和其他命名空间名不同。
+
+<u>你可以通过在包含你的类型声明的源文件中声明命名空间，从而创建命名空间。</u>如下代码演示了声明命名空间的语法。然后在命名空间声明的大括号中声明牛的所有类和其他类型。那么这些类型就是这个命名空间的成员了。
+
+```cs
+namespace NamespaceName {
+  TypeDeclaratiions
+}
+```
+
+##### 命名空间名称
+
+如你所见，命名空间的名称可以包含创建该程序集的公司的名称。除了标识公司以外，该名称还用于帮助程序快速了解定义在命名空间内的类型的种类。
+
+关于命名空间名称的一些要点如下：
+- 命名空间名称可以是任何有效标识符。
+- 另外，命名空间名称可以包含句点符号，用于把类型组织成层次。
+
+下面是命名空间命名指南：
+- 使用公司名开始命名空间名称；
+- 在公司名之后跟着技术名称；
+- 不要把命名命名为与类或类型相同的名称。
+
+例如，Acme Widget 公司的软件开发部门在下面3个命名空间中开发软件，如下面的代码所示：
+- AcmeWidgets.SuperWidget
+- AcmeWidgets.Media
+- AcmeWigets.Games
+
+##### 命名空间的补充
+
+关于命名空间，有其他几个要点应该知道。
+- 在命名空间内，每个类型名必须有别于所有其他类型。
+- <u>命名空间内的类型称为命名空间的成员。</u>
+- 一个源文件可以包含任意数目的命名空间声明，可以顺序也可以嵌套。
+
+.NET 框架BCL 提供了数千个已定义的类和类型以供生成程序时选择。为了帮助组织这组有用的功能，相关功能的类型被声明在相同的命名空间里。BCL 使用超过100个命名空间来组织它的。类型。
+
+##### 命名空间跨文件扩展
+
+<u>命名空间不是封闭的。这意味着可以在源文件的后面或另一个源文件中再次声明它，以对它增加更多的类型声明。</u>
+
+##### 嵌套命名空间
+
+命名空间可以被嵌套，从而产生嵌套的命名空间。嵌套命名空间允许你创建类型的概念层次。有两种方法声明一个嵌套的命名空间，如下所示。
+- 原文嵌套 可以把命名空间的声明放在一个封装的命名空间声明体内部，从而创建一个嵌套的命名空间。
+- 分离的声明 也可以为嵌套命名空间创建分离的声明，但必须在声明中使用它的完全限定名称。
+
+![](../.vuepress/public/images/Nested-namespaces.png)
+
+<u>虽然嵌套命名空间位于父命名空间内部，但是其成员并不属于包裹的父命名空间。有一个常见的误区，认为既然嵌套的命名空间位于父命名空间内部，其成员也父命名空间的子集，这是不正确的，命名空间之间是相互独立的。</u>
+
+#### using 指令
+
+完全限定名可能相当长，在代码中通篇使用它们会变得十分乏味。然而，有两个编译器指令，可以使你避免不得不使用完全限定名：`using 命名空间指令和 using 别名指令`。
+
+关于 using 指令的两个要点如下：
+- 它们必须放在源文件的顶端，在任何类型声明之前。
+- 它们应用于当前源文件的所有命名空间。
+
+##### using 命名空间指令
+
+using 命名空间指令通知编译器你将要使用来自某个指定命名空间的类型。然后你可以继续，并使用简单类名而不必全路径修饰它们。
+
+当编译器遇到一个不在当前命名空间的名称时，它检查在 using 命名空间指令中给出的命名空间列表，并把该未知名称加到列表中的第一个命名空间后面。如果结果完全限定名称匹配了这个程序集或引用程序集中的一个类，编译器将使用那个类。如果不匹配，那么它试验列表中下一个命名空间。
+
+```cs
+using System;
+```
+
+##### using 别名指令
+
+using 别名指令允许起一个别名给：
+- 命名空间；
+- 命名空间内的一个类型。
+
+例如，下面的代码展示了两个 using 别名指令的使用。第一个指令告诉编译器标识符 Syst 是命名空间 System 的别名。第二个指令标识符 SC 是类 System.Console 的别名。
+
+```cs
+using Syst = System;
+using SC = System.Console;
+```
+
+#### 程序集的结构
+
+如你在第1章看到的，程序就不包含本地机器代码，<u>而是公共中间语言代码。它还包含实时编译器（JIT）在运行时转换 CIL 到本机代码所需的一切，包括对它所引用的其他程序集的引用。</u>
+
+程序集的文件扩展名通常为 .exe 或 .dll。 
+
+大部分程序集由一个单独的文件构成。
+
+![](../.vuepress/public/images/single-assembly-struct.png)
+
+程序集代码文件称为模块。尽管大部分程序集由文件组成，但有些也有多个文件。对于有多个模块的程序集，一个文件是主模块（primary module），而其他的是次要模块（secondary modules）。
+- 主模块含有程序集的清单和到次要模块的引用。
+- 次要模块的文件名以扩展名 .netmodule 的结尾。
+- 多文件程序集被视为一个单一单元。它们一起部署并一起定版。
+
+![](../.vuepress/public/images/multi-file-assembly.png)
+
+#### 程序集标识符
+
+在 .NET 框架中，程序集的文件名不像在其他操作系统和环境中那么重要，更重要的是程序集的标识符（identity）。
+
+程序集的标识符有4个组成部分，它们一起唯一标识了该程序集，如下所示。
+- 简单名 这只是不带扩展名的文件名。每个程序集都有一个简单名。它也被称为程序集名或友好名称（friendly name）。
+- 版本号 它由4个句点分开的整数字符串组成，形式为 MajorVersion.MinorVersion.Buiild.Revisioin，例如 2.0.35.9。
+- 文化信息 它是一个字符串，由2～5个字符组成，代表一种语言，或代表一种语言和一个国家或地区。例如，在美国使用英语的文化名是 en-US。在德国使用德语，它是 de-DE。
+- 公钥 这个128字节字符串应该是生产该程序集的公司唯一的。
+
+#### 强命名程序集
+
+<u>强命名（strongly named）程序集有一个唯一的数字签名依附于它。</u>强命名程序集比没有强名称的程序集更加安全，原因有以下几点：
+- 强名称唯一标识了程序集。没有其他人能创建一个与之有相同名称的程序集，所以用户可以确信该程序集来自于其声称的来源。
+- 没有 CLR 安全组件来捕获更改，带强名称的程序集的内容不能被改变。
+
+程序员不产生强名称。编译器产生它，接受关于程序集的信息，并散列化这些信息以创建一个唯一的数据签名依附到该程序集。它在散列处理中使用的信息如下：
+- 组成程序集的字节序列；
+- 简单名称；
+- 版本号；
+- 文化信息；
+- 公钥/私钥对。
+
+##### 创建强命名程序集
+
+要使用 Visual Studio 强命名一个程序集，必须有一份公钥/私钥对文件的副本。如果没有密钥文件，可以让 Visual Studio 产生一个。可以实行以下步骤。
+1. 打开工程的属性。
+2. 选择签名页。
+3. 选择 Sign the Assembly 复选框并输入密钥文件的位置或创建一个新的。
+   
+在编译代码时，编译器会生存一个强命名的程序集。
+
+![](../.vuepress/public/images/create-strongly-named-assembly.png)
+
+#### 程序集的私有方式部署
+
+在目标机器上部署一个程序就像在该机器上创建一个目录并把应用程序复制过去一样简单。如果应用程序不需要其他程序集（比如 DLL），或如果所需的 DLL 在同一目录下，那么程序应该会就在它所在的地方良好工作。<u>这种方法部署的程序集称为`私有程序集`，而且这种部署方法称为复制文件（XCopy）部署。</u>
+
+私有程序集几乎可以被放在任何目录中，而且只要它们依赖的文件都在同一目录或子目录下几句足够了。事实上，可以在文件系统的不同部分有多个目录，每个目录都有同样的一组程序集，并且它们都会各自不同的围追良好工作。
+
+关于私有程序集部署的一些重要事情如下：
+- 私有程序集所在的目录被称为应用程序目录。
+- 私有程序集可以是强命名的也可以是弱命名的。
+- 没有必要在注册表中注册组件。
+- 要卸载一个私有程序集，只要从文件系统中删除它即可。
+
+#### 共享程序集和 GAC
+
+私有程序集是非常有用的，但有时你会想把一个 DLL 放在一个中心位置，这样一个单独的复制就能被系统中其他的程序集共享。<u>.NET 有这样的贮藏库，称为全局程序集缓存（GAC）。放进 GAC 的程序集称为共享程序集。</u>
+
+关于 GAC 的一些重要内容如下：
+- 只有强命名程序集能被添加到 GAC。
+- GAC 的早期版本支接受带 .dll 扩展名的文件，现在也可以添加带 .exe 扩展名的程序集了。
+- GAC 位于 Windows 系统目录的子目录中。.NET 4.0 之前位于 \Windows\Assembly 中，从 .NET 4.0 开始位于 \Windows\Microsoft.NET\assembly 中。
+
+##### 把程序集安装 GAC
+
+当试图安装一个程序集到 GAC 时，CLR 的安全组件首先必须检验程序集上的数字签名是否有效。如果没有数据签名，或它是无效，系统将不会把它安装到 GAC。
+
+`gacutil.exe` 命名行工具允许从 GAC 添加或删除程序集，并列出 GAC 包含的程序集。它的3个最有用的参数标记如下所示：
+- /i：把一个程序集插入 GAC。
+- /u：从 GAC 卸载一个程序集。
+- /l：列出 GAC 中的程序集。
+
+##### GAC 内的并肩执行
+
+在程序集部署到 GAC 之后，它就能被系统中其他程序集使用了。然而，请记住程序集的标识符由完全限定名称的全部4个部分组成。所以，如果一个库的版本号改变了，或如果它有一个不同的程序集。
+
+结果就是在 GAC 中可以有许多不同的程序集，它们把相同的文件名。虽然它们有相同的文件名，但它们是不同的程序集而且在 GAC 中完美地共存。<u>这使不同的应用程序在同一时间很容易使用不同版本的同一 DLL，因为它们是带不同标识符的不同程序集。这就被称为并肩执行（side-by-side Execution）</u>。
+
+#### 配置文件
+
+配置文件含有关于应用程序的信息，供 CLR 在运行时使用。它们可以指示 CLR 去做这样的事情，比如使用一个不同版本的 DLL，或搜索程序引用的 DLL 时在附加目录中寻找。
+
+<u>配置文件由 XML 代码组成，并不包含 C# 代码。</u>它们的一种用途是更新一个应用程序集以使用新版本的 DLL。
+
+例如，假设有一个应用程序引用了 GAC 中的一个 DLL。在应用程序的清单中，该引用的标识符必须完全匹配 GAC 中。如果一个新版本的 DLL 发布了，它可以被添加到 GAC 中，在那里它可以幸福和老版本共存。
+
+<u>然而，如果你不想重新编译程序但又希望它使用新的 DLL，那么你就可以创建一个配追文件告诉 CLR 去使用新的版本而不是旧版本。配置文件被放在应用程序目录中。</u>
+
+#### 延迟签名
+
+公司小心地保护它们官方的`公钥/私钥对`是非常重要的，否则，如果不可靠的人得到了它，就可以发布伪装成该公司的代码。为了避免这种情况公司显然不能允许自由访问含有它们的`公钥/私钥对`的文件。**在大公司中，最终程序集的强命名经常在开发过程的最尾部由特殊的有密钥访问权限的小组执行。**
+
+可是，由于个别原因，这会在开发和测试过程中导致问题。首先，由于公钥是程序集标识符的4个部分之一，所以直到提供了公钥它才能被设置。而且，弱命名的程序集不能被部署到 GAC。开发人员和测试人员都需要有能流编译和测试该代码，并使用它将要被部署发布的方式，包括它的标识符和在 GAC 中的位置。
+
+<u>为了允许这个，有一种修改了的赋值强命名的形式，称为延迟签名（delayed signing）或部分签名（partial signing），它克服了这些问题，而且没有释放过对私钥的访问。</u>
+
+![](../.vuepress/public/images/signing-in-different-assembly.png)
 
 ### 异常
 
+#### 什么是异常
+
+<u>异常是程序中的运行时错误，它违反了系统约束或应用程序约束，或出现了在正常操作时未预料的情形。</u>例如，程序试图除以0或试图写出一个只读文件。当这些发生后，系统捕获这个错误，并抛出一个异常：
+
+```cs
+using System;
+namespace classdemo.JecyuException
+{
+  class Program
+  {
+    public static void main()
+    {
+      int x = 10;
+      int y = 0;
+      x /= y;
+    }
+  }
+}
+// 异常信息：
+// Unhandled Exception:
+// System.DivideByZeroException: Attempted to divide by zero.
+//   at classdemo.JecyuException.Program.main () [0x00006] in /Users/linjy/Documents/Developer/Game-Development/Learn-C-Sharp-Demo/start/class-demo/JecyuException/Exception1.cs:10 
+```
+
+#### try 语句
+
+<u>try 语句用来指明为避免出现异常而被保存的代码段，并在发生异常时提供代码处理异常。</u>try 语句由3个部分组成，如图22-1所示。
+- try 块包含为避免出现异常而被保护的代码。
+- catch 子句部分含有一个或多个 catch 子句。这些是处理异常的代码段，它们也称为是异常处理程序。
+- finally 块含有在所有情况下都要被执行的代码，无论有没有异常发生。
+
+![](../.vuepress/public/images/try-statement-struct.png)
+
+##### 处理异常
+
+前面的示例显示了除以0会导致一个异常。可以修改此程序，把那段代码放在一个 try 块中，并提供一个简单的 catch 子句，以处理该异常。当异常发生时，它被捕获并在 catch 块中处理。
+
+```cs
+using System;
+namespace classdemo.JecyuException
+{
+  class Program2
+  {
+    public static void main()
+    {
+      int x = 10;
+      try
+      {
+        int y = 0;
+        x /= y;
+      }
+      catch
+      {
+        Console.WriteLine("Handing all exception - Keep on Running.");
+      }
+
+    }
+  }
+}
+// 输出
+// Handing all exception - Keep on Running.
+```
+
+#### 异常类
+
+有许多不同类型的异常可以在程序中发生。BCL 定义了许多类，每一个类代表一个指定的异常类型。当一个异常发生时，CLR：
+- 创建该类型的异常对象；
+- 寻找适当的 catch 子句以处理它。
+
+![](../.vuepress/public/images/c-sharp-exception-hierarchy.png\)
+
+异常对象含有只读属性，带有导致该异常的信息。这些属性的其中一些如表所示。
+
+|属性|类型|描述|
+|--|--|
+|Message | string | 这个属性含有解释异常原因的信息 |
+|StackTrace | string | 这个属性含有描述异常发生在何处的信息|
+|InnerException | Exception | 如果当前异常是由另一个异常引起的，这个属性包含前一个异常的引用|
+|HelpLink|string|这个属性可以被应用程序定义的异常设置，为异常原因信息及提供 URN 或 URL|
+|Source| string| 如果没有被应用程序定义的异常设定，那么这个属性含有异常所在的成许久的名称|
+
+#### catch 子句
+
+catch 子句处理异常。它有3种形式，允许不同级别的处理。
+
+![](../.vuepress/public/images/catch-statement-style.png)
+
+#### 使用特定 catch 子句的示例
+
+回到除以0的示例，下面的代码把前面的 catch 子句修改为指定处理 DivideByZeroException 类的异常。在前面的示例中，catch 子句会处理所在 try 块中引起的任何异常，而这个示例将只处理 DivideByZeroException 类的异常。
+
+```cs
+// try...catch 处理异常
+using System;
+namespace classdemo.JecyuException
+{
+  class Program3
+  {
+    public static void main()
+    {
+      int x = 10;
+      try
+      {
+        int y = 0;
+        x /= y;
+      }
+      catch (DivideByZeroException e)
+      {
+        Console.WriteLine("Message: {0}", e.Message);
+        Console.WriteLine("Source: {0}", e.Source);
+        Console.WriteLine("Stack: {0}", e.StackTrace);
+      }
+      finally
+      {
+        Console.WriteLine("In finally statement.");
+      }
+    }
+  }
+}
+
+```
+
+#### catch 子句段
+
+catch 子句的目的是允许你以一种优雅的方式处理异常。如果你的 catch 子句接受一个参数，那么系统会把这个异常变量设置为异常对象，这样你就可以检查并确定异常的原因。如果异常是前一个异常引起的，你可以通过异常变量的 InnerException 属性来获得对前一个异常对象的引用。
+
+catch 子句段可以包含多个 catch 子句。
+
+当异常发生时，系统按顺序搜索 catch 子句的列表，第一个匹配该异常对象类型的 catch 子句被执行。因此，catch 子句的排序有两个重要的规则。具体如下。、
+- 特定 catch 子句必须以一种顺序排列，最明确的异常类型第一，直到最普通的类型。例如，如果声明了一个派生自 NullReferenceException 的异常类，那么派生异常类型的 catch 子句应该被列在 NullReferenceException 的 catch 子句之前。
+- <u>如果有一个一般 catch 子句，它必须是最后一个，并且在所有特定 catch 子句之后。</u>不鼓励使用一般 catch 子句，因为它允许程序继续执行隐藏错误，让程序处于一种未知的状态。应尽可能使用特定子句。
+
+![](../.vuepress/public/images/catch-child-statement.png)
+
+#### finally 块
+
+如果程序的控制流进入了一个带 finally 块的 try 语句，那么 finally 始终会被执行。
+- 如果在 try 块内部没有异常发生，那么在 try 块的结尾，控制流跳过任何 catch 子句并到 finally 块。
+- 如果在 try 块内部发生了异常，那么在 catch 子句段中无论哪一个适当的 catch 子句被执行，接着就是 finally 块的执行。
+
+即使 try 块中有 return 语句或在 catch 块中抛出一个异常，finally 块也总是会在返回到调用代码之前执行。
+
+#### 为异常寻找处理代码
+
+当程序产生一个异常时，系统查看该程序是否为它提供了一个处理代码。
+- 如果在 try 块内发生了异常，系统会查看是否有任何一个 catch 子句能处理该异常。
+- 如果找到了适当的 catch 子句，以下3项的1项会发生。
+  - 该 catch 子句被执行。
+  - 如果有 finally 块，那么它被执行。
+  - 执行在 try 语句的尾部继续（也就是说，在finally 块之后，或如果没有 finally 块，就在最后一个 catch 子句之后。）
+
+```cs
+// try...catch 处理异常
+using System;
+namespace classdemo.JecyuException
+{
+  class Program3
+  {
+    public static void main()
+    {
+      int x = 10;
+      try
+      {
+        int y = 0;
+        x /= y;
+      }
+      catch (DivideByZeroException e)
+      {
+        Console.WriteLine("Message: {0}", e.Message);
+        Console.WriteLine("Source: {0}", e.Source);
+        Console.WriteLine("Stack: {0}", e.StackTrace);
+      }
+      finally
+      {
+        Console.WriteLine("In finally statement.");
+      }
+    }
+  }
+}
+
+```
+
+#### 更进一步搜索
+
+如果异常在一个没有被 try 语句保护的代码段产生，或如果 try 语句没有匹配的异常处理程序，系统将不得不更进一步寻找匹配的处理代码。为此它会按顺序搜索调用栈，以看看是否存在带匹配的处理程序的封装 try 块。
+
+![](../.vuepress/public/images/c-sharp-exception-handle.png)
+
+##### 搜索调用栈的示例
+
+在下面的代码中，Main 开始执行并调用方法 A，A调用方法B。
+
+```cs
+// try...catch 处理异常，搜索调用栈
+using System;
+namespace classdemo.JecyuException
+{
+  class MyClass
+  {
+    public void A()
+    {
+      try
+      {
+        B();
+      }
+      catch (System.NullReferenceException)
+      {
+        Console.WriteLine("catch clause in A()");
+      }
+      finally
+      {
+        Console.WriteLine("finally clause in A()");
+      }
+    }
+    void B()
+    {
+      int x = 10, y = 0;
+      try
+      {
+        x /= y;
+      }
+      catch (System.IndexOutOfRangeException)
+      {
+        Console.WriteLine("catch clause in B()");
+      }
+      finally
+      {
+        Console.WriteLine("finally clause in B()");
+      }
+    }
+  }
+  class Program4
+  {
+    public static void main()
+    {
+      MyClass mc = new MyClass();
+      try
+      {
+        mc.A();
+      }
+      catch (DivideByZeroException)
+      {
+        Console.WriteLine("catch clause in Main()");
+      }
+      finally
+      {
+        Console.WriteLine("finally clause in Main()");
+      }
+      Console.WriteLine("After try statement in Main.");
+      Console.WriteLine("   --keep running.");
+    }
+  }
+}
+// 输出
+// finally clause in B()
+// finally clause in A()
+// catch clause in Main()
+// finally clause in Main()
+// After try statement in Main.
+//    --keep running.
+```
+
+#### 抛出异常
+
+可以使用 `throw` 语句使代码显式地引发一个异常。`throw` 语句的语法如下：
+`throw ExceptionObject`
+
+例如，下面的代码定义了一个名称为 PrintArg 的方法，它带一个 string 参数并把它打印出来。在 try 块内部，它首先检查以确认该参数不是 null。如果是 null，它创建一个 ArgumentNullException 实例并抛出它。该异常实例在 catch 语句中被捕获，并且该出错信息被打印。Main 调用该方法两次：一次用 null 参数，然后用一个有效参数。
+
+```cs
+// 抛出异常
+using System;
+namespace classdemo.JecyuException
+{
+  class MyClass2
+  {
+    public static void PrintArg(string arg)
+    {
+      try
+      {
+        if (arg == null)
+        {
+          ArgumentNullException myEx = new ArgumentNullException("arg");
+          throw myEx;
+        }
+        Console.WriteLine(arg);
+      }
+      catch (ArgumentNullException e)
+      {
+        Console.WriteLine("Message: {0}", e.Message);
+      }
+    }
+  }
+  class Program5
+  {
+    public static void main()
+    {
+      string s = null;
+      MyClass2.PrintArg(s);
+      MyClass2.PrintArg("Hi there!");
+    }
+  }
+}
+
+```
+
+#### 不带异常对象的抛出
+
+`throw` 语句还可以不带异常对象使用，在 catch 块内部。
+- 这种形式重新抛出当前异常，系统继续它的搜索，为该异常寻找另外的处理代码。
+- 这种形式只能用在 catch 语句内部。
+
+例如，下面的代码从第一个 catch 子句内部重新抛出异常；
+
+```cs
+// 抛出异常
+using System;
+namespace classdemo.JecyuException
+{
+  class MyClass3
+  {
+    public static void PrintArg(string arg)
+    {
+      try
+      {
+        try
+        {
+          if (arg == null)
+          {
+            ArgumentNullException myEx = new ArgumentNullException("arg");
+            throw myEx;
+          }
+          Console.WriteLine(arg);
+        }
+        catch (ArgumentNullException e)
+        {
+          Console.WriteLine("inner catch: {0}", e.Message);
+          throw; // 重新抛出异常，没有附加参数
+        }
+
+      }
+      catch
+      {
+        Console.WriteLine("Outer Catch: Handling an Exception.");
+      }
+    }
+  }
+  class Program6
+  {
+    public static void main()
+    {
+      string s = null;
+      MyClass3.PrintArg(s);
+    }
+  }
+}
+// 输出
+// inner catch: Value cannot be null.
+// Parameter name: arg
+// Outer Catch: Handling an Exception.
+
+```
+
 ### 预处理指令
+
+源代码指定了程序的定义，预处理指令（preprocessor directive）指示编译器如何处理源代码。
+
+#### 什么是预处理指令
+
+#### 基本规则
+
+#### #define 和 #undef 指令
+
+#### 条件编译
+
+#### 诊断指令
+
+#### 行号指令
+
+#### 区域指令
+
+#### #pragma warning 指令
 
 ### 反射和特性
 
+#### 元数据和反射
+
+大多数程序都要处理数据，包括读、写、操作和显示数据。（图形也是一种数据的形式。）然而，对于某些程序来说，它们操作的数据不是数字、文本或图形，而是程序和程序类型本身的信息。
+
+#### Type 类
+
+#### 获取 Type 对象
+
+#### 什么是特性
+
+#### 应用特性
+
+#### 预定义的保留的特性
+
+#### 有关应用特性的更多内容
+
+#### 自定义特性
+
+#### 访问特性
+
 ### 其他主题
+
+#### 概述
+
+#### 字符串
+
+```cs
+// 字符串
+using System;
+namespace classdemo.JecyuOther
+{
+  public class Program
+  {
+    public static void main()
+    {
+      string s1 = "hi there! this, is: a string.";
+      char[] delimiters = { ' ', '!', ',', ':', '.' };
+      string[] words = s1.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+      Console.WriteLine("Word Count: {0}\n\rThe Words...", words.Length);
+      foreach (string s in words)
+      {
+        Console.WriteLine(" {0}", s);
+      }
+    }
+  }
+}
+```
+
+#### 使用 StringBuilder 类
+
+```cs
+// 字符串
+using System;
+using System.Text;
+namespace classdemo.JecyuOther
+{
+  public class Program2
+  {
+    public static void main()
+    {
+      StringBuilder sb = new StringBuilder("Hi there.");
+      Console.WriteLine("{0}", sb.ToString());
+
+      sb.Replace("Hi", "Hello"); // 替换子字符串
+      Console.WriteLine("{0}", sb.ToString());
+    }
+  }
+}
+```
+
+#### 把字符串解析为数据值
+
+```cs
+// 把字符串解析为数据值
+using System;
+using System.Text;
+namespace classdemo.JecyuOther
+{
+  public class Program3
+  {
+    public static void main()
+    {
+      string s1 = "25.873";
+      string s2 = "36.240";
+
+      double d1 = double.Parse(s1);
+      double d2 = double.Parse(s2);
+
+      double total = d1 + d2;
+      Console.WriteLine("Total: {0}", total);
+    }
+  }
+}
+```
+
+```cs
+// 把字符串解析为数据值 TryParse
+using System;
+using System.Text;
+namespace classdemo.JecyuOther
+{
+  public class Program4
+  {
+    public static void main()
+    {
+      string parseResultSummary;
+      string stringFirst = "28";
+      int intFirst;
+
+      bool success = int.TryParse(stringFirst, out intFirst);
+      parseResultSummary = success
+                             ? "was successfully parsed"
+                             : "was not successfully parsed";
+      Console.WriteLine("String {0} {1}", stringFirst, parseResultSummary);
+
+      string stringSecond = "vt750";
+      int intSecond;
+      success = int.TryParse(stringSecond, out intSecond);
+      parseResultSummary = success
+                            ? "was successfully parsed"
+                            : "was not successfully parsed";
+      Console.WriteLine("String {0} {1}", stringSecond, parseResultSummary);
+    }
+  }
+}
+```
+
+#### 关于可空类型的更多内容
+
+##### 为可空类型赋值
+
+##### 使用空接合运算符
+
+##### 使用可空用户自定义类型
+
+#### Main 方法
+
+#### 文档注释
+
+#### 嵌套类型
+
+```cs
+// 嵌套类的示例
+using System;
+namespace classdemo.JecyuOther
+{
+  class MyClass
+  {
+    class MyCounter // 嵌套类
+    {
+      public int Count
+      {
+        get;
+        private set;
+      }
+      public static MyCounter operator ++(MyCounter current)
+      {
+        current.Count++;
+        return current;
+      }
+    }
+    private MyCounter counter; // 嵌套类类型的字段
+    public MyClass() // 构造函数
+    {
+      counter = new MyCounter();
+    }
+    // 增量方法
+    public int Incr()
+    {
+      return (counter++).Count;
+    }
+    // 获取计数值
+    public int GetValue()
+    {
+      return counter.Count;
+    }
+  }
+  class Program5
+  {
+    public static void main()
+    {
+      MyClass mc = new MyClass();
+      mc.Incr();
+      mc.Incr();
+      mc.Incr();
+      mc.Incr();
+      mc.Incr();
+      mc.Incr();
+      Console.WriteLine("Total: {0}", mc.GetValue());
+    }
+  }
+}
+
+```
+
+#### 析构函数和处置模式
+
+#### 和 COM 的互操作
 
 ## 进阶活用
 

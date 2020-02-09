@@ -58,7 +58,7 @@ module.exports = {
       },
       {
         text: "🔧个人博客",
-        link: "https://jecyu.github.io/blog/"
+        link: "http://www.jecyu.com/"
       },
       {
         text: "🔗Github",
@@ -74,6 +74,10 @@ module.exports = {
           {
             text: "前端自动化测试",
             link: "https://jecyu.github.io/Fe-Auto-Testing/"
+          },
+          {
+            text: "JS 事件循环机制",
+            link: "https://jecyu.github.io/JS-Event-Loop/"
           },
         ]
       },
