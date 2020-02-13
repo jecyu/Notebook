@@ -43,7 +43,8 @@ module.exports = {
           { text: "🌍GIS", link: "/gis/" },
           { text: "️️🖱️软件", link: "/software/" },
           { text: "️️🐛网络工程", link: "/network/",  },
-          { text: "🚶不止前端", link: "/programming-language/" },
+          { text: "️️🎮游戏开发", link: "/game-development/",  },
+          { text: "🚶编程语言", link: "/programming-language/" },
         ]
       },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
@@ -88,7 +89,7 @@ module.exports = {
         {
           title: "日常记录",
           collapsable: true,
-          children: ["", "2018", "table"]
+          children: ["", "2019", "2018", "table"]
         },
         {
           title: "TechnologyDevelopment",
@@ -145,7 +146,14 @@ module.exports = {
         {
           title: "前端",
           collapsable: false,
-          children: [ "browser", "css", "js", "es6", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+          children: [ "browser", "css", "js", "es6", "ts", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+        }
+      ],
+      "/game-development/": [
+        {
+          title: "游戏开发",
+          collapsable: false,
+          children: ["", "design-prototype-development"]
         }
       ],
       "/programming-language/": [

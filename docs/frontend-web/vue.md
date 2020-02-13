@@ -1217,6 +1217,14 @@ selectedIndustryApplication: {
 
 ## 常见问题
 
+### Vue 中 mixin 和 extend 的区别和使用场景
+
+mixin是对Vue类的options进行混入。所有Vue的实例对象都会具备混入进来的配置行为。
+
+extend是产生一个继承自Vue类的子类，只会影响这个子类的实例对象，不会对Vue类本身以及Vue类的实例对象产生影响。
+
+详见：[Vue中mixin和extend的区别和使用场景](https://juejin.im/post/5d4175a76fb9a06ae17d5589#heading-6)
+
 ### 存储路由参数，解决存储 params 的刷新丢失问题
 
 ```js

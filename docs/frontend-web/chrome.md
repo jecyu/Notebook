@@ -4,4 +4,10 @@
 
 <img :src="$withBase('/images/chrome1.png')">
 
+## Sources
+
+### overrides
+
+调试 dojo 项目比较方便
+
 ## Performance

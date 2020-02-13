@@ -329,6 +329,8 @@ jQuery.eq().show();
 
 ## 进阶
 
+### 高阶函数
+
 ### setTimeout, setInterval 和 requestAnimationFrame
 
 ### this, call, apply 和 bind

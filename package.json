@@ -2,7 +2,7 @@
   "name": "jecyu-notebook",
   "version": "2.1.1",
   "scripts": {
-    "dev": "vuepress dev docs",
+    "dev": "vuepress dev docs --port=9000 --open",
     "build": "vuepress build docs",
     "push": "bash push.sh"
   },
