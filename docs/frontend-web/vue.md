@@ -211,7 +211,18 @@ export default {
 vm.$router.options.routes
 ```
 
-## 进阶
+## 进阶活用
+
+### vue 中的 native 修饰符
+
+在 vue 的自定义组件中绑定原生事件，需要用到修饰符 native。
+
+那是因为，我们的自定义组件，最终会渲染成原生的 html 标签，而非类似于这样的自定义组件。如果想让一个普通的 html 标签触发事件，那就需要对它做事件监听（addEventListener）。修饰符 native 的作用就在这里，它可以在背后 帮我们绑定了原生事件，进行监听。
+
+一个常见的场景是，配合 element-ui 做登录界面时，输完账号密码，想按一下回车就能登录。就可以像下面这样用修饰符：
+```vue
+<el-input class="input" v-model="password" type="password" @keyup.enter.native="handleSubmit"></el-input>
+```
 
 ### inject/provide（组件库）
 

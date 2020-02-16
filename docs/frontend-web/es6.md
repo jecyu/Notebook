@@ -172,6 +172,29 @@ document.getElementById('button').addEventListener('click', function() {
 
 使用 `defineProperty` 只能重定义属性的读取（get）和 设置（set）行为，到了 ES6，提供了 Proxy，可以重定义更多的行为，比如 in、delete、函数调用等更多行为。
 
+## Class 的基本语法
+
+### 简介
+
+#### constructor
+
+`constructor` 方法是类的默认方法，通过 `new` 命令生成对象实例时，自动调用该方法。一个类必须有 `constructor` 方法，如果没有显式定义，一个空的 `constructor` 方法会被默认添加。
+
+```js
+class Point {}
+
+// 等同于
+class Point {
+  constructor() {}
+}
+```
+
+#### 注意点
+
+5. this 的指向
+
+类的方法内部如果含有 this，它默认指向类的实例。但是，必须非常消息你，一旦单独使用该方法，很可能报错。
+
 ## 函数
 
 ### rest 参数
@@ -346,3 +369,7 @@ import * as goat from "./goat.js"
 #### 交换变量的值
 
 #### 从函数返回多个值
+
+## 参考资料
+
+- [《ECMAScript 6 入门》](http://es6.ruanyifeng.com/#docs/class)

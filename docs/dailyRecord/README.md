@@ -1,5 +1,31 @@
 # 2020
 
+## Node-Sass安装失败解决集锦
+
+安装 node-sass 的时候总是会各种不成功。
+ 
+首先要知道的是，安装 `node-sass` 时在 `node scripts/install` 阶段会从 github.com 上下载一个 `.node` 文件，大部分安装不成功的原因都源自这里，因为 GitHub Releases 里的文件都托管在 `s3.amazonaws.com` 上面，而这个网址在国内总是网路不稳定，所以我们需要通过第三方服务器下载这个文件。
+
+### 权限问题
+
+在 mac OS 或 Linux 系统下，有时候在安装 node-sass 时会出现，`Permission Errors`，类似“user "root" does not have permission to access the dev dir”的错误
+
+### node 版本问题
+
+#### 错误
+
+一直显示下载中，通过设置淘宝源地址也无法解决，有可能是 node 版本问题。
+
+#### 重新安装 node（推荐使用 nvm）
+
+nvm 是个 node 版本管理工具，可以方便的下载安装 node，并且方便的切换 node 版本。[文档](https://juejin.im/post/5ad06d58518825619d4d2ff5#heading-4)
+
+### 参考资料
+
+- [Node-Sass安装失败引发的思考](https://juejin.im/post/5ad06d58518825619d4d2ff5#heading-5)
+- [整理 node-sass 安装失败的原因及解决办法](https://segmentfault.com/a/1190000010984731)
+- [安装 node-sass 的正确姿势](https://github.com/lmk123/blog/issues/28)
+
 ## 解决 .gitignore 文件忽略规则无效 git 依然跟踪修改的问题
 
 ### 前言
