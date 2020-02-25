@@ -1,5 +1,16 @@
 # markdown 语法
 
+## 居中
+
+```bash
+<center>图片描述</center>
+
+左对齐：
+<p align="left">图片描述</p>
+右对齐：
+<p align="right">图片描述</p>
+```
+
 ## 表格
 
 ### markdown

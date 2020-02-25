@@ -196,7 +196,7 @@ module.exports = {
         {
           title: "GIS",
           collapsable: false,
-          children: ["",  "arcgis-for-js", "layer", "argis-server", "handleFile"]
+          children: ["",  "arcgis-for-js", "layer", "argis-server", "handleFile", "supermap"]
         }
       ]
     },

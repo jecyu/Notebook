@@ -2,9 +2,10 @@
   "name": "jecyu-notebook",
   "version": "2.1.1",
   "scripts": {
-    "dev": "vuepress dev docs --port=9000 --open",
+    "dev": "vuepress dev docs --port=9100 --open",
     "build": "vuepress build docs",
-    "push": "bash push.sh"
+    "push": "bash push.sh",
+    "deploy": "bash deploy.sh"
   },
   "repository": {
     "type": "git",
