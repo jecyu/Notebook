@@ -1262,15 +1262,122 @@ ES6规范/webpack/rollup 模块化处理
 - require 使用于 CommonJS 规范，import 使用于 ES6 模块规范，两种的区别实质是两种规范的区别。
 - CommonJS
   - 对于基本数据类型，属于复制。即会被模块缓存；同时，在另一个模块可以对该模块输出的变量重新赋值。
-  - 对于复杂数据类型，属于浅拷贝。由于两个模块引用的对象指向同一个内存空难功能键你，因此对该模块的值做修改时会影响另一个模块。
+  - 对于复杂数据类型，属于浅拷贝。由于两个模块引用的对象指向同一个内存地址，因此对该模块的值做修改时会影响另一个模块。
   - 当使用 require 命令加载某个模块时，就会运行整个模块的代码。
   - 当使用 require 命令加载同一个模块时，不会再执行该模块，而是取到缓存之中的值。也就是说，CommonJS 模块无论加载多少次，都只会再第一次加载时运行一次，以后再加载，就会烦第一次运行的结果，除非手动清除系统缓存。
   - 循环加载时，属于加载时执行。即脚本代码在 require 的时候，就会全部执行。一旦出现某个模块被“循环加载”，就只输出已经执行的部分，还未执行的部分不会输出。
 - ES6 模块
-  - ES6 模块中的值属于【动态只读引用】。
-  - 对于只读来说，即不允许修改引入变量的值，import 的变量是只读的，无论是基本数据类型还是复杂数据类型。当模块遇到 import 命令时，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里去取值。
+  - ES6 模块中的值属于【动态引用】，而 CommonJS 的值属于拷贝，即针对模块内部的值改变是否会影响已经导出的值。如果是 ES6 模块的值改变则会影响，而 CommonJS 的值不会影响。还有就是如果是引用类型的值，则无论是 CommonJS 还是 ES6 都会受到影响。
+    CommonJS 写法
+    ```js
+      // 输出模块 counter.js
+      var counter = 3;
+      function incCounter() {
+        counter++;
+      }
+      module.exports = {
+          counter: counter,
+          incCounter: incCounter,
+      };
+      
+      // 引入模块 main.js
+      var mod = require('./counter');
+
+      console.log(mod.counter);  // 3
+      mod.incCounter(); // 这里内部的值改变不会影响输出的 mod.counter 值。
+      console.log(mod.counter); // 3
+    ```
+    
+    ES6 写法
+    ```js
+      // counter.js
+      export let counter = 3;
+      export function incCounter() {
+        counter++;
+      }
+
+      // main.js
+      import { counter, incCounter } from './counter';
+      console.log(counter); // 3
+      incCounter();
+      console.log(counter); // 4
+    ```
+
+    CommonJS 输出引用类型
+    ```js
+      // 输出模块 counter.js
+      var counter = {
+          value: 3
+      };
+
+      function incCounter() {
+          counter.value++;
+      }
+      module.exports = {
+          counter: counter,
+          incCounter: incCounter,
+      };
+      // 引入模块 main.js
+      var mod = require('./counter.js');
+
+      console.log(mod.counter.value); // 3
+      mod.incCounter();
+      console.log(mod.counter.value); // 4
+    ```
+  - 对于ES6 模块引用只读的意思是对（const）来说的，即不允许修改引入变量的值，import 的变量是只读的，无论是基本数据类型还是复杂数据类型，也就是说不能这样做
+    ```js
+    import { baseType, RefType } from "xxxx.js";
+    baseType = 'xxx';
+    RefType = 'xxx';
+    // 针对引用类型，可以这样改
+    RefType.age = ''
+    ```
+    而 commonJS 的可以进行根据情况选择 const 或 let：
+    ```js
+    const user = require('./a.js');
+    let username = require('./a.js');
+    ```
+  - 当模块遇到 import 命令时，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里去取值。
+    
   - 循环加载时，ES6模块是动态引用。只要两个模块之间存在某个引用，代码就能够执行。
-  - 最后：require/exports 是必要通用且必须的；因为事实上，目前你编写的 `import/export` 最终都是编译为 `require/exports` 来执行的。
+  - 最后：require/exports 是必要通用且必须的；**因为事实上，目前你编写的 `import/export` 最终都是编译为 `require/exports` 来执行的。**
+
+你会发现 Babel 只是把 ES6 模块语法转为 CommonJS 模块语法，然而浏览器是不支持这种模块语法的，所以直接跑在浏览器会报错的，如果想要在浏览器中运行，还是需要使用打包工具将代码打包。
+
+Babel 将 ES6 模块转为 CommonJS 后， webpack 又是怎么做的打包的呢？它该如何将这些文件打包在一起，从而能保证正确的处理依赖，以及能在浏览器中运行呢？
+首先为什么浏览器中不支持 CommonJS 语法呢？
+这是因为浏览器环境中并没有 module、 exports、 require 等环境变量。
+换句话说，webpack 打包后的文件之所以在浏览器中能运行，就是靠模拟了这些变量的行为。
+
+所以直接通过下面的代码是不能通过 es6 方式引用一个 umd 文件的，会提示找不到 add 。
+```js
+// math
+(function (window, factory) {
+  if (typeof exports === 'object') {
+    module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else {
+    window.eventUtil = factory();
+  }
+})(this, function() {
+  // module...
+  // math
+  // return math ...
+});
+```
+
+```html
+<script type="module"> 
+import { add } from "../utils/math"
+</script>
+```
+
+除非把 umd 文件改成 es6 直接暴露出来：
+```js
+// math
+export const add = function() {...}
+```
 
 **webpack/rollup 最终打包后的文件里，是如何解决依赖关系的，还会使用到闭包么？**
 
@@ -1336,6 +1443,10 @@ require(["./vendor/multi"], function(multi) {
 });
 
 ```
+
+### 参考资料
+
+- [ES6 系列之模块加载方案](https://juejin.im/post/5bea425751882508851b45d6#heading-11) -- 从模块说到 webpack 打包、babel 有比较深的探讨。
 
 ## 工具函数大全
 

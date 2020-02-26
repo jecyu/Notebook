@@ -4,6 +4,7 @@
 
 ```bash
 <center>图片描述</center>
+<p style="text-align: center;">图片描述</p>
 
 左对齐：
 <p align="left">图片描述</p>
