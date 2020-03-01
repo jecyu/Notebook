@@ -41,7 +41,7 @@ module.exports = {
           { text: "☁️运维", link: "/devops/" },
           { text: "🚬测试", link: "/test/" },
           { text: "🌍GIS", link: "/gis/" },
-          { text: "️️🖱️软件", link: "/software/" },
+          { text: "️️🖱️工具", link: "/tools/" },
           { text: "️️🐛网络工程", link: "/network/",  },
           { text: "️️🎮游戏开发", link: "/game-development/",  },
           { text: "🚶编程语言", link: "/programming-language/" },
@@ -135,18 +135,18 @@ module.exports = {
           children: ["linux", "window", "mac", "docker"]
         }
       ],
-      "/software/": [
+      "/tools/": [
         {
           title: "软件",
           collapsable: false,
-          children: ["excel", "ps"]
+          children: ["excel", "ps", "webpack"]
         }
       ],
       "/frontend-web/": [
         {
           title: "前端",
           collapsable: false,
-          children: [ "browser", "css", "js", "es6", "ts", "react", "vue", "webpack", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+          children: [ "browser", "css", "js", "es6", "ts", "react", "vue", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
         }
       ],
       "/game-development/": [
@@ -160,7 +160,7 @@ module.exports = {
         {
           title: "🚶不止前端",
           collapsable: false,
-          children: [""]
+          children: ["", "node"]
         }
       ],
       "/rethink/": [

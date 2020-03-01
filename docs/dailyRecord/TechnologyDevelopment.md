@@ -59,14 +59,16 @@
   - 带项目的能力***
   - 写 PPT
   - 用“系统思维”分析问题
+  - 尽可能深入地理解技术是怎样创造的，然后补充学习商业运作、市场营销的原理。
 - 🌟编写自己的组件库
 - 编辑器 https://github.com/le5le-com/topology?utm_source=gold_browser_extension
 - 阅读书籍
+  - 《黑客与画家》
 - 效率提升
   - vscode 工具
   - 开发工作流插件
   - docker 和 jenkins、ci
-- 《黑客与画家》
+
 
 #### 文章
 

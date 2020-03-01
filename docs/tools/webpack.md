@@ -1,14 +1,73 @@
 # webpack
 
+webpack 作为一个模块打包机，能做什么？
+- 代码转换：TypeScript 编译成 JavaScript、SCSS、LESS 编译成 CSS
+- 文件优化：压缩 JS、CSS、HTML 代码，压缩合并图片
+- 代码分割：提取多个页面的公共代码、提取首屏不需要执行部分的代码使其异步加载。
+- 模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。
+- 自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。
+
 ## 基础
 
-使用 webpack4，至少只需要安装 webpack 和 webpack cli。
+使用 webpack4，因为抽离了 webpack-cli，所以至少需要安装 webpack 和 webpack cli。
+
+webpack 支持 `es6`，`CommonJS`，`AMD`。
 
 ### 打包 JS
+
+如何运行 webpack？
+
+#### 第一步：创建配置文件
+
+首先需要创建一个 webpack.config.js  的文件，添加基础配置
+
+```js
+// webpack.config.js
+const path = require('path');
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js', // 以当前目录为根目录，入口文件
+  output: { // 输出文件
+    path: path.join(__dirname, './dist'),
+    filename: 'bundle.js'
+  },
+  // 引入loader 和 plugin 处理相关文件
+  module: {
+    rules: [
+      {
+        test: 正则表达式,
+        use: [对应的 loader]
+      }
+    ]
+  },
+  plugin: {}
+}
+```
+
+`module.exports` 就是导出一个模块包，符合 CommonJS 规范
+
+配置说明：
+- `entry`：代表入口文件，webpack 回你找到该文件进行解析
+- `output`：代表输出文件配置
+- `module`：打包规则，不同后缀的文件用不同的包处理
+- `plugin`：实现一些功能需要用到的插件
+
+#### 第二步：配置 package.json 
+
+安装 webpack 后，找到 package.json 文件，增加 
+
+```json
+"scripts":{ "build": "webpack ./webpack.config.js"}
+```
+
+webpack 4版本以上 直接运行 `npx webpack` 命令就能打包文件。
+命令行敲 `yarn build` 就能打包初我们需要的 bundle.js 文件了。
 
 #### 检验 webpack 规范支持
 
 `webpack` 支持 `es6`，`CommonJS`，`AMD`。
+
+通过不同的模块引入方式进行测试。
 
 ### 编译 ES6
 
@@ -22,6 +81,7 @@
 
 设置 devtool 属性改为 `source-map`。
 源文件中的所有 `import` 和 `export` 都会转换成对应的辅助函数。
+
 ```js
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -391,6 +451,7 @@ function decimalToBinary(decNumber) {
 });
 //# sourceMappingURL=PackDataStructuresAlogrithms.min.js.map
 ```
+
 - import 对应 `__webpack_require`
 - export 对应 `__webpack_exports__['defalut']` 直接赋值和 `__webpack_require__.d`。
 
@@ -411,6 +472,10 @@ function decimalToBinary(decNumber) {
 ### 优化
 
 ## 原理
+
+## Webpack 插件开发
+
+## 最佳实践
 
 ## 参考资料
 
