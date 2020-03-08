@@ -1,20 +1,21 @@
 module.exports = {
   plugins: [
-    'vuepress-plugin-zooming', {
+    "vuepress-plugin-zooming",
+    {
       // 支持点击缩放的图片元素的选择器
-      selector: 'img',
+      selector: "img",
       // 进入一个页面后，经过一定延迟后使页面中的图片支持缩放
       delay: 1000,
 
       // medium-zoom 的 options
       // 默认值: {}
       options: {
-        bgColor: 'black',
-        zIndex: 10000,
+        bgColor: "black",
+        zIndex: 10000
       }
     },
-    'vuepress-plugin-smooth-scroll',
-    'vuepress-plugin-table-of-contents'
+    "vuepress-plugin-smooth-scroll",
+    "vuepress-plugin-table-of-contents"
   ],
   base: "/Notebook/",
   title: "Jecyu's Notebook",
@@ -28,29 +29,28 @@ module.exports = {
         text: "开发者",
         items: [
           { text: "💻大前端", link: "/frontend-web/" },
+          { text: "🐂web 框架", link: "/web-framework/" },
           { text: "🤔复盘", link: "/rethink/" },
-          { 
-            text: "️️🧘算法修炼", 
-            items: [ 
-              {text: "计算机基础", link: "/algorithm/computerBasics"},
-              {text: "数据结构", link: "/algorithm/dataStructure"},
-              {text: "算法分类", link: "/algorithm/algorithm"},
-              {text: "数据库", link: "/dataBase/index"},
-            ] 
+          {
+            text: "️️🧘算法修炼",
+            items: [
+              { text: "计算机基础", link: "/algorithm/computerBasics" },
+              { text: "数据结构", link: "/algorithm/dataStructure" },
+              { text: "算法分类", link: "/algorithm/algorithm" },
+              { text: "数据库", link: "/dataBase/index" }
+            ]
           },
           { text: "☁️运维", link: "/devops/" },
           { text: "🚬测试", link: "/test/" },
           { text: "🌍GIS", link: "/gis/" },
           { text: "️️🖱️工具", link: "/tools/" },
-          { text: "️️🐛网络工程", link: "/network/",  },
-          { text: "️️🎮游戏开发", link: "/game-development/",  },
-          { text: "🚶编程语言", link: "/programming-language/" },
+          { text: "️️🐛网络工程", link: "/network/" },
+          { text: "️️🎮游戏开发", link: "/game-development/" },
+          { text: "🚶编程语言", link: "/programming-language/" }
         ]
       },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
-      { text: "设计", items: [
-        { text: "🖌️UI", link: "/design/" }]
-      },
+      { text: "设计", items: [{ text: "🖌️UI", link: "/design/" }] },
       { text: "🏷书签整理", link: "/bookmark/" },
       {
         text: "📖知识脑图",
@@ -79,9 +79,9 @@ module.exports = {
           {
             text: "JS 事件循环机制",
             link: "https://jecyu.github.io/JS-Event-Loop/"
-          },
+          }
         ]
-      },
+      }
     ],
     // sidebar: "auto",
     sidebar: {
@@ -137,16 +137,32 @@ module.exports = {
       ],
       "/tools/": [
         {
-          title: "软件",
+          title: "工具",
           collapsable: false,
-          children: ["excel", "ps", "webpack"]
+          children: ["excel", "ps", "webpack", "curl"]
         }
       ],
       "/frontend-web/": [
         {
           title: "前端",
           collapsable: false,
-          children: [ "browser", "css", "js", "es6", "ts", "react", "vue", "", "architecture", "authentication", "chrome","noJQ", "performance", "npm", "lodash"]
+          children: [
+            "browser",
+            "css",
+            "js",
+            "es6",
+            "ts",
+            "react",
+            "vue",
+            "",
+            "architecture",
+            "authentication",
+            "chrome",
+            "noJQ",
+            "performance",
+            "npm",
+            "lodash"
+          ]
         }
       ],
       "/game-development/": [
@@ -181,7 +197,13 @@ module.exports = {
         {
           title: "算法",
           collapsable: false,
-          children: ["computerBasics",  "c", "dataStructure", "algorithm", "patterns"]
+          children: [
+            "computerBasics",
+            "c",
+            "dataStructure",
+            "algorithm",
+            "patterns"
+          ]
         }
       ],
       "/dataBase/": [
@@ -191,16 +213,30 @@ module.exports = {
           children: ["", "mysql"]
         }
       ],
-      
+
       "/gis/": [
         {
           title: "GIS",
           collapsable: false,
-          children: ["",  "arcgis-for-js", "layer", "argis-server", "handleFile", "supermap"]
+          children: [
+            "",
+            "arcgis-for-js",
+            "layer",
+            "argis-server",
+            "handleFile",
+            "supermap"
+          ]
+        }
+      ],
+      "/web-framework/": [
+        {
+          title: "web 框架",
+          collapsable: false,
+          children: ["", "koa"]
         }
       ]
     },
     lastUpdated: "Last Updated",
-    sidebarDepth: 4
+    sidebarDepth: 6
   }
 };

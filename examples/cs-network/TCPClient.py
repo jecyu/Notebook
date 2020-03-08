@@ -1,11 +1,3 @@
-'''
-@Description: 
-@Author: Jecyu
-@Date: 2020-02-29 15:03:28
-@LastEditTime: 2020-02-29 15:11:27
-@LastEditors: Jecyu
-'''
-
 from socket import *
 serverName = 'servername'
 serverPort = 12000

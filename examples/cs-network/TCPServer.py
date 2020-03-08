@@ -1,10 +1,3 @@
-'''
-@Description: 
-@Author: Jecyu
-@Date: 2020-02-29 15:11:46
-@LastEditTime: 2020-02-29 15:25:56
-@LastEditors: Jecyu
-'''
 from socket import *
 serverPort = 12000
 serveSocket = socket(AF_INET, SOCK_STREAM)

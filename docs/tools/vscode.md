@@ -1,8 +1,12 @@
 # vscode 系列
 
-### 基础知识
+## 基础知识
 
-## 使用 vscode 调试代码
+### 换行
+
+setting -》wrap
+
+### 使用 vscode 调试代码
 
 针对 vscode 版本：version: 1.42.1
 
@@ -105,7 +109,7 @@ Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一�
 
 ### 参考资料
 
-- [vscode 调试node之npm与nodemon](https://segmentfault.com/a/1190000014664764#item-1)
+- [vscode 调试 node 之 npm 与 nodemon](https://segmentfault.com/a/1190000014664764#item-1)
 - [VSCode 的前端调试和后端调试详细解析](https://www.jianshu.com/p/362f0f630454) 详细丰富
 - [手把手教你用 Vscode Debugger 调试代码](http://shooterblog.site/2018/05/19/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8Vscode%20Debugger%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/#Debugger-For-Chrome)
 - [使用 VSCode 调试 Koa 或者 Express 项目](https://segmentfault.com/a/1190000017575583)

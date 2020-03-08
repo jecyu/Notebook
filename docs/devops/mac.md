@@ -58,6 +58,8 @@ sudo vi /etc/hosts
 
 ## 命令行tree命令生成文件树
 
+可以通过 `tree --help` 查看更多命令
+
 为了方便查看文件内容以及相关目录，我们一般用文件树进行操作，在windows系统下，我们可以直接使用tree命令进行操作：
 `->`是输出到 list.txt 文件中。
 ```bash
@@ -95,8 +97,8 @@ tree -a
       <td>n 表示显示项目的层级，n=3 即只显示项目的三层结构</td>
     </tr>
     <tr>
-      <td>tree -l pattern</td>
-      <td>pattern 表示想要过滤的目录，例如 tree -l "node_modules" 可以过滤掉 node_modules 这个文件夹</td>
+      <td>tree -I pattern</td>
+      <td>pattern 表示想要过滤的目录，例如 tree -I "node_modules" 可以过滤掉 node_modules 这个文件夹</td>
     </tr>
   </tbody>
 </table>

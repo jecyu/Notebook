@@ -1,10 +1,3 @@
-'''
-@Description: 
-@Author: Jecyu
-@Date: 2020-02-29 11:51:40
-@LastEditTime: 2020-02-29 15:09:35
-@LastEditors: Jecyu
-'''
 from socket import * # 该 socket 模块形成了在 Python 中所有网络通信的基础
 serverName = 'hostname' # 使用主机名，将自动执行 DNS looup 从而得到 IP 地址
 serverPort = 12000

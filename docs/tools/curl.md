@@ -1,22 +1,23 @@
-<!--
- * @Description: 
- * @Author: Jecyu
- * @Date: 2020-02-27 18:18:58
- * @LastEditTime: 2020-02-27 21:52:10
- * @LastEditors: Jecyu
- -->
-
 # curl
 
-## GET请求
+## GET 请求
 
 ```bash
 curl 127.0.0.1:8899/index.html?name=jack
 ```
 
+## POST 请求
+
+添加 --data 或 -D 后面跟传递的参数，再加网址，即可发送 POST 请求
+
+```bash
+curl -d 'name=admin&shoesize=12' http://example.com/
+```
+
 ## 显示响应头信息
 
-`-i` 显示响应头信息和body内容，`-I` 只显示响应头信息
+`-i` 显示响应头信息和 body 内容，`-I` 只显示响应头信息
+
 ```bash
 curl -i www.sina.com
 
@@ -43,7 +44,7 @@ X-Cache: HIT from ctc.nj.1cf2.176.spool.sina.com.cn
 
 ## 显示通信过程
 
--v参数可以显示一次http通信的整个过程，包括端口连接和http request头信息。
+-v 参数可以显示一次 http 通信的整个过程，包括端口连接和 http request 头信息。
 
 ```bash
 curl -v www.sina.com
@@ -80,7 +81,7 @@ curl -v www.sina.com
 curl --trace-ascii output.txt www.sina.com
 ```
 
-## ftp下载上传
+## ftp 下载上传
 
 ```bash
 curl -u name:passwd ftp://ip:port/path/file
@@ -92,4 +93,4 @@ curl -T localfile -u name:passwd ftp://upload_site:port/path/
 
 - [curl 官网](https://curl.haxx.se/docs/manual.html)
 - [Everything curl](https://ec.haxx.se/usingcurl/usingcurl-uploads) 关于 curl 的电子书
-- [MAC之http命令行工具curl](http://coderlt.coding.me/2016/03/22/mac-command-curl/)
+- [MAC 之 http 命令行工具 curl](http://coderlt.coding.me/2016/03/22/mac-command-curl/)
