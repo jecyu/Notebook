@@ -912,17 +912,61 @@ Unity 程序可以当作一个开发环境，我们先创建各个游戏组件�
 
 ##### 《拾苹果》游戏的基本玩法
 
+玩家控制着屏幕下方的三个篮筐，可以用鼠标左右移动。苹果树在屏幕上方跨素左右移动，并隔一段时间掉下一个苹果，玩家必须在苹果落地之前用篮筐接住它们。玩家每接住一个苹果就会获得一定的分数，但如果苹果落地一个，所有的苹果会立即消失，而玩家会损失一个篮筐。玩家损失全部三个篮筐后，游戏结束。
+
 ##### 《拾苹果》游戏中的游戏对象
 
 在 Unity 的术语中，游戏中的任何物体（通常指屏幕上可以看到的任何物体）都称为游戏对象（GameObject）。
 
+**A. 篮筐：**篮筐由玩家控制，随鼠标左右移动。篮筐在碰到苹果时即可接住苹果，同时玩家得分。
+
+**B. 苹果：**苹果从苹果树上落下，并垂直向下坠落。如果苹果碰到任何一个篮筐，即被篮筐接住，同时从屏幕上消失（让玩家得分）。在碰到游戏窗口的底边时，苹果也会消失，并且会使其他苹果同时消失。这会使篮筐数目减少一个（按从下到上的顺序减少），然后苹果树上又重新开始掉苹果。
+
+**C. 苹果树：**苹果树会随机向左或向右移动，并不时掉下苹果。苹果掉落的时间间隔是固定的，因此，只有左右移动是随机行为。
+
 ##### 《拾苹果》游戏中的游戏对象动作列表
 
-关注每个游戏对象各个时刻的动作。
+**关注每个游戏对象各个时刻的动作。**
+
+**篮筐的动作：**
+
+篮筐的动作包括：
+
+- 随玩家的鼠标左右移动
+- 如果篮筐碰到苹果，则接住苹果。
+
+**苹果的动作**
+
+苹果的动作包括：
+
+- 下落
+- 如果苹果碰到地面，它就会消失，并且使其他苹果一起消失
+
+**苹果树的动作**
+
+苹果树的动作包括：
+
+- 左右随机移动
+- 每隔 0.5 秒落下一个苹果
 
 ##### 《拾苹果》游戏中的游戏对象流程图
 
-要考虑游戏中动作和决策流程，使用流程图通常是一个不错的方式。一开始时，我们只需要考虑单个回合中发生的动作。
+要考虑游戏中动作和决策流程，使用流程图通常是一个不错的方式。**一开始时，我们只需要考虑单个回合中发生的动作。**
+
+**篮筐的流程图**
+
+![](../.vuepress/public/images/Apple-Picker-1.png)
+
+**苹果的流程图**
+
+![](../.vuepress/public/images/Apple-Picker-2.png)
+
+苹果树的流程图
+
+- 是否变化方向
+- 是否落下苹果
+
+![](../.vuepress/public/images/Apple-Picker-3.png)
 
 **计算机游戏中的帧**
 
@@ -932,7 +976,7 @@ Unity 程序可以当作一个开发环境，我们先创建各个游戏组件�
 
 #### 小结
 
-如上，数字化游戏可以分解为一系列非常简单的选择和命令。这项工作暗含在本书创建模式的过程中，读者在设计和开发自己的游戏项目时也需要进行这项工作。
+如上，**数字化游戏可以分解为一系列非常简单的选择和命令**。这项工作暗含在本书创建模式的过程中，读者在设计和开发自己的游戏项目时也需要进行这项工作。
 
 ### Unity 开发环境简介
 
@@ -1761,9 +1805,171 @@ public class EnemyZig : Enemy
 
 ### 敏捷思维
 
+#### 敏捷软件开发宣言
+
+#### Scrum 方法论
+
+#### 小结
+
 ## 游戏原型实例和教程
 
 ### 游戏原型 1：《拾苹果》
+
+#### 数字化原型的目的
+
+#### 准备工作
+
+#### 开始工作：绘图资源
+
+#### 编写《拾苹果》游戏原型的代码
+
+#### 让游戏中的运动基于时间
+
+**让游戏中的运动基于时间，是指不管游戏的帧速率是多少，运动都保持恒定的速度。**通过 `Time.deltaTime` 可以实现这一点，因为它能告诉我们从上一帧到现在经历了多少时间。`Time.deltaTime` 通常非常小。对于 25fps （帧/秒）的游戏来说，`Time.deltaTime` 为 0.04f，即每帧的时间为 4/100 秒。如果这行代码以 25 fps 的速度运行，结果将解析为：
+
+```cs
+pos.x += speed * Time.deltaTime;
+pos.x += 1.0f * 0.04f;
+pos.x += 0.04f;
+```
+
+因此，在 1/25 秒的时间内，`pos.x` 将递增 0.04 米。在 1 秒内，`pos.x` 将增加为 `0.04 米/帧 * 25 帧`，即 1 米/秒。这相当于将运动速度设置为 `1 米/秒`。
+
+如果游戏以 `100 fps` 的帧速率运行，该行代码将解析为：
+
+```cs
+pos.x += speed * Time.deltaTime;
+pos.x += 1.0f * 0.01f;
+pos.x += 0.01f;
+```
+
+所以，在 1/100 秒时间里，`pos.x` 每帧将递增 0.01f 米。在 1 秒钟的时间里，`pos.x` 的增量为 `0.01 米/秒 * 100 帧`，合计 `1 米/秒`。
+
+不管游戏的帧速率如何，基于时间的运动都可以保证游戏元素以恒定速度运动，这样可以保证游戏在最新配置和老配置的计算机上都可以玩。基于时间的编程在编写移动设备上运行的游戏时非常重要，因为移动设备的配置变化得非常快。
+
+补充：
+1. **帧率为 25fps，即一秒变化 25 次，而帧率为 100 fps，即一秒变化 100 次，虽然基于时间的运动速度是一样，但是帧率低的由于变化次数少，变化的速率太慢骗不过眼睛，会让玩家明显感觉画面卡顿不流畅。**
+2. 对于根据帧率计算随机率时，如果放在 `Update()` 时在每帧进行一次计算会不准确，因此低帧率的概率明显低于高帧率的概率。所以在 Unity 需要把这些逻辑放在 `FixUpdate()` 函数里，它根据时间来执行。
+
+##### 设置游戏对象图层
+
+图层是指对象的分组，我们可以规定各组对象之间是否发生碰撞。如果苹果树和苹果放在两个不同的图层中，并在图层管理器中规定两个图层不发生碰撞，这样苹果和苹果树也不会再撞到一起了。
+
+#### 图形用户界面（GUI）和游戏管理
+
+游戏的最后一件工作是 GUI 和游戏管理，使其更像是一个真正的游戏。
+
+##### 脚本间的调用
+
+在未接住苹果时结束本回合并消除篮筐，可以让《拾苹果》感觉更像一个真正的游戏。这时，由 Apple 对象负责销毁自身，这没有问题，但是 Apple 需要以某种方式将该事件通知 ApplePicker 脚本，以便让 Apple Picker 可以结束本回合并销毁其余的苹果。这涉及脚本间的相互调用。
+
+Apple.cs
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Apple : MonoBehaviour
+{
+  public static float bottomY = -20f;
+
+  // Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (transform.position.y < bottomY)
+    {
+      Destroy(this.gameObject);
+
+      // 获取对哦主摄像机的 ApplePicker 组件的引用
+      ApplePicker apScript = Camera.main.GetComponent<ApplePicker>();
+
+      // 调用 apScript 的 AppleDestroyed 方法
+      apScript.AppleDestroyed();
+    }
+  }
+}
+
+```
+
+ApplePicker.cs
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class ApplePicker : MonoBehaviour
+{
+  public GameObject basketPrefab;
+  public int numBaskets = 3;
+  public float basketBottomY = -14f;
+  public float basketSpacingY = 2f;
+  public List<GameObject> basketList;
+
+  // Start is called before the first frame update
+  void Start()
+  {
+    basketList = new List<GameObject>();
+    for (int i = 0; i < numBaskets; i++)
+    {
+      GameObject tBasketGO = Instantiate(basketPrefab) as GameObject;
+      Vector3 pos = Vector3.zero;
+      pos.y = basketBottomY + (basketSpacingY * i);
+      tBasketGO.transform.position = pos;
+      basketList.Add(tBasketGO);
+    }
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+
+  }
+
+  public void AppleDestroyed()
+  {
+    // 消除所有下落中的苹果
+    GameObject[] tAppleArray = GameObject.FindGameObjectsWithTag("Apple");
+    foreach (GameObject tGo in tAppleArray)
+    {
+      Destroy(tGo);
+    }
+
+    // 消除一个篮筐
+    // 获取 basketList 中最后一个篮筐的序号
+    int basketIndex = basketList.Count - 1;
+    // 取得该篮筐的引用
+    GameObject tBasketGO = basketList[basketIndex];
+    // 从列表中清除该篮筐并销毁该游戏对象
+    basketList.RemoveAt(basketIndex);
+    Destroy(tBasketGO);
+
+    // 重新开始游戏，HighScore.score 不会受影响
+    if (basketList.Count == 0)
+    {
+      //Application.LoadLevel("_Scene_0");
+      SceneManager.LoadScene("_Scene_0");
+    }
+  }
+}
+
+```
+
+##### 添加最高得分记录
+
+1. `Awake()` 是 Unity 的内置方法（类似 `Start()` 或 `Update()`），在首次创建 HighScore 实例时运行（因此 `Awake()` 总在 `Start()` 之前发生）。
+2. `PlayerPrefs` 是一个关键字和数值的字典，可以通过关键字（即独一无二的字符串）引用值。
+
+#### 小结
 
 ### 游戏原型 2：《爆破任务》
 

@@ -1,5 +1,9 @@
 # Vue
 
+![](../.vuepress/public/images/Vue.js.png)
+
+[[toc]]
+
 ## 基础
 
 ### 插槽
@@ -7,11 +11,11 @@
 > 插槽，也就是 slot，是组件的一块 HTML 模版，这块模版显示不显示、以及怎样显示由父组件来决定。一个 slot 的核心两个问题是：显示不显示和怎样显示。
 
 由于插槽是一块模板，所以，对于任何一个组件，从模板种类的角度来分，其实都可以分为非插槽模板和插槽模板两大类。
-非插槽模板指的是html模板，比如‘div、span、ul、table’这些，非插槽模板的显示与隐藏以及怎样显示由组件自身控制；插槽模板是slot，它是一个空壳子，因为它的显示与隐藏以及最后用什么样的html模板显示由父组件控制。**但是插槽显示的位置却由子组件自身决定，slot写在组件template的什么位置，父组件传过来的模板将来就显示在什么位置**
+非插槽模板指的是 html 模板，比如‘div、span、ul、table’这些，非插槽模板的显示与隐藏以及怎样显示由组件自身控制；插槽模板是 slot，它是一个空壳子，因为它的显示与隐藏以及最后用什么样的 html 模板显示由父组件控制。**但是插槽显示的位置却由子组件自身决定，slot 写在组件 template 的什么位置，父组件传过来的模板将来就显示在什么位置**
 
 #### 单个插槽 | 默认插槽 | 匿名插槽
 
-单个插槽可以放置在组件的任意位置，但是就像它的名字一样，一个组件中只能有一个该类插槽。相对应的，具名插槽就可以有很多个，只要名字（name属性）不同就可以了。
+单个插槽可以放置在组件的任意位置，但是就像它的名字一样，一个组件中只能有一个该类插槽。相对应的，具名插槽就可以有很多个，只要名字（name 属性）不同就可以了。
 
 ```js
 // child
@@ -68,7 +72,7 @@ export default {
 
 #### 具名插槽
 
-匿名插槽没有name属性，所以是匿名插槽，那么，插槽加了name属性，就变成了具名插槽。具名插槽可以在一个组件中出现N次，出现在不同的位置。
+匿名插槽没有 name 属性，所以是匿名插槽，那么，插槽加了 name 属性，就变成了具名插槽。具名插槽可以在一个组件中出现 N 次，出现在不同的位置。
 
 ```js
 export default {
@@ -87,7 +91,7 @@ export default {
 ```
 
 ```js
-// parent 
+// parent
 <template>
   <div class="named-wrapper">
     <h1>Vue 具名插槽</h1>
@@ -105,7 +109,7 @@ export default {
 
 #### 作用域插槽
 
-作用域插槽跟单个插槽和具名插槽的区别，因为单个插槽和具名插槽不绑定数据，而作用域插槽，父组件只需要提供一套样式（在确实用作用域插槽绑定的数据的前提下），数据使用的都是子组件插槽自己绑定的s数据，在slot上面绑定数据。
+作用域插槽跟单个插槽和具名插槽的区别，因为单个插槽和具名插槽不绑定数据，而作用域插槽，父组件只需要提供一套样式（在确实用作用域插槽绑定的数据的前提下），数据使用的都是子组件插槽自己绑定的 s 数据，在 slot 上面绑定数据。
 
 ```js
 export default {
@@ -113,7 +117,7 @@ export default {
   data() {
     return {
       list: ["js", "java", "c++"]
-    }
+    };
   },
   render() {
     return (
@@ -148,7 +152,7 @@ export default {
 ```
 
 ```js
-// parent 
+// parent
 <template>
   <div class="slot-scoped">
     <h1>Vue 作用域插槽 | 带数据的插槽</h1>
@@ -164,7 +168,7 @@ export default {
 ### transition 使用
 
 ```html
- <!-- 上传页面 -->
+<!-- 上传页面 -->
 <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
   <UploadFile
     v-if="modalStatus.isShowUploadModal"
@@ -207,8 +211,9 @@ export default {
 #### 获取路由文件
 
 获取配置的路由
+
 ```js
-vm.$router.options.routes
+vm.$router.options.routes;
 ```
 
 ## 进阶活用
@@ -220,15 +225,21 @@ vm.$router.options.routes
 那是因为，我们的自定义组件，最终会渲染成原生的 html 标签，而非类似于这样的自定义组件。如果想让一个普通的 html 标签触发事件，那就需要对它做事件监听（addEventListener）。修饰符 native 的作用就在这里，它可以在背后 帮我们绑定了原生事件，进行监听。
 
 一个常见的场景是，配合 element-ui 做登录界面时，输完账号密码，想按一下回车就能登录。就可以像下面这样用修饰符：
+
 ```vue
-<el-input class="input" v-model="password" type="password" @keyup.enter.native="handleSubmit"></el-input>
+<el-input
+  class="input"
+  v-model="password"
+  type="password"
+  @keyup.enter.native="handleSubmit"
+></el-input>
 ```
 
 ### inject/provide（组件库）
 
 #### provide
 
-这个玩意是提供给组件库用的，组件库是没法用vuex，vue官方才提供个provide，我们用了vuex就不需要这个了。
+这个玩意是提供给组件库用的，组件库是没法用 vuex，vue 官方才提供个 provide，我们用了 vuex 就不需要这个了。
 
 ### watch 高级应用
 
@@ -330,8 +341,8 @@ async created() {
 
 ```js
 EventBus.$emit("setFeatureLegend", {
-    num:this.num,
-    deg:this.deg
+  num: this.num,
+  deg: this.deg
 });
 ```
 
@@ -370,44 +381,46 @@ provide() {
 #### proxy
 
 代理 `vm._props.xxx` to `vm.xxx`。
+
 ```js
 const sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
   get: noop,
   set: noop
-}
+};
 
-export function proxy (target: Object, sourceKey: string, key: string) {
-  sharedPropertyDefinition.get = function proxyGetter () {
-    return this[sourceKey][key]
-  }
-  sharedPropertyDefinition.set = function proxySetter (val) {
-    this[sourceKey][key] = val
-  }
-  Object.defineProperty(target, key, sharedPropertyDefinition)
+export function proxy(target: Object, sourceKey: string, key: string) {
+  sharedPropertyDefinition.get = function proxyGetter() {
+    return this[sourceKey][key];
+  };
+  sharedPropertyDefinition.set = function proxySetter(val) {
+    this[sourceKey][key] = val;
+  };
+  Object.defineProperty(target, key, sharedPropertyDefinition);
 }
 
 // 使用
-proxy(vm, `_props`, key)
+proxy(vm, `_props`, key);
 ```
 
 #### observe
 
 `observe` 的功能就是用来监测数据的变化，它的定义时在 `src/core/observer/index.js` 中
+
 ```js
 /**
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
  */
-export function observe (value: any, asRootData: ?boolean): Observer | void {
+export function observe(value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
-    return
+    return;
   }
-  let ob: Observer | void
-  if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
-    ob = value.__ob__
+  let ob: Observer | void;
+  if (hasOwn(value, "__ob__") && value.__ob__ instanceof Observer) {
+    ob = value.__ob__;
   } else if (
     shouldObserve &&
     !isServerRendering() &&
@@ -415,19 +428,21 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
-    ob = new Observer(value)
+    ob = new Observer(value);
   }
   if (asRootData && ob) {
-    ob.vmCount++
+    ob.vmCount++;
   }
-  return ob
+  return ob;
 }
 ```
+
 `observe` 的方法的作用就是给非 VNode 的对象类型数据添加一个 `Observer`，如果已经添加过则直接返回，否则在满足一定条件下去实例化一个 `Observer` 的对象实例。
 
 #### Observer
 
 `Observer` 是一个类，它的作用是给对象的属性添加 getter 和 setter，用于依赖收集和派发更新。
+
 ```js
 /**
  * Observer class that is attached to each observed
@@ -440,19 +455,17 @@ export class Observer {
   dep: Dep;
   vmCount: number; // number of vms that has this object as root $data
 
-  constructor (value: any) {
-    this.value = value
-    this.dep = new Dep()
-    this.vmCount = 0
-    def(value, '__ob__', this)
+  constructor(value: any) {
+    this.value = value;
+    this.dep = new Dep();
+    this.vmCount = 0;
+    def(value, "__ob__", this);
     if (Array.isArray(value)) {
-      const augment = hasProto
-        ? protoAugment
-        : copyAugment
-      augment(value, arrayMethods, arrayKeys)
-      this.observeArray(value)
+      const augment = hasProto ? protoAugment : copyAugment;
+      augment(value, arrayMethods, arrayKeys);
+      this.observeArray(value);
     } else {
-      this.walk(value)
+      this.walk(value);
     }
   }
 
@@ -461,37 +474,40 @@ export class Observer {
    * getter/setters. This method should only be called when
    * value type is Object.
    */
-  walk (obj: Object) {
-    const keys = Object.keys(obj)
+  walk(obj: Object) {
+    const keys = Object.keys(obj);
     for (let i = 0; i < keys.length; i++) {
-      defineReactive(obj, keys[i])
+      defineReactive(obj, keys[i]);
     }
   }
 
   /**
    * Observe a list of Array items.
    */
-  observeArray (items: Array<any>) {
+  observeArray(items: Array<any>) {
     for (let i = 0, l = items.length; i < l; i++) {
-      observe(items[i])
+      observe(items[i]);
     }
   }
 }
 ```
+
 `Observer` 的构造函数逻辑很简单，首先实例化 `Dep` 对象，接着通过执行 `def` 函数把自身实例添加到数据对象 `value` 的 `__ob__` 对象上。`def` 的定义在 `src/core/util/lang.js` 中：
+
 ```js
 /**
  * Define a property.
  */
-export function def (obj: Object, key: string, val: any, enumerable?: boolean) {
+export function def(obj: Object, key: string, val: any, enumerable?: boolean) {
   Object.defineProperty(obj, key, {
     value: val,
     enumerable: !!enumerable,
     writable: true,
     configurable: true
-  })
+  });
 }
 ```
+
 `def` 函数是一个非常简单的 `Object.defineProperty` 的封装，这就是为什么我们在开发中输出 `data` 上对象类型的数据，会发现该对象多了一个 `__ob__` 的属性。
 
 回到 `Observer` 的构造函数，接下来会对 `value` 做判断，对于数组会调用 `observerArray` 方法，否则对纯对象调用 `walk` 方法。可以看到 `observeArray` 是遍历数组再次调用 `observe` 方法，而 `walk` 方法是遍历对象的 key 调用 `defineReactive` 方法。
@@ -506,63 +522,63 @@ export function def (obj: Object, key: string, val: any, enumerable?: boolean) {
 /**
  * Define a reactive property on an Object.
  */
-export function defineReactive (
+export function defineReactive(
   obj: Object,
   key: string,
   val: any,
   customSetter?: ?Function,
   shallow?: boolean
 ) {
-  const dep = new Dep()
+  const dep = new Dep();
 
-  const property = Object.getOwnPropertyDescriptor(obj, key)
+  const property = Object.getOwnPropertyDescriptor(obj, key);
   if (property && property.configurable === false) {
-    return
+    return;
   }
 
   // cater for pre-defined getter/setters
-  const getter = property && property.get
+  const getter = property && property.get;
   if (!getter && arguments.length === 2) {
-    val = obj[key]
+    val = obj[key];
   }
-  const setter = property && property.set
+  const setter = property && property.set;
 
-  let childOb = !shallow && observe(val)
+  let childOb = !shallow && observe(val);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get: function reactiveGetter () {
-      const value = getter ? getter.call(obj) : val
+    get: function reactiveGetter() {
+      const value = getter ? getter.call(obj) : val;
       if (Dep.target) {
-        dep.depend()
+        dep.depend();
         if (childOb) {
-          childOb.dep.depend()
+          childOb.dep.depend();
           if (Array.isArray(value)) {
-            dependArray(value)
+            dependArray(value);
           }
         }
       }
-      return value
+      return value;
     },
-    set: function reactiveSetter (newVal) {
-      const value = getter ? getter.call(obj) : val
+    set: function reactiveSetter(newVal) {
+      const value = getter ? getter.call(obj) : val;
       /* eslint-disable no-self-compare */
       if (newVal === value || (newVal !== newVal && value !== value)) {
-        return
+        return;
       }
       /* eslint-enable no-self-compare */
-      if (process.env.NODE_ENV !== 'production' && customSetter) {
-        customSetter()
+      if (process.env.NODE_ENV !== "production" && customSetter) {
+        customSetter();
       }
       if (setter) {
-        setter.call(obj, newVal)
+        setter.call(obj, newVal);
       } else {
-        val = newVal
+        val = newVal;
       }
-      childOb = !shallow && observe(newVal)
-      dep.notify()
+      childOb = !shallow && observe(newVal);
+      dep.notify();
     }
-  })
+  });
 }
 ```
 
@@ -582,11 +598,12 @@ export function defineReactive (
 #### Dep
 
 `Dep` 是整个 getter 依赖收集的核心，它的定义在 `src/core/observer/dep.js` 中：
-```js
-import type Watcher from './watcher'
-import { remove } from '../util/index'
 
-let uid = 0
+```js
+import type Watcher from "./watcher";
+import { remove } from "../util/index";
+
+let uid = 0;
 
 /**
  * A dep is an observable that can have multiple
@@ -597,30 +614,30 @@ export default class Dep {
   id: number;
   subs: Array<Watcher>;
 
-  constructor () {
-    this.id = uid++
-    this.subs = []
+  constructor() {
+    this.id = uid++;
+    this.subs = [];
   }
 
-  addSub (sub: Watcher) {
-    this.subs.push(sub)
+  addSub(sub: Watcher) {
+    this.subs.push(sub);
   }
 
-  removeSub (sub: Watcher) {
-    remove(this.subs, sub)
+  removeSub(sub: Watcher) {
+    remove(this.subs, sub);
   }
 
-  depend () {
+  depend() {
     if (Dep.target) {
-      Dep.target.addDep(this)
+      Dep.target.addDep(this);
     }
   }
 
-  notify () {
+  notify() {
     // stabilize the subscriber list first
-    const subs = this.subs.slice()
+    const subs = this.subs.slice();
     for (let i = 0, l = subs.length; i < l; i++) {
-      subs[i].update()
+      subs[i].update();
     }
   }
 }
@@ -628,16 +645,16 @@ export default class Dep {
 // the current target watcher being evaluated.
 // this is globally unique because there could be only one
 // watcher being evaluated at any time.
-Dep.target = null
-const targetStack = []
+Dep.target = null;
+const targetStack = [];
 
-export function pushTarget (_target: ?Watcher) {
-  if (Dep.target) targetStack.push(Dep.target)
-  Dep.target = _target
+export function pushTarget(_target: ?Watcher) {
+  if (Dep.target) targetStack.push(Dep.target);
+  Dep.target = _target;
 }
 
-export function popTarget () {
-  Dep.target = targetStack.pop()
+export function popTarget() {
+  Dep.target = targetStack.pop();
 }
 ```
 
@@ -868,9 +885,10 @@ vm: Component;
 ![](../.vuepress/public/images/vue-reactive-collect-dep.png)
 
 依赖收集过程分析：
+
 - 一个数据如 data 在初始化的时候，会在 getter 中新建一个 `dep` 依赖类，里面有 subs 用来存放管理 `watcher`。
 - 当 render 方法访问这个数据时，它的 getter 被触发，会新建一个 watcher 观察者，然后 watcher 使用内部的方法调用之前声明`dep`,把自己添加进去 `dep` 的 subs 或者从中移除，这样就完成了依赖的收集。
-这样下次，访问 setter 的 时候，就可以派发更新了。
+  这样下次，访问 setter 的 时候，就可以派发更新了。
 
 #### 总结
 
@@ -882,51 +900,51 @@ vm: Component;
 /**
  * Define a reactive property on an Object.
  */
-export function defineReactive (
+export function defineReactive(
   obj: Object,
   key: string,
   val: any,
   customSetter?: ?Function,
   shallow?: boolean
 ) {
-  const dep = new Dep()
+  const dep = new Dep();
 
-  const property = Object.getOwnPropertyDescriptor(obj, key)
+  const property = Object.getOwnPropertyDescriptor(obj, key);
   if (property && property.configurable === false) {
-    return
+    return;
   }
 
   // cater for pre-defined getter/setters
-  const getter = property && property.get
-  const setter = property && property.set
+  const getter = property && property.get;
+  const setter = property && property.set;
   if ((!getter || setter) && arguments.length === 2) {
-    val = obj[key]
+    val = obj[key];
   }
 
-  let childOb = !shallow && observe(val)
+  let childOb = !shallow && observe(val);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     // ...
-    set: function reactiveSetter (newVal) {
-      const value = getter ? getter.call(obj) : val
+    set: function reactiveSetter(newVal) {
+      const value = getter ? getter.call(obj) : val;
       /* eslint-disable no-self-compare */
       if (newVal === value || (newVal !== newVal && value !== value)) {
-        return
+        return;
       }
       /* eslint-enable no-self-compare */
-      if (process.env.NODE_ENV !== 'production' && customSetter) {
-        customSetter()
+      if (process.env.NODE_ENV !== "production" && customSetter) {
+        customSetter();
       }
       if (setter) {
-        setter.call(obj, newVal)
+        setter.call(obj, newVal);
       } else {
-        val = newVal
+        val = newVal;
       }
-      childOb = !shallow && observe(newVal)
-      dep.notify()
+      childOb = !shallow && observe(newVal);
+      dep.notify();
     }
-  })
+  });
 }
 ```
 
@@ -936,30 +954,30 @@ export function defineReactive (
  * Jobs with duplicate IDs will be skipped unless it's
  * pushed when the queue is being flushed.
  */
-export function queueWatcher (watcher: Watcher) {
-  const id = watcher.id
+export function queueWatcher(watcher: Watcher) {
+  const id = watcher.id;
   if (has[id] == null) {
-    has[id] = true
+    has[id] = true;
     if (!flushing) {
-      queue.push(watcher)
+      queue.push(watcher);
     } else {
       // if already flushing, splice the watcher based on its id
       // if already past its id, it will be run next immediately.
-      let i = queue.length - 1
+      let i = queue.length - 1;
       while (i > index && queue[i].id > watcher.id) {
-        i--
+        i--;
       }
-      queue.splice(i + 1, 0, watcher)
+      queue.splice(i + 1, 0, watcher);
     }
     // queue the flush
     if (!waiting) {
-      waiting = true
-      nextTick(flushSchedulerQueue)
+      waiting = true;
+      nextTick(flushSchedulerQueue);
     }
   }
 }
-
 ```
+
 这里引入了
 
 ![](../.vuepress/public/images/vue-reactive-dispatch-update.png)
@@ -980,6 +998,7 @@ JS 是单线程的，它是基于事件循环的。事件循环大致分为以�
 4. 主线程不断重复上面的第三步。
 
 主线程的执行过程就是一个 tick，而所有的异步结果都是通过“任务队列”来调度。消息队列中存放的是一个个的任务（task）。规范中规定“task”分为两大类，分别是 macor 和 microtask，并且每个 macrotask 结束后，都要清空所有 microtask。
+
 ```js
 for (macroTask of macroTaskQueue) {
   // 1. Handle current MACRO-TASK
@@ -1001,19 +1020,19 @@ for (macroTask of macroTaskQueue) {
 /* @flow */
 /* globals MessageChannel */
 
-import { noop } from 'shared/util'
-import { handleError } from './error'
-import { isIOS, isNative } from './env'
+import { noop } from "shared/util";
+import { handleError } from "./error";
+import { isIOS, isNative } from "./env";
 
-const callbacks = []
-let pending = false
+const callbacks = [];
+let pending = false;
 
-function flushCallbacks () {
-  pending = false
-  const copies = callbacks.slice(0)
-  callbacks.length = 0
+function flushCallbacks() {
+  pending = false;
+  const copies = callbacks.slice(0);
+  callbacks.length = 0;
   for (let i = 0; i < copies.length; i++) {
-    copies[i]()
+    copies[i]();
   }
 }
 
@@ -1025,105 +1044,109 @@ function flushCallbacks () {
 // when state is changed right before repaint (e.g. #6813, out-in transitions).
 // Here we use microtask by default, but expose a way to force (macro) task when
 // needed (e.g. in event handlers attached by v-on).
-let microTimerFunc
-let macroTimerFunc
-let useMacroTask = false
+let microTimerFunc;
+let macroTimerFunc;
+let useMacroTask = false;
 
 // Determine (macro) task defer implementation.
 // Technically setImmediate should be the ideal choice, but it's only available
 // in IE. The only polyfill that consistently queues the callback after all DOM
 // events triggered in the same loop is by using MessageChannel.
 /* istanbul ignore if */
-if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+if (typeof setImmediate !== "undefined" && isNative(setImmediate)) {
   macroTimerFunc = () => {
-    setImmediate(flushCallbacks)
-  }
-} else if (typeof MessageChannel !== 'undefined' && (
-  isNative(MessageChannel) ||
-  // PhantomJS
-  MessageChannel.toString() === '[object MessageChannelConstructor]'
-)) {
-  const channel = new MessageChannel()
-  const port = channel.port2
-  channel.port1.onmessage = flushCallbacks
+    setImmediate(flushCallbacks);
+  };
+} else if (
+  typeof MessageChannel !== "undefined" &&
+  (isNative(MessageChannel) ||
+    // PhantomJS
+    MessageChannel.toString() === "[object MessageChannelConstructor]")
+) {
+  const channel = new MessageChannel();
+  const port = channel.port2;
+  channel.port1.onmessage = flushCallbacks;
   macroTimerFunc = () => {
-    port.postMessage(1)
-  }
+    port.postMessage(1);
+  };
 } else {
   /* istanbul ignore next */
   macroTimerFunc = () => {
-    setTimeout(flushCallbacks, 0)
-  }
+    setTimeout(flushCallbacks, 0);
+  };
 }
 
 // Determine microtask defer implementation.
 /* istanbul ignore next, $flow-disable-line */
-if (typeof Promise !== 'undefined' && isNative(Promise)) {
-  const p = Promise.resolve()
+if (typeof Promise !== "undefined" && isNative(Promise)) {
+  const p = Promise.resolve();
   microTimerFunc = () => {
-    p.then(flushCallbacks)
+    p.then(flushCallbacks);
     // in problematic UIWebViews, Promise.then doesn't completely break, but
     // it can get stuck in a weird state where callbacks are pushed into the
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
-    if (isIOS) setTimeout(noop)
-  }
+    if (isIOS) setTimeout(noop);
+  };
 } else {
   // fallback to macro
-  microTimerFunc = macroTimerFunc
+  microTimerFunc = macroTimerFunc;
 }
 
 /**
  * Wrap a function so that if any code inside triggers state change,
  * the changes are queued using a (macro) task instead of a microtask.
  */
-export function withMacroTask (fn: Function): Function {
-  return fn._withTask || (fn._withTask = function () {
-    useMacroTask = true
-    const res = fn.apply(null, arguments)
-    useMacroTask = false
-    return res
-  })
+export function withMacroTask(fn: Function): Function {
+  return (
+    fn._withTask ||
+    (fn._withTask = function() {
+      useMacroTask = true;
+      const res = fn.apply(null, arguments);
+      useMacroTask = false;
+      return res;
+    })
+  );
 }
 
-export function nextTick (cb?: Function, ctx?: Object) {
-  let _resolve
+export function nextTick(cb?: Function, ctx?: Object) {
+  let _resolve;
   callbacks.push(() => {
     if (cb) {
       try {
-        cb.call(ctx)
+        cb.call(ctx);
       } catch (e) {
-        handleError(e, ctx, 'nextTick')
+        handleError(e, ctx, "nextTick");
       }
     } else if (_resolve) {
-      _resolve(ctx)
+      _resolve(ctx);
     }
-  })
+  });
   if (!pending) {
-    pending = true
+    pending = true;
     if (useMacroTask) {
-      macroTimerFunc()
+      macroTimerFunc();
     } else {
-      microTimerFunc()
+      microTimerFunc();
     }
   }
   // $flow-disable-line
-  if (!cb && typeof Promise !== 'undefined') {
+  if (!cb && typeof Promise !== "undefined") {
     return new Promise(resolve => {
-      _resolve = resolve
-    })
+      _resolve = resolve;
+    });
   }
 }
 ```
 
 `next-tick.js` 声明了 `microTimerFunc` 和 `macroTimerFunc` 2 个变量，它们分别对应的是 microTask 的函数和 macro task 的函数。对于 macro task 的实现，优先监测是否支持原生的 `setImmediate`，这是一个高版本 IE 和 Edge 才支持的特性。不支持的话再去检测是否支持原生的 `MessageChannel`，如果也不支持的话就会降级为 s`etTimeout 0`；而对于 micro task 的实现，则检测浏览器是否原生支持 `Promise`，不支持的话直接指向 macro task 的实现。
 
-`next-tick.js` 对外暴露了2个函数，先来看 `nextTick` ，这就是我们在上一节执行 `nextTick(flushSchedulerQueue)` 所用到的函数。它的逻辑是这样的：
+`next-tick.js` 对外暴露了 2 个函数，先来看 `nextTick` ，这就是我们在上一节执行 `nextTick(flushSchedulerQueue)` 所用到的函数。它的逻辑是这样的：
+
 1. 把 传入的回调函数 `cb` 压入 `callbacks` 数组；
 2. 最后一次性根据`useMacroTask` 条件执行 `macroTimerFunc` 或者是 `microTimerFunc` ，而它们都会在下一个 `tick` 执行 `flushCallbacks`
-3. `flushCallbacks` 对 `callbacks` 遍历，然后执行响应的回调函数。 
-
+3. `flushCallbacks` 对 `callbacks` 遍历，然后执行响应的回调函数。
 
 #### 什么时候执行 mictroTask 的处理，什么时候执行 macroTask 的处理？
 
@@ -1154,7 +1177,7 @@ function add (
 ...
 ```
 
-#### nextTick为什么要microtask优先？
+#### nextTick 为什么要 microtask 优先？
 
 动画性能
 
@@ -1171,13 +1194,13 @@ function add (
   - 把此虚拟 DOM 转成真实 DOM 并插入页面中
   - 如果有事件发生修改了虚拟 DOM
   - 比较两棵虚拟 DOM 树的差异，得到差异对象
-  - 把差异对象应用到真正的 DOM 树上。 
+  - 把差异对象应用到真正的 DOM 树上。
 
 ### vue 组件重置状态（强制刷新）
 
 #### 父子组件，可以访问组件的情况下
 
-- 子组件对外提供重置方法或Prop
+- 子组件对外提供重置方法或 Prop
 - V-if 强制刷新
 - key 强制刷新（`key: this.id = +new Date()`）
 
@@ -1191,7 +1214,7 @@ function add (
 
 #### 前置知识
 
-#### CPU 
+#### CPU
 
 #### 进程
 
@@ -1230,11 +1253,11 @@ selectedIndustryApplication: {
 
 ### Vue 中 mixin 和 extend 的区别和使用场景
 
-mixin是对Vue类的options进行混入。所有Vue的实例对象都会具备混入进来的配置行为。
+mixin 是对 Vue 类的 options 进行混入。所有 Vue 的实例对象都会具备混入进来的配置行为。
 
-extend是产生一个继承自Vue类的子类，只会影响这个子类的实例对象，不会对Vue类本身以及Vue类的实例对象产生影响。
+extend 是产生一个继承自 Vue 类的子类，只会影响这个子类的实例对象，不会对 Vue 类本身以及 Vue 类的实例对象产生影响。
 
-详见：[Vue中mixin和extend的区别和使用场景](https://juejin.im/post/5d4175a76fb9a06ae17d5589#heading-6)
+详见：[Vue 中 mixin 和 extend 的区别和使用场景](https://juejin.im/post/5d4175a76fb9a06ae17d5589#heading-6)
 
 ### 存储路由参数，解决存储 params 的刷新丢失问题
 
@@ -1253,9 +1276,11 @@ localStorage.save(PRODUCTROUTERPARAMS, {
 ### 权限路由
 
 流程：
+
 1. 获取权限路由（进行扁平化格式化）➡ 获得格式化的路由 permissionMap
 2. 获得本地设置的路由，递归遍历路由每个 route，在 permissionMap 寻找是否存在 route，如果存在则返回该 permissionInfo 的信息。
 3. 获得合并后的路由 accessRoutes ，然后在路由拦截里动态添加路由
+
 ```js
 /** *
  * @description 格式化权限信息，将array转为hash
@@ -1264,7 +1289,7 @@ localStorage.save(PRODUCTROUTERPARAMS, {
  */
 const formatPermission = (permission, permissionMap = {}) => {
   if (Array.isArray(permission)) {
-    permission.forEach((item, index) => { 
+    permission.forEach((item, index) => {
       const { title, name, type, meta, code } = item;
       if (type === "route") {
         const permissionInfo = { ...meta, title, code, index };
@@ -1351,11 +1376,12 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 #### 当出现重定向的问题时如何解决 404 的问题
 
 运维把一级系统的子系统路由删掉了，但是一级系统设置了 redirect 属性值为子系统路由，这种情况如何处理？
-方案一：首先判断`tmp.redirect`是否存在，该一级系统的这个重定向子系统是否存在（路由信息），不存在的话，顺位直接寻找下一个，然后设置 `tmp.redirect= { name: firstChildName } ` 
+方案一：首先判断`tmp.redirect`是否存在，该一级系统的这个重定向子系统是否存在（路由信息），不存在的话，顺位直接寻找下一个，然后设置 `tmp.redirect= { name: firstChildName }`
 都不存在的话，则把这个删除重定向的属性`delete tmp.redirect`。
 
 原则是：需要把要重定向的系统路由放到第一位。针对这个痛点，解决方案是先判断对应的 redirect 的路由权限是否存在，不存在再走下面的逻辑。
 注意要处理：redirect 的两种情况，它有可能是字符串 path 形式，也可能是对象 `{name: 'xxx'}` 形式。
+
 ```js
 const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
   const res = [];
@@ -1433,12 +1459,11 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 
 需求：
 
-- 在访问过程中session过期了，我点某个功能的时候会跳到登录页，这个时候我肯定是想，我完成登录后还是回到我之前的页面
-- 一种场景是有人分享给你一个系统链接 让你看某个模块的内容，但是此时你不是登录状态 那登录之后进的还是portal页面，并不是他想让你看到的那个页面
+- 在访问过程中 session 过期了，我点某个功能的时候会跳到登录页，这个时候我肯定是想，我完成登录后还是回到我之前的页面
+- 一种场景是有人分享给你一个系统链接 让你看某个模块的内容，但是此时你不是登录状态 那登录之后进的还是 portal 页面，并不是他想让你看到的那个页面
 
 系统有个功能，就是如果获取用户权限表失败的时候，会跳回到登录页，跳回之前会把用户要进入的路由记录到 cookie，然后下次登录重定向到此路由页面，xxx 有几个页面是携带路由参数的，我们发现修复之前 cookie 上记录的是没带参数的，所以重定向渲染页面就会报错，解决方法就是要把参数写入到 cookie 里，本来打算去把路由的 query 对象格式化存到 cookie 里，后来看了下文档，发现有个`fullPath`值可以解决
 这样就不用写对象格式化参数的逻辑或者用`qs`库，vue-router 确实很贴心了。
-
 
 ### 双向绑定
 
@@ -1465,12 +1490,13 @@ handleClick(name) {
   this.$emit("update:currentSelectedTask", item);
 },
 ```
+
 ## 参考资料
 
 - [vue 中 8 种组件通信方式, 值得收藏!](https://juejin.im/post/5d267dcdf265da1b957081a3)
 - [Vue.js 组件编码规范](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
 - [前端组件设计原则](https://juejin.im/post/5c49cff56fb9a049bd42a90f#heading-4)
 - [https://juejin.im/post/5bb355dae51d450ea4020b42](https://juejin.im/post/5bb355dae51d450ea4020b42)
-- [从event loop规范探究javaScript异步及浏览器更新渲染时机](https://github.com/aooy/blog/issues/5)
-- [深入理解vue中的slot与slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2) 
-- [面试官：你了解 vue 的diff算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。
+- [从 event loop 规范探究 javaScript 异步及浏览器更新渲染时机](https://github.com/aooy/blog/issues/5)
+- [深入理解 vue 中的 slot 与 slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2)
+- [面试官：你了解 vue 的 diff 算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。

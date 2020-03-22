@@ -3,52 +3,35 @@
 ## Commit message 的作用
 
 1. 提供更多的历史信息，方便快速浏览。
-2. 可以过滤某些commit（比如文档改动），便于快速查找信息。
+2. 可以过滤某些 commit（比如文档改动），便于快速查找信息。
+
 ```bash
 git log <last release> HEAD --grep feature
 ```
-3. 可以直接从commit生成Change log。
+
+3. 可以直接从 commit 生成 Change log。
 
 ## Commit Message 格式
 
-Commitizen是一个撰写合格 Commit message 的工具。
-1. 安装
+Commitizen 是一个撰写合格 Commit message 的工具。
+
+1. 项目级安装
+
 ```bash
 yarn add commitizen cz-conventional-changelog --dev
 ```
+
 2. 之后在 `package.json` 添加脚本 `"commit": "git-cz"`
-```bash
+
+```json
 {
-  "name": "gzyitihua",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "test": "eslint",
+  "script": {
+    // ...,
     "commit": "git-cz"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint",
-      "git add"
-    ]
-  },
-  "devDependencies": {
-    "commitizen": "^4.0.3",
-    "cz-conventional-changelog": "^3.0.2",
-    "cz-customizable": "^6.2.0",
-    "eslint": "^6.0.0",
-    "husky": "^2.4.1",
-    "lint-staged": "^8.2.1"
-  },
-  "dependencies": {},
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-customizable"
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
@@ -59,6 +42,7 @@ yarn add commitizen cz-conventional-changelog --dev
 也许 Angular 的那套规范我们不习惯, 那么可以通过指定 Adapter cz-customizable 指定一套符合自己团队的规范。
 
 1. 全局 或 项目级别安装:
+
 ```bash
 yarn add global cz-customizable
 or
@@ -66,6 +50,7 @@ yarn add cz-customizable --dev
 ```
 
 2. 修改 .czrc 或 package.json 中的 config 为:
+
 ```bash
 { "path": "cz-customizable" }
 or
@@ -75,7 +60,9 @@ or
     }
   }
 ```
+
 3. 同时在~/ 或项目目录下创建 .cz-config.js 文件, 维护你想要的格式，如
+
 ```bash
 'use strict';
 module.exports = {
