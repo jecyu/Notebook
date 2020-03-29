@@ -7,6 +7,8 @@ webpack 作为一个模块打包机，能做什么？
 - 模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。
 - 自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。
 
+![](../.vuepress/public/images/webpack-learn-route.jpeg)
+
 ## 基础
 
 使用 webpack4，因为抽离了 webpack-cli，所以至少需要安装 webpack 和 webpack cli。
