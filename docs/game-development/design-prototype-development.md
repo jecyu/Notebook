@@ -1860,6 +1860,7 @@ pos.x += 0.01f;
 不管游戏的帧速率如何，基于时间的运动都可以保证游戏元素以恒定速度运动，这样可以保证游戏在最新配置和老配置的计算机上都可以玩。基于时间的编程在编写移动设备上运行的游戏时非常重要，因为移动设备的配置变化得非常快。
 
 补充：
+
 1. **帧率为 25fps，即一秒变化 25 次，而帧率为 100 fps，即一秒变化 100 次，虽然基于时间的运动速度是一样，但是帧率低的由于变化次数少，变化的速率太慢骗不过眼睛，会让玩家明显感觉画面卡顿不流畅。**
 2. 对于根据帧率计算随机率时，如果放在 `Update()` 时在每帧进行一次计算会不准确，因此低帧率的概率明显低于高帧率的概率。所以在 Unity 需要把这些逻辑放在 `FixUpdate()` 函数里，它根据时间来执行。
 
@@ -1985,7 +1986,915 @@ public class ApplePicker : MonoBehaviour
 
 ### 游戏原型 2：《爆破任务》
 
+#### 游戏原型概念
+
+在本游戏中，玩家将使用弹弓把弹丸发射到一座城堡中，目标是炸掉城堡。每座城堡会有一个目标区域，弹丸需要碰到这些区域才能进入下一关。
+
+以下是我们希望看到的事件顺序：
+
+1. 当玩家的鼠标光标处于弹弓附近的特定区域内时，弹弓会发光。
+2. 玩家在弹弓发光时按下鼠标左键（Unity 中的 button 0），会在鼠标光标位置出现一发弹丸。
+3. 玩家按下鼠标并拖动时，弹丸会随鼠标移动，但会保持在弹弓的球状碰撞器内。
+4. 在弹弓架的两个分叉到弹丸之间会出现两条白线，增加真实感。
+5. 玩家松开鼠标左键时，弹弓会哦把弹丸发射出去。
+6. 城堡位于几米之外，玩家的目标是让城堡倒下并砸到其中的特定区域。
+7. 玩家要达到目标，可发射任意数量的弹丸。每发弹丸会哦留下一条轨迹，玩家可以在下一次发射时作为参考。
+
+#### 绘图资源
+
+如果一个游戏对象（例如 Base）是其他游戏对象的子对象，当修改它的变换组件时，使用的是局部坐标，即设置 Base 相对于其父对象 Slingshot 的相对位置，而不是 Base 在游戏全局世界坐标的位置。
+
+当碰撞器的 Is Trigger 为 true 时，它被称作触发器。在 Unity 中，触发器是物理模拟的构建之一，当其他碰撞器或触发器穿过时，触发器可以发出通知信息。但是，其他对象不会被触发器弹开，这一点有别于普通的碰撞器。我们将使用这个触发器处理弹弓的鼠标交互。
+
+#### 编写游戏原型的代码
+
+在你创建自己的代码时，这是一个很好的方式：实现一个容易编写的小功能并测试，然后再实现另一个小功能。
+
+##### Slingshot 类
+
+鼠标移入移出
+
+```cs
+  //  OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false
+  private void OnMouseEnter()
+  {
+    //print("Slingshot: OnMouseEnter()");
+    launchPoint.SetActive(true);
+  }
+
+  private void OnMouseExit()
+  {
+    //print("Slingshot: OnMouseExit()");
+    launchPoint.SetActive(false);
+  }
+```
+
+游戏对象的 `SetActive()` 方法可以让游戏渲染或忽视该游戏对象。如果游戏对象的 `active` 属性设置为 `false`，它就不会显示在屏幕上，也不会接受 `Update()` 或 `OnCollisionEnter()` 等任何函数调用。这时，游戏对象并没有销毁，它只是未激活。在游戏对象的检视面板中，顶部游戏对象名称左侧的复选框代表了游戏的激活状态。
+
+<u>游戏对象的组件也有类似的复选框，它表示该组件是否已启用。</u>对于大多数组件（例如渲染器 Renderer 和【碰撞器 Collider），可以通过代码设置其是否启用（例如 `Renderer.Enabled = false`），但出于某种原因，`Halo` 组件在 Unity 中不可访问，<u>也就是说，我们不能通过 C# 脚本操作 Halo 组件。在 Unity 中，你会时不时地遇到这类问题，你需要换一种方法解决。在这里，我们不能禁用 Halo，所以我们转而停用包含该组件的游戏对象。</u>
+
+##### 实例化一个弹丸
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Slingshot : MonoBehaviour
+{
+  static public Slingshot S; // FollowCam 的单例对象
+  // 在 Unity 检视面板中设置的字段
+  public GameObject prefabProjectile;
+  public float velocityMult = 4f;
+  public bool ______________________;
+
+  // 动态设置的字段
+  public GameObject launchPoint;
+  public Vector3 launchPos;
+  public GameObject projectile;
+  public bool aimingMode;
+
+
+  private void Awake()
+  {
+    S = this;
+    launchPoint = GameObject.Find("LaunchPoint");
+    if (launchPoint != null)
+    {
+      launchPoint.SetActive(false);
+      launchPos = launchPoint.GetComponent<Transform>().position;
+    }
+  }
+
+  //// Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 如果弹弓未处于瞄准模（aimingMode），则跳过以下代码
+    if (!aimingMode) return;
+    // 获取鼠标光标在二维窗口中的坐标
+    Vector3 mousePos2D = Input.mousePosition;
+    // 将鼠标光标位置转换为三维世界坐标
+    mousePos2D.z = -Camera.main.transform.position.z;
+    Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(mousePos2D);
+
+    // 计算 launchPos 到 mousePos3D 两点之间的坐ba差
+    Vector3 mouseDelta = mousePos3D - launchPos;
+
+    // 将坐标差限制在弹弓的球状碰撞器半径范围内
+    float maxMagnitude = this.gameObject.GetComponent<SphereCollider>().radius;
+    if (mouseDelta.magnitude > maxMagnitude)
+    {
+      mouseDelta.Normalize(); // 保持 MouseDelta 方向不变将它长度变为1
+      mouseDelta *= maxMagnitude;
+    }
+    // 将 projectitle 移动到新位置
+    Vector3 projPos = launchPos + mouseDelta;
+    projectile.transform.position = projPos;
+
+    if (Input.GetMouseButtonUp(0))
+    {
+      // 如果已经公开鼠标
+      aimingMode = false;
+      projectile.GetComponent<Rigidbody>().isKinematic = false;
+      projectile.GetComponent<Rigidbody>().velocity = -mouseDelta * velocityMult;
+      FollowCam.S.poi = projectile; // 同步摄像机兴趣点
+      projectile = null;
+      MissionDemolition.ShotFired(); // 增加发射次数
+    }
+  }
+
+  //  OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false
+  private void OnMouseEnter()
+  {
+    //print("Slingshot: OnMouseEnter()");
+    launchPoint.SetActive(true);
+  }
+
+  private void OnMouseExit()
+  {
+    //print("Slingshot: OnMouseExit()");
+    launchPoint.SetActive(false);
+  }
+
+  `
+  private void OnMouseDown()
+  {
+    // 玩家在鼠标光标悬停在弹弓上方时按下了鼠标左键
+    aimingMode = true;
+    // 实例化一个弹丸
+    projectile = Instantiate(prefabProjectile) as GameObject;
+    // 该实例的初始位置位于 launchPoint 处
+    projectile.transform.position = launchPos;
+    // 设置当前的 Kinematic 属性
+    projectile.GetComponent<Rigidbody>().isKinematic = true;
+  }`
+
+}
+```
+
+1. 这里首先要注意的是 Slingshot 类代码最上方的附加字段（即变量）。有个全局布尔类型变量看起来特别奇怪：\***\*\*\*\*\***\_\_\***\*\*\*\*\***。这个变量用于一种非常特殊的目的：<u>在检视面板中，它是 Slingshot 脚本组件的分隔线，它的上方是需要在检视面板中设置的变量，下方是在游戏运行时通过代码动态设置的变量。</u>因为在 Unity 检视面板中，序列化的全局变量是按其声明顺序排列的，所以在检视面板中，<u>由下划线构成的布尔型变量可以充当预先设置变量和动态设置变量的分隔线。</u>
+2. 当 Rigidbody 为运动学刚体（即 `isKinematic == true`）时，对象的运动不会自动遵循物流源流，但仍然属于物理模拟的构成部分（即刚体的运动不会收到碰撞和重力的影响，但仍然会影响其他非运动学刚体的运动）。
+3. 向量加减运算是将各向量分别相加减。图中以二维向量为例，但三维向量也适用同样的方法。向量 A 和 B 的 x、y 分别相减，得到一个新的二维向量（2-5，8-3），即（-3，5）。<u>图中演示的 A-B 得到的是 A 和 B 之间的向量距离，同时也是从点 B 移动到点 A 所移动的方向和距离。</u>为方便记忆，可写为 AMBLAA（A Minus B Looks At A，即向量 A-B 的方向为指向 A 点）。
+
+<u>这在 `Update()` 方法中非常重要，因为弹丸需要位于从 launchPos 出发指向当前鼠标光标位置的向量之上，这一向量称作 mouseDelta。</u>
+
+![](../.vuepress/public/images/vector-calculation.png)
+
+```cs
+ // Update is called once per frame
+  void Update()
+  {
+    // 如果弹弓未处于瞄准模（aimingMode），则跳过以下代码
+    if (!aimingMode) return;
+    // 获取鼠标光标在二维窗口中的坐标
+    Vector3 mousePos2D = Input.mousePosition;
+    // 将鼠标光标位置转换为三维世界坐标
+    mousePos2D.z = -Camera.main.transform.position.z;
+    Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(mousePos2D);
+
+    // 计算 launchPos 到 mousePos3D 两点之间的坐ba差
+    Vector3 mouseDelta = mousePos3D - launchPos;
+
+    // 将坐标差限制在弹弓的球状碰撞器半径范围内
+    float maxMagnitude = this.gameObject.GetComponent<SphereCollider>().radius;
+    if (mouseDelta.magnitude > maxMagnitude)
+    {
+      mouseDelta.Normalize(); // 保持 MouseDelta 方向不变将它长度变为1
+      mouseDelta *= maxMagnitude;
+    }
+    // 将 projectitle 移动到新位置
+    Vector3 projPos = launchPos + mouseDelta;
+    projectile.transform.position = projPos;
+  }
+```
+
+##### 自动跟踪摄像机
+
+在弹丸发射以后，我们需要让<u>主摄像机（\_Main Camera）跟踪它</u>，但是摄像机的行为还要更为复杂一些。对摄像机行为的完整描述如下：
+
+1. 弹弓处于瞄准状态（aimingMode == true），摄像机固定于初始位置。
+2. 弹丸发射之后，摄像机跟踪它（加一些平滑效果使画面更流畅）。
+3. 摄像机随弹丸移到空中之后，要增加 `Camera.orthographiceSize`，使地面（Ground）始终保持在画面底部。
+4. 当弹丸停止运动之后，摄像机停止跟踪并返回到初始位置。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FollowCam : MonoBehaviour
+{
+  static public FollowCam S; // FollowCam 的单例对象
+  // 在 unity 检视面板中设置的字段
+  public float easing = 0.05f;
+  public Vector2 minXY;
+  public bool _______________________________;
+
+  // 动态设置的字段
+  public GameObject poi; // 兴趣点
+  public float camZ; // 摄像机的 Z 坐标
+
+  private void Awake()
+  {
+    S = this;
+    camZ = this.transform.position.z; // 摄像机初始 z 坐标
+  }
+
+  // Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  private void FixedUpdate()
+  {
+    Vector3 destination;
+    // 如果兴趣点（poi）不存在，返回 P: [0, 0, 0]
+    if (poi == null)
+    {
+      destination = Vector3.zero;
+    }
+    else
+    {
+
+      // 获取兴趣点的位置
+      destination = poi.transform.position;
+
+      // 如果兴趣点是一个 Projectile 实例，检查它是否已经静止
+      if (poi.tag == "Projectile")
+      {
+        //print(poi.GetComponent<Rigidbody>().IsSleeping());
+        // 如果它处于 sleeping 状态（即未移动）
+        if (poi.GetComponent<Rigidbody>().IsSleeping())
+        {
+          // 返回默认视图
+          poi = null;
+          // 在下一次更新
+          return;
+        }
+      }
+    }
+
+    // 限定 x 和 y 的最小值
+    destination.x = Mathf.Max(minXY.x, destination.x);
+    destination.y = Mathf.Max(minXY.y, destination.y);
+
+    // 在摄像机当前位置和目标位置之间增添插值
+    destination = Vector3.Lerp(transform.position, destination, easing);
+    // 保持 destination.z 的值为 camZ
+    destination.z = camZ;
+    // 将摄像机设置到 destination
+    transform.position = destination;
+    // 设置摄像机的 orthographicSize，使地面始终处于画面之中
+    this.gameObject.GetComponent<Camera>().orthographicSize = destination.y + 10;
+
+  }
+
+
+  // Update is called once per frame
+  void Update()
+  {
+    //if (poi == null) return;
+
+    //// 获取兴趣点的位置
+    //Vector3 destination = poi.transform.position;
+    //// 在摄像机当前位置和目标位置之间增添插值
+    //destination = Vector3.Lerp(transform.position, destination, easing);
+    //// 保持 destination.z 的值为 camZ
+    //destination.z = camZ;
+    //// 将摄像机设置到 destination
+    //transform.position = destination;
+  }
+}
+
+```
+
+首先，你会注意到在 FollowCam 代码的最上方是单例对象 S。“单例模式是一种设计模式，用于游戏中只存在唯一实例的类。”因为 Mission Demolition 游戏中只有一个摄像机，所以很适合使用单例模式。作为一个全局静态变量，单例对象 S 可以在代码任何位置通过 `FollowCam.S` 访问，这样我们可以随时通过 `FollowCam.S.poi` 设置全局字段 poi。
+
+你可能会注意到下面一些问题：
+
+A. 如果把场景面板拉得足够远，你会看到弹丸实际上已经飞出了地面的尽头。
+
+B. 如果朝向地面发射，你会看到弹丸在撞到地面以后既不反弹也不停下来。如果你在发射后按下暂停键，在层级面板中选中 Projectile，然后结束暂停，你会看到它在撞到地面上会无休止地向前滚动。
+
+C. 当弹丸刚发射时，摄像机会跳到 Projectile 的位置，看起来有些突兀。
+
+D. 弹丸到达一定高度之后，画面上只能看到天空，很难看出它的高度。
+
+1. 首先，要解决问题 A，可以把 Ground 的变换组件修改为 P:[100, -10, 0] R:[0, 0, 0] S:[400, 1, 1]。
+2. 要解决问题 B，<u>需要为弹丸添加刚体约束和物理材质（Physic Material）。</u>请在项目面板中选择 Projectile 预设，单击 Rigidbody 组件左侧的三角形展开按钮，勾选 Freeze Position（冻结位置）z 和 Freeze Rotation（冻结旋转轴）x，y，z。Freeze Position z 可以冻结弹丸的 z 坐标，使它不会朝向摄像机移动或远离摄像机（使它与地面依旧将来要添加的城堡处于相同的 z 深度）。
+
+这里，你还需要从<u>Collision Detection（碰撞检测）下拉菜单中选择 Continuous（连续）</u>。若想深入了解碰撞检测的类型，你可以单击 Rigidbody 组件右上角的帮助图标查看帮助文件。简而言之，<u>连续碰撞检测比 Discrete （非连续）更加耗费 CPU 资源，但能够更精确地处理快速移动的物体，例如这里的 Projectile。</u>
+
+3. <u>这些刚体组件设置可以防止弹丸无休止地滚动下去，但是感觉仍然不真实。</u>你生活中一直在体验物理运动，你可以从中直观地感受到哪些行为更像自然、真实世界的物理运动。对于玩家来说，同样如此。也就是说，<u>尽管物理是一个需要大量数学建模的复杂系统，但如果你能让游戏中你的物理符合玩家的习惯，你就不必向他们解释太多数学原理。</u>
+
+为你的物理模拟对象添加一种物理材质，可以让它感觉更为真实。请在菜单栏中执行资源（Assets）-> 创建（Create）-> 物理材质（Physis Material）命令。将其应用到 <u>Projectile.ShereCollider</u>。选中 Projectile 预设，就能在检视面板中看到 PMat_projectile 已经赋给了球状碰撞器的材质。现在再单击播放按钮，你会看到弹丸在你触地之后会反弹起来，而不再是向前滑动。
+
+4. 问题 C 可以通过两种方法共同解决：通过插值使画面更平滑，并对摄像机位置加以限制.
+
+<u>`Vector3.Lerp()` 方法返回两点之间的一个线性插值位置，取两点位置的加权平均值。</u>如果第三个参数 easing 的值为 0，`Lerp()` 会返回第一个参数（transform.position）的位置；如果 easing 的值为 1，`Lerp()` 将返回第二个参数（destination）的位置；如果 easing 值在 0 到 1 之间，则 `Lerp()` 返回值将位于两点之间（当 easing 为 0.5 时，返回两点的中点）。<u>这里让 easing = 0.05，告诉 Unity 让摄像机从当前位置将向兴趣点位置移动，每帧移动 5% 的距离。因为兴趣点的位置在持续移动，所以我哦们会得到一个平滑的摄像机跟踪运动。</u>请尝试使用不同的 easing 值，看看该值如何影响摄像机运动。这是一种非常简单的线性插值方法，并非是基于时间的。
+
+5. 即使有了上述平滑措施，你可能仍然感觉摄像机的运动有些卡顿和不稳定。<u>这是因为物理模拟的更新频率在 50 fps，而 `Update()` 则是以计算机能够达到的最高帧率调用的。在运行速度较快的计算机上，摄像机的更新频率远大于物理模拟，</u>这样一来，每次在弹丸的位置改变之前，摄像机的位置已经更新了数次。<u>要解决这一问题，将 `Update()` 方法的名称改为 `FixUpdate()`。`Update()` 中的代码每帧都会运行一次，而 `FixedUpdate()` 中的代码则是每个物理模拟帧运行一次（50fps），不论计算机速度如何。</u>修改完毕之后，跟踪摄像机的卡顿现象将会得到解决。
+
+6. 现在，我们为跟踪摄像机的位置添加一些限制。
+
+```cs
+ // 限定 x 和 y 的最小值
+ destination.x = Mathf.Max(minXY.x, destination.x);
+ destination.y = Mathf.Max(minXY.y, destination.y);
+```
+
+7. 问题 D 可以通过动态调整摄像机的 orthographicSize 来解决。
+
+##### 相对运动错觉和速度感
+
+跟踪摄像机运动现在已经可以完美工作了，但仍然很难感觉出弹丸的运动快慢，当它在空中飞行的时候更是如此。<u>要解决这一问题，我们需要利用到相对运动错觉的概念。相对运动错觉是由于周围物体快速经过而造成运动感，在二维游戏中的视差滚动就是基于这一原理。在二维游戏中，视差滚动为使前景物体快速经过，而让背景物体以更慢的速度相对于主摄像机移动。</u>
+
+绘制云朵
+
+1. 移除球状碰撞器
+2. 新建一个材质，添加 Shader（着色器）组件旁边的下拉菜单中执行 Self-Illiumin（自发光） > Diffuse （漫射光命令）。这个着色器是自发光的（它自身会发光），同时也会响应场景中的平行光。
+3. 添加一个空对象，把云朵子对象放置进去。
+
+新建一个名为 CloudCrafter 的脚本，将它拖放到 \_\_Scripts 文件夹中并拖放到 \_Main Camera 上。这会为 \_Main Camera 添加第二个脚本组件，<u>在 Unity 中，只要两个脚本不互相冲突（例如，不会在每一帧设置同一游戏对象的位置），这样做没有任何问题。因为 FllowCam 脚本负责移动摄像机，而 CloudCrafter 脚本负责在空中摆放云朵，二者不会发生任何冲突。</u>
+
+CloudCrafter.cs
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CloudCrafter : MonoBehaviour
+{
+
+  // 在 unity 检视面板设置的字段
+  public int numClouds = 40; // 要创建云朵的数量
+  public GameObject[] cloudPrefabs; // 云朵预设的数组
+  public Vector3 cloudPosMin; // 云朵位置的下限
+  public Vector3 cloudPosMax; // 云朵位置的上限
+  public float cloudScaleMin = 1; //云朵的最小缩放比例
+  public float cloudScaleMax = 5; // 云朵的最大缩放比例
+  public float cloudSpeedMult = 0.5f; // 调整云朵速度
+
+  public bool _____________________;
+  // 在代码中动态设置的字段
+  public GameObject[] cloudInstances;
+
+  private void Awake()
+  {
+    // 创建一个 cloudInstances 数组，用于存储所有云朵的实例
+    cloudInstances = new GameObject[numClouds];
+    // 查找 CloudAnchor 父对象
+    GameObject anchor = GameObject.Find("CloudAnchor");
+
+    // 遍历 Cloud[数字]并创建实例
+    GameObject cloud;
+    for (int i = 0; i < numClouds; i++)
+    {
+      // 在 0 到 cloudPrefabs.Length - 1 之间选择一个整数
+      // Random.Range 返回值中不包含范围上限
+      int prefabNum = Random.Range(0, cloudPrefabs.Length);
+      // 创建一个实例
+      cloud = Instantiate(cloudPrefabs[prefabNum]) as GameObject;
+
+      // 设置云朵位置
+      Vector3 cPos = Vector3.zero;
+      cPos.x = Random.Range(cloudPosMin.x, cloudPosMax.x);
+      cPos.y = Random.Range(cloudPosMin.y, cloudPosMax.y);
+
+      // 设置云朵缩放比例
+      float scaleU = Random.value;
+      float scaleVal = Mathf.Lerp(cloudScaleMin, cloudScaleMax, scaleU);
+
+      // 较小的云朵（即 scaleU 值较小）离地面较近
+      cPos.y = Mathf.Lerp(cloudPosMin.y, cPos.y, scaleU);
+      // 较小的云朵距离较远
+      cPos.z = 100 - 90 * scaleU;
+      // 将上述变换数值应用到云朵
+      cloud.transform.position = cPos;
+      cloud.transform.localScale = Vector3.one * scaleVal;
+
+      // 使云朵成为 CloudAnchor 的子对象
+      cloud.transform.parent = anchor.transform;
+      // 将云朵添加到 CloudInstances 数组中
+      cloudInstances[i] = cloud;
+    }
+  }
+
+
+  // Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 遍历所有已创建的云朵
+    foreach (GameObject cloud in cloudInstances)
+    {
+      // 获取云朵的缩放比例和位置
+      float scaleVal = cloud.transform.localScale.x;
+      Vector3 cPos = cloud.transform.position;
+      // 云朵越大，移动速度越快
+      cPos.x -= scaleVal * Time.deltaTime * cloudSpeedMult;
+      // 如果云朵已经位于面板左侧较远位置
+      if (cPos.x <= cloudPosMin.x)
+      {
+        // 则将它放置到最右侧
+        cPos.x = cloudPosMax.x;
+      }
+      // 将新位置应用到云朵上
+      cloud.transform.position = cPos;
+    }
+  }
+}
+
+```
+
+##### 创建城堡
+
+1. 单击坐标轴小手柄 z 轴反方向的箭头，使场景面板切换到正投影视图的后视图。
+
+##### 返回弹弓画面进行另一次发射
+
+有了要击倒的城堡，现在需要添加更多游戏逻辑。当弹丸静止之后，摄像机应返回到弹弓的位置：
+
+1. 首先，<u>应该为 Projectile 预设添加一个 Projectile 标签。</u>在项目面板中选中 Projectile 预设，在检视面板中，点开 Tag 旁边的下拉菜单并选择 Add Tag（添加标签）。单击 Tags 旁边的三角形展开按钮，在 Element0 中输入 Projectile。再次在项目面板中点击 Projectile 预设，从检视面板中更新后的 Tag 列表中选中你 Projectile，为它添加标签。
+2. 打开 Follow Cam 脚本，修改以下代码行：
+
+```cs
+  private void FixedUpdate()
+  {
+    Vector3 destination;
+    // 如果兴趣点（poi）不存在，返回 P: [0, 0, 0]
+    if (poi == null)
+    {
+      destination = Vector3.zero;
+    }
+    else
+    {
+
+      // 获取兴趣点的位置
+      destination = poi.transform.position;
+
+      // 如果兴趣点是一个 Projectile 实例，检查它是否已经静止
+      if (poi.tag == "Projectile")
+      {
+        //print(poi.GetComponent<Rigidbody>().IsSleeping());
+        // 如果它处于 sleeping 状态（即未移动）
+        if (poi.GetComponent<Rigidbody>().IsSleeping())
+        {
+          // 返回默认视图
+          poi = null;
+          // 在下一次更新
+          return;
+        }
+      }
+```
+
+##### 为弹丸添加轨迹
+
+尽管 Unity 中确实有自带的轨迹渲染器（Trail Renderer）效果，但它不能达到我们所要实现的目标，因为我们需要对轨迹进行更多控制。这里，我们将在 <u>Line Renderer（线渲染器）组件的基础之上建立轨迹渲染器：</u>
+
+1. 首先建立一个空白游戏对象，将其命名为 ProjectileLine，为其添加一个轨迹渲染器组件（执行 Components > Effects > Line Renderer 命令）。
+
+2. ProjectileLine.cs
+
+```cs
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class ProjectileLine : MonoBehaviour
+{
+  static public ProjectileLine S; // 单例对象
+  // 在 Unity 检视面板中设置的字段
+  public float minDist = 0.1f;
+  public bool _____________________________________;
+
+  // 在代码中动态设置的字段
+  public LineRenderer line;
+  private GameObject _poi;
+  public List<Vector3> points;
+
+  private void Awake()
+  {
+    S = this; // 设置单例对象
+    // 获取对线渲染器（LineRennderer）的引用
+    line = GetComponent<LineRenderer>();
+    // 在需要使用 LineRenderer 之前，将其禁用
+    line.enabled = false;
+    // 初始化三维向量点的 List
+    points = new List<Vector3>();
+  }
+
+  // 这是一个属性，即伪装成字段的方法
+  public GameObject poi
+  {
+    get
+    {
+      return (_poi);
+    }
+    set
+    {
+      _poi = value;
+      if (_poi != null)
+      {
+        // 当把 _poi 设置为新对象时，将复位其所有内容
+        line.enabled = false;
+        points = new List<Vector3>();
+        AddPoint();
+      }
+    }
+  }
+
+  // 这个函数用于直接清除线条
+  public void Clear()
+  {
+    _poi = null;
+    line.enabled = false;
+    points = new List<Vector3>();
+  }
+  public void AddPoint()
+  {
+     if (_poi == null)
+    {
+      return;
+    }
+    // 用于在线条上添加一个点，记录发射点的位置
+    Vector3 pt = _poi.transform.position;
+    if (points.Count > 0 && (pt - lastPoint).magnitude < minDist)
+    {
+      // 如果该点与上一个点的位置不够远，则返回
+      return;
+    }
+
+    if (points.Count == 0)
+    {
+      // 如果当前是发射点
+      Vector3 launchPos = Slingshot.S.launchPoint.transform.position;
+      Vector3 launchPosDiff = pt - launchPos;
+      // ... 则添加一根线条，帮助之后瞄准
+      points.Add(pt + launchPosDiff);
+      points.Add(pt);
+      line.positionCount = 2;
+      // 设置两个点，两点形成一条直线
+      line.SetPosition(0, points[0]);
+      line.SetPosition(1, points[1]);
+      // 启动线渲染器
+      line.enabled = true;
+    }
+    else
+    {
+      // 正常添加点的操作
+      points.Add(pt);
+      // 设置线段的端点数
+      line.positionCount = points.Count;
+      // 两点确定一条直线，所以我们没刷新一次，依次绘制一点就可以形成线段了
+      line.SetPosition(points.Count - 1, lastPoint);
+      line.enabled = true;
+    }
+  }
+
+  // 返回最近添加的点的位置
+  public Vector3 lastPoint
+  {
+    get
+    {
+      if (points == null)
+      {
+        // 如果当前还没有点，返回 Vector3.zero
+        return (Vector3.zero);
+      }
+      return (points[points.Count - 1]);
+    }
+
+  }
+
+  // Use this for initialization
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+
+  }
+
+  private void FixedUpdate()
+  {
+    if (poi == null)
+    {
+      // 如果兴趣点不存在，则找出一个
+      if (FollowCam.S.poi != null)
+      {
+        if (FollowCam.S.poi.tag == "Projectile")
+        {
+          poi = FollowCam.S.poi;
+        }
+        else
+        {
+          return; // 如果未找到兴趣点，则返回
+        }
+      }
+
+    }
+    // 如果存在兴趣点，则在 FixedUpdate 中在其位置上增加一个点
+    AddPoint();
+    if (poi.GetComponent<Rigidbody>().IsSleeping())
+    {
+      // 当兴趣点静止时，将其清空（设置为 null）
+      poi = null;
+    }
+  }
+}
+
+
+```
+
+**参考资料**
+
+- [Unity 中 lineRenderer 的使用](https://gameinstitute.qq.com/community/detail/126849)
+
+##### 击中目标
+
+被弹丸击中后，城堡的目标需要做出响应：
+
+1. 创建一个名为 Goal 的脚本，将其绑定到 Goal 预设上。在 Goal 脚本中输入以下代码：
+
+```cs
+using UnityEngine;
+using System.Collections;
+
+public class Goal : MonoBehaviour
+{
+  // 可在代码任意位置访问的静态字段
+  static public bool goalMet = false;
+
+  private void OnTriggerEnter(Collider other)
+  {
+    // 当其他物体撞到触发器时
+    // 检查是否是弹丸
+    if (other.gameObject.tag == "Projectile")
+    {
+      // 如果是弹丸
+      Goal.goalMet = true;
+      // 同时将颜色的不透明度设置得更高
+      Renderer renderer = this.gameObject.GetComponent<Renderer>();
+      Color c = renderer.material.color;
+      c.a = 1;
+      c.r = 255;
+      renderer.material.color = c;
+    }
+  }
+}
+
+```
+
+#### 添加更多难度级别和游戏逻辑
+
+游戏状态管理
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+// 游戏状态管理
+public enum GameMode
+{
+  idle,
+  playing,
+  levelEnd
+}
+public class MissionDemolition : MonoBehaviour
+{
+
+  static public MissionDemolition S; // 单例对象
+  // 在 Unity 检视面板中设置的字段
+  public GameObject[] castles; // 存储所有城堡对象的数组
+  public Text gtLevel; // GT_Level 界面文字
+  public Text gtScore; // GT_Score 界面文字
+  public Vector3 castlePos; // 放置城堡的位置
+
+  public bool _____________________________;
+
+  // 在代码中动态设置的变量
+  public int level; // 当前级别
+  public int levelMax; // 级别的数量
+  public int shotsTaken;
+  public GameObject castle; // 当前城堡
+  public GameMode mode = GameMode.idle;
+  public string showing = "Slingshot"; // 摄像机的模式
+
+  // Start is called before the first frame update
+  void Start()
+  {
+    S = this; // 定义单例对象
+    level = 0;
+    levelMax = castles.Length;
+    StartLevel();
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    ShowGT();
+    // 检查是否已完成该级别
+    if (mode == GameMode.playing && Goal.goalMet)
+    {
+      // 当完成级别时，改变 mode，停止检查
+      mode = GameMode.levelEnd;
+      // 缩写画面比例
+      SwitchView("Both");
+      // 在2秒后开始下一级别
+      Invoke("NextLevel", 2f);
+    }
+  }
+
+  void StartLevel()
+  {
+    // 如果已经有城堡存在，则清除原有的城堡
+    if (castle != null)
+    {
+      Destroy(castle);
+    }
+    // 清除原有的弹丸
+    GameObject[] gos = GameObject.FindGameObjectsWithTag("Projectile");
+    foreach (GameObject pTemp in gos)
+    {
+      Destroy(pTemp);
+    }
+    // 实例化新城堡
+    castle = Instantiate(castles[level]) as GameObject;
+    castle.transform.position = castlePos;
+    shotsTaken = 0;
+
+    // 重置摄像机位置
+    SwitchView("Both");
+    ProjectileLine.S.Clear();
+    // 重置目标状态
+    Goal.goalMet = false;
+    ShowGT();
+    mode = GameMode.playing;
+  }
+
+  void ShowGT()
+  {
+    // 设置界面文字
+    gtLevel.text = "Level: " + (level + 1) + "of " + levelMax;
+    gtScore.text = "Shots Taken: " + shotsTaken;
+  }
+
+  private void OnGUI()
+  {
+    // 在屏幕顶端绘制用户界面按钮，用于切换视图
+    Rect buttonRect = new Rect((Screen.width / 2) - 50, 10, 100, 24);
+    switch (showing)
+    {
+      case "Slingshot":
+        if (GUI.Button(buttonRect, "查看城堡"))
+        {
+          SwitchView("Castle");
+        }
+        break;
+      case "Castle":
+        if (GUI.Button(buttonRect, "查看全部"))
+        {
+          SwitchView("Both");
+        }
+        break;
+      case "Both":
+        if (GUI.Button(buttonRect, "查看弹弓"))
+        {
+          SwitchView("Slingshot");
+        }
+        break;
+    }
+
+  }
+
+  // 允许在代码任意位置切换视图的静态方法，相当于算法中的订阅者
+  static public void SwitchView(string eView)
+  {
+    S.showing = eView;
+    switch (S.showing)
+    {
+      case "Slingshot":
+        FollowCam.S.poi = null;
+        break;
+      case "Castle":
+        FollowCam.S.poi = S.castle;
+        break;
+      case "Both":
+        FollowCam.S.poi = GameObject.Find("ViewBoth");
+        break;
+    }
+  }
+
+  void NextLevel()
+  {
+    level++;
+    if (level == levelMax)
+    {
+      level = 0;
+    }
+    StartLevel();
+  }
+
+  // 允许在代码任意位置增加发射次数的代码
+  public static void ShotFired()
+  {
+    S.shotsTaken++;
+  }
+}
+
+```
+
+#### 小结
+
+##### Unity 相关知识点：
+
+- 力学
+- 碰撞器与触发器
+- 不同脚本下的
+- 摄像机跟随目标
+- 点击按钮切换摄像机视图
+- 目标与触发器相碰
+- 向量
+- 游戏的 setActive
+- 单例对象
+- Rigibody constrains 可以冻结物体的 x、y、z 轴
+
+##### 编程技术
+
+- 单例对象（游戏状态管理、摄像机）
+- 枚举类型（游戏状态）
+
+  ```cs
+  // 游戏状态管理
+  public enum GameMode
+  {
+    idle,
+    playing,
+    levelEnd
+  }
+  ```
+
+#### 问题
+
+##### 1. 对于 line render 还不是很熟悉，后续可以实现一个鼠标点击画线的效果。两点确定一条直线。（GIS 应该用到）
+
+https://gameinstitute.qq.com/community/detail/126849
+
+##### 2. 摄像机 Projection Orthographic 的时候，size 为什么可以影响被摄物体的在视窗的显示大小？
+
+对于正投影摄像机，物体与摄像机的距离不会影响它的大小，但是改变 size 就可以？为什么呢？
+
+Size
+当摄像机设成正交投影时，摄像机对应的那个长方体的大小，也就是被渲染的方块区域。渲染区域变大了，那么原来的物体在总体渲染区域的比例下变小了。
+
+参考资料：
+- [Unity3d摄像机详解](https://gameinstitute.qq.com/community/detail/118652) 分别说明每个参数
+- [Three.js - 摄像机的使用详解（透视投影摄像机、正交投影摄像机）](https://www.hangge.com/blog/cache/detail_1787.html) 主要图文讲解了透视投影摄像机、正交投影摄像机的区别。
+- [摄像机投射投影模型_综述及详解](https://blog.csdn.net/shenziheng1/article/details/52890223) 摄像机成像原理
+- [WebGL摄像机详解之三：正投影摄像机及其用途](http://www.jiazhengblog.com/blog/2016/04/26/2965/) 正交投影可以用在 2d 视图游戏上以及一些界面上的辅助信息。
+
+![](../.vuepress/public/images/camera-1.png)
+
+其中，O点称为摄像机光心，x轴和y轴与图像的X轴、Y轴平行，z轴为摄像机光轴，他与图像平面垂直。光轴与图像平面的焦点即为图像坐标系的原点，**由点O与x、y、z轴构成的直角坐标系称为摄像机坐标系。OO1为摄像机焦距。**
+
+##### 3. Rigidbody 中的 isKinematic 作用是什么？
+
+- https://blog.csdn.net/QUAN2008HAPPY/article/details/39403785
+- file:///Applications/Unity/Hub/Editor/2018.4.13c1/Documentation/en/ScriptReference/Rigidbody-isKinematic.html
+
 ### 游戏原型 3：《太空射击》
+
+在本章中，你将使用几种编程技术创建自己的射击游戏，这些技术包括类继承、枚举类型（enum）、静态字段和方法以及单例模式，在你的编程和原型制作生涯中，这些技术会派上用场。
+
+#### 准备工作
+
+#### 设置场景
+
+#### 创建主角飞船
+
+#### 添加敌机
+
+#### 随机生成敌机
+
+#### 设置标签、图层和物理规则
 
 ### 游戏原型 4：《矿工接龙》
 
@@ -1996,6 +2905,48 @@ public class ApplePicker : MonoBehaviour
 ### 游戏原型 7：QuickSnap
 
 ### 游戏原型 8：Omega Mage 原型
+
+## 附录
+
+### 附录 B 实用概念
+
+#### 插值
+
+插值是指两个值之间的任何数学结合。图形代码中元素的移动看起来平滑且饱满。通过使用各种形式的插值和贝塞尔曲线可实现。
+
+##### 线性插值
+
+<u>线性插值是一种数学方法，通过规定存在于两个现有值之间来定义一个新的值或位置。</u>所有的线性插值遵循相同的公式
+
+```bash
+p01 = (1-u) * p0 + u * p1;
+```
+
+代码看起来如下：
+
+```cs
+Vector3 p0 = new Vector3(0, 0, 0);
+Vector3 p1 = new Vector(1, 1, 0);
+float u = 0.5f;
+Vector3 p01 = (1 - u) * p0 + u * p1;
+print(p01); // 打印：p0和 p1 之间的半点 (0.5, 0.5, 0);
+```
+
+在上面的代码中，通过在 P0 和 P1 之间插值创建一个新的点 p01。u 取值范围在 0 和 1 之间。其可以生成任何数量的维度，尽管我们在 Unity 中一般使用 Vector3s 插值。
+
+##### 基于时间的线性插值
+
+##### 利用 Zeno 悖论的线性插值
+
+##### 其他插值
+
+##### 线性外插法
+
+##### 缓动线性插值
+
+##### 贝塞尔曲线
+
+##### 递归贝塞尔曲线函数
 
 ## 术语
 

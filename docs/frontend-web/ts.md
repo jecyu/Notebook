@@ -1,7 +1,7 @@
-
 # TypeScript
 
 <!-- <TOC /> -->
+
 [[toc]]
 
 ## 基础入门
@@ -12,13 +12,302 @@
 
 有时候，我们会想要为那些在编程阶段还不清楚类型的变量指定一个类型。这些值可能来自于动态的内容，比如来自用户输入或第三方代码库。这种情况下，我们不希望类型检查器对这些值进行检查而是直接让它们通过编译阶段的检查。那么我们可以使用 any 类型来标记这些变量：
 
+### 枚举类型
+
+
+
+场景：实现一个档案检测功能时，需要控制几个状态。在以前，很可能这样写：
+
+```js
+function getXXXByXXXStatus(status) {
+  if (status == 1) {
+    // do somthing
+  } else if (status == 2) {
+    // do somthing
+  } else if (status == 3) {
+    // do somthing
+  } else if (status == 4) {
+    // do somthing
+  } else if (status == 5) {
+    // do somthing
+  }
+}
+```
+
+这样的代码可读性差，数字含义难以记住。可维护性方面更是牵一发动全身。如果项目中是 TS 的话，使用它的枚举类型就再合适不过。
+
+```ts
+enum checkStatus {
+  success, // 检测成功
+  error, // 检测错误
+  checking, // 检测中
+  waiting, // 等待中，点击暂停检测后
+  uploading // 上传中
+}
+```
+
+#### TS 枚举的实现原理
+
+编译的代码
+
+```js
+var checkStatus;
+(function(checkStatus) {
+  checkStatus[(checkStatus["success"] = 0)] = "success";
+  checkStatus[(checkStatus["error"] = 1)] = "error";
+  checkStatus[(checkStatus["checking"] = 2)] = "checking";
+  checkStatus[(checkStatus["waiting"] = 3)] = "waiting";
+  checkStatus[(checkStatus["uploading"] = 4)] = "uploading";
+})(checkStatus || (checkStatus = {}));
+```
+
+反向映射:
+
+1. 枚举被编译为对象
+2. 枚举成员的名称被作为 key, 枚举成员的值被作为 value, 表达式返回 value
+3. 然后,value 又被作为 key,成员名称又被作为 value,返回枚举成员的名称
+
+这样的好处就是你既可以使用 `checkStatus.success` 获取 value，也可以使
+用 `checkStaus[0]` 获取 key。在没有 ts 的项目中，我们也可以学习这种思路。把状态都封装到对象中，而不是使用 `if-else` 条件来硬编码。
+
+#### 字符串枚举
+
+```js
+enum orderStatusDesc {
+UN_PAYED = '未支付',
+PAYED = '已支付',
+CANCELED = '已取消',
+CLOSED = '已关闭'
+}
+```
+
+将枚举代码放入 typeScriptPlayGround 中查看编译后代码
+
+```js
+"use strict";
+var orderStatusDesc;
+(function(orderStatusDesc) {
+  orderStatusDesc["UN_PAYED"] = "\u672A\u652F\u4ED8";
+  orderStatusDesc["PAYED"] = "\u5DF2\u652F\u4ED8";
+  orderStatusDesc["CANCELED"] = "\u5DF2\u53D6\u6D88";
+  orderStatusDesc["CLOSED"] = "\u5DF2\u5173\u95ED";
+})(orderStatusDesc || (orderStatusDesc = {}));
+```
+
+相比数字枚举,字符串枚举仅成员名称被作为 key,所以不支持反向映射
+
+#### 异构枚举
+
+异构枚举:数字枚举和字符串枚举混用
+
+```ts
+enum Status {
+  UN_PAYED,
+  PAYED = "已支付"
+}
+```
+
+将枚举代码放入 typeScriptPlayGround 中查看编译后代码
+
+```js
+"use strict";
+var Status;
+(function(Status) {
+  Status[(Status["UN_PAYED"] = 0)] = "UN_PAYED";
+  Status["PAYED"] = "\u5DF2\u652F\u4ED8";
+})(Status || (Status = {}));
+```
+
+虽然 TS 支持这种使用方法,但并不推荐这样去做,容易引起混淆
+
+#### 枚举成员
+
+枚举成员的值为只读类型
+
+尝试对枚举值进行修改会报错
+
+```ts
+orderStatus.UN_PAYED = 0; // Cannot assign to 'UN_PAYED' because it is a read-only property.
+```
+
+##### 枚举成员的分类
+
+1. const 常量枚举 ,包括三种情况: 1)没有初始值 2)对已有枚举成员的引用 3)常量的表达式
+   常量枚举成员会在编译时计算出结果,然后以常量的形式出现在运行时环境
+
+2. computed 需要被计算的枚举成员,非常量表达式
+   这些枚举变量的值不会在编译阶段被计算,而是被保留到程序执行阶段
+
+```ts
+enum Demo {
+  // const
+  a, // 没有初始值
+  b = Demo.a, // 对已有枚举成员的引用
+  c = 1 + 2, // 常量的表达式
+  // computed
+  d = Math.random(), // 需要被计算的枚举成员
+  e = "abc".length // 需要被计算的枚举成员
+}
+```
+
+将枚举代码放入 typeScriptPlayGround 中查看编译后代码
+
+```ts
+"use strict";
+var Demo;
+(function(Demo) {
+  // const
+  Demo[(Demo["a"] = 0)] = "a";
+  Demo[(Demo["b"] = 0)] = "b";
+  Demo[(Demo["c"] = 3)] = "c";
+  // computed
+  Demo[(Demo["d"] = Math.random())] = "d";
+  Demo[(Demo["e"] = "abc".length)] = "e"; // 需要被计算的枚举成员
+})(Demo || (Demo = {}));
+```
+
+可以看到:
+
+常量枚举成员的值在编译时就会被计算出结果
+
+需要被计算的枚举成员值被保留了,在运行时环境才会被计算
+
+注意:
+
+在 computed 后面出现的枚举成员必须赋初始值，否则会提示错误
+
+```ts
+enum Demo {
+  a = "abc".length, // 需要被计算的枚举成员
+  b // Enum member must have initializer.
+}
+```
+
+#### 七，常量枚举
+
+const 声明的枚举就是常量枚举:
+
+```ts
+const enum Month {
+  Jan,
+  Feb,
+  Mar
+}
+Í;
+```
+
+将枚举代码放入 [typeScriptPlayGround](https://www.typescriptlang.org/play?#code/MYewdgzgLgBApmArgWxgWXFAFjA3jAKQEMwAaGAMTgCNy0iAnGAXyA) 中查看编译后代码
+
+```js
+"use strict";
+```
+
+可以发现:
+
+常量枚举编译后的输出为空
+
+那么，常量枚举的作用是什么?
+
+当不需要一个对象，而只需要对象的值时，就可以使用常量枚举,这样能够减少在编译环境的代码
+
+比如,定义一个变量,将值定义为常量枚举
+
+```ts
+const enum Month {
+  Jan,
+  Feb,
+  Mar
+}
+let month = [Month.Jan, Month.Feb, Month.Mar];
+```
+
+将枚举代码放入 typeScriptPlayGround 中查看编译后代码
+
+```js
+"use strict";
+let month = [0 /* Jan */, 1 /* Feb */, 2 /* Mar */];
+```
+
+可以看到:
+
+枚举被直接替换成了常量,这样在运行时的代码就会变得非常的简洁
+
+#### 八，枚举类型
+
+在某些情况下,枚举和枚举成员都可以作为一种单独的类型:
+
+```ts
+// 1)枚举成员没有任何初始值
+enum A {
+  a,
+  b
+}
+// 2)所有枚举成员都是数字枚举
+enum B {
+  a = 0,
+  b = 1
+}
+// 3)所有枚举成员都是字符串枚举
+enum C {
+  a = "apple",
+  b = "huawei"
+}
+```
+
+比如:定义了两个枚举类型 A, B
+
+可将任意 number 类型赋值给枚举类型,取值也可以超出枚举成员定义
+两种不同类型的枚举,是不可以进行比较的,编辑器会报错
+
+```ts
+let a: A = 3;
+let b: B = 3;
+a === b; // This condition will always return 'false' since the types 'A' and 'B' have no overlap.
+```
+
+再定义三种枚举成员类型:
+
+```ts
+let a1: A.a;
+let a2: A.b;
+let a3: A.a;
+```
+
+a1 和 a2 是永远不能比较的
+
+```ts
+let a1: A.a;
+let a2: A.b;
+a1 === a2; // a1 和 a2 的枚举成员类型不同,不能比较
+```
+
+a1 和 a3 是相同类型的枚举成员,就可以进行比较
+
+```ts
+let a1: A.a = 1;
+let a2: A.b;
+let a3: A.a = 1;
+
+a1 === a3; // a1 和 a3 的枚举成员类型相同,可以进行比较
+```
+
+字符串枚举的取值只能是枚举成员的类型
+
+```ts
+let c1: C = C.b; // C 枚举类型可以赋值为 c.b
+let c2: C.a = C.a; // C.a 枚举类型只能被赋值为自身 C.a
+```
+
+
+### 装饰器
+
 ### 函数
 
 #### 函数表达式
 
 如果要我们现在写一个对函数表达式（Function Expression）的定义，可能会写成这样：
 
-```ts
+```
 const mySum = function(x: number, y: number): number {
   return x + y;
 };
@@ -27,7 +316,10 @@ const mySum = function(x: number, y: number): number {
 这是可以通过编译的，不过事实上，上面的代码只对等号右侧的匿名函数进行了类型定义，而等号左边 `mySum`，是通过赋值操作进行类型推论（“按上下文归类”）而推断出来的。如果需要我们手动给 `mySum` 添加类型，则应该是这样：
 
 ```ts
-const mySum: (x: number, y: number) => number = function(x: number, y: number): number {
+const mySum: (x: number, y: number) => number = function(
+  x: number,
+  y: number
+): number {
   return x + y;
 };
 ```
@@ -40,8 +332,8 @@ const mySum: (x: number, y: number) => number = function(x: number, y: number): 
 
 #### 接口定义
 
-
 下面的例子使用接口的形式来加持 ES6 的函数
+
 ```ts
 interface Function {
   (x: number, y: number): number
@@ -55,6 +347,7 @@ const function: Function = (x: number, y: number) => x + y;
 所有的 .ts 里声明的文件，编译后的文件是暴露一个全局变量。
 
 编译前
+
 ```ts
 namespace utils.math {
   const sum = function(a: number, b: number) {
@@ -66,43 +359,49 @@ namespace utils.math {
   const mul = (a: number, b: number): number => a * b;
   const sub = (a: number, b: number): number => a - b;
   const div = (a: number, b: number): number => a / b;
-  
-  module.exports =  {
+
+  module.exports = {
     sum,
     mul,
     sub,
     div
-  }
+  };
 }
 ```
 
 编译后
+
 ```ts
 var utils;
-(function (utils) {
-    var math;
-    (function (math) {
-        var sum = function (a, b) {
-            // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
-            //   return null;
-            // }
-            return a + b;
-        };
-        var mul = function (a, b) { return a * b; };
-        var sub = function (a, b) { return a - b; };
-        var div = function (a, b) { return a / b; };
-        module.exports = {
-            sum: sum,
-            mul: mul,
-            sub: sub,
-            div: div
-        };
-    })(math = utils.math || (utils.math = {}));
+(function(utils) {
+  var math;
+  (function(math) {
+    var sum = function(a, b) {
+      // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
+      //   return null;
+      // }
+      return a + b;
+    };
+    var mul = function(a, b) {
+      return a * b;
+    };
+    var sub = function(a, b) {
+      return a - b;
+    };
+    var div = function(a, b) {
+      return a / b;
+    };
+    module.exports = {
+      sum: sum,
+      mul: mul,
+      sub: sub,
+      div: div
+    };
+  })((math = utils.math || (utils.math = {})));
 })(utils || (utils = {}));
-
 ```
 
-看js代码能发现, 在js中命名空间其实就是一个全局对象. 如果你开发的程序想要暴露一个全局变量就可以用`namespace`。命名空间对解决全局作用域里命名冲突很重要的，但是对于模块来说 却不是一个问题。模块具有其自己的作用域，并且只有导出的声明才会在模块外部可见。
+看 js 代码能发现, 在 js 中命名空间其实就是一个全局对象. 如果你开发的程序想要暴露一个全局变量就可以用`namespace`。命名空间对解决全局作用域里命名冲突很重要的，但是对于模块来说 却不是一个问题。模块具有其自己的作用域，并且只有导出的声明才会在模块外部可见。
 
 ### 模块
 
@@ -162,7 +461,7 @@ declare var jQuery: (selector: string) => any;
 
 ```ts
 // src/index.ts
-jQuery('#foo');
+jQuery("#foo");
 ```
 
 声明文件必需以 `.d.ts` 为后缀。
@@ -243,7 +542,7 @@ interface Person {
 }
 
 let tom: Person = {
-  name: 'Tom',
+  name: "Tom",
   age: 25
 };
 ```
@@ -277,12 +576,14 @@ let tom: Person = {
 
 ```ts
 //github.com/kaorun343/vue-property-decorator/blob/master/src/vue-property-decorator.ts
-https: /**
+/**
  * decorator of a prop
  * @param  options the options for the prop
  * @return PropertyDecorator | void
  */
-export function Prop(options: PropOptions | Constructor[] | Constructor = {}) {
+https: export function Prop(
+  options: PropOptions | Constructor[] | Constructor = {}
+) {
   return (target: Vue, key: string) => {
     applyMetadata(options, target, key);
     createDecorator((componentOptions, k) => {
@@ -354,12 +655,12 @@ vue 更适合小项目用.   配合模板的优势.
 
 ```ts
 // before
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 // after
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 ```
 
 ## 底层原理
@@ -371,3 +672,6 @@ import ReactDOM from 'react-dom';
 - [tsconfig.json 入门指南](https://juejin.im/post/5e34d967f265da3dfa49bdc3#heading-22)
 - [TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427?utm_source=gold_browser_extension#heading-44)
 - [TS in JS 实践指北](https://juejin.im/post/5e0176b4f265da33a159d9e0#heading-16)
+- [TypeScript 实战-04-TS 枚举类型](https://blog.csdn.net/ABAP_Brave/article/details/100737210)
+- [ts 在线编译工具](https://www.typescriptlang.org/play)
+- [TypeScript - 一种思维方式](https://zhuanlan.zhihu.com/p/63346965) 本文介绍了TS 能强化了「面向接口编程」这一理念。我们知道稍微复杂一点的程序都离不开不同模块间的配合，不同模块的功能理应是更为清晰的，TS 能帮我们梳理清不同的接口。

@@ -104,13 +104,70 @@ observer.publish('bar');
 
 使用继承还会带有另外一个问题，在完成一些功能复用的同时，<u>有可能创建出大量的子类，使子类的数量呈爆炸性增长。</u>比如现在有4种型号的自行车，我们为每种自行车都定义了一个单独的类。现在要给每种自行车都装上前灯、尾灯和铃铛这3种配件。如果使用继承的方式来给每种自行车创建子类，则需要 4*3 = 12 个子类。<u>但是，如果把前灯、尾灯、铃铛这些对象动态 组合到自行车上面，则只需要额外增加3个类。</u>
 
-<u>这种给对象动态地增加职责的方式称为装饰者（decorator）模式。</u>装饰者模式能够在不改变对象自身的基础上，在程序运行期间给对象动态地添加职责。跟继承相比，装饰者是一种更轻便灵活的做法，<u>这是一种“即用即付”的方式</u>，比如天冷了就多穿一件外套，需要飞行时就在头上插一支竹蜻蜓，遇到一堆食尸鬼时就点开 AOE（范围攻击）技能。
+<u>这种给对象动态地增加职责的方式称为装饰者（decorator）模式。</u><strong>装饰者模式能够在不改变对象自身的基础上，在程序运行期间给对象动态地添加职责。</strong>跟继承相比，装饰者是一种更轻便灵活的做法，<u>这是一种“即用即付”的方式</u>，比如天冷了就多穿一件外套，需要飞行时就在头上插一支竹蜻蜓，遇到一堆食尸鬼时就点开 AOE（范围攻击）技能。
 
 #### 如何解决
 
 ##### 模拟传统面向对象语言的装饰者模式
 
+第一种，给 JavaScript 中的对戏动态
+```js
+const obj = {
+  name: "sven",
+  address: "深圳市"
+};
+obj.address = obj.address + "福田区";
+```
+
 假设我们在编写一个飞机大战的游戏
+
+第二种 模拟传统面向对象语言的装饰者模式
+
+```js
+const Plane = function() {};
+Plane.prototype.fire = function() {
+  console.log("发射普通子弹");
+}
+
+const MissileDecorator = function(plane) {
+  this.plane = plane;
+}
+
+MissileDecorator.prototype.fire = function() {
+  this.plane.fire();
+  console.log("发射导弹");
+}
+
+const AtomDecorator = function(plane) { // 传入目标
+  this.plane = plane;
+}
+
+AtomDecorator.prototype.fire = function() {
+  this.plane.fire();
+  console.log("发射原子弹");
+}
+
+
+let plane = new Plane();
+plane = new MissileDecorator(plane);
+plane = new AtomDecorator(plane);
+
+plane.fire();
+// 分别输出：发射普通子弹、发射导弹、发射原子弹
+```
+导弹类和原子弹类都接受参数 plane 对象，并且保存好这个参数，在它们的 fire 方法中，除了执行自身的操作外，还调用 plane 对象的 fire 方法。
+
+<u>这种给对象动态添加职责的方式，并没有真正地改动对象自身，而是将对象放入到另一个对象之中，这些对象以一条链的方式进行引用，形成一个聚合对象。这些对象都拥有相同的接口（fire 方法），当请求到达链中的某个对象时，这个对象会执行自身的操作，随后把请求转发给链中的下一个对象。</u>
+
+因为装饰者对象和它所装饰的对象拥有一致的接口，所以它们对使用该对象的客户来说是透明的，被装饰的对象也并不需要了解它曾经曾经被装饰过，这种透明性使得我们可以递归地嵌套任意多个装饰者对象。如图所示。
+
+![](../.vuepress/public/images/decorator-1.png)
+
+#### 装饰器也是包装器
+
+从功能上而言，decorator 能很好地描述这个模式，但从结构上看，wrapper 的说法更加贴切。**装饰器模式将一个对象嵌入另一个对象之中，实际上相当于这个对象被另一个对象包装起来，形成一条包装链。**请求随着这条链依次传递到所有的对象，每个对象都有处理这条请求的机会。
+
+![](../.vuepress/public/images/decorator-2.png)
 
 #### 关键代码  
 
@@ -120,6 +177,34 @@ observer.publish('bar');
 
 #### 使用场景
 
+##### ts 中，vue-decorator 的实现
+
 #### JS 装饰器
 
 ### 实现
+
+## 单例模式
+
+如果游戏中可以确定特定的类只有一个单一的实例，那么可以为该类创建一个单例，作为该类类型的静态变量，可以在代码的任何地方引用。
+
+```cs
+public class Hero: MonoBehaviour {
+  static public Hero S; // 1
+
+  void Awake() {
+    S = this; // 2 
+  }
+
+  void Update() {
+    public Vector3 heroLoc = Hero.S.transform.position; // 3
+  }
+}
+```
+
+1. 静态公共变量 S 是 hero 的单例。我命名所有自定义的单例为 S。
+2. 因为 Hero 类只可能有一个实例，当实例被创建时 S 被分配到 `Awake()`。
+3. 因为变量 S 是公共并且静态的，通过类名 Hero.S 可以在代码任何地方引用它。
+
+## 参考资料
+
+- 《JavaScript 设计模式与开发实践》

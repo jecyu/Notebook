@@ -46,4 +46,6 @@ function understandRecursion(doIunderstandRecursion) {
   - 实现一个深拷贝
     - weakMap 扩展知识
 
+## 参考资料
+
 - [聊聊面试必考-递归思想与实战](https://juejin.im/post/5d85cda3f265da03b638e918?utm_source=gold_browser_extension#heading-0) —— 系统介绍递归的问题，从理论到实战

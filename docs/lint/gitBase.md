@@ -123,6 +123,15 @@ git config --global alias.st status
 $ echo <filename> >> .gitignore
 ```
 
+## https 连接 push 不输入密码
+
+
+直接配置config 配置文件不需要每次输入密码
+1. vim .git-credentials
+2. 输入 https://{username}:{password}@github.com
+3. git config --global credential.helper store
+
+
 ## 设定 SSH 连接
 
 SSH key 可以让你在你的电脑和 Git 远程仓库之间建立安全的加密连接。

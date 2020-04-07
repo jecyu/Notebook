@@ -89,7 +89,7 @@ module.exports = {
         {
           title: "日常记录",
           collapsable: true,
-          children: ["", "2019", "2018", "table"]
+          children: ["", "2019", "2018", "friends",]
         },
         {
           title: "TechnologyDevelopment",
@@ -169,7 +169,7 @@ module.exports = {
         {
           title: "游戏开发",
           collapsable: false,
-          children: ["", "design-prototype-development"]
+          children: ["design-prototype-development", ""]
         }
       ],
       "/programming-language/": [

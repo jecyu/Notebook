@@ -513,3 +513,5 @@ export class MinHeap {
 关于堆、栈、队列的可视化描述：
 
 ![](../.vuepress/public/images/Stack-heap-queue.svg)
+
+## 参考资料

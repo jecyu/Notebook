@@ -483,3 +483,4 @@ function decimalToBinary(decNumber) {
 
 - [四大维度解锁Webpack3.0前端工程化](https://coding.imooc.com/class/chapter/171.html#Anchor) -- 由浅入深 webpack。
 - [webpack 最简打包结果分析](https://segmentfault.com/a/1190000018205656) -- 清晰明了，说明 webapck 的打包文件流程。
+- [全面的Webpack教程《深入浅出Webpack》电子书 http://webpack.wuhaolin.cn](https://github.com/gwuhaolin/dive-into-webpack/)

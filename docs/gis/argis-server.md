@@ -36,6 +36,8 @@ ArcGIS Server 上提供的 GIS 资源（例如地图）称为服务。ArcGIS Ser
 
 ### 发布服务
 
+- [通过ArcMap发布服务](https://blog.csdn.net/chengdongyuan/article/details/79043878)
+
 #### 什么是地图服务
 
 地图服务是一种利用 ArcGIS 使地图可通过 Web 进行访问的方法。你首先在 ArcMap 中制作地图，然后将地图作为服务发布到 ArcGIS Server 站点上。之后，Internet 或 Intranet 用户便可在 Web 应用程序、ArcGIS Desktop、ArcGIS Online 以及其他客户端应用程序中使用此地图服务。
