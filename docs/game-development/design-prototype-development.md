@@ -2866,19 +2866,43 @@ Size
 当摄像机设成正交投影时，摄像机对应的那个长方体的大小，也就是被渲染的方块区域。渲染区域变大了，那么原来的物体在总体渲染区域的比例下变小了。
 
 参考资料：
-- [Unity3d摄像机详解](https://gameinstitute.qq.com/community/detail/118652) 分别说明每个参数
+
+- [Unity3d 摄像机详解](https://gameinstitute.qq.com/community/detail/118652) 分别说明每个参数
 - [Three.js - 摄像机的使用详解（透视投影摄像机、正交投影摄像机）](https://www.hangge.com/blog/cache/detail_1787.html) 主要图文讲解了透视投影摄像机、正交投影摄像机的区别。
-- [摄像机投射投影模型_综述及详解](https://blog.csdn.net/shenziheng1/article/details/52890223) 摄像机成像原理
-- [WebGL摄像机详解之三：正投影摄像机及其用途](http://www.jiazhengblog.com/blog/2016/04/26/2965/) 正交投影可以用在 2d 视图游戏上以及一些界面上的辅助信息。
+- [摄像机投射投影模型\_综述及详解](https://blog.csdn.net/shenziheng1/article/details/52890223) 摄像机成像原理
+- [WebGL 摄像机详解之三：正投影摄像机及其用途](http://www.jiazhengblog.com/blog/2016/04/26/2965/) 正交投影可以用在 2d 视图游戏上以及一些界面上的辅助信息。
 
 ![](../.vuepress/public/images/camera-1.png)
 
-其中，O点称为摄像机光心，x轴和y轴与图像的X轴、Y轴平行，z轴为摄像机光轴，他与图像平面垂直。光轴与图像平面的焦点即为图像坐标系的原点，**由点O与x、y、z轴构成的直角坐标系称为摄像机坐标系。OO1为摄像机焦距。**
+其中，O 点称为摄像机光心，x 轴和 y 轴与图像的 X 轴、Y 轴平行，z 轴为摄像机光轴，他与图像平面垂直。光轴与图像平面的焦点即为图像坐标系的原点，**由点 O 与 x、y、z 轴构成的直角坐标系称为摄像机坐标系。OO1 为摄像机焦距。**
 
 ##### 3. Rigidbody 中的 isKinematic 作用是什么？
 
-- https://blog.csdn.net/QUAN2008HAPPY/article/details/39403785
-- file:///Applications/Unity/Hub/Editor/2018.4.13c1/Documentation/en/ScriptReference/Rigidbody-isKinematic.html
+功能区别：
+
+Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则**对象不会被物理所控制，只能通过直接设置位置、旋转和缩放来操作它**，一般用来实现移动平台，或者带有 HingeJoint 的动画刚体
+
+当 Rigidbody 为运动学刚体（即 isKinematic == true）时，对象的运动不会自动遵循物理原理，但仍然属于物理模拟的构成部分（**即刚体的运动不会收到碰撞和重力的影响，但仍然会影响其他非运动学刚体的运动**）。
+
+举例说明：如图 10-19 所示，A 和 B 为两个刚体物体，A 在 B 的正上方，开始时 A 和 B 的重力感应都被关闭，都处于静止状态，且接受动力学模拟即 isKinematic 为 false。现在开启 A 的重力感应，则 A 从 1 处开始加速下落，当下落到 2 处时，关闭 A 的重力感应，但 isKinematic 依然为 false（即接受动力学模拟），则 A 将以当前速度匀速下落。但是此时若关闭物理感应，即 isKinematic=true，则 A 将立即停止移动。当 A 与 B 发生碰撞时，若 B 的重力感应依然关闭，但接受动力学模拟，即 isKinematic=false，则根据动量守恒 B 将产生一个向下的速度。但是若关闭 B 物体的动力学模拟，即 isKinematic=true，则 B 保持静止，不会因受到 A 的碰撞而下落。
+
+在 Unity 中在刚体不与其他物体接触的情况下 velocity 的值只与 Gravity、drag 及 Kinematic 有关，与质量 mass 及物体的 Scale 值无关。
+
+```cs
+ if (Input.GetMouseButtonUp(0))
+    {
+      // 如果已经公开鼠标
+      aimingMode = false;
+      projectile.GetComponent<Rigidbody>().isKinematic = false;
+      projectile.GetComponent<Rigidbody>().velocity = -mouseDelta * velocityMult;
+      FollowCam.S.poi = projectile; // 同步摄像机兴趣点
+      projectile = null;
+      MissionDemolition.ShotFired(); // 增加发射次数
+    }
+```
+
+- [Script](https://blog.csdn.net/QUAN2008HAPPY/article/details/39403785)
+- [Unity3D Rigidbody 详解](https://blog.csdn.net/f786587718/article/details/49105437)
 
 ### 游戏原型 3：《太空射击》
 

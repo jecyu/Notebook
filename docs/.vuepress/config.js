@@ -199,10 +199,11 @@ module.exports = {
           collapsable: false,
           children: [
             "computerBasics",
-            "c",
             "dataStructure",
             "algorithm",
-            "patterns"
+            "design-principles",
+            "patterns",
+            "c",
           ]
         }
       ],

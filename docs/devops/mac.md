@@ -2,6 +2,42 @@
 
 ## Mac OS 下三种修改Hosts文件的方法
 
+## macOS 系统占用你储存空间太大怎么办
+
+两种清理系统的方法
+
+### 第一种：找到需要清理的文件目录手动清理在“系统”中，各应用的缓存及日志文件可放心清理，找到对应的目录直接删除即可；
+
+而应用的其他文件，在磁盘空间不够时，大家可选择性清除数据文件。另外，卸载不常使用的应用也可以增加磁盘空间。
+
+- 系统缓存及日志文件位置：
+  - 系统缓存保存在：~/Library/Caches系统
+  - 日志保存在：~/Library/Logs
+- 应用缓存及日志文件位置：
+  - App Store下载的应用：
+    - 缓存文件保存在：~/Library/Containers/com.xx.xx(应用名称)/Data/Library/Caches
+    - 日志文件保存在：~/Library/Containers/com.xx.xx(应用名称)/Data/Library/Logs
+  - 其它第三方下载的应用：
+    - 缓存文件保存在：~/Library/Caches日志文件保存在：~/Library/Logs
+
+此外，可以使用命令：“sudo du -sh * ”查看当前文件夹下各个文件和文件夹占用的空间大小，进而一步步找到占用磁盘空间较多的文件。
+扫描系统所有文件的大小
+
+```bash
+sudo du -sh *
+```
+
+```bash
+ 24K	Adlm
+174M	Alien Skin
+ 13M	Applications
+388K	Creative Cloud Files
+ 40M	DB_Storage
+8.0K	Desktop
+```
+
+### 第二种：下载 OmniDiskSweeper
+
 ### 二.终端命令行修改
 
 ```bash
