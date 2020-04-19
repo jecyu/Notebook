@@ -2,12 +2,12 @@
 
 ## 基础知识
 
-### mac 使用code命令打开VSCode
+### mac 使用 code 命令打开 VSCode
 
-我们在mac的终端可以使用 open .打开文件夹
-如果我们想用vs-code打开文件夹,用的命令是 code .,不过你得先按照code
-安装code：打开VSCode –> command+shift+p –> 输入shell command –> 点击提示Shell Command: Install ‘code’ command in PATH运行
-使用：打开终端，cd到要用VSCode打开的文件夹，然后输入命令code .即可打开
+我们在 mac 的终端可以使用 open .打开文件夹
+如果我们想用 vs-code 打开文件夹,用的命令是 code .,不过你得先按照 code
+安装 code：打开 VSCode –> command+shift+p –> 输入 shell command –> 点击提示 Shell Command: Install ‘code’ command in PATH 运行
+使用：打开终端，cd 到要用 VSCode 打开的文件夹，然后输入命令 code .即可打开
 
 ### 换行
 
@@ -57,6 +57,22 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
 如果启动了，ok，接着在 index.html 下引入 index.js，在 index.js 里面随便写点 js，然后重新启动。
 
+##### 调试 vue-cli 项目
+
+```json
+ {
+   "type": "chrome",
+   "request": "launch",
+   "name": "vuejs: chrome",
+   "url": "http://localhost:9980",
+   "webRoot": "${workspaceFolder}/src", // 使用 url，需要设置 webRoot 这个提供文件的目录
+   "breakOnLoad": true, // 如果为真，调试适配器将尝试在加载脚本之前设置断点，以便能够在这些脚本开始时命中断点
+   "sourceMapPathOverrides": { // 防止 sourceMap 没有正确生成，则使用下面右边的文件路径进行覆盖
+     "webpack:///src/*": "${webRoot}/*"
+   }
+ },
+```
+
 #### 使用 attach 模式启动
 
 首先用 live-server 打开 index.html，你会发现浏览器自动跳转到http://localhost:5500上了，接着到launch.json进行配置
@@ -70,6 +86,10 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
   "webRoot": "${workspaceFolder}"
 }
 ```
+
+如果使用 attach 附加类型配置，请确保使用  `--remote-debugging-port = 9222` 启动了 Chrome。 如果已经有一个正在运行的实例，请先关闭它，或参阅上面有关 `--user-data-dir` 的注释。
+
+确保 `port` 属性与 Chrome 正在侦听远程调试连接的端口相匹配。 默认情况下为 `9222`。 确保没有其他端口在使用此端口，包括 Web 服务器。 如果您计算机上的其他内容响应 `http：// localhost：9222`，请设置其他端口。
 
 待处理。
 
@@ -120,3 +140,5 @@ Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一�
 - [VSCode 的前端调试和后端调试详细解析](https://www.jianshu.com/p/362f0f630454) 详细丰富
 - [手把手教你用 Vscode Debugger 调试代码](http://shooterblog.site/2018/05/19/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8Vscode%20Debugger%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/#Debugger-For-Chrome)
 - [使用 VSCode 调试 Koa 或者 Express 项目](https://segmentfault.com/a/1190000017575583)
+- [在 VS Code 中调试](https://cn.vuejs.org/v2/cookbook/debugging-in-vscode.html)
+- [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)

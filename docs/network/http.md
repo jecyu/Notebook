@@ -4,49 +4,49 @@
 
 ### HTTP/0.9
 
-这是HTTP最早大规模使用的版，现已过时。在这个版本中 只有GET一种请求方法，在HTTP通讯也没有指定版本号，也不支持请求头信息。该版本不支持POST等方法，因此客户端向服务器传递信息的能力非常有限。HTTP/0.9的请求只有如下一行：
+这是 HTTP 最早大规模使用的版，现已过时。在这个版本中 只有 GET 一种请求方法，在 HTTP 通讯也没有指定版本号，也不支持请求头信息。该版本不支持 POST 等方法，因此客户端向服务器传递信息的能力非常有限。HTTP/0.9 的请求只有如下一行：
+
 ```
 GET www.itbilu.com
 ```
 
 ### HTTP/1.0
 
-这个版本是第一个在HTTP通讯中指定版本号的协议版本，HTTP/1.0至今仍被广泛采用，特别是在代理服务器中。
+这个版本是第一个在 HTTP 通讯中指定版本号的协议版本，HTTP/1.0 至今仍被广泛采用，特别是在代理服务器中。
 
-HTTP/1.0支持：GET、POST、HEAD三种HTTP请求方法。
+HTTP/1.0 支持：GET、POST、HEAD 三种 HTTP 请求方法。
 
 ### HTTP/1.1
 
-HTTP/1.1是当前正在使用的版本。`该版本默认采用持久连接，并能很好地配合代理服务器工作。还支持以管道方式同时发送多个请求，以便降低线路负载，提高传输速度。`
+HTTP/1.1 是当前正在使用的版本。`该版本默认采用持久连接，并能很好地配合代理服务器工作。还支持以管道方式同时发送多个请求，以便降低线路负载，提高传输速度。`
 
-HTTP/1.1新增了：`OPTIONS、PUT、DELETE、TRACE、CONNECT`五种HTTP请求方法。
+HTTP/1.1 新增了：`OPTIONS、PUT、DELETE、TRACE、CONNECT`五种 HTTP 请求方法。
 
 ### HTTP/2
 
-这个版本是最新发布的版本，于今年5月（2015年5月）做HTTP标准正式发布。HTTP/2 通过支持请求与相应的多路重用来减少延迟，通过压缩HTTP头字段将协议开销降到最低，同时增加了对请求优先级和服务器端推送的支持。
+这个版本是最新发布的版本，于今年 5 月（2015 年 5 月）做 HTTP 标准正式发布。HTTP/2 通过支持请求与相应的多路重用来减少延迟，通过压缩 HTTP 头字段将协议开销降到最低，同时增加了对请求优先级和服务器端推送的支持。
 
 ## HTTP 请求方法
 
-在HTTP的发展过程中，出现了很多HTTP版本，其中的大部分协议都是向下兼容的。在进行HTTP请求时，客户端在请求时会告诉服务器它采用的协议版本号，而服务器则会在使用相同或者更早的协议版本进行响应。
+在 HTTP 的发展过程中，出现了很多 HTTP 版本，其中的大部分协议都是向下兼容的。在进行 HTTP 请求时，客户端在请求时会告诉服务器它采用的协议版本号，而服务器则会在使用相同或者更早的协议版本进行响应。
 
 ### 方法
 
 名称解释：
+
 - 幂等：对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的。
 
-| 方法 | 说明 |
-| --- | --- |
-| GET | GET请求会显示请求指定的资源。一般来说GET方法应该只用于数据的读取，而不应当用于会产生副作用的非幂等的操作中。它期望的应该是而且应该是安全的和幂等的。这里的安全指的是，请求不会影响到资源的状态。 |
-| HEAD | HEAD方法与GET方法一样，都是向服务器发出指定资源的请求。但是，服务器在响应HEAD请求时不会回传资源的内容部分，即：响应主体。这样，我们可以不传输全部内容的情况下，就可以获取服务器的响应头信息。HEAD方法常被用于客户端查看服务器的性能。 |
-| POST | POST请求会 向指定资源提交数据，请求服务器进行处理，如：表单数据提交、文件上传等，请求数据会被包含在请求体中。POST方法是非幂等的方法，因为这个请求可能会创建新的资源或/和修改现有资源。 |
-| PUT | PUT请求会身向指定资源位置上传其最新内容，PUT方法是幂等的方法。通过该方法客户端可以将指定资源的最新数据传送给服务器取代指定的资源的内容。 |
-| DELETE | DELETE请求用于请求服务器删除所请求URI（统一资源标识符，Uniform Resource Identifier）所标识的资源。DELETE请求后指定资源会被删除，DELETE方法也是幂等的。 |
-| CONNECT | CONNECT方法是HTTP/1.1协议预留的，能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接与非加密的HTTP代理服务器的通信。|
-| OPTIONS | OPTIONS请求与HEAD类似，一般也是用于客户端查看服务器的性能。 这个方法会请求服务器返回该资源所支持的所有HTTP请求方法，该方法会用'*'来代替资源名称，向服务器发送OPTIONS请求，可以测试服务器功能是否正常。**JavaScript的XMLHttpRequest对象进行CORS跨域资源共享时，就是使用OPTIONS方法发送嗅探请求，以判断是否有对指定资源的访问权限。**|
-| TRACE | TRACE请求服务器回显其收到的请求信息，该方法主要用于HTTP请求的测试或诊断。|
-| PATCH | PATCH方法出现的较晚，它在2010年的RFC 5789标准中被定义。PATCH请求与PUT请求类似，同样用于资源的更新。二者有以下两点不同：1.PATCH一般用于资源的部分更新，而PUT一般用于资源的整体更新。2.当资源不存在时，PATCH会创建一个新的资源，而PUT只会对已在资源进行更新。 |
-
-
+| 方法    | 说明                                                                                                                                                                                                                                                                                                                                               |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET     | GET 请求会显示请求指定的资源。一般来说 GET 方法应该只用于数据的读取，而不应当用于会产生副作用的非幂等的操作中。它期望的应该是而且应该是安全的和幂等的。这里的安全指的是，请求不会影响到资源的状态。                                                                                                                                                |
+| HEAD    | HEAD 方法与 GET 方法一样，都是向服务器发出指定资源的请求。但是，服务器在响应 HEAD 请求时不会回传资源的内容部分，即：响应主体。这样，我们可以不传输全部内容的情况下，就可以获取服务器的响应头信息。HEAD 方法常被用于客户端查看服务器的性能。                                                                                                        |
+| POST    | POST 请求会 向指定资源提交数据，请求服务器进行处理，如：表单数据提交、文件上传等，请求数据会被包含在请求体中。POST 方法是非幂等的方法，因为这个请求可能会创建新的资源或/和修改现有资源。                                                                                                                                                           |
+| PUT     | PUT 请求会身向指定资源位置上传其最新内容，PUT 方法是幂等的方法。通过该方法客户端可以将指定资源的最新数据传送给服务器取代指定的资源的内容。                                                                                                                                                                                                         |
+| DELETE  | DELETE 请求用于请求服务器删除所请求 URI（统一资源标识符，Uniform Resource Identifier）所标识的资源。DELETE 请求后指定资源会被删除，DELETE 方法也是幂等的。                                                                                                                                                                                         |
+| CONNECT | CONNECT 方法是 HTTP/1.1 协议预留的，能够将连接改为管道方式的代理服务器。通常用于 SSL 加密服务器的链接与非加密的 HTTP 代理服务器的通信。                                                                                                                                                                                                            |
+| OPTIONS | OPTIONS 请求与 HEAD 类似，一般也是用于客户端查看服务器的性能。 这个方法会请求服务器返回该资源所支持的所有 HTTP 请求方法，该方法会用'\*'来代替资源名称，向服务器发送 OPTIONS 请求，可以测试服务器功能是否正常。**JavaScript 的 XMLHttpRequest 对象进行 CORS 跨域资源共享时，就是使用 OPTIONS 方法发送嗅探请求，以判断是否有对指定资源的访问权限。** |
+| TRACE   | TRACE 请求服务器回显其收到的请求信息，该方法主要用于 HTTP 请求的测试或诊断。                                                                                                                                                                                                                                                                       |
+| PATCH   | PATCH 方法出现的较晚，它在 2010 年的 RFC 5789 标准中被定义。PATCH 请求与 PUT 请求类似，同样用于资源的更新。二者有以下两点不同：1.PATCH 一般用于资源的部分更新，而 PUT 一般用于资源的整体更新。2.当资源不存在时，PATCH 会创建一个新的资源，而 PUT 只会对已在资源进行更新。                                                                          |
 
 ### 注意
 
@@ -62,12 +62,14 @@ HTTP 协议中规定 POST 提交的数据必须在 body 部分中，但是协议
 ### application/x-www-form-urlencoded
 
 这应该是最常见的 POST 提交数据的方式。浏览器的原生 `<form>` 表单，如果不设置 `enctype` 属性，那么最终就会以 `application/x-www-form-urlencoded` 方式提交数据。
+
 ```
 POST http://www.example.com HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=utf-8
 
 title=test&sub%5B%5D=1&sub%5B%5D=2&sub%5B%5D=3
 ```
+
 首先，Content-Type 被指定为 application/x-www-form-urlencoded; 其次，提交的数据按照 `key1=val1&key2=val2`的方式进行编码，key 和 val 都进行了 URL 转码。可以看到 body 当中的内容和 GET 请求是完全相同的。大部分服务端语言都对这种方式都有很好的支持。
 
 很多时候，我们用 Ajax 提交数据时，也是使用这种方式，例如过 JQuery 和 QWrap 的 Ajax，Content-Type 默认值都是 `application/x-www-form-urlencoded;charset=utf-8`。
@@ -75,6 +77,7 @@ title=test&sub%5B%5D=1&sub%5B%5D=2&sub%5B%5D=3
 ### multipart/form-data
 
 这又是一个常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让`<form>` 表单的 enctype 等于 multipart/form-data。直接来看一个请求示例
+
 ```bash
 POST http://www.example.com HTTP/1.1
 Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryrGKCBY7qhFd3TrwA
@@ -106,7 +109,7 @@ PNG ... content of chrome.png ...
 **JSON 格式支持比键值对复杂得多的结构化数据，这一点也很有用。**
 
 ```
-POST http://www.example.com HTTP/1.1 
+POST http://www.example.com HTTP/1.1
 Content-Type: application/json;charset=utf-8
 
 {"title":"test","sub":[1,2,3]}   // chrome network 点击 view source 查看
@@ -117,8 +120,9 @@ Content-Type: application/json;charset=utf-8
 ### text/xml
 
 它是一种使用 HTTP 作为传输协议，`XML` 作为编码方式的远程调用规范。典型的 XML-RPC 请求是这样的：
+
 ```xml
-POST http://www.example.com HTTP/1.1 
+POST http://www.example.com HTTP/1.1
 Content-Type: text/xml
 
 <?xml version="1.0"?>
@@ -131,11 +135,63 @@ Content-Type: text/xml
     </params>
 </methodCall>
 ```
+
 XML-RPC 协议简单、功能够用，各种语言的实现都有。它的使用也很广泛，如 WordPress 的 XML-RPC Api，搜索引擎的 ping 服务等等。JavaScript 中，也有现成的库支持以这种方式进行数据交互，能很好的支持已有的 XML-RPC 服务。不过，XML 结构还是过于臃肿，一般场景用 JSON 还是会更灵活方便。
 
 ## ping
 
+### 应用场景
+
+在默认的请求上， 浏览器只能访问以下默认的 响应头
+
+- Cache-Control
+
+- Content-Language
+
+- Content-Type
+
+- Expires
+
+- Last-Modified
+
+- Pragma
+
+如果想让浏览器能访问到其他的 响应头的话 需要在服务器上设置 Access-Control-Expose-Headers
+
+- `Access-Control-Expose-Headers : 'Authorization'`
+
+```bash
+HTTP/1.1 200
+X-Application-Context: application:prod:8080
+Access-Control-Expose-Headers: Content-Disposition
+Content-Disposition: attachment;filename=1586853275291.zip
+Set-Cookie: SESSION=364deeec-505c-44f3-a75e-9875ef7bb46d; Path=/dgp-server-web-nr/; HttpOnly
+Content-Type: application/x-msdownload; =;charset=utf-8
+Transfer-Encoding: chunked
+Content-Encoding: gzip
+Vary: Accept-Encoding
+Date: Tue, 14 Apr 2020 08:34:35 GMT
+```
+
+例如上面这里 `Content-Disposition` 对于前端保存二进制文件很重要，可以获取到该二进制文件的名称以及文件类型，从而进行保存。
+
+```js
+const reg = /filename=(\S.*?\.\w+)$/;
+const fileInfo = headers["content-disposition"];
+const filename = fileInfo && fileInfo.match(reg);
+resolve({
+  blob: data,
+  name: filename ? decodeURI(filename[1]) : "DistTemplate"
+});
+const {blob, filename} = data;
+saveAs(blob, filename);
+```
+
+因此针对下载的接口，服务端需要统一添加 `Access-Control-Expose-Headers: Content-Disposition`，前端需要获取这个头的信息，进行文件的保存。
+
+- [Vuejs 之 axios 获取 Http 响应头](https://segmentfault.com/a/1190000009125333)
+
 ## 参考资料
 
-- [HTTP请求方法详解](https://juejin.im/entry/5b004085f265da0b886daf7c)
+- [HTTP 请求方法详解](https://juejin.im/entry/5b004085f265da0b886daf7c)
 - [MIME 类型](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types) -- 浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理 URL。

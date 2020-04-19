@@ -43,6 +43,14 @@ docker run -d -v $(pwd):/usr/share/nginx/html -p 80:80 --name nginx nginx
 
 ### 数据持久化之 bind Mounting
 
+### docker文件夹映射的两种方式---主机卷映射和共享文件夹映射
+
+- docker容器不保持任何数据
+- 重要数据请使用外部卷存储（数据持久化）
+- 容器可以挂载真实机目录或共享存储为卷
+
+https://blog.csdn.net/zhydream77/article/details/81909706
+
 ## 参考资料
 
 - 《Docker——从入门到实践》

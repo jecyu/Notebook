@@ -290,7 +290,7 @@ GoF 所著的《设计模式》一书的副书名是“可复用面向对象软�
 
 #### 实战
 
-##### 像下面这种应该如何处理呢？不属于多态的范畴。但是也是根据 layer 的类型，返回不同的实例化对象。
+##### 像下面这种应该如何处理呢？貌似不属于多态的范畴。但是也是根据 layer 的类型，返回不同的实例化对象。
 
 ```js
 /**
@@ -355,8 +355,8 @@ export const createLayer = async (layerOption) => {
     "esri/layers/FeatureLayer"
   );
  // 实例化图层，不变的部分
-  const newMapLayer = (layerClass, layOption) {
-    if (Object.prototype.toString.call(layerClass) === 'object') {
+  const newdMapLayer = (layerClass, layOption) {
+    if (Object.prototype.toString.call(layerClass) === 'object') { // 鸭子类型检测
       return new layerClass(layOption);
     } else {
       throw new Error("layerClass is undefined.");
@@ -379,14 +379,23 @@ export const createLayer = async (layerOption) => {
       return newMapLayer(FeatureLayer, layerOption)
     },
   }
+
+  // context
+  const instanceLayer = (type, layerOption) {
+    return LayerConfig[type](layerOption);
+  }
   // 返回图层对象
   if (LayerConfig[type]) {
-    return LayerConfig[type](layerOption);
+    return instanceLayer(type, layerOption); // 调用 instanceLayer 比直接调用 layerConfig[type](layerOption) 更加直观
   } else {
     throw new Error(`创建图层${url}失败！`);
   }
 }
 ```
+
+重构之后的代码其实也是属于多态的范畴了。`instanceLayer` 就是一个 `Context`，它自己没有实例化的能力，而是把这个职责委托给了某个策略对象，如 `featureLayer`，当我们对这些策略对象发出“实例化图层”的请求时，它们会返回各自不同的计算结果。
+
+而在 featureLayer 封装的函数里面，`newMapLayer` 则是对实例化这个操作做的进一步抽离，也属于多态的范畴。
 
 ##### 一段遍历树的回调函数
 
@@ -406,13 +415,149 @@ walkData(data);
 
 ### 封装
 
+<u>封装的目的是将信息隐藏。一般而言，我们讨论的封装是封装数据和封装实现。</u>这一节将讨论更广义的封装，<u>不仅包括封装数据和封装实现，还包括封装类型和封装变化。</u>
+
 #### 封装数据
+
+在许多语言的对象系统中，<u>封装数据是由语法解析来实现的，</u>这些语言也许提供了 <u>private、public、protected</u>等关键子来提供不同的访问权限。
+
+但 JavaScript 并没有提供对这些关键字的支持，<u>我们只能依赖变量的作用域来实现封装特性，而且只能模拟出 `public` 和 `private`</u>
+
+除了 ECMAScript6 中提供的 let 之外，一般我们通过函数来创建作用域：
+
+```js
+var myObject = (function() {
+  var _name = "jecyu"; // 私有（private）变量
+  return {
+    getName: function() { // 公开（public）方法
+      return _name;
+    }
+  }
+})();
+
+console.log(myObject.getName()); // 输出：jecyu
+console.log(myObject.__name()); // 输出：undefined
+```
+
+1. 如果使用 ES6 class 呢？
+2. 现在的各种模块规范下 commonjs、amd、cmd、es6模块，配合模块化构建工具 webpack/requireJS/seaJS/rollup 等可以实现数据封装。
+
+##### 问题1. 通过打包工具处理文件后、最终均是上面的 **立即执行函数 + 闭包** 模式？
+
+回答：是的，外围部分均是这样的。而在内部，则是各种模块化方案的模拟实现，通过 ，例如 webpack 针对 JS 的模块化输出。
+
+通过 webpack 打包的文件，最终是一个大的模块“立即执行函数 + 闭包”里面再包含各种小的模块实现，如 `webpack_exports`、`webpack_require`等实现对数据的处理。
+
+
+这里的 Vue.js 的文件通过打包工具输出一个立即执行函数 + 闭包的模式，地址：https://cdn.jsdelivr.net/npm/vue/dist/vue.js。
+
+文件的主要结构如下，下面是 umd 的输出，也就是说 vue.js 支持各种模块化方案的加载，如果没有，则是放在传入的 this 作用域上，一般为 window。
+
+```js
+// 这个立即执行函数是一个支持 umd 模式加载的写法
+(function (global, factory) {  // 这里的 factory 即是一个模块接收参数，而 global 是作用域环境
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.Vue = factory()); // this 引入
+}(this, function () { // 这里是 vue 源码模块文件
+  'use strict';   // 而这里又可以是很多小的函数模块组成，
+  //.....
+});
+```
+
+而看看通过 weback iview 的打包文件，一开始同样是立即执行函数的包含，而由于 iview 依赖 vue 文件，因此无论最终 iview 模块被那种模块化方案 commomjs 或 amd，都要先引入 vue 模块。
+```js
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("vue")); 
+	else if(typeof define === 'function' && define.amd)
+		define("iview", ["vue"], factory);
+	else if(typeof exports === 'object')
+		exports["iview"] = factory(require("vue"));
+	else
+		root["iview"] = factory(root["Vue"]);
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_15__) {
+  // ...这里是 webpack 打包后的文件
+  return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/dist/";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 248);
+/******/ })
+// ....更多逻辑
+//....更多逻辑
+}
+```
 
 #### 封装实现
 
 #### 封装类型
 
 #### 封装变化
+
+#### 小结
+
+通过 webpack/rollup 等打包工具快速实现各种模块化方案，前端就可以借助这些工具而不用手动实现各个模块的隔离封装，而每一个模块里面都可以包括对数据、实现、类型、变化的各自函数封装。
+
+链接：
 
 ### 原型模式和基于原型继承的 JavaScript 对象系统
 

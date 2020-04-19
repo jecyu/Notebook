@@ -611,6 +611,967 @@ export declare function Prop(
 
 ## 项目实战
 
+### ts + vue 项目开发指南
+
+#### vscode 编译器自动检查语法
+
+打开 vscode -> setting -> 输入 check 即可看到 TypeScript 的检查配置，这样在你编辑代码的时候即可实时看到提示。
+
+### vue 组件
+
+`vue-property-decorator` 在 `vue-class-component` 的基础上增加了更多与 Vue 相关的装饰器，使 Vue 组件更好的跟 TS 结合使用。这两者都是离不开装饰器的，（decorator）装饰器已在 ES 提案中。Decorator 是装饰器模式的实践。装饰器模式呢，它是继承关系的一个替代方案。动态地给对象添加额外的职责。在不改变接口的前提下，增强类的性能。
+
+#### 修饰器
+
+```ts
+import {
+  Vue,
+  Component,
+  Prop,
+  Component,
+  Emit,
+  Provice,
+  Inject,
+  Watch,
+  Model,
+  Minxins
+} from "vue-property-decorator";
+```
+
+#### @Component 类装饰器
+
+首先，Vue 页面中的 script 部分要加一个 lang=ts，这样安装好 typescript 才能引用。
+
+```html
+<script lang="ts">
+  import { Vue, Component } from "vue-property-decorator";
+  import BaseHeader from "@/components/BaseHeader";
+
+  //公共头部组件
+  @Component({
+    components: {
+      BaseHeader
+    }
+  })
+  export default class extends Vue {
+    private stateA: boolean = true;
+    private stateB: string = "";
+    private stateC: number = 0;
+    private stateD: any = {};
+    stateE: any[] = [];
+  }
+</script>
+```
+
+等同于
+
+```html
+<script>
+  import Vue from "vue";
+  import BaseHeader from "@/components/BaseHeader"; //公共头部组件
+
+  export default {
+    components: {
+      BaseHeader
+    },
+
+    data() {
+      return {
+        stateA: true,
+        stateB: "",
+        stateC: 0,
+        stateD: {},
+        stateE: []
+      };
+    }
+  };
+</script>
+```
+
+#### @Prop
+
+父子组件之间的属性传值
+
+```ts
+export default class extends Vue {
+@Prop({ default: 0 }) private propA!: number
+@Prop({ default: () => [10, 20, 30, 50] }) private propB!: number[]
+@Prop({ default: 'total, sizes, prev, pager, next, jumper' }) private propC!: string
+@Prop({ default: true }) private propD!: boolean,
+@prop([String, Boolean]) propE: string | boolean;
+}
+```
+
+代码等同于
+
+```js
+export default {
+  props: {
+    propA: {
+      type: Number
+    },
+    propB: {
+      type: Array,
+      default: [10, 20, 30, 50]
+    },
+    propC: {
+      type: String,
+      default: "total, sizes, prev, pager, next, jumper"
+    },
+    propD: {
+      type: String,
+      default: "total, sizes, prev, pager, next, jumper"
+    },
+    propE: {
+      type: [String, Boolean]
+    }
+  }
+};
+```
+
+这里有两个常用修饰符`!` `?`，!和可选参数 `?` 是相对的, `!` 表示强制解析（也就是告诉 typescript 编译器，我这里一定有值），你写`?` 的时候再调用，typescript 会提示可能为 `undefined`
+
+#### @Emit
+
+【注意】：实践证明，其实不使用 @Emit 修饰符也是可以的，按照以前 `this.$emit()` 的写法
+
+```ts
+@Component
+export default class YourComponent extends Vue {
+  count = 0;
+
+  @Emit("reset")
+  resetCount() {
+    this.count = 0;
+  }
+
+  @Emit()
+  returnValue() {
+    return 10;
+  }
+
+  @Emit()
+  onInputChange(e) {
+    return e.target.value;
+  }
+}
+```
+
+代码等同于
+
+```js
+export default {
+  data() {
+    return {
+      count: 0
+    };
+  },
+
+  methods: {
+    resetCount() {
+      this.count = 0;
+      this.$emit("reset");
+    },
+
+    returnValue() {
+      this.$emit("return-value", 10);
+    },
+
+    onInputChange(e) {
+      this.$emit("on-input-change", e.target.value, e);
+    }
+  }
+};
+```
+
+@Emit 装饰器的函数会在运行之后触发等同于其函数名(驼峰式会转为横杠式写法)的事件, 并将其函数传递给\$emit
+@Emit 触发事件有两种写法
+
+@Emit()不传参数,那么它触发的事件名就是它所修饰的函数名.
+@Emit(name: string),里面传递一个字符串,该字符串为要触发的事件名。
+
+#### @Watch 观察属性装饰器
+
+@Watch 装饰器主要用于替代 Vue 属性中的 watch 属性，监听依赖的变量值变化而做一系列的操作
+
+```ts
+@Component
+export default class YourComponent extends Vue {
+  @Watch("child")
+  onChildChanged(val: string, oldVal: string) {}
+
+  @Watch("person", { immediate: true, deep: true })
+  onPersonChanged(val: Person, oldVal: Person) {}
+}
+```
+
+```js
+export default {
+  watch: {
+    child(val, oldVal) {},
+    person: {
+      handler(val, oldVal) {},
+      immediate: true,
+      deep: true
+    }
+  }
+};
+```
+
+#### @Minxins
+
+```ts
+// myMixin.ts
+
+@Component
+export default class MyMixin extends Vue {
+  mixinValue: string = "Hello World!!!";
+}
+```
+
+```ts
+// 引用mixins
+import MyMixin from "./myMixin.ts";
+
+@Component
+export default class extends mixins(MyMixin) {
+  created() {
+    console.log(this.mixinValue); // -> Hello World!!!
+  }
+}
+```
+
+#### @Model
+
+@Model 装饰器允许我们在一个组件上自定义 v-model，接收两个参数：
+
+event: string 事件名。
+options: Constructor | Constructor[] | PropOptions 与@Prop 的第一个参数一致。
+
+```ts
+import { Vue, Component, Model } from "vue-property-decorator";
+
+@Component
+export default class MyInput extends Vue {
+  @Model("change", { type: String, default: "Hello world!!!" })
+  readonly value!: string;
+}
+```
+
+代码等同于
+
+```html
+<template>
+  <input
+    type="text"
+    :value="value"
+    @change="$emit('change', $event.target.value)"
+  />
+</template>
+
+export default { model: { prop: 'value', event: 'change' }, props: { value: {
+type: String, default: 'Hello world!!!' } } }
+```
+
+#### @Provide @Inject
+
+`@Provide` 声明一个值 , 在其他地方用 `@Inject` 接收，一般用于不依赖于任何第三方状态管理库（如 vuex）的组件编写
+
+#### @Ref(refKey?: string)
+
+@Ref(refKey?: string)
+@Ref 装饰器接收一个可选参数，用来指向元素或子组件的引用信息。如果没有提供这个参数，会使用装饰器后面的属性名充当参数
+
+```ts
+import { Vue, Component, Ref } from "vue-property-decorator";
+import { Form } from "element-ui";
+
+@Componentexport
+class MyComponent extends Vue {
+  @Ref() readonly loginForm!: Form;
+  @Ref("changePasswordForm") readonly passwordForm!: Form;
+
+  public handleLogin() {
+    this.loginForm.validate(valide => {
+      if (valide) {
+        // login...
+      } else {
+        // error tips
+      }
+    });
+  }
+}
+```
+
+等同于
+
+```js
+export default {
+  computed: {
+    loginForm: {
+      cache: false,
+      get() {
+        return this.$refs.loginForm;
+      }
+    },
+    passwordForm: {
+      cache: false,
+      get() {
+        return this.$refs.changePasswordForm;
+      }
+    }
+  }
+};
+```
+
+#### 钩子函数
+
+以下的 `public`、`private` 在引入 `tslint` 后是必写的，否则会有警告，如果没有引的话是可以不写的
+
+| Ts                          | Js                              | 说明         |
+| --------------------------- | ------------------------------- | ------------ |
+| public created() {}         | created() {}                    | 初始化       |
+| public mounted() {}         | mounted() {}                    | 挂载完毕     |
+| private \_getInitData() {}  | methods: { \_getInitData() {} } | 方法         |
+| private get \_userName() {} | computed: { \_userName() {} }   | 计算属性     |
+| public destroyed() {}       | destroyed() {}                  | 销毁生命周期 |
+
+### 状态管理 Vuex
+
+传统的 vuex 在 vue+ts 的项目里面是行不通的，`vue 2.0` 版本对 ts 的兼容性本身并不是特别友好，所以要达到状态管理的效果，这里要额外引用一个类库 `vuex-module-decorators`，它是基于 `vue-class-component` 所做的拓展，它提供了一系列的装饰器，让 `vue+ts` 结合的项目达到状态管理的作用。
+
+`vue-class-component` 主要提供了以下的装饰器，接下来让我们一一的了解一遍吧
+
+> import { VuexModule, Module, Action, Mutation, getModule, State } from 'vuex-module-decorators'
+
+| TS           | JS        |
+| ------------ | --------- |
+| public State | state     |
+| @Mutations   | mutations |
+| @Action      | action    |
+| get          | getters   |
+
+`index.ts`
+
+```ts
+import Vue from "vue";
+import Vuex from "vuex";
+import { IAppState } from "./modules/app";
+import { IUserState } from "./modules/user";
+
+Vue.use(Vuex);
+
+export interface IRootState {
+  app: IAppState;
+  user: IUserState;
+}
+
+// Declare empty store first, dynamically register all modules later.
+export default new Vuex.Store<IRootState>({});
+```
+
+等同于
+
+```js
+import Vue from "vue";
+import Vuex from "vuex";
+import app from "./modules/app";
+import user from "./modules/user";
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  modules: {
+    app,
+    user
+  }
+});
+
+export default store;
+```
+
+#### 定义 module
+
+定义一个 `modules`，直接使用装饰器 `@Module`
+
+#### state
+
+这里所有的 state 属性则是添加上 public 修饰的 class 属性，其它的用法都是相似的
+
+#### Getters
+
+原始的 `getters` 计算函数，在这里对应的即使 `get` 方法，即
+
+原始的 getters 计算函数，在这里对应的即使 get 方法，即
+
+```ts
+@Module
+export default class UserModule extends VuexModule {
+  public permission = null;
+
+  get storePermission() {
+    return this.permission;
+  }
+}
+```
+
+等同于
+
+```js
+export default {
+  state: {
+    permission: null
+  },
+  getters: {
+    storePermission: state => state.permission
+  }
+};
+```
+
+#### Mutations
+
+```ts
+@Mutation
+private [SET_USER_INFO](userInfo) {
+  this.userInfo = userInfo
+}
+```
+
+等同于
+
+```js
+mutations: {
+ [SET_USER_INFO](state, userInfo) {
+  state.userInfo = userInfo;
+}
+```
+
+两者的区别其实就是语法糖，原始的 `Mutation` 同步方法都是定义在 `mutations` 内，而 ts 版的每一个 `Mutation` 都要加上装饰器`@Mutation` 修饰。
+
+注意：
+一旦使用 `@Mutation` 装饰某一函数后, 函数内的 `this`上下文即指向当前的 `state`，所以想引用 `state` 的值，可以直接`this.userInfo`访问即可。
+
+`Muation` 函数不可为 `async` 函数, 也不能使用`箭头函数`来定义, 因为在代码需要在运行重新绑定执行的上下文。（不能使用箭头函数代验证）
+
+#### Actions
+
+```ts
+@Action
+public async Login(userInfo: { username: string, password: string}) {
+    ...
+    this.SET_TOKEN(data.accessToken)
+}
+```
+
+```js
+actions: {
+    async Login({ commit }, data) {
+        ...
+        commit('SET_TOKEN', data.accessToken)
+    }
+}
+```
+
+### tsx
+
+vue 组件中使用了 render 写法的，需要把 `<script lang="ts">` 改为 `<script lang="tsx">`
+
+## ts 编译配置
+
+TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 `allowJs` 选项，那 `.js` 和 `.jsx` 文件也属于 TS 文件。
+
+
+ 编译的js，后续 babel 进行处理？
+```json
+{
+  "compilerOptions": {
+    "target": "esnext", // 编译的js，后续 babel 进行处理？
+    "module": "esnext", // 生成的模块洗ing是：
+    "strict": true,
+    "jsx": "preserve", // 支持 tsx 写法
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": ["webpack-env", "jest"],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/icons/svg/index.js"
+  ],
+  "exclude": ["node_modules"]
+}
+```
+
+
+## ts 入门
+
+### 一、基本类型和扩展类型
+
+#### 1. 基本类型合集
+
+```ts
+// 数字，二、八、十六进制都支持
+let decLiteral: number = 6;
+let hexLiteral: number = 0xf00d;
+
+// 字符串，单双引都行
+let name: string = "bob";
+let sentence: string = `Hello, my name is ${ name }.
+
+// 数组，第二种方式是使用数组泛型，Array<元素类型>：
+let list: number[] = [1, 2, 3];
+let list: Array<number> = [1, 2, 3];
+
+let u: undefined = undefined;
+let n: null = null;
+```
+
+#### 2. 特殊类型
+
+##### （1）元组 Tuple
+
+想象 元组 作为有组织的数组，你需要以正确的顺序预定义数据类型。
+
+```ts
+const messyArray = [" something", 2, true, undefined, null];
+const tuple: [number, string, string] = [24, "Indrek", "Lasn"];
+```
+
+如果不遵循 为元组 预设排序的索引规则，那么 Typescript 会警告。
+
+##### （2）枚举 enum
+
+`enum` 类型是对 JavaScript 标准数据类型的一个补充。 像 C# 等其它语言一样，使用枚举类型可以为一组数值赋予友好的名字。
+
+```ts
+// 默认情况从0开始为元素编号，也可手动为1开始
+enum Color {
+  Red = 1,
+  Green = 2,
+  Blue = 4
+}
+let c: Color = Color.Green;
+
+let colorName: string = Color[2];
+console.log(colorName); // 输出'Green'因为上面代码里它的值是2
+```
+
+另一个很好的例子是使用枚举来存储应用程序状态。
+
+```ts
+enum AppStates {
+  hasErrors,
+  isFetching
+  isUserLoggedIn,
+  doesUserHaveProfileImage
+}
+```
+
+##### （3）Void
+
+在 Typescript 中，你必须在函数中定义返回类型。像这样：
+
+```ts
+function sayMyname(name: string): string {
+  return name;
+}
+console.log(sayMyName("Jecyu"));
+s;
+```
+
+若没有返回值时，我们可以将其返回值定义为 `void`。
+
+##### (4) Any
+
+就是什么类型都行，当你无法确认在处理什么类型时可以用这个。
+
+但要慎重使用，用多了就失去使用 Ts 的意义。
+
+```ts
+let person: any = "前端劝退师"
+person = 25
+person = true
+复制代码
+主要应用场景有：
+```
+
+主要应用场景有：
+
+- 接入第三方库
+- Ts 新手前期都用
+
+##### （5）Never
+
+用很粗浅的话来描述就是："Never 是你永远得不到的爸爸。"通用用于处理错误。
+
+具体的行为是：
+
+- throw new Error(message)
+- return error("Something failed")
+- while (true) {} // 存在无法达到的终点
+
+```ts
+const error = (message: string): never => {
+  // 不会发生返回，因为抛出了错误
+  throw new Error(message);
+};
+```
+
+#### 3. 类型断言
+
+简略的定义是：可以用来手动指定一个值的类型。
+有两种写法，尖括号和 `as`:
+
+```ts
+let someValue: any = "this is a string";
+
+let strLength: number = (<string>someValue).length;
+let strLength: number = (someValue as string).length;
+```
+
+使用例子有：
+
+当 TypeScript 不确定一个联合类型的变量到底是哪个类型的时候，我们只能访问此联合类型的所有类型里共有的属性或方法：
+
+```ts
+function getLength(something: string | number): number {
+  return something.length;
+}
+
+// index.ts(2,22): error TS2339: Property 'length' does not exist on type 'string | number'.
+//   Property 'length' does not exist on type 'number'.
+```
+
+如果你访问长度将会报错，而有时候，我们确实需要在还不确定类型的时候就访问其中一个类型的属性或方法，此时需要断言才不会报错：
+
+```ts
+function getLength(something: string | number): number {
+  if ((<string>something).length) {
+    return (<string>something).length;
+  } else {
+    return something.toString().length;
+  }
+}
+```
+##### 解决TS类型报错的几个方法
+
+  1. 类型断言
+    类型断言可以明确的告诉Ts值的详细类型，即使在某些情景下与Ts推断的类型不一致，但我们很明确值的类型时，可以使用类型断言：
+    语法： ①  <类型>值
+           ②  值 as 类型  推荐这种，因为<>容易与泛型,react起冲突
+  2. 类型守卫 typeof in instanceof 字面量类型保护
+    ① typeof 用于判断 number、string、boolean和symbol四种类型
+    ② instanceof 用于判断一个实例是否属于某个类
+    ③ in 用于判断一个属性/方法是否属于某个对象
+    ④ 字面量类型保护
+  ```ts
+  private padLeft(value: string, padding: string | number) {
+    if (typeof padding === "number") {
+      console.log(padding + 3);
+    }
+  }
+  ```
+  ```ts
+    class Man {
+      handsome = 'handsome';
+      type: 'man';
+    }
+    class Women {
+      beautiful = 'beautiful';
+      type: 'woman';
+    }
+    private Human(arg: Man | Women) {
+    // instanceof
+      if (arg instanceof Man) {
+        console.log(arg.handsome);
+      }
+        // 字面量保护
+      if(arg.type === 'man') {
+        console.log(arg.handsome);
+      }
+    }
+  ```
+  3. 双重断言
+    因为有时候使用as也会报错，因为只有当S类型是T类型的子集或者T类型是S类型子集的时候，S才能被断言成T，所以使用双重断言解决报错
+  ```ts
+    private handler(event: Event) {
+      const element = (event as any) as HTMLElement; 
+    }
+  ```
+
+
+
+### 二、泛型：Generics
+
+软件工程的一个主要部分就是构建组件，构建的组件不仅需要具有明确的定义和统一的接口，同时也需要组件可复用。支持现有的数据类型和将来添加的数据类型的组件为大型软件系统的开发过程提供很好的灵活性。
+
+在 `C#` 和 `Java` 中，可以使用"泛型"来创建可复用的组件，并且组件可支持多种数据类型。这样便可以让用户根据自己的数据类型来使用组件。
+
+#### 1. 泛型方法
+
+在 TypeScript 里，声明泛型方法有以下两种方式：
+
+```ts
+function gen_func1<T>(arg: T): T {
+  return arg;
+}
+// 或者
+let gen_func2: <T>(arg: T) => T = function(arg) {
+  return arg;
+};
+```
+
+调用方式也有两种：
+
+```ts
+gen_func1<string>("Hello world");
+gen_func2("Hello world");
+// 第二种调用方式可省略类型参数，因为编译器会根据传入参数来自动识别对应的类型。
+```
+
+#### 2. 泛型与 Any
+
+Ts 的特殊类型 Any 在具体使用时，可以代替任意类型，咋一看两者好像没啥区别，其实不然：
+
+```ts
+// 方法一：带有any参数的方法
+function any_func(arg: any): any {
+  console.log(arg.length);
+  return arg;
+}
+
+// 方法二：Array泛型方法
+function array_func<T>(arg: Array<T>): Array<T> {
+  console.log(arg.length);
+  return arg;
+}
+```
+
+- 方法一，打印了 `arg` 参数的 `length` 属性。因为 `any` 可以代替任意类型，所以该方法在传入参数不是数组或者带有 `length` 属性对象时，会抛出异常。
+- 方法二，定义了参数类型是 `Array` 的泛型类型，肯定会有 `length` 属性，所以不会抛出异常。
+
+#### 3. 泛型类型
+
+泛型接口：
+
+```ts
+interface Generics_interface<T> {
+  (arg: T): T;
+}
+
+function func_demo<T>(arg: T): T {
+  return arg;
+}
+
+let func1: Generics_interface<number> = func_demo;
+func1(123); // 正确类型的实际参数
+func1("123"); // 错误类型的实际参数
+```
+
+### 三、自定义类型 Interface vs type
+
+Interface，国内翻译成接口。
+
+Type alias，类型别名。
+
+#### 1.相同点
+
+#### 都可以用来描述一个对象或函数
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+type User = {
+  name: string
+  age: number
+};
+
+interface SetUser {
+  (name: string, age: number): void;
+}
+type SetUser = (name: string, age: number): void;
+```
+
+**赋值的时候，变量的属性多一个少一个都不行，变量的属性必须和接口的属性保持一致（前提对接口属性没做处理，可选）。 **
+
+
+##### 都允许拓展（extends）：
+
+interface 和 type 都可以拓展，并且两者并不是相互独立的，也就是说interface可以 extends type, type 也可以 extends interface 。 虽然效果差不多，但是两者语法不同。
+
+**interface extends interface**
+
+```ts
+interface Name { 
+  name: string; 
+}
+interface User extends Name { 
+  age: number; 
+}
+```
+
+**type extends type**
+
+```ts
+type Name = { 
+  name: string; 
+}
+type User = Name & { age: number  };
+```
+interface extends type
+
+```ts
+type Name = { 
+  name: string; 
+}
+interface User extends Name { 
+  age: number; 
+}
+```
+
+**type extends interface**
+
+```ts
+interface Name { 
+  name: string; 
+}
+type User = Name & { 
+  age: number; 
+}
+```
+
+#### 2.不同点
+
+type 可以而 interface 不行
+
+type 可以声明基本类型别名，联合类型，元组等类型
+
+```ts
+// 基本类型别名
+type Name = string;
+
+// 联合类型
+interface Dog {
+  wong();
+}
+interface Cat {
+  miao();
+}
+
+type Pet = Dog | Cat;
+
+// 具体定义数组每个位置的类型
+type PetList = [Dog, Pet];
+```
+
+type 语句中还可以使用 `typeof` 获取实例的 类型进行赋值
+
+```ts
+// 当你想获取一个变量的类型时，使用 `typeof`
+let div = document.createElement("div");
+type B = typeof div;
+```
+
+### 四、实现与继承：implements vs extends
+
+`extends` 很明显就是 ES6 里面的类继承，那么 `implement` 又是做什么的呢？它和 `extends` 有什么不同？
+
+`implement`，实现。与C#或Java里接口的基本作用一样，`TypeScript` 也能够用它来明确的强制一个类去符合某种契约
+
+implement基本用法：
+```ts
+interface IDeveloper {
+   name: string;
+   age?: number;
+}
+// OK
+class dev implements IDeveloper {
+    name = 'Alex';
+    age = 20;
+}
+// OK
+class dev2 implements IDeveloper {
+    name = 'Alex';
+}
+// Error
+class dev3 implements IDeveloper {
+    name = 'Alex';
+    age = '9';
+}
+```
+
+
+而 `extends` 是继承父类，两者其实可以混着用：
+```ts
+class A extends B implements C,D,E
+```
+
+#### 五、声明文件与命名空间：declare 和 namespace
+
+前面我们讲到 Vue项目中的 `shims-tsx.d.ts` 和 `shims-vue.d.ts`，其初始内容是这样的：
+```ts
+// shims-tsx.d.ts
+import Vue, { VNode } from 'vue';
+
+declare global {
+  namespace JSX {
+    // tslint:disable no-empty-interface
+    interface Element extends VNode {}
+    // tslint:disable no-empty-interface
+    interface ElementClass extends Vue {}
+    interface IntrinsicElements {
+      [elem: string]: any;
+    }
+  }
+}
+
+// shims-vue.d.ts
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
+```
+
+- `shims-tsx.d.ts`， 在全局变量 global中批量命名了数个内部模块。
+- `shims-vue.d.ts`，意思是告诉 TypeScript *.vue 后缀的文件可以交给 vue 模块来处理。
+
+
+`declare`：当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。
+
+这里列举出几个常用的：
+- declare var 声明全局变量
+- declare function 声明全局方法
+- declare class 声明全局类
+- declare enum 声明全局枚举类型
+- declare global 扩展全局变量
+- declare module 扩展模块
+
+`namespace`：“内部模块”现在称做“命名空间”
+`module X` { 相当于现在推荐的写法 namespace X {)
+
+## ts 最佳实践
+
+## 参考资料
+
+- [传送门--TypeScript 入门教程 (墙裂推荐)](https://github.com/xcatliu/typescript-tutorial/blob/master/README.md)
+- [一篇朴实的文章带你 30 分钟捋完 TypeScript,方法是正反对比](https://juejin.im/post/5d53a8895188257fad671cbc#heading-15)
+- [Vue3.0 前的 TypeScript 最佳入门实践](https://juejin.im/post/5d0259f2518825405d15ae62)
+
+
 见文章：xxx
 
 ### 在 Vue 里使用 TS
@@ -665,6 +1626,8 @@ import ReactDOM from "react-dom";
 
 ## 底层原理
 
+## 最佳实践
+
 ## 参考资料
 
 - [TypeScript 中文网](https://www.tslang.cn/docs/handbook/module-resolution.html)
@@ -675,3 +1638,6 @@ import ReactDOM from "react-dom";
 - [TypeScript 实战-04-TS 枚举类型](https://blog.csdn.net/ABAP_Brave/article/details/100737210)
 - [ts 在线编译工具](https://www.typescriptlang.org/play)
 - [TypeScript - 一种思维方式](https://zhuanlan.zhihu.com/p/63346965) 本文介绍了TS 能强化了「面向接口编程」这一理念。我们知道稍微复杂一点的程序都离不开不同模块间的配合，不同模块的功能理应是更为清晰的，TS 能帮我们梳理清不同的接口。
+- [传送门--TypeScript 入门教程 (墙裂推荐)](https://github.com/xcatliu/typescript-tutorial/blob/master/README.md)
+- [一篇朴实的文章带你 30 分钟捋完 TypeScript,方法是正反对比](https://juejin.im/post/5d53a8895188257fad671cbc#heading-15)
+- [Vue3.0 前的 TypeScript 最佳入门实践](https://juejin.im/post/5d0259f2518825405d15ae62)

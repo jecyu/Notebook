@@ -1984,6 +1984,35 @@ public class ApplePicker : MonoBehaviour
 
 #### 小结
 
+图层使用步骤：
+
+1.设置图层，可以设置各种不同类型的游戏对象的交互，控制对象之间是否发生碰撞。
+  - 图层是指对象的分组，我们可以规定各组对象之间是否发生碰撞。如果苹果树和苹果放在两个不同的图层中，并在图层管理器中规定两个图层不发生碰撞，这样苹果和苹果树也不会再撞到一起了。
+2. 然后可以通过物理器 `Physics` 进行编辑图层的碰撞交互规则了。
+3. 定义好图层之后，就可以为游戏对象指定合适的图层了。
+4. 添加碰撞事件处理逻辑。
+
+通过图层可以设置哪些图层的游戏对象可以发生碰撞，然后在碰撞时通过标签找到相关的游戏对象，进行逻辑的处理。
+
+```cs
+private void OnTriggerEnter(Collider other)
+  {
+    // 当其他物体撞到触发器时
+    // 检查是否是弹丸
+    if (other.gameObject.tag == "Projectile")
+    {
+      // 如果是弹丸
+      Goal.goalMet = true;
+      // 同时将颜色的不透明度设置得更高
+      Renderer renderer = this.gameObject.GetComponent<Renderer>();
+      Color c = renderer.material.color;
+      c.a = 1;
+      c.r = 255;
+      renderer.material.color = c;
+    }
+  }
+```
+
 ### 游戏原型 2：《爆破任务》
 
 #### 游戏原型概念
@@ -2836,6 +2865,9 @@ public class MissionDemolition : MonoBehaviour
 - 游戏的 setActive
 - 单例对象
 - Rigibody constrains 可以冻结物体的 x、y、z 轴
+- 添加标签
+  - 可以通过标签，判断一系列的游戏对象。（类似文章标签的用法）
+
 
 ##### 编程技术
 
@@ -2904,9 +2936,102 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则**对象不
 - [Script](https://blog.csdn.net/QUAN2008HAPPY/article/details/39403785)
 - [Unity3D Rigidbody 详解](https://blog.csdn.net/f786587718/article/details/49105437)
 
+##### 4. Unity 中标签与图层的区别？
+
+通过图层可以设置哪些图层的游戏对象可以发生碰撞，然后在碰撞时通过标签找到相关的游戏对象，进行逻辑的处理。
+
+```cs
+private void OnTriggerEnter(Collider other)
+  {
+    // 当其他物体撞到触发器时
+    // 检查是否是弹丸
+    if (other.gameObject.tag == "Projectile")
+    {
+      // 如果是弹丸
+      Goal.goalMet = true;
+      // 同时将颜色的不透明度设置得更高
+      Renderer renderer = this.gameObject.GetComponent<Renderer>();
+      Color c = renderer.material.color;
+      c.a = 1;
+      c.r = 255;
+      renderer.material.color = c;
+    }
+  }
+```
+
+#### 5. collider 的作用以及 isTrigger 的属性用法是什么？
+
+
+OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false。为什么呢，这里涉及到触发器和碰撞器。
+
+1.系统默认会给每个对象 (GameObject) 添加一个碰撞组件 (ColliderComponent)，一些背景对象则可以取消该组件。
+
+2.在 unity3d 中，能检测碰撞发生的方式有两种，**一种是利用碰撞器，另一种则是利用触发器**。这两种方式的应用非常广泛。为了完整的了解这两种方式，我们必须理解以下概念：
+
+（一）碰撞器是一群组件，它包含了很多种类，比如：`Box Collider`，`Capsule Collider` 等，这些碰撞器应用的场合不同，但都必须加到 `GameObjecet` 身上。
+（二）所谓触发器，只需要在检视面板中的碰撞器组件中勾选 `IsTrigger` 属性选择框。
+（三）在Unity3d中，主要有以下接口函数来处理这两种碰撞检测：
+
+- 触发信息检测：
+1. MonoBehaviour.OnTriggerEnter( Collider other )当进入触发器
+2. MonoBehaviour.OnTriggerExit( Collider other )当退出触发器
+3. MonoBehaviour.OnTriggerStay( Collider other )当逗留触发器
+
+- -碰撞信息检测：
+1. MonoBehaviour.OnCollisionEnter( Collision collisionInfo ) 当进入碰撞器
+2. MonoBehaviour.OnCollisionExit( Collision collisionInfo ) 当退出碰撞器
+3. MonoBehaviour.OnCollisionStay( Collision collisionInfo )  当逗留碰撞器
+
+
+在目前掌握的情况分析，在Unity中参与碰撞的物体分2大块：**1.发起碰撞的物体。2.接收碰撞的物体。**
+
+**1. 发起碰撞物体有**：`Rigodbody` , `CharacterController` .
+
+**2. 接收碰撞物体由**：所有的 `Collider` .
+
+**工作的原理为：发生碰撞的物体中必须要有“发起碰撞”的物体。否则，碰撞不响应。**
+
+比如：墙用 BoxCollider ，所以墙与墙之间无反应。
+
+比如：一个带有 `Rigidbody` 属性的箱子，能落到带有 `MeshCollider` 属性的地面上。
+
+比如：一个带有 `Rigidbody`属性的箱子，可以被一个带有 `CharacterController` 属性的人推着跑。
+
+就是此原因。
+
+在所有 `Collider`上有一个 `Is Trigger` 的 `boolean` 型参数。
+
+当发生碰撞反应的时候，会先检查此属性。
+
+<u>当激活此选项时，会调用碰撞双方的脚本 `OnTrigger***`， 反之，脚本方面没有任何反应。</u>
+
+当激活此选项时，不会发生后续物理的反应。反之，发生后续的物理反应。
+
+**总结：`Is Trigger` 好比是一个物理功能的开关， 是要“物理功能”还是要“OnTrigger脚本”。**
+
+`OnTriggerEnter` 触发条件：
+
+- 碰撞双方都必须是碰撞体 
+- 碰撞双方其中一个碰撞体必须勾选 `IsTigger` 选项 
+- 碰撞双方其中一个必须是刚体 
+- 刚体的 `IsKinematic` 选项可以勾选也可以不勾选
+
+只要满足上面两个条件，不管谁主动都会触发
+
+备注： 
+- `OnTriggerEnter` 方法的形参对象指的是碰撞双方中没有携带 `OnTriggerEnter` 方法的一方 
+- `OnTriggerEnter` 方法前可以带上 `public` 或 `private`，或者干脆两个都不带
+
+
+参考资料：
+- [Unity3D碰撞检测和OnTriggerEnter用法](https://blog.csdn.net/qq_30454411/article/details/79810922) 详细介绍了碰撞以及 OnTriggerEnter 的使用
+
+
+
 ### 游戏原型 3：《太空射击》
 
 在本章中，你将使用几种编程技术创建自己的射击游戏，这些技术包括类继承、枚举类型（enum）、静态字段和方法以及单例模式，在你的编程和原型制作生涯中，这些技术会派上用场。
+
 
 #### 准备工作
 
@@ -2919,6 +3044,16 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则**对象不
 #### 随机生成敌机
 
 #### 设置标签、图层和物理规则
+
+#### 小结
+
+##### 问题1：使用泛型与直接传参给函数，两者的使用区别？
+
+首先就是不需要固定参数的类型，也不需要在函数内部进行判断。例如栈，栈的数据类型可以是任何类型，也就是泛型。
+
+##### 问题2：枚举类型作为 Type 使用，有什么不同？
+
+##### 单一职责的应用：weapon 类型、projectile 类型、main 类里面的 weaponDefinition 数据共用？
 
 ### 游戏原型 4：《矿工接龙》
 

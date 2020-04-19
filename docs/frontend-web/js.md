@@ -1053,10 +1053,9 @@ const module = (function() {
     console.log("私有函数"); // 私有函数
   };
   return {
-    name: "Jecyu", // 公有属性
-    sayName: function() {
+    sayName: function() { // 在函数外部是无法访问
       // 公有函数
-      console.log(this.name);
+      console.log(privateName);
     }
   };
 })();
@@ -1537,6 +1536,11 @@ require(["./vendor/multi"], function(multi) {
 });
 ```
 
+#### webpack 是如何实现各种模块化方案的？
+
+通过打包工具快速实现各种模块化方案，前端就可以实现整个模块的封装，模块里包括封装数据、封装实现、封装类型、封装变化。
+[]链接
+
 ### 参考资料
 
 - [ES6 系列之模块加载方案](https://juejin.im/post/5bea425751882508851b45d6#heading-11) -- 从模块说到 webpack 打包、babel 有比较深的探讨。
@@ -1697,3 +1701,4 @@ function Random(min, max) {
 - [JavaScript 开发者应懂的 33 个概念(中文版)](https://github.com/stephentian/33-js-concepts)
 
 - [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
+- 《JavaScript 忍者秘籍》

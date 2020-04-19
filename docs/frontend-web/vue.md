@@ -6,6 +6,61 @@
 
 ## 基础
 
+## 计算属性
+
+计算属性默认只有 getter，不过在需要时你也可以提供一个 setter：
+
+```js
+// ...
+computed: {
+  fullName: {
+    // getter
+    get: function () {
+      return this.firstName + ' ' + this.lastName
+    },
+    // setter
+    set: function (newValue) {
+      var names = newValue.split(' ')
+      this.firstName = names[0]
+      this.lastName = names[names.length - 1]
+    }
+  }
+}
+```
+
+// ...
+现在再运行 vm.fullName = 'John Doe' 时，setter 会被调用，vm.firstName 和 vm.lastName 也会相应地被更新
+
+```cs
+ private float _shieldLevel = 1;
+
+  public bool ______________________;
+  public Bounds bounds;
+  // 此变量用于存储最后一次触发碰撞器的游戏对象
+  public GameObject lastTriggerGo = null;
+
+  public float shieldLevel
+  {
+    get
+    {
+      return _shieldLevel;
+    }
+    set
+    {
+      // 这里不能之际诶设置 shieldLevel，应该是改变它依赖的属性 _shieldLevel
+      // 注意这里不要写成 shieldLevel = Mathf.Min(value, 4); 会导致递归调用 set 方法溢出问题
+      // 不直接使用 data _shieldLevel属性，是为了在触发 set 时，还可以做其他事情，而不用监听。
+      _shieldLevel = Mathf.Min(value, 4);
+      // 如果护盾等级小于0
+      if (value < 0)
+      {
+        Destroy(this.gameObject);
+      }
+
+    }
+  }
+```
+
 ### 插槽
 
 > 插槽，也就是 slot，是组件的一块 HTML 模版，这块模版显示不显示、以及怎样显示由父组件来决定。一个 slot 的核心两个问题是：显示不显示和怎样显示。
@@ -29,7 +84,7 @@ export default {
         {this.$slots.default}
       </div>
     );
-  }
+  },
 };
 
 // template 写法
@@ -86,7 +141,7 @@ export default {
         {this.$slots.up}
       </div>
     );
-  }
+  },
 };
 ```
 
@@ -116,7 +171,7 @@ export default {
   name: "Child",
   data() {
     return {
-      list: ["js", "java", "c++"]
+      list: ["js", "java", "c++"],
     };
   },
   render() {
@@ -126,29 +181,34 @@ export default {
         {/* <slot /> */}
         {/* 具名插槽 */}
         {this.$scopedSlots.up({
-          data: this.list
+          data: this.list,
         })}
       </div>
     );
-  }
+  },
 };
+```
 
-// Template 写法
+Template 写法
 // Child.vue
-//   <template>
-//   <div class='wrapper'>
-//     <span>I am a component</span>
-//     <slot :data='data'></slot>
-//   </div>
-// </template>
 
-// // main.vue
-// <template>
-//   <wrapper>
-//     <div slot-scope='{ data }'>
-//     </div>
-//   </wrapper>
-// </template>
+```html
+<template>
+  <div class="wrapper">
+    <span>I am a component</span>
+    <slot :data="data"></slot>
+  </div>
+</template>
+```
+
+// main.vue
+
+```html
+<template>
+  <wrapper>
+    <div slot-scope="{ data }"></div>
+  </wrapper>
+</template>
 ```
 
 ```js
@@ -163,6 +223,37 @@ export default {
     </Child3>
   </div>
 </template>
+```
+
+#### 如何设计一个同时支持具名插槽和默认插槽的 vue 组件
+
+如果想要开发一个同时支持具体插槽和默认插槽的 vue 组件，关键在于如何判断组件是否使用了默认插槽，也就是加个判断：
+
+```js
+computed: {
+  hasSlotDefault() {
+    // 组件内如果没内容，$slots.default 为 undefined
+    return !!this.$slots.default;
+  }
+}
+```
+
+模板写法：
+
+```html
+<div class="project-main">
+  <template v-if="!hasSlotDefault">
+    <div class="menu">
+      <slot name="menu"></slot>
+    </div>
+    <div class="module">
+      <slot name="module"></slot>
+    </div>
+  </template>
+  <template v-else>
+    <slot></slot>
+  </template>
+</div>
 ```
 
 ### transition 使用
@@ -226,7 +317,7 @@ vm.$router.options.routes;
 
 一个常见的场景是，配合 element-ui 做登录界面时，输完账号密码，想按一下回车就能登录。就可以像下面这样用修饰符：
 
-```vue
+```html
 <el-input
   class="input"
   v-model="password"
@@ -235,11 +326,36 @@ vm.$router.options.routes;
 ></el-input>
 ```
 
-### inject/provide（组件库）
+### inject/provide
+
+这组 api 是提供给组件库用的，组件库是一般没必要用 vuex，而在业务组件中也很少需要用 provide/inject。当然，如果需要编写全局组件，类似一个 map 组件，则需要通过 provide/inject 来传递数据给后代组件**，解决 `this.$parent || this.$parent.$parent` 的问题**。另外它没有响应式，如果要响应式，则考虑用 vuex 了。
 
 #### provide
 
-这个玩意是提供给组件库用的，组件库是没法用 vuex，vue 官方才提供个 provide，我们用了 vuex 就不需要这个了。
+provide 选项允许我们指定我们想要提供给后代组件的数据/方法。在这个例子中，就是 `<google-map>` 内部的 getMap 方法：
+
+```js
+provide: function () {
+  return {
+    getMap: this.getMap
+  }
+}
+```
+
+然后在任何后代组件里，我们都可以使用 inject 选项来接收指定的我们想要添加在这个实例上的属性：
+
+```js
+inject: ["getMap"];
+```
+
+你可以在这里看到完整的示例。相比 \$parent 来说，这个用法可以让我们在任意后代组件中访问 getMap，而不需要暴露整个 `<google-map>` 实例。这允许我们更好的持续研发该组件，而不需要担心我们可能会改变/移除一些子组件依赖的东西。同时这些组件之间的接口是始终明确定义的，就和 `props` 一样。
+
+实际上，你可以把依赖注入看作一部分**“大范围有效的 prop”**，除了：
+
+- 祖先组件不需要知道哪些后代组件使用它提供的属性
+- 后代组件不需要知道被注入的属性来自哪里
+
+详细可以看官网：https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5
 
 ### watch 高级应用
 
@@ -261,8 +377,6 @@ vm.$router.options.routes;
 ### 利用 immediate 的场景
 
 #### 场景一
-
-？？？
 
 因为：Props -》 Methods -》 Data -》Computed -》
 所以在初始化组件还没添加进去时，此时 watch 是否就需要处理
@@ -321,13 +435,24 @@ async created() {
 ### 组件通信方式
 
 - props/\$emit
+  - 父传子 props
+  - 子传父 $emit触发事件 
+- 兄弟组件 通过父组件当桥
 - $children/$parent
 - provide/inject
+  - 祖先组件和其子孙组件通信
+  - provide/inject,允许一个祖先组件向其所有子孙后代注入一个依赖,不论组件层次有多深,并在起上下文关系成立的时间里始终生效
 - ref
 - eventBus
-- Vuex
-- localStorage/seeionStorage
+  - 没有任何关系的组件通信，通过中央事件总线来进行通信
+  - 通过新建一个Vue事件的bus对象，然后通过`bus.$emit来触发事件`，`bus.$on` 监听触发的事件。使用中央事件总线时，需要在手动清除它，不然它会一直存在，原本只执行一次的操作,将会执行多次。一般在 `beforeMounted` 中进行监听，在 `beforeDestroyed` 进行销毁。 
+- Vuex 状态管理模式
+- localStorage/sessionStorage 浏览器缓存
 - $attrs与$listeners
+- $dispatch/$boardcase（Vue 1.0 api，Vue 2.0 已经废弃）
+  - $dispatch 向上派发
+  - $boardcase 向下广播
+  - 为什么要实现dispatch和boardcase, 因为在做独立组件开发或库时，最好是不依赖第三方库
 
 ### eventBus
 
@@ -342,7 +467,7 @@ async created() {
 ```js
 EventBus.$emit("setFeatureLegend", {
   num: this.num,
-  deg: this.deg
+  deg: this.deg,
 });
 ```
 
@@ -387,7 +512,7 @@ const sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
   get: noop,
-  set: noop
+  set: noop,
 };
 
 export function proxy(target: Object, sourceKey: string, key: string) {
@@ -503,7 +628,7 @@ export function def(obj: Object, key: string, val: any, enumerable?: boolean) {
     value: val,
     enumerable: !!enumerable,
     writable: true,
-    configurable: true
+    configurable: true,
   });
 }
 ```
@@ -577,7 +702,7 @@ export function defineReactive(
       }
       childOb = !shallow && observe(newVal);
       dep.notify();
-    }
+    },
   });
 }
 ```
@@ -943,7 +1068,7 @@ export function defineReactive(
       }
       childOb = !shallow && observe(newVal);
       dep.notify();
-    }
+    },
   });
 }
 ```
@@ -1133,7 +1258,7 @@ export function nextTick(cb?: Function, ctx?: Object) {
   }
   // $flow-disable-line
   if (!cb && typeof Promise !== "undefined") {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       _resolve = resolve;
     });
   }
@@ -1195,6 +1320,10 @@ function add (
   - 如果有事件发生修改了虚拟 DOM
   - 比较两棵虚拟 DOM 树的差异，得到差异对象
   - 把差异对象应用到真正的 DOM 树上。
+
+#### 应用：为什么 Vue 中不要用 index 作为 key
+
+key 还可以作为强制更新
 
 ### vue 组件重置状态（强制刷新）
 
@@ -1264,7 +1393,7 @@ extend 是产生一个继承自 Vue 类的子类，只会影响这个子类的�
 ```js
 // 存储路由参数数据
 localStorage.save(PRODUCTROUTERPARAMS, {
-  resultCatalog
+  resultCatalog,
 });
 ```
 
@@ -1304,7 +1433,7 @@ const formatPermission = (permission, permissionMap = {}) => {
           permissionInfo.components = component;
           permissionInfo.operations = operation;
           if (route && Array.isArray(route)) {
-            route.map(routeItem => {
+            route.map((routeItem) => {
               routeItem.code = routeItem.code || code;
             });
             formatPermission(route, permissionMap);
@@ -1346,7 +1475,7 @@ export const generateAsyncRoutes = (asyncRoutes, permission) => {
  */
 const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
   const res = [];
-  asyncRoutes.forEach(route => {
+  asyncRoutes.forEach((route) => {
     // if (route.path === "*") {
     //   res.push(tmp)
     // }
@@ -1369,7 +1498,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
     }
   });
 
-  return res.filter(item => !!item);
+  return res.filter((item) => !!item);
 };
 ```
 
@@ -1385,7 +1514,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
 ```js
 const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
   const res = [];
-  asyncRoutes.forEach(route => {
+  asyncRoutes.forEach((route) => {
     const tmp = { ...route };
     let permissionInfo = hasPermission(tmp, permissionMap);
 
@@ -1404,7 +1533,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
           } else if (typeof tmp.redirect === "string") {
             const strArr = tmp.redirect.split("/");
             routeInfo = {
-              name: strArr[strArr.length - 1]
+              name: strArr[strArr.length - 1],
             };
           } else {
             console.log("本地路由redirect字段值设置错误");
@@ -1430,7 +1559,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
             }
             if (firstChildrenHasPermission) {
               tmp.redirect = {
-                name: firstChildrenHasPermission.name
+                name: firstChildrenHasPermission.name,
               };
             } else {
               console.log(tmp);
@@ -1449,7 +1578,7 @@ const filterAsyncRoutesByPermissionMap = (asyncRoutes, permissionMap) => {
     }
   });
 
-  return res.filter(item => !!item);
+  return res.filter((item) => !!item);
 };
 ```
 
@@ -1500,3 +1629,4 @@ handleClick(name) {
 - [从 event loop 规范探究 javaScript 异步及浏览器更新渲染时机](https://github.com/aooy/blog/issues/5)
 - [深入理解 vue 中的 slot 与 slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2)
 - [面试官：你了解 vue 的 diff 算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。
+- [为什么 Vue 中不要用 index 作为 key？（diff 算法详解）](https://juejin.im/post/5e8694b75188257372503722?utm_source=gold_browser_extension#heading-14)
