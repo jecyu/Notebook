@@ -2,6 +2,8 @@
 
 ## 基础知识
 
+### 用户自定义代码片段
+
 ### mac 使用 code 命令打开 VSCode
 
 我们在 mac 的终端可以使用 open .打开文件夹
@@ -16,6 +18,40 @@ setting -》wrap
 ### 使用 vscode 调试代码
 
 针对 vscode 版本：version: 1.42.1
+
+### 调试 Node.js
+
+Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一个名为 node.js 的文件，然后在 launch.json 里添加配置
+
+launch 模式与 attach 模式
+```json
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/examples/regex/demo01.js" // // 程序入口 ${workspaceFolder} 代表根路径
+    },
+    { 
+      "type": "node",
+      "request": "attach",
+      "name": "attach 程序",
+      "address": "localhost",
+      "port": 3000
+    }
+  ]
+}
+```
+
+配置完成后，在调试面板上，启动选项切换成 Launch Node，然后启动就可以了，断点调试什么都是没问题的。
+
+#### 调试启动服务器的 node.js 后端程序
 
 ### Debugger For Chrome
 
@@ -87,40 +123,11 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 }
 ```
 
-如果使用 attach 附加类型配置，请确保使用  `--remote-debugging-port = 9222` 启动了 Chrome。 如果已经有一个正在运行的实例，请先关闭它，或参阅上面有关 `--user-data-dir` 的注释。
+如果使用 attach 附加类型配置，请确保使用 `--remote-debugging-port = 9222` 启动了 Chrome。 如果已经有一个正在运行的实例，请先关闭它，或参阅上面有关 `--user-data-dir` 的注释。
 
 确保 `port` 属性与 Chrome 正在侦听远程调试连接的端口相匹配。 默认情况下为 `9222`。 确保没有其他端口在使用此端口，包括 Web 服务器。 如果您计算机上的其他内容响应 `http：// localhost：9222`，请设置其他端口。
 
 待处理。
-
-### 调试 Node.js
-
-Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一个名为 node.js 的文件，然后在 launch.json 里添加配置
-
-```json
-{
-  "type": "node",
-  "request": "launch",
-  "name": "Launch Node",
-  "program": "${workspaceFolder}/node.js"
-}
-```
-
-或者这种模式
-
-```json
-{
-  "type": "node",
-  "request": "attach",
-  "name": "attach 程序",
-  "address": "localhost",
-  "port": 3000
-}
-```
-
-配置完成后，在调试面板上，启动选项切换成 Launch Node，然后启动就可以了，断点调试什么都是没问题的。
-
-#### 调试启动服务器的 node.js 后端程序
 
 ### 小结
 
@@ -132,7 +139,7 @@ Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一�
 
 ## 底层原理
 
-- [解密 vscode 断点调试的原理](https://www.barretlee.com/blog/2019/11/15/vscode-study-03-debug-protocol/)
+- [解密 vscode 断点调试的原理](https://www.barretlee.com/blog/2019/11/15/vscode-study-03-debug-protocol/) vscode 为什么可以调试 node.js，这篇文章解释得很清楚。vscode 是通过手动启动了 node.js 的 debugger 模块来实现调试的。
 
 ### 参考资料
 
@@ -142,3 +149,4 @@ Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一�
 - [使用 VSCode 调试 Koa 或者 Express 项目](https://segmentfault.com/a/1190000017575583)
 - [在 VS Code 中调试](https://cn.vuejs.org/v2/cookbook/debugging-in-vscode.html)
 - [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
+- [[VS Code]跟我一起在Visual Studio Code 添加自定义snippet（代码段），附详细配置](https://blog.csdn.net/maokelong95/article/details/54379046)

@@ -1,5 +1,13 @@
 # 算法分类
 
+## 算法复杂度
+
+### 时间复杂度
+
+### 空间复杂度
+
+## 基本算法思想
+
 ## 递归
 
 ### 递归算法概念
@@ -46,6 +54,10 @@ function understandRecursion(doIunderstandRecursion) {
   - 实现一个深拷贝
     - weakMap 扩展知识
 
+
+## 排序
+
 ## 参考资料
 
 - [聊聊面试必考-递归思想与实战](https://juejin.im/post/5d85cda3f265da03b638e918?utm_source=gold_browser_extension#heading-0) —— 系统介绍递归的问题，从理论到实战
+- [如何理解算法时间复杂度的表示法，例如 O(n²)、O(n)、O(1)、O(nlogn) 等？](https://www.zhihu.com/question/21387264/answer/422323594?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096)

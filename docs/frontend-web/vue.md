@@ -164,7 +164,39 @@ export default {
 
 #### 作用域插槽
 
-作用域插槽跟单个插槽和具名插槽的区别，因为单个插槽和具名插槽不绑定数据，而作用域插槽，父组件只需要提供一套样式（在确实用作用域插槽绑定的数据的前提下），数据使用的都是子组件插槽自己绑定的 s 数据，在 slot 上面绑定数据。
+作用域插槽跟单个插槽和具名插槽的区别，因为单个插槽和具名插槽不绑定数据，而作用域插槽，父组件只需要提供一套样式（在确实用作用域插槽绑定的数据的前提下），**数据使用的都是子组件插槽自己绑定的 s 数据，在 slot 上面绑定数据。**
+
+让插槽内容能够访问子组件中才有的数据，我们可以将 `data` 作为 `<slot>` 元素的一个 `attribute` 绑定上去：
+
+##### Template 写法
+
+// Child.vue
+
+```html
+<template>
+  <div class="wrapper">
+    <span>I am a component</span>
+    <slot :data="data"></slot> // 默认插槽
+  </div>
+</template>
+```
+
+`parent.vue`，这父组件这里便可以访问 `Child.vue` 里的 data 数据了。
+
+绑定在 `<slot>` 元素上的 `attribute` 被称为`插槽 prop。`。在父级作用域中，我们可以使用带值的 `v-slot` 来定义我们提供的插槽 prop 的名字。
+
+```html
+<template>
+  <wrapper>
+    <!-- vue 2.5 -->
+    <div slot-scope="{ data }"></div>
+    <!-- vue 2.6+ -->
+    <div v-slot="{data}"></div>
+  </wrapper>
+</template>
+```
+
+##### render 写法
 
 ```js
 export default {
@@ -180,7 +212,7 @@ export default {
         <h3>这里是子组件</h3>
         {/* <slot /> */}
         {/* 具名插槽 */}
-        {this.$scopedSlots.up({
+        {this.$scopedSlots.default({
           data: this.list,
         })}
       </div>
@@ -189,41 +221,109 @@ export default {
 };
 ```
 
-Template 写法
-// Child.vue
+#### 桥接插槽，用法类似 v-bind="\$attr"
+
+##### 前置知识
+
+[动态参数](https://cn.vuejs.org/v2/guide/syntax.html#%E5%8A%A8%E6%80%81%E5%8F%82%E6%95%B0)：
 
 ```html
+<a v-on:[eventName]="doSomething"> ... </a>
+```
+
+在这个示例中，当 `eventName` 的值为 `"focus"` 时，`v-on:[eventName]` 将等价于 `v-on:focus`。
+
+##### 实现
+
+思路：在 v-slot 上使用动态指令参数，来定义动态的插槽名：
+
+```html
+<base-layout>
+  <template v-slot:[dynamicSlotName]>
+    ...
+  </template>
+</base-layout>
+```
+
+下面对 view-ui table 的二次封装
+
+外部 Parent.vue 组件
+```html
 <template>
-  <div class="wrapper">
-    <span>I am a component</span>
-    <slot :data="data"></slot>
+  <div class="EdTableDemo">
+    <h2>与iview-table一致的api</h2>
+    <div style="height: 200px;">
+      <EdTable
+        row-key="id"
+        highlight-row
+        ref="currentRowTable"
+        :columns="columns"
+        :data="showData"
+        v-if="showData.length"
+        display="inline-block"
+      >
+        <template slot-scope="{ row }" slot="name">
+          <span class="jg-name">{{ row.name }}</span>
+        </template>
+      </EdTable>
+    </div>
   </div>
 </template>
 ```
 
-// main.vue
-
+这是二次封装的 EdTable.vue 组件
 ```html
 <template>
-  <wrapper>
-    <div slot-scope="{ data }"></div>
-  </wrapper>
+  <Table
+    ref="table"
+    v-bind="$attrs"
+    v-on="$listeners"
+    :style="{
+      paddingRight: `${scrollWidth}px`,
+      marginRight: `-${scrollWidth}px`
+    }"
+    :max-height="tableHeight"
+  >
+    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
+      <slot :name="slot" v-bind="scope"></slot>
+    </template>
+  </Table>
 </template>
 ```
 
-```js
-// parent
-<template>
-  <div class="slot-scoped">
-    <h1>Vue 作用域插槽 | 带数据的插槽</h1>
-    <Child3>
-      <div class="tmpl" slot="up" slot-scope="user">
-        {{ user.data }}
-      </div>
-    </Child3>
-  </div>
+
+关键代码分析：
+1. 通过 `$scopedSlots` 动态读取 `Table.vue` 传递过来的 prop 对象。`v-slot:[slot]="scope"`，`scope` 即是对应 `slot` 绑定的 `prop` 值。
+2. 然后再使用 `<slot :name="slot" v-bind="scope"></slot>`动态创建 slot 给外面的 `Parent.vue` 使用，从而达到桥接的作用。
+3. 这里的 `v-for="(_, slot) of $scopedSlots"` 下滑线 `_` 代表什么？一个vnode 函数，slot 代表 name。
+4. `v-slot:[]`。从 2.6.0 开始，可以用方括号括起来的 JavaScript 表达式作为一个指令的参数：
+  
+```html
+<!-- 绑定动态插槽名 slot 值为 scope，例如 slot 为 name，则 v-slot:name="scope" -->
+<template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
+  <!-- 对外提供 slot -->
+  <slot :name="slot" v-bind="scope"></slot>
 </template>
 ```
+
+补充：
+- `$scopedSlots`：用来访问作用域插槽。对于包括 默认 slot 在内的每一个插槽，该对象都包含一个返回相应 `VNode 的函数`。
+- `$slots`：用来访问被插槽分发的内容。每个具名插槽有其相应的属性 (例如：`v-slot:foo` 中的内容将会在 `vm.$slots.foo` 中被找到)。`default` 属性包括了所有没有被包含在具名插槽中的节点，或 `v-slot:default` 的内容。返回 VNode。
+  
+```html
+<!-- vm.$scopedSlots -->
+<template slot-scope="{ row }" slot="name">
+  <span class="jg-name">{{ row.name }}</span>
+</template>
+
+<!-- vm.$slots -->
+<template slot="name"> 
+  <span class="jg-name">{{ name }}</span>
+</template>
+```
+
+进一步阅读：源码、理解函数。
+
 
 #### 如何设计一个同时支持具名插槽和默认插槽的 vue 组件
 
@@ -359,7 +459,7 @@ inject: ["getMap"];
 
 ### watch 高级应用
 
-### 避免性能开销，只监听对象里指定的属性
+#### 避免性能开销，只监听对象里指定的属性
 
 ```js
 // 只要筛选里的请求参数变化，就重新查询，不用手动点击查询
@@ -374,7 +474,7 @@ inject: ["getMap"];
   }
 ```
 
-### 利用 immediate 的场景
+#### 利用 immediate 的场景
 
 #### 场景一
 
@@ -436,7 +536,7 @@ async created() {
 
 - props/\$emit
   - 父传子 props
-  - 子传父 $emit触发事件 
+  - 子传父 \$emit 触发事件
 - 兄弟组件 通过父组件当桥
 - $children/$parent
 - provide/inject
@@ -445,14 +545,13 @@ async created() {
 - ref
 - eventBus
   - 没有任何关系的组件通信，通过中央事件总线来进行通信
-  - 通过新建一个Vue事件的bus对象，然后通过`bus.$emit来触发事件`，`bus.$on` 监听触发的事件。使用中央事件总线时，需要在手动清除它，不然它会一直存在，原本只执行一次的操作,将会执行多次。一般在 `beforeMounted` 中进行监听，在 `beforeDestroyed` 进行销毁。 
+  - 通过新建一个 Vue 事件的 bus 对象，然后通过`bus.$emit来触发事件`，`bus.$on` 监听触发的事件。使用中央事件总线时，需要在手动清除它，不然它会一直存在，原本只执行一次的操作,将会执行多次。一般在 `beforeMounted` 中进行监听，在 `beforeDestroyed` 进行销毁。
 - Vuex 状态管理模式
-- localStorage/sessionStorage 浏览器缓存
+- $dispatch/$broadcast（Vue 1.0 api，Vue 2.0 已经废弃，）
+  - \$dispatch 向上派发
+  - \$broadcast 向下广播
 - $attrs与$listeners
-- $dispatch/$boardcase（Vue 1.0 api，Vue 2.0 已经废弃）
-  - $dispatch 向上派发
-  - $boardcase 向下广播
-  - 为什么要实现dispatch和boardcase, 因为在做独立组件开发或库时，最好是不依赖第三方库
+- localStorage/sessionStorage 浏览器缓存
 
 ### eventBus
 
@@ -497,7 +596,19 @@ provide() {
 },
 ```
 
+### $dispatch/$broadcast
+
+Vue 1.0 api，Vue 2.0 已经废弃。
+
+第三库如 像 element-ui， 为什么要实现 dispatch 和 boardcase, 因为在做独立组件开发或库时，最好是不依赖第三方库如 vuex。通过 `$dispatch` 和 `$broadcast` 定向的向某个父或者子组件远程调用事件，这样就避免了通过传 `props` 或者使用 `refs` 调用组件实例方法的操作。
+
+为什么 不可以使用 eventBus 来代替呢？
+
 ### $attrs与$listeners
+
+### this.$child & this.$parent
+
+如果不需要调用 this.$parent 太多的东西，仅仅是使用父组件的函数，那么也可以通过 prop 传递一个函数进来。
 
 ## 框架原理
 
@@ -710,6 +821,32 @@ export function defineReactive(
 `defineReactive` 函数最开始初始化 `Dep` 对象的实例，接着拿到 `obj` 的属性描述符，然后对子对象递归调用 `observe` 方法，这样就保证了无论 `obj` 的结构多复杂，它的所有子属性也能变成响应式的对象，这样我们访问或修改 `obj` 中的一个嵌套比较深的属性，也能触发 getter 和 setter。最后利用 `Object.defineProperty` 去给 `obj` 的属性添加 getter 和 setter。
 
 ![](../.vuepress/public/images/vue-reactiveObj-defineReactive.png)
+
+在游戏中 C# 中的编写，也利用了 getter 和 setter 来处理一些事情：
+```cs
+  public float shieldLevel
+  {
+    get
+    {
+      return _shieldLevel;
+    }
+    set
+    {
+      // 这里不能之际诶设置 shieldLevel，应该是改变它依赖的属性 _shieldLevel
+      // 注意这里不要写成 shieldLevel = Mathf.Min(value, 4); 会导致递归调用 set 方法溢出问题
+      // 不直接使用 data _shieldLevel属性，是为了在触发 set 时，还可以做其他事情，而不用监听。
+      _shieldLevel = Mathf.Min(value, 4);
+      // 如果护盾等级小于0
+      if (value < 0)
+      {
+        Destroy(this.gameObject);
+        // 通知 Main.S 延时重新开始游戏
+        Main.S.DelayedRestart(gameRestartDelay);
+      }
+
+    }
+  }
+```
 
 #### 总结
 
@@ -1323,6 +1460,7 @@ function add (
 
 #### 应用：为什么 Vue 中不要用 index 作为 key
 
+示例。
 key 还可以作为强制更新
 
 ### vue 组件重置状态（强制刷新）
@@ -1333,7 +1471,7 @@ key 还可以作为强制更新
 - V-if 强制刷新
 - key 强制刷新（`key: this.id = +new Date()`）
 
-通过 key,v-if 整体刷新用户体验不太友好。
+通过 key，v-if 整体刷新用户体验不太友好。
 
 #### 跨级组件
 
@@ -1630,3 +1768,6 @@ handleClick(name) {
 - [深入理解 vue 中的 slot 与 slot-scope](https://juejin.im/post/5a69ece0f265da3e5a5777ed#heading-2)
 - [面试官：你了解 vue 的 diff 算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。
 - [为什么 Vue 中不要用 index 作为 key？（diff 算法详解）](https://juejin.im/post/5e8694b75188257372503722?utm_source=gold_browser_extension#heading-14)
+- [Vue.js 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/prepare/)
+- [vue - how to pass down slots inside wrapper component?
+  ](https://stackoverflow.com/questions/50891858/vue-how-to-pass-down-slots-inside-wrapper-component)

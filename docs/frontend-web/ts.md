@@ -493,7 +493,7 @@ jQuery("#foo");
 
 1. 创建一个 `node_modules/@types/foo/index.d.ts` 文件，存放 `foo` 模块的声明文件。这种方式不需要额外的配置，但是 `node_modules` 目录步不稳定，代码也没有被保存到仓库中，无法回溯版本，有不小心北删除的风险，故不太建议用这种方案，一般只用作临时测试。
 2. 创建一个 `types`或 `typings` 目录，专门用来管理自己写的声明文件，将 `foo` 的声明文件放到 `type/foo/index.d.ts` 中。这种方式需要配置下 `tsconfig.json` 中的 `paths` 和 `baseUrl` 字段。
-   （这里为什么需要配置 `paths` 和 `baseUrl` 只不过可以让 `import xxx from 'xxx' 省略前缀`）
+（这里为什么需要配置 `paths` 和 `baseUrl` 只不过可以让 `import xxx from 'xxx' 省略前缀`）
 
 目录结构：
 
@@ -509,17 +509,38 @@ jQuery("#foo");
 
 `tsconfig.json` 内容
 
+
 ```json
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "esnext", // 输出的目标 js 文件
+    "module": "esnext", // 模块化
+    "strict": true, 
+    "jsx": "preserve", // 支持 tsx 写法
+    "importHelpers": true, //  
+    "moduleResolution": "node",
+    "experimentalDecorators": true, // 支持实验性的装饰器
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
     "baseUrl": "./",
     "paths": {
-      "*": ["types/*"]
+      "*": ["types/*"] 
     }
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/icons/svg/index.js"
+  ],
+  "exclude": ["node_modules"]
 }
 ```
+
+paths、和 baseUrl 可以在 ts 引入模块时省略根路径，`include` 则是需要编译的文件
 
 ### 模块解析
 

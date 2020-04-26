@@ -1,5 +1,121 @@
 # 2020
 
+## 转换文件大小
+
+实现效果：不同值大小，显示不同的文件单位以及对应的数值。
+
+主体思路：
+
+1. 要显示的值存在数组上
+   ```js
+   const digitList = ["B", "KB", "MB", "GB", "TB"];```
+2. 因为 1GB = 1024MB = 1024 * 1024 KB = 1024* 1024 * 1024 B。
+3. 要想知道显示那个值，只需要计算出`幂`即可。
+4. 然后具体数值，则是对应的值：目标size/1024^幂。
+
+
+方法一：digit 控制显示单位
+```js
+const formatFileSize = (bytes) => {
+  const scale = 1024;
+  const digitList = ["B", "KB", "MB", "GB", "TB"];
+  let _integer = bytes; //最小单位 Bytes
+  let digit = 0;
+  while (_integer > scale) {
+    _integer = Math.round(_integer / scale);
+    digit++;
+  }
+  return `${_integer}${digitList[digit]}`;
+};
+```
+
+方法二：采用 [Math.log](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/log) 使用数学的对数知识进行处理。 
+```js
+export const readablizeBytes = (bytes: number) => {
+  if (bytes === 0) {
+    return String(bytes);
+  }
+  const s = ["B", "KB", "MB", "GB", "TB", "PB"];
+  const e = Math.floor(Math.log(bytes) / Math.log(1024)); // log
+  return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + " " + s[e];
+};
+```
+
+下面的函数返回以 x 为底 y 的对数（即logx y）：
+
+```js
+function getBaseLog(x, y) {
+    return Math.log(y) / Math.log(x);
+}
+```
+如果你运行 `getBaseLog(10, 1000)`，则会返回 2.9999999999999996，非常接近实际答案：3，原因是浮点数精度问题。
+
+在数学中，对数是对求幂的逆运算，正如除法是乘法的倒数，反之亦然
+
+如果a的x次方等于N（a>0，且a不等于1），那么数x叫做以a为底N的对数（logarithm），记作x=logaN。其中，a叫做对数的底数，N叫做真数。
+
+
+## 前端排序还是后端排序
+
+<!-- ## 处理滚动条跳动问题 -->
+
+能否直接通过数据库查询进行排序。前端直接传递排序参数过去。
+
+名称、档案类型、上传用户 按拼音首字母进行排序   
+档案大小按数量进行排序
+时间就按时间先后进行排序
+
+主要考虑性能方面。
+
+分页处理。排序。
+
+### 前端排序
+
+### 后端排序
+
+## 转义
+
+### 什么是转义
+
+### 为什么要转义
+
+字符的传输与显示
+
+### URL
+
+encodeURI、decodeURI 和 encodeURIComponent、decodeURIComponent
+
+`encodeURI` 和 `decodeURI` 函数操作的是完整的 URI；这俩函数假定 URI 中的任何保留字符都有特殊意义，所有不会编码它们。
+
+`encodeURIComponent` 和 `decodeURIComponent` 函数操作的是组成 URI 的个别组件；这俩函数假定任何保留字符都代表普通文本，所以必须编码它们，所以它们（保留字符）出现在一个完整 URI 的组件里面时不会被解释成保留字符了。
+
+#### encodeURI()是将字符串进行 UTF-8 编码。解码通过 decodeURI()。
+
+- `ISO8859-1` 字符集内的字母（A-Z、a-z）、数字（0-9）、标点符号（ `- _ . ! ~ * ' ( )`）不会被转换。而且该方法的目的是对 URI 进行完整的编码，因此对以下在 URI 中具有特殊含义的 ASCII 标点符号（ ; / ? : @ & = + \$ , # ）也不会被转换。
+
+- `ISO 8859-1` 字符集内其它字符，都会以 `%xy` 格式表示（xy 为字节的 16 进制表示）\*\*；
+
+- 其它字符首先会按照 `UTF-8` 规则转换为字节串，每个字节再以 `%xy` 的形式表示。其中 xy 就是字节的 `16` 进制表示形式。
+
+#### encodeURIComponent()
+
+`encodeURIComponent()` 也是将字符串进行 UTF-8 编码，它比 `encodeURI` 的编码还要彻底，在 `encodeURI` 的基础上，将那些在 URI 中有特殊含义的标点符号也一起编码了。
+
+- `ISO8859-1` 字符集内的字母（A-Z、a-z）、数字（0-9）、标点符号（ - \_ . ! ~ \* ' ( ) ）不会被转换。
+
+- `ISO 8859-1` 字符集内其它字符，都会以 `%xy` 格式表示（xy 为字符的 16 进制表示）；
+
+其它字符首先会按照 `UTF-8` 规则转换为字节串，每个字节再以 `%xy` 的形式表示。其中 `xy` 就是字节的 16 进制表示形式。
+
+![encodeURI、decodeURI](../.vuepress/public/images/encodeURL&decodeURL.png)
+
+### 正则表达式
+
+### 参考资料
+
+- https://juejin.im/post/5835836361ff4b0061f38a5d
+- [WEB：字符集、编码、乱码 —— 看这篇就够了](https://mp.weixin.qq.com/s/fYpSbKzQndihAQEe4zpVKw)
+
 ## 四月
 
 ### pont 使用
@@ -101,10 +217,11 @@ docker run -it -d -p 8081:80 --rm --name supermap -v (本地机器文档路径):
 ```
 
 - 使用 `-d` 参数启动后会返回一个唯一的 id，也可以通过 `docker container ls` 命令来查看容器信息。
-- 使用 `-p` ，Docker 会随机映射一个 49000～49900 的端口到内部容器开发的网络端口。
-- 通过 `docker container ls ` 可以查看本地主机的端口 8081 映射到容器的 80 端口上。 
+- 使用 `-p` ，Docker 会随机映射一个 49000 ～ 49900 的端口到内部容器开发的网络端口。
+- 通过 `docker container ls` 可以查看本地主机的端口 8081 映射到容器的 80 端口上。
 
 `0.0.0.0:8081->80/tcp`
+
 - 使用 `-v` 进行主机卷的映射。(PS: 对容器停止时，会自动销毁该容器 TODO 查明原因)。
 
 配合 vscode 的 docker 插件，可以直观地看到当前 docker 的容器列表、镜像列表等，很方便进行 stop、remove、restart 等操作了。

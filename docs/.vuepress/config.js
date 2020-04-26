@@ -154,6 +154,7 @@ module.exports = {
             "ts",
             "react",
             "vue",
+            "regex",
             "",
             "architecture",
             "authentication",

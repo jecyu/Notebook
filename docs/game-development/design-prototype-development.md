@@ -2916,9 +2916,9 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则**对象不
 
 当 Rigidbody 为运动学刚体（即 isKinematic == true）时，对象的运动不会自动遵循物理原理，但仍然属于物理模拟的构成部分（**即刚体的运动不会收到碰撞和重力的影响，但仍然会影响其他非运动学刚体的运动**）。
 
-举例说明：如图 10-19 所示，A 和 B 为两个刚体物体，A 在 B 的正上方，开始时 A 和 B 的重力感应都被关闭，都处于静止状态，且接受动力学模拟即 isKinematic 为 false。现在开启 A 的重力感应，则 A 从 1 处开始加速下落，当下落到 2 处时，关闭 A 的重力感应，但 isKinematic 依然为 false（即接受动力学模拟），则 A 将以当前速度匀速下落。但是此时若关闭物理感应，即 isKinematic=true，则 A 将立即停止移动。当 A 与 B 发生碰撞时，若 B 的重力感应依然关闭，但接受动力学模拟，即 isKinematic=false，则根据动量守恒 B 将产生一个向下的速度。但是若关闭 B 物体的动力学模拟，即 isKinematic=true，则 B 保持静止，不会因受到 A 的碰撞而下落。
+举例说明：如图 10-19 所示，A 和 B 为两个刚体物体，A 在 B 的正上方，开始时 A 和 B 的重力感应都被关闭，都处于静止状态，且接受动力学模拟即 isKinematic 为 false。现在开启 A 的重力感应，则 A 从 1 处开始加速下落，当下落到 2 处时，关闭 A 的重力感应，但 isKinematic 依然为 false（即接受动力学模拟），则 A 将以当前速度匀速下落。但是此时若关闭物理感应，即 isKinematic=true，则 A 将立即停止移动。当 A 与 B 发生碰撞时，若 B 的重力感应依然关闭，但接受动力学模拟，即 isKinematic=false，则根据动量守恒 B 将产生一个向下的速度。但是若关闭 B 物体的动力学模拟，即 `isKinematic=true`，则 B 保持静止，不会因受到 A 的碰撞而下落。
 
-在 Unity 中在刚体不与其他物体接触的情况下 velocity 的值只与 Gravity、drag 及 Kinematic 有关，与质量 mass 及物体的 Scale 值无关。
+在 Unity 中在刚体不与其他物体接触的情况下 `velocity` 的值只与 Gravity、drag 及 `Kinematic` 有关，与质量 mass 及物体的 Scale 值无关。 `isKinematic` 为 true 时，`velocity` 将不起作用。
 
 ```cs
  if (Input.GetMouseButtonUp(0))

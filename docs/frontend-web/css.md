@@ -2,10 +2,65 @@
 
 ## 基础
 
+### 获取滚动条宽度
+
 ### 一个元素的高度由哪些属性影响
 
 自身的值
 继承的值
+
+### 盒子尺寸四大家族
+
+#### margin 属性
+
+##### margin 负值
+
+我们可以给父容器添加 margin 属性，增加容器的可用宽度来实现。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        margin: 0 auto;
+        width: 500px;
+        border: 1px #ccc solid;
+      }
+      ul {
+        overflow: hidden;
+        margin-right: -10px; 
+        padding: 0;
+      }
+      ul > li {
+        width: 92px;
+        height: 92px;
+        background-color: #ccc;
+        float: left;
+        margin-right: 10px;
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ul>
+        <li>我是一个列表</li>
+        <li>我是一个列表</li>
+        <li>我是一个列表</li>
+        <li>我是一个列表</li>
+        <li>我是一个列表</li>
+      </ul>
+    </div>
+  </body>
+</html>
+
+```
+
+此时的 `<ul>` 的宽度相当于 `100% + 10px` ，于是最后一个 li 标签的 `margin-right: 10px` 就多了 10 像素的使用空间，正好列表的右边缘就是父级 `ul` 容器 100% 宽度位置，两端对齐的效果就实现了。
 
 ### transition
 
@@ -72,3 +127,6 @@ body {
 
 ### 弹性布局
 
+## 参考资料
+
+- 《CSS 世界》

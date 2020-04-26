@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .parent {
+      position: relative;
+      height: 500px;
+      width: 500px;
+      background: silver;
+    }
+    .child {
+      width: 100px;
+      height: 100px;
+      background: tan;
+      position: absolute;
+      top: 50%;
+      transform: translate3d(0, -50%, 0);
+    }
+  </style>
+</head>
+<body>
+  <div class="parent">
+    <div class="child"></div>
+  </div>
+  <button id="btn"></button>
+
+  <script>  
+    document.querySelector('#btn').addEventListener("click", () => {
+      // document.querySelector(".child").style = ""
+    })
+  </script>
+</body>
+</html>

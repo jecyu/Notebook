@@ -1,4 +1,4 @@
-# C语言
+# C#语言
 
 ## 基础知识
 
@@ -42,7 +42,7 @@ C# 是在为微软公司的 .NET 框架上开发程序而设计的，它属于 .
 
 编程工具涵盖乐编码和调试需要的一切，包括一下几点：
 - Visual Studio 集成开发环境（IDE）。
-- .NET 兼容的编译器（例如：C#、Visual Basic .NET、F#、IronRuby和托管的 C++）
+- **.NET 兼容的编译器**（例如：C#、Visual Basic .NET、F#、IronRuby和托管的 C++）
 - 调试器
 - 网站开发服务端技术，比如 ASP.NET 或 WCF。
   
@@ -55,7 +55,7 @@ BCL （Base Class Libray，基类库）是 .NET 框架使用的一个大的类�
 - Web 服务
 - .Net 框架应用程序是多平台的应用程序。框架的设计方式使它适用于下列各种语言：C#、C++、Visual Basic、Jscript、COBOL 等等。所有这些语言可以访问框架，彼此之间也可以互相交互。
 
-.Net 框架由一个巨大的代码库组成，用于 C# 等客户端语言。下面列出一些 .Net 框架的组件：
+**.Net 框架由一个巨大的代码库组成，用于 C# 等客户端语言**。下面列出一些 .Net 框架的组件：
 
 - 公共语言运行库（Common Language Runtime - CLR）
 - .Net 框架类库（.Net Framework Class Library）
@@ -86,8 +86,8 @@ BCL （Base Class Libray，基类库）是 .NET 框架使用的一个大的类�
 
 #### 编译成 CIL
 
-.NET 语言的编译器接受源代码文件，并生成名为程序集的输出文件。
-- 程序集要么是可执行的，要么是 DLL。
+**.NET 语言的编译器接受源代码文件，并生成名为程序集的输出文件**。
+- 程序集要么是`可执行`的，要么是 `DLL`。
 - 程序集里的代码并不是本机代码，而是一种名称为 CIL（Common Intermediate Language，公共中间语言）的中间语言。
 - 程序集包含的信息中，包括下列项目：
   - 程序的 CIL；
