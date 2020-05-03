@@ -1,20 +1,76 @@
 # 2020
 
-## 转换文件大小
+<!-- ## Calc 坑 -->
+
+<!-- 横向和纵向排版统一使用 flex 布局。 -->
+
+## 四月
+
+### 分页功能
+
+#### 分页组件
+
+#### 前端做分页
+
+```js
+/**
+ * 返回分页的数组
+ * @param {Number} pageSize 每页条数
+ * @param {Number} jumpPage 条码
+ * @param {Array} arr 返回分页的数组
+ */
+export const pagination = (pageSize, jumpPage, arr) => {
+  const skipNum = (jumpPage - 1) * pageSize;
+  const newArr =
+    skipNum + pageSize >= arr.length
+      ? arr.slice(skipNum, arr.length)
+      : arr.slice(skipNum, skipNum + pageSize);
+  return newArr;
+};
+```
+
+#### 后端做分页
+
+##### 参数传输
+
+```js
+pageIndex: 1, // 页码
+pageSize: 10, // 每页大小
+```
+
+##### 返回数据
+
+```json
+{
+  "totalElements": 0,
+  "data": [{}]
+}
+```
+
+### 前端中 width、height 的获取
+
+- clientWidth
+- offsetWidth
+- innerWidth
+- scrollWidth
+- getBoundingClientRect().width
+
+### 转换文件大小
 
 实现效果：不同值大小，显示不同的文件单位以及对应的数值。
 
 主体思路：
 
 1. 要显示的值存在数组上
-   ```js
+   ````js
    const digitList = ["B", "KB", "MB", "GB", "TB"];```
-2. 因为 1GB = 1024MB = 1024 * 1024 KB = 1024* 1024 * 1024 B。
+   ````
+2. 因为 1GB = 1024MB = 1024 _ 1024 KB = 1024_ 1024 \* 1024 B。
 3. 要想知道显示那个值，只需要计算出`幂`即可。
-4. 然后具体数值，则是对应的值：目标size/1024^幂。
-
+4. 然后具体数值，则是对应的值：目标 size/1024^幂。
 
 方法一：digit 控制显示单位
+
 ```js
 const formatFileSize = (bytes) => {
   const scale = 1024;
@@ -29,7 +85,8 @@ const formatFileSize = (bytes) => {
 };
 ```
 
-方法二：采用 [Math.log](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/log) 使用数学的对数知识进行处理。 
+方法二：采用 [Math.log](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/log) 使用数学的对数知识进行处理。
+
 ```js
 export const readablizeBytes = (bytes: number) => {
   if (bytes === 0) {
@@ -41,27 +98,27 @@ export const readablizeBytes = (bytes: number) => {
 };
 ```
 
-下面的函数返回以 x 为底 y 的对数（即logx y）：
+下面的函数返回以 x 为底 y 的对数（即 logx y）：
 
 ```js
 function getBaseLog(x, y) {
-    return Math.log(y) / Math.log(x);
+  return Math.log(y) / Math.log(x);
 }
 ```
+
 如果你运行 `getBaseLog(10, 1000)`，则会返回 2.9999999999999996，非常接近实际答案：3，原因是浮点数精度问题。
 
 在数学中，对数是对求幂的逆运算，正如除法是乘法的倒数，反之亦然
 
-如果a的x次方等于N（a>0，且a不等于1），那么数x叫做以a为底N的对数（logarithm），记作x=logaN。其中，a叫做对数的底数，N叫做真数。
+如果 a 的 x 次方等于 N（a>0，且 a 不等于 1），那么数 x 叫做以 a 为底 N 的对数（logarithm），记作 x=logaN。其中，a 叫做对数的底数，N 叫做真数。
 
-
-## 前端排序还是后端排序
+### 前端排序还是后端排序
 
 <!-- ## 处理滚动条跳动问题 -->
 
 能否直接通过数据库查询进行排序。前端直接传递排序参数过去。
 
-名称、档案类型、上传用户 按拼音首字母进行排序   
+名称、档案类型、上传用户 按拼音首字母进行排序  
 档案大小按数量进行排序
 时间就按时间先后进行排序
 
@@ -69,19 +126,19 @@ function getBaseLog(x, y) {
 
 分页处理。排序。
 
-### 前端排序
+#### 前端排序
 
-### 后端排序
+#### 后端排序
 
-## 转义
+### 转义
 
-### 什么是转义
+#### 什么是转义
 
-### 为什么要转义
+#### 为什么要转义
 
 字符的传输与显示
 
-### URL
+#### URL
 
 encodeURI、decodeURI 和 encodeURIComponent、decodeURIComponent
 
@@ -115,8 +172,6 @@ encodeURI、decodeURI 和 encodeURIComponent、decodeURIComponent
 
 - https://juejin.im/post/5835836361ff4b0061f38a5d
 - [WEB：字符集、编码、乱码 —— 看这篇就够了](https://mp.weixin.qq.com/s/fYpSbKzQndihAQEe4zpVKw)
-
-## 四月
 
 ### pont 使用
 

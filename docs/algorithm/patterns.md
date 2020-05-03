@@ -49,7 +49,7 @@ class Observer {
   }
 
   publish() {
-    this.subs.forEach(sub => sub());
+    this.subs.forEach((sub) => sub());
   }
 }
 
@@ -81,8 +81,8 @@ const observer = {
     (this.subs[type] || (this.subs[type] = [])).push(cb);
   },
   publish(type, ...args) {
-    (this.subs[type] || []).forEach(cb => cb.apply(null, args));
-  }
+    (this.subs[type] || []).forEach((cb) => cb.apply(null, args));
+  },
 };
 
 observer.subscribe("foo", function() {
@@ -120,7 +120,7 @@ observer.publish("bar");
 ```js
 const obj = {
   name: "sven",
-  address: "深圳市"
+  address: "深圳市",
 };
 obj.address = obj.address + "福田区";
 ```
@@ -256,13 +256,13 @@ Mac book 电池支持的电压是 20V，我们日常生活中的交流电压一�
 var googleMap = {
   show: function() {
     console.log("开始渲染谷歌地图");
-  }
+  },
 };
 
 var baiduMap = {
   show: function() {
     console.log("开始渲染百度地图");
-  }
+  },
 };
 
 var renderMap = function(map) {
@@ -283,19 +283,19 @@ baidu 这个对象来源于第三方，正常情况下我们都不应该去改�
 var googleMap = {
   show: function() {
     console.log("开始渲染谷歌地图");
-  }
+  },
 };
 
 var baiduMap = {
   display: function() {
     console.log("开始渲染百度地图");
-  }
+  },
 };
 
 var baiduMapAdater = {
   show: function() {
     return baiduMap.display();
-  }
+  },
 };
 
 renderMap(googleMap); // 输出：开始渲染谷歌地图
@@ -309,12 +309,12 @@ var getGoungdongCity = function() {
   var guangdongCity = [
     {
       name: "shenzhen",
-      id: 11
+      id: 11,
     },
     {
       name: "guangzhou",
-      id: 12
-    }
+      id: 12,
+    },
   ];
   return guangdongCity;
 };
@@ -333,7 +333,7 @@ render(getGoungdongCity());
 var guangdongCity = {
   shenzhen: 11,
   guangzhou: 12,
-  zhuhai: 13
+  zhuhai: 13,
 };
 ```
 
@@ -363,7 +363,7 @@ var adddressAdapter = function(oldAddressfn) {
   for (var i = 0, c; c = oldAddress[i++]) {
     address[c.name] = c.id;
   }
-  
+
   return function() {
 
     return address;
@@ -381,6 +381,7 @@ render( addressAdapter(getGuangdongCity));
 这里就是一个简单适配器处理了，如果很多获取的接口数据都需要这样处理的话，就可以新增一个树的适配器处理。
 
 Before
+
 ```ts
 private async InitGetDalx() {
     // 获取后台数据
@@ -391,7 +392,7 @@ private async InitGetDalx() {
       // 处理数据，适配处理
       const walkData = (data: any[]) => {
         data.forEach(item => {
-          item.title = item.name; // 
+          item.title = item.name; //
           if (item.children) {
             walkData(item.children);
           }
@@ -403,6 +404,7 @@ private async InitGetDalx() {
 ```
 
 After
+
 ```ts
 private async treeAdapter(fn) {
     // 获取后台数据
@@ -413,7 +415,7 @@ private async treeAdapter(fn) {
       // 处理数据，适配处理
       const walkData = (data: any[]) => {
         data.forEach(item => {
-          item.title = item.name; // 
+          item.title = item.name; //
           if (item.children) {
             walkData(item.children);
           }
@@ -437,6 +439,40 @@ render( treeAdapter(getArchiveTypeTree) );
 - <u>适配器模式主要用来解决两个已有接口之间不匹配的问题，它不考虑这些接口是怎样实现的，也不考虑它们将来可能会如何演化。</u>适配器模式不需要改变已有的接口，就能够使它们协同作用。
 - 装饰器模式和代理模式也不会改变原有对象的接口，<u>但是装饰器模式的作用是为了给对象增加功能。</u>装饰者模式常常形成一条长的装饰链，而适配器模式通常只包装一次。代理模式是为了恐难治对对象的访问，通常也只包装一次。
 - 外观模式的作用倒是和适配器比较相似，有人把外观模式看成一组对象的适配器，<u>但外观模式最显著的特点是定义了一个新的接口。</u>
+
+## 策略模式
+
+```js
+  private async DrillDown(currentNode: any) {
+    // 根据节点角色类型，安排不同的请求策略
+    const { archiveId, archiveNodeId } = currentNode;
+    // 2. 下钻策略配置
+    const drillRequestConfig = {
+      // 档案
+      [this.enumRoleType.archive]: async () => {
+       //
+      },
+      // 档案文件
+      [this.enumRoleType.archiveFile]: async () => {
+       //
+      },
+      // 档案节点
+      [this.enumRoleType.archiveNode]: async () => {
+        //
+      }
+    };
+   // 1. 执行上下文
+    const contextExecute = (nodeRole: number) => {
+      return drillRequestConfig[nodeRole]();
+    };
+
+    const { nodeRole } = currentNode;
+    // 3. 外部调用
+    await contextExecute(nodeRole); // 执行下钻策略
+  }
+```
+
+在 C# 中，是通过函数委托来实现策略模式的。
 
 
 ## 参考资料

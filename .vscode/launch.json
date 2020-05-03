@@ -11,7 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/examples/regex/demo01.js"
+      "program": "${workspaceFolder}/examples/regex/demo02.js"
     }
   ]
 }

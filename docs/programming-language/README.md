@@ -2,7 +2,7 @@
 
 [[toc]]
 
-## 基础知识
+## 入门（初级）
 
 ### 第一章 简介
 
@@ -1149,7 +1149,7 @@ namespace MyClass
 
 一个类中可以有一个以上的方法具有相同的名称，这叫做方法重载（method overload）。使用相同名称的每个方法必须有一个和其他方法相同的签名（signature）。
 
-- 方法的签名由下列信息组成：
+- **方法的签名由下列信息组成**：
   - 方法的名称；
   - 参数的数目；
   - 参数的数据类型和顺序；
@@ -8408,7 +8408,159 @@ namespace classdemo.JecyuOther
 
 #### 和 COM 的互操作
 
-## 进阶活用
+## 基础（中级）
+
+### override 和 overload 以及 new 修饰符
+
+
+C# 支持重写实例方法和属性，但不支持重写字段或任何静态成员。为了进行重写，要求在基类和派生类中都显式地执行一个操作，在基类中，必须将允许重写的每个成员标记为 virtual。假如一个 virtual 或 protected 成员没有包括 virtual 修饰符，就不允许子类重写该方法。
+
+与 Java 相比，默认情况下 Java中 的方法都是虚方法，如果希望方法具有非虚的行为，就必须显示密封它。相反，C#的方法都默认为非虚方法，想要子类重写它就必须用 virtual 修饰符修饰。
+
+另外，override 修饰符在这时候必须要和virtual配套使用。与Java 和 C++ 不同，C#应用于派生类的 verride 关键字是必须的。C# 不允许隐式重写。为了重写方法，基类和派生类成员必须匹配，而且要有对
+
+接下来说说 override 和 overload 的区别。
+
+重载应该叫 `overload`，重写叫 `override`；重载某个方法是在同一个类中发生的！重写是在子类中重写父类中的方法。
+
+1.override:
+
+```cs
+// 父类：
+public virtual string ToString(){return "a";}
+// 子类：
+public override string ToString(){return "b";}
+```
+
+2.overload: 同一类中或父子关系类中皆可.
+
+```cs
+public string ToString(){return "a";}
+public string ToString(int id){return id.ToString();}
+```
+
+`重写(override)`是用于重写基类的虚方法,这样在派生类中提供一个新的方法；
+
+- 相同的方法名，不同的方法签名（方法名称、参数的数目、参数类型和顺序、参数修饰符）
+- 同一类或者父子关系类都可以
+- 重载更多的是处理不同的类型参数，函数做的还是相同的事情。
+
+`重载(overload)`是提供了一种机制, 相同函数名通过不同的返回值类型以及参数来表来区分的机制。
+
+- 相同的方法签名（父类中要覆写的方法声明了 virtual），在子类中实现重写。
+- 覆写则有可能是完全不同的事情。
+
+一句话：覆写（Override）的两个函数的函数特征相同，重载（Overload）的两个函数的函数名虽然相同，但函数特征不同。
+
+
+
+```cs
+// override vs overload vs new 重写
+using System;
+namespace classdemo.JecyuClass
+{
+  public class C1
+  {
+    private string myString;
+    public C1(string str)
+    {
+      this.myString = str;
+    }
+
+    public int IndexOf(string s)
+    {
+      return IndexOf(s, 0);
+    }
+    // 函数嵌套函数，函数式编程
+    public int IndexOf(string s, int startIndex)
+    {
+      return IndexOf(s, startIndex, myString.Length - startIndex);
+    }
+
+    public virtual int IndexOf(string s, int startIndex, int count)
+    {
+      return myString.IndexOf(s, startIndex, count);
+    }
+
+    public static void GetName(string str)
+    {
+      Console.WriteLine("baseClass Method {0}", str);
+    }
+  }
+
+
+
+  public class C2 : C1
+  {
+    public C2(string str) : base(str)
+    {
+
+    }
+    public override int IndexOf(string s, int startIndex, int count)
+    {
+      return 666;
+    }
+
+    new public void GetName(string str)
+    {
+      Console.WriteLine("Derived Class {0}", str);
+    }
+  }
+  public class Demo
+  {
+    public static void main()
+    {
+      // 父类
+      C1 c1 = new C1("Jecyu");
+      Console.WriteLine(c1.IndexOf("y")); // => 3
+      Console.WriteLine(c1.IndexOf("y", 4)); // => -1 从4开始找不到
+      Console.WriteLine(c1.IndexOf("y", 3, 2)); // =>3
+
+      // 子类
+      C2 c2 = new C2("Jecyu");
+      Console.WriteLine(c2.IndexOf("ac", 0, 1)); // => 666
+      Console.WriteLine(c2.IndexOf("ac", 0, 1)); // => 666
+      c2.GetName("Jecyu"); // => Derived Class Jecyu
+
+    }
+  }
+}
+
+```
+
+总结：
+1. 重写(override)
+------------------
+使用 override 修饰符来修改方法、属性、索引器或事件。重写方法提供从基类继承的成员的新实现。由重写声明重写的方法称为重写基方法。重写基方法必须与重写方法具有相同的签名。
+不能重写非虚方法或静态方法。重写基方法必须是虚拟的、抽象的或重写的。也就是说，用 `override` 修饰符重写的基类中的方法必须是  `virtual`, `abstract` 或 `override` 方法。
+
+2. 重载(overload)
+------------------
+当类包含两个名称相同但签名不同的方法时发生方法重载。
+
+#### new 修饰符
+
+从上面可以知道，重载或者是重写对于子类来说，都只是添加新的方法、或者重写父类的方法，如果要屏蔽基类的成员，可以使用 `new`
+修饰符进行屏蔽，它可以屏蔽静态成员。
+
+```cs
+class Derived: Base {
+  new public void GetName(string str)
+  {
+    Console.WriteLine("Derived Class {0}", str);
+  }
+}
+
+```
+
+但是从上面的 GetName 可以看出，new 其实跟 override 用法差不多。new 的使用场景是如果父类方法用了 virtual 修饰符，子类重写方法没有 override 关键字，编译器就会报错。
+
+这里一个明显的解决方案是为子类方法添加 override 修饰符（假如它的父类成员是 virtual 的），但是第二种方法是使用 new 修饰符，这种情况称为脆弱的基类。
+
+至于它与 override 的比较效果待后续研究。- [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。
+
+
+## 进阶活用（高级）
 
 <!-- 进阶可以引用博客文章 -->
 
@@ -8417,3 +8569,9 @@ namespace classdemo.JecyuOther
 ## 项目实战
 
 ## 底层原理
+
+## 参考资料
+
+- [C#中 override 和 overload 的区别](https://www.cnblogs.com/netlyf/archive/2009/09/08/1562642.html) 讲解方法重写 override 和方法重载 overload 的区别。
+- [C#笔记（Virtual，Abstract，Override，new）](https://zhuanlan.zhihu.com/p/74225708)
+- [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。

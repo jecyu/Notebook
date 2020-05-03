@@ -37,11 +37,24 @@ const reg = new RegExp(`${alphabet}\\d+${alphabet}`, "i");
 - 二次转义的问题非常容易导致 bug
 
 ```js
+// 错误
+const reg = new RegExp(`\d+`);
+const result = reg.test("1");
+const result2 = reg.test("ddd");
+console.log("输出结果1 =>", result); // => false
+console.log("输出结果2 =>", result2); // => true
+
+// 正确，需要添加斜杠转义
+const reg2 = new RegExp(`\\d+`);
+const result3 = reg2.test("1");
+const result4 = reg2.test("ddd");
+console.log("输出结果 result3 =>", result3); // =>
+console.log("输出结果 result4 =>", result4); // =>
 ```
 
 需要注意转义问题。
 
-- 在字符串中，两个反斜杠被解释为一个反斜杠，然后在作为正则表达式， \\ 则被正则表达式引擎解释为 \，所以在正则表达式中需要使用四个反斜杠。
+- 在字符串中，两个反斜杠被解释为一个反斜杠，然后在作为正则表达式， `\\` 则被正则表达式引擎解释为 `\`，所以在正则表达式中需要使用四个反斜杠。
 - 同理，要匹配点号时，需要在点号之前加上两个反斜杠，否则将被正则表达式当作一个点号，一个点号在正则表达式中表示匹配任意字符了。
 
 #### 常见用法
@@ -146,6 +159,31 @@ g 代表全局匹配
 
 ## 正则表达式括号的作用
 
+不管哪门语言中都有括号。正则表达式也是一门语言，而括号的存在使这门语言更为强大。
+
+### 分组和分支结构
+
+这二者是括号最直觉的作用，也是最原始的功能，强调括号内的正则是一个整体，即**提供子表达式。**
+
+#### 分组
+
+我们知道 `/a+/` 匹配连续出现的 `"a"`，而要匹配连续出现的 "ab" 时，需要使用 `/(ab)+/`。
+
+其中括号是提供分组功能，使量词 `+` 作用于 `"ab"` 这个整体，测试如下：
+
+```js
+```
+
+#### 分支结构
+
+### 分组引用
+
+### 反向引用
+
+### 非捕获括号
+
+### 相关案例
+
 ## 正则表达式回溯法原理
 
 ## 正则表达式的拆分
@@ -236,7 +274,7 @@ export const FormateDate = (date: Date, fmt: string) => {
     "D+": date.getDate(),
     "H+": date.getHours(),
     "m+": date.getMinutes(),
-    "s+": date.getSeconds()
+    "s+": date.getSeconds(),
   };
   for (const k in o) {
     if (new RegExp(`(${k})`).test(fmt)) {
@@ -252,10 +290,21 @@ export const FormateDate = (date: Date, fmt: string) => {
 };
 ```
 
+### apache conf/httpd.conf 增加配置禁用脚本执行
+
+```bash
+<Files ~ ".+.ph(p[3457]?|t|tml).">
+        Order Allow,Deny
+        Deny from al
+</Files>
+```
+
+### 爬取网页过滤关键词
 
 ## 总结
 
 怎样用好正则表达式
+
 - 明确需求
 - 考虑全面
 - 反复测试

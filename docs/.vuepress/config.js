@@ -50,6 +50,7 @@ module.exports = {
         ]
       },
       { text: "✔️编码规范&协同开发", link: "/lint/" },
+      { text: "𝜋数学", link: "/math/" },
       { text: "设计", items: [{ text: "🖌️UI", link: "/design/" }] },
       { text: "🏷书签整理", link: "/bookmark/" },
       {
@@ -139,7 +140,7 @@ module.exports = {
         {
           title: "工具",
           collapsable: false,
-          children: ["excel", "ps", "webpack", "curl"]
+          children: ["excel", "ps", "webpack", "curl", "vscode"]
         }
       ],
       "/frontend-web/": [

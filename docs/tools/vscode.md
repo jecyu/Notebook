@@ -1,4 +1,4 @@
-# vscode 系列
+# Visual Studio Code
 
 ## 基础知识
 
@@ -19,7 +19,7 @@ setting -》wrap
 
 针对 vscode 版本：version: 1.42.1
 
-### 调试 Node.js
+#### 调试 Node.js
 
 Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一个名为 node.js 的文件，然后在 launch.json 里添加配置
 
@@ -53,7 +53,7 @@ launch 模式与 attach 模式
 
 #### 调试启动服务器的 node.js 后端程序
 
-### Debugger For Chrome
+#### Debugger For Chrome
 
 Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
@@ -63,7 +63,7 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
 该扩展程序可以在两种模式下运行——它可以启动一个浏览到你应用 的 chrome 实例（程序），也可以连接（attach ）到正在运行的 chrome 实例（也就是你先通过 chrome 启动了 app 程序，它再链接过去）。
 
-#### 常规模式
+##### 常规模式
 
 上面两种模式都要求你从本地 web 服务器提供 web 程序，而本地服务器时从 vscode 任务或命令行启动的。使用 url 参数，你只需告诉 vscode 在 chrome 中打开或启动哪个 URL。
 
@@ -109,7 +109,7 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
  },
 ```
 
-#### 使用 attach 模式启动
+##### 使用 attach 模式启动
 
 首先用 live-server 打开 index.html，你会发现浏览器自动跳转到http://localhost:5500上了，接着到launch.json进行配置
 
@@ -129,17 +129,34 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
 待处理。
 
-### 小结
+#### 小结
 
 当 request 为 launch 时，就是 launch 模式了，这是程序是从 vscode 这里启动的，如果是在调试那将一直处于调试的模式。而 attach 模式，是连接已经启动的服务。比如你已经在外面将项目启动，突然需要调试，不需要关掉已经启动的项目再去 vscode 中重新启动，只要以 attach 的模式启动，vscode 可以连接到已经启动的服务。当调试结束了，断开连接就好，明显比 launch 更方便一点。
 
 用 Vscode 的 Debugger 对用框架(react,vue,ng)编写的网页调试也是一样的，方法也都差不多，例如我们就可以使用 vueCli3 来启动一个 web 程序，然后通过 chrome debugger 附加过去。
+
+
+### 使用 node 命令行快速测试代码
+
+日常开发 js 过程中，除了上面提到在 vscode 调试之外，我们可以打开命令行，进入 node 环境对快速测试代码。
+
+![node](../.vuepress/public/images/2020-05-01-14-17-06-node-runtime.png)
+
+当然除了 node 外，如果要测试浏览器的 api，则可以打开 chrome 的控制台进行编码快速测试。
+
 
 ## 进阶活用
 
 ## 底层原理
 
 - [解密 vscode 断点调试的原理](https://www.barretlee.com/blog/2019/11/15/vscode-study-03-debug-protocol/) vscode 为什么可以调试 node.js，这篇文章解释得很清楚。vscode 是通过手动启动了 node.js 的 debugger 模块来实现调试的。
+
+## vscode 插件推荐
+
+- [Markdown Paste](https://marketplace.visualstudio.com/items?itemName=telesoho.vscode-markdown-paste-image)
+  - （强烈推荐，在使用 vscode 中免不了使用 markdown，无论是笔记还是编写项目规范文档，而图片常常需要手动保存，而且不能粘贴。Markdown Paste 这是为解决这样的问题而出现。
+- Markdown All in One
+  - 自动预览、大纲等等
 
 ### 参考资料
 

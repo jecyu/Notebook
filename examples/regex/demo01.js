@@ -1,3 +1,27 @@
+// # 入门
+
+// ## 使用 RegExp 构造函数
+
+// ### 优点：
+
+// ### 缺点：二次转义的问题非常容易导致 bug
+(function(){
+  // 错误
+  const reg = new RegExp(`\d+`);
+  const result = reg.test("1");
+  const result2 = reg.test("ddd");
+  console.log('输出结果1 =>', result); // => false
+  console.log('输出结果2 =>', result2); // => true
+
+  // 正确，需要添加斜杠转义
+  const reg2 = new RegExp(`\\d+`);
+  const result3 = reg2.test("1");
+  const result4 = reg2.test("ddd");
+  console.log('输出结果 result3 =>', result3); // =>
+  console.log('输出结果 result4 =>', result4); // =>
+})()
+
+
 const reg = /^(dui)?/i;
 
 // 横向模糊匹配

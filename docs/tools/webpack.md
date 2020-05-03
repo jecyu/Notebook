@@ -548,6 +548,36 @@ function decimalToBinary(decNumber) {
 
 ## 实战
 
+### 使用 PostCSS
+
+- postcss 是什么
+- 传统的样式的问题，
+- vuecli 如何引入
+- 自适应如何转变
+- 原因为什么要转 px为 rem，css 像素不能随着屏幕自适应。
+
+>PostCSS is a tool for transforming CSS with JS Plugins. These plugins can support variables and mixins, transpile future CSS syntax, inline images, and more
+
+PostCSS 是一套利用 JS 插件实现的的用来改变CSS 的工具，这些插件支持变量和混合语法，转换成未来的 CSS 语法，内链图片等等。
+
+我们通过 `Less`、`SASS` 等工具对 CSS 做预处理操作，按照它们约定的语法
+
+VueCLI 内部使用了 PostCSS 并默认开启了 `autoprefixer`。
+
+项目采用 sass 预处理器编译后，再加上 `autoprefixer` 自动补齐浏览器前缀适应目标浏览器。目前配置目标浏览器，是通过使用 `browserlistrc` 进行配置的，[browserslist](https://www.npmjs.com/package/browserslist) 可以被多种工具识别使用，如 Autoprefixer，Babel 等。
+
+后期看项目需要，是否添加 postcssrc 配置支持 css-next 的写法。
+
+#### PontCSS 使用 px2rem 插件
+
+解决两个问题：
+- 不再需要设置设计稿为 rem
+- 使用第三方库，如 ViewUI 时，像表格列的宽度，可以直接传入 px，不需要进行转换
+- 不再需要重写 ViewUI 的组件，仅仅是为了转换 px 单位为 rem 单位。
+
+这样就保证项目中不会再出现 px、rem 混乱的问题。
+
+
 ### 使用 TypeScript 语言
 
 ### Webpack 插件开发
@@ -620,3 +650,6 @@ import React from "react";
 - [四大维度解锁Webpack3.0前端工程化](https://coding.imooc.com/class/chapter/171.html#Anchor) -- 由浅入深 webpack。
 - [webpack 最简打包结果分析](https://segmentfault.com/a/1190000018205656) -- 清晰明了，说明 webapck 的打包文件流程。
 - [全面的Webpack教程《深入浅出Webpack》电子书 http://webpack.wuhaolin.cn](https://github.com/gwuhaolin/dive-into-webpack/)
+- [PostCSS快速入门使用](https://aotu.io/notes/2015/10/13/start-postcss/index.htmls)
+- [vueCLI](https://cli.vuejs.org/zh/guide/css.html#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%AF%BC%E5%85%A5)
+- [CSS 像素大小]

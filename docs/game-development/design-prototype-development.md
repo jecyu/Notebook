@@ -1214,7 +1214,7 @@ Unity 中的物理过程和碰撞是通过 <u>NVIDIA PhysX 引擎处理的。</u
 
 ##### 刚体：物理模拟
 
-刚体组件控制着游戏对象的物理模拟。刚体组件在每次 FixedUpdate（通常每隔 1/50 秒执行一次）函数中模拟加速度和速度，更新变换组件中的定位和旋转。<u>刚体组件还可以为重力、拉力、风力、爆炸力等各种力建模。</u>如果你希望直接设置游戏对象的位置，而不使用刚体所提供的物理过程，请将运动学模式（isKinematic）设置为 true。
+刚体组件控制着游戏对象的物理模拟。刚体组件在每次f FixedUpdate（通常每隔 1/50 秒执行一次）函数中模拟加速度和速度，更新变换组件中的定位和旋转。<u>刚体组件还可以为重力、拉力、风力、爆炸力等各种力建模。</u>如果你希望直接设置游戏对象的位置，而不使用刚体所提供的物理过程，请将运动学模式（isKinematic）设置为 true。
 
 <u>要使碰撞器随游戏对象移动，游戏对象必须有刚体组件。</u>否则，在 Unity 的 PhysX 物理模拟过程中，碰撞器将原地不动。也就是说，如果未添加刚体组件，游戏对象将在屏幕中移动，但在 PhysX 引擎中，游戏对象的碰撞器组件将保持原样，因此保留原来位置。
 
@@ -3045,7 +3045,55 @@ OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = f
 
 #### 设置标签、图层和物理规则
 
+#### 射击
+
+##### 可序列化的 Weapon Definition 类
+
+##### 用于 WeaponDefinition 的字典
+
+##### 使用函数委托进行射击
+
+- 统一的武器初始化定义：`Main.cs`
+- `Hero.cs` 声明武器 `weapons` 和函数委托 `fireDelegate`。
+  - 调用 `Weapon.SetType` 激活某一个 `weapon` 类型
+- `Weapon.cs` 根据激活的 `weapon` 类型，从 `Main.cs` 中获取该武器类型的定义，从而在 `fire()` 函数中进行 `makeProjectile()` 的对应处理。
+
+最后在玩家按发射键时，调用 `fireDelegate()`，依次调用 `fire()` 函数，发出子弹。
+
+可以通过调试，查看调用堆栈来理解这个过程。
+
+#### 解决代码中的竞态条件
+
+各个脚本的生命周期函数的执行顺序会影响调用，这里跟 Web 开发应用框架 Vue 的组件生命周期函数很类似。
+
+#### 让敌机可以掉落道具
+
+#### 为其他敌机编程
+
+#### 添加粒子效果和背景
+
 #### 小结
+
+##### 各个游戏对象的动作组合以及状态调用
+
+- Main Camera（）
+- _Hero（Hero.cs）
+  - Shield（Shield.cs）
+  - Cube
+  - Cockpit
+  - Weapon_0（Weapon.cs)
+  - Weapon_1
+  - Weapon_2
+  - Weapon_3
+  - Weapon_4
+- Enemy（Enemy）
+
+分析游戏对象，可以更明白对象之间的调用
+  - 动作组合
+  - 状态
+  - 生命周期
+
+英雄的不同装备，不同的脚本逻辑。不同类型的敌人，绑定了不同的脚本。
 
 ##### 问题1：使用泛型与直接传参给函数，两者的使用区别？
 
@@ -3053,7 +3101,11 @@ OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = f
 
 ##### 问题2：枚举类型作为 Type 使用，有什么不同？
 
-##### 单一职责的应用：weapon 类型、projectile 类型、main 类里面的 weaponDefinition 数据共用？
+##### 问题3:单一职责的应用：weapon 类型、projectile 类型、main 类里面的 weaponDefinition 数据共用？
+
+##### 问题4：如何知道同一场景下，不同游戏对象的 Awake() 和 Start() 等执行的顺序？
+
+举例子，A 对象的 Awake() 方法是否一定比 B 对象的 Start() 方法要早执行？
 
 ### 游戏原型 4：《矿工接龙》
 
@@ -3068,6 +3120,41 @@ OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = f
 ## 附录
 
 ### 附录 B 实用概念
+
+#### 函数授权
+
+函数授权简单理解为
+
+第一步：定义授权类型
+```cs
+public delegate float FloatOperationDelegate(float f0, float f1)
+```
+上一行创建了一个 FloatOperationDelegate 授权定义，需要两个 float 作为输入。
+
+```cs
+public class DelegateExample: MonoBehaviour {
+  // 1. 
+  public delegate float FloatOperationDelegate(float f0, float f1);
+
+  public float FloatAdd(float f0, float f1) { ... }
+  public float FloatMultiply(float f0, float f1) { ... }
+
+  // 类型声明一个 "fod" 变量
+  public FloatOperationDelegate fod; // 授权变量
+
+  void Awake() {
+    // 为 fod 分配 FloatAdd() 方法
+    fod = FloatAdd;
+
+    // 当 fod 作为方法时调用它；fod 接着调用 FloatAdd(
+      fod(2, 3);
+    
+    // 授权也可以多播，意味着多个目标方法可以分配给授权
+    fod += FloatMultiply;
+    )
+  }
+}
+```
 
 #### 插值
 
