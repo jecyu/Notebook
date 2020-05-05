@@ -3182,13 +3182,336 @@ print(p01); // 打印：p0和 p1 之间的半点 (0.5, 0.5, 0);
 
 ##### 基于时间的线性插值
 
+在基于时间的线性插值中，可以保证插值将在一个指定的时间内完成，因为 u 的值是基于时间数量除以所需的总时间插值的结果。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Interpolator : MonoBehaviour
+{
+
+  public Vector3 p0 = new Vector3(0, 0, 0);
+  public Vector3 p1 = new Vector3(3, 4, 5);
+  public float timeDuration = 1;
+  // 设置 checkToCalculate 为 true 开始移动
+  public bool checkToCalculate = false;
+  public bool ________________________;
+
+  public Vector3 p01;
+  public bool moving = false;
+  public float timeStart;
+
+  // Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (checkToCalculate)
+    {
+      checkToCalculate = false;
+      moving = true;
+      timeStart = Time.time;
+    }
+
+    if (moving)
+    {
+      float u = (Time.time - timeStart) / timeDuration;
+      if (u >= 1)
+      {
+        u = 1;
+        moving = false;
+      }
+      // 标准线性插值函数
+      p01 = ((1 - u) * p0) + u * p1;
+      transform.position = p01;
+    }
+
+  }
+}
+
+```
+
+这里因为 timeStart 固定后，`Time.time` 是不断增大的，所以最终 u 的值会达到 1，在这个过程中不断刷新帧，最终的效果是 `p01` 会逐渐移动到 `p1` 的位置上。当然如果 timeDuration 越大的话，那就 u 达到 1 需要的时间就越长。
+
 ##### 利用 Zeno 悖论的线性插值
+
+使用这个方法创建摄像机使它可以随意跟拍兴趣点
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZenosFollower : MonoBehaviour
+{
+  public GameObject poi; // 兴趣点
+  public float u = 0.1f;
+
+  public Vector3 p0, p1, p01;
+  // Start is called before the first frame update
+  void Start()
+  {
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 获取 this 和 poi 的位置
+    p0 = this.transform.position;
+    p1 = poi.transform.position;
+
+    // 二插值
+    p01 = (1 - u) * p0 + u * p1;
+
+    // 将 this 移动到新位置
+    this.transform.position = p01;
+  }
+}
+
+```
 
 ##### 其他插值
 
+几乎可以插值任何类型的数值，在 Unity 中意味着我们可以很容易实现插值，如尺度、旋转以及颜色等。插值可以实现随时间而渐变的效果。
+
+```cs
+using UnityEngine;
+using System.Collections;
+
+public class Interpolator2 : MonoBehaviour
+{
+  public Transform c0, c1;
+  public float timeDuration = 1; // 秒为单位
+  // 设置 checkToCalculate 为 true 开始移动
+  public bool checkToCalculate = false;
+  public bool _________________;
+
+  public Vector3 p01;
+  public Color c01;
+  public Quaternion r01;
+  public Vector3 s01;
+  public bool moving = false;
+  public float timeStart;
+
+  // Use this for initialization
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (checkToCalculate)
+    {
+      checkToCalculate = false;
+      moving = true;
+      timeStart = Time.time;
+    }
+
+    if (moving)
+    {
+      float u = (Time.time - timeStart) / timeDuration;
+      if (u >= 1)
+      {
+        u = 1;
+        moving = false;
+      }
+
+      // 标准线性插值函数
+      p01 = (1 - u) * c0.position + u * c1.position;
+      c01 = (1 - u) * c0.GetComponent<Renderer>().material.color +
+        u * c1.GetComponent<Renderer>().material.color;
+      s01 = (1 - u) * c0.localScale + u * c1.localScale;
+      // 旋转的处理方法稍有不同，因为四元数有点麻烦
+      r01 = Quaternion.Slerp(c0.rotation, c1.rotation, u);
+
+      // 将上面的值赋给当前 Cube01
+      transform.position = p01;
+      this.gameObject.GetComponent<Renderer>().material.color = c01;
+      transform.localScale = s01;
+      transform.rotation = r01;
+    }
+  }
+}
+
+```
+
+这段代码实现了 p01 从 c0 到 c1 的颜色、大小等渐变效果。
+
 ##### 线性外插法
 
+我们迄今为止所有插值的 u 值范围都是 0 到 1.如果让 u 超出这个范围，可以实现外插（如此命名因为不同于在两值之间内插值。）
+
+```cs
+using UnityEngine;
+using System.Collections;
+
+public class Interpolator2 : MonoBehaviour
+{
+  public Transform c0, c1;
+  public float uMin = 0;
+  public float uMax = 1;
+  public float timeDuration = 1; // 秒为单位
+  // 设置 checkToCalculate 为 true 开始移动
+  public bool checkToCalculate = false;
+  public bool _________________;
+
+  public Vector3 p01;
+  public Color c01;
+  public Quaternion r01;
+  public Vector3 s01;
+  public bool moving = false;
+  public float timeStart;
+
+  // Use this for initialization
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (checkToCalculate)
+    {
+      checkToCalculate = false;
+      moving = true;
+      timeStart = Time.time;
+    }
+
+    if (moving)
+    {
+      float u = (Time.time - timeStart) / timeDuration;
+      if (u >= 1) // u >= 1证明已经完成了动画，timeDuration
+      {
+        u = 1;
+        moving = false;
+      }
+
+      // 调整 u 的范围为 uMin 到 uMax
+      u = (1 - u) * uMin + u * uMax; // 线性内插也是这样做的。
+
+      // 标准线性插值函数
+      p01 = (1 - u) * c0.position + u * c1.position;
+      c01 = (1 - u) * c0.GetComponent<Renderer>().material.color +
+        u * c1.GetComponent<Renderer>().material.color;
+      s01 = (1 - u) * c0.localScale + u * c1.localScale;
+      // 旋转的处理方法稍有不同，因为四元数有点麻烦
+      r01 = Quaternion.Slerp(c0.rotation, c1.rotation, u);
+
+      // 将上面的值赋给当前 Cube01
+      transform.position = p01;
+      this.gameObject.GetComponent<Renderer>().material.color = c01;
+      transform.localScale = s01;
+      transform.rotation = r01;
+    }
+  }
+}
+
+```
+
 ##### 缓动线性插值
+
+利用插值，配合时间，前端也可以实现一个迷型的动画库（也就是一些缓动函数）。在 Unity 中可以自动刷新帧（`Update()`），只需要根据时间刷新
+ u 的值，需要改变的东西要放到这个 Update() 里面去了。
+
+```cs
+float u = (Time.time - timeStart) / timeDuration;
+
+// u >= 1证明已经完成了动画，timeDuration
+```
+
+而对于 web 浏览器的话，则需要使用 `setTimeOut` 或者 `requestAnimationFrame` 来强制刷新帧。
+需要推算 60 帧/秒（比较好的动画效果），从而得出一帧 16.7ms，最后根据 `during` 计算出完成这个动画需要的帧数，然后每刷新一次都执行 `callback(value)` 回调函数，去处理关联的东西的值。
+
+下面这个算法不是根据插值来计算的，需要重新理清楚。或者重写。
+
+```js
+const animate = {
+  // t: current time, b: begInnIng value, c: change In value, d: duration
+  animateType: {
+    // 匀速 // TODO 重构
+    linear(t, b, c, d) {
+      return (c * t) / d + b;
+    },
+    // 先慢后快
+    easeInQuad(t, b, c, d) {
+      return c * (t /= d) * t + b;
+    },
+    // 先快后慢
+    easeOutQuad(t, b, c, d) {
+      return -c * (t /= d) * (t - 2) + b;
+    }
+  },
+  defaultOpts: {
+    from: 0,
+    to: 1000,
+    during: 300,
+    type: "easeInQuad",
+    callback() {}
+  },
+  // 增加动画算法
+  extend(type) {
+    this.animateType = Object.assign({}, this.animateType, type);
+  },
+  /*
+    * options 配置
+      {
+        from: 开始值,
+        to: 目标值,
+        during: 持续时间,
+        type: 动画函数
+        callback: 回调
+      }
+      return <Promise>
+  */
+  play(options) {
+    return new Promise(resolve => {
+      const opts = Object.assign({}, this.defaultOpts, options);
+      const { to, from, type, during, callback } = opts;
+      // 计算总共的帧数
+      // 1秒 = 60帧
+      // 1帧 = 16.7ms
+      // 根据毫秒数得出总共的帧数
+      const durFps = Math.ceil(during / 16.7);
+      // requestAnimationFrame的兼容处理
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = fn => {
+          setTimeout(fn, 16.7);
+        };
+      }
+      // 动画运动实际上就是 0 ~ 动画总帧数 的过程
+      let start = 0;
+      // 运动
+      const step = () => {
+        // 当前的运动位置
+        const value = this.animateType[type](start, from, to - from, durFps);
+        callback(value);
+        // 时间递增
+        start++;
+        // 如果还没有运动到位，继续
+        if (start <= durFps) {
+          window.requestAnimationFrame(step);
+        } else {
+          // 动画结束，在promise.then中执行相关操作
+          resolve();
+        }
+      };
+      // 开始执行动画
+      step();
+    });
+  }
+};
+
+export default animate;
+
+```
 
 ##### 贝塞尔曲线
 
