@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>websocket demo</title>
+  </head>
+  <body>
+    <div class="content"><pre id="log"></pre></div>
+    <script>
+      const request = () => {
+        fetch("http://127.0.0.1:8000")
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        });
+      }
+
+      const poll = (callback) => {
+        setTimeout(() => {
+          callback();
+          poll(callback);
+        }, 300);
+      }
+
+      // 假设现在是分片上传后，开始进行上传状态的轮询
+      poll(request); // 轮询请求，会一直被前面的请求阻塞了，由于浏览器的限制
+
+      // 采用 websocket 方式，不会被阻塞
+      // helper function: log message to screen
+      function log(msg) {
+        document.getElementById("log").textContent += msg + "\n";
+      }
+
+      // setup websocket with callbacks
+      const ws = new WebSocket("ws://localhost:8080/");
+      ws.onopen = function() {
+        log("CONNECT");
+      };
+      ws.onclose = function() {
+        log("DISCONNECT");
+      };
+      ws.onmessage = function(event) {
+        log("MESSAGE: " + event.data);
+      };
+    </script>
+  </body>
+</html>

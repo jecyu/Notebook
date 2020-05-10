@@ -1,6 +1,35 @@
 # mac
 
+## 文件权限
+
+## 如何通过终端验证文件的 MD5 和 SHA-1
+
+Mac OS X 系统的终端内置了 MD5 和 SHA1 的校验工具，打开终端，在终端上输入：
+
+```bash
+md5 文件的路径
+```
+
+或者
+```bash
+shasum 文件的路径
+```
+
+![mac-terminal-md5-validate](../.vuepress/public/images/2020-05-09-09-10-33-mac-terminal-md5-validate.png)
+
 ## Mac OS 下三种修改Hosts文件的方法
+
+### 二.终端命令行修改
+
+```bash
+sudo vi /etc/hosts
+```
+
+1.输入本机密码后，打开hosts文件，键盘输入 i （插入），修改hosts文件后，按 esc 键退出,再按shift+：键，再输入w和q，保存退出
+
+2.不保存退出，则按q和！键
+
+参考资料：https://www.jianshu.com/p/752211238c1b
 
 ## macOS 系统占用你储存空间太大怎么办
 
@@ -37,18 +66,6 @@ sudo du -sh *
 ```
 
 ### 第二种：下载 OmniDiskSweeper
-
-### 二.终端命令行修改
-
-```bash
-sudo vi /etc/hosts
-```
-
-1.输入本机密码后，打开hosts文件，键盘输入 i （插入），修改hosts文件后，按 esc 键退出,再按shift+：键，再输入w和q，保存退出
-
-2.不保存退出，则按q和！键
-
-参考资料：https://www.jianshu.com/p/752211238c1b
 
 ## 在中文输入法的情况下，如何快速输入英文字母？
 

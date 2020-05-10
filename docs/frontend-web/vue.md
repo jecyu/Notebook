@@ -391,6 +391,38 @@ computed: {
 
 ### 组件
 
+#### 自定义事件
+
+封装一个下拉树中，由于 ViewUI 提供的 `on-click` 接口只能在点击 icon 才能触发，因此不符合点击 input 框也能展开或关闭下拉菜单的条件。
+
+一开始想着只能写原生input 标签，然后进行绑定，但是需要把整个 ViewUI 的样式拷贝过来还要处理 icon，不理想。
+
+好在 Vue 提供了 native 修饰符，这样就很方便地对组件的根标签进行 click 的监听了。
+```html
+   <Dropdown
+      transfer
+      trigger="custom"
+      style="width: 100%;"
+      :visible="selectVisible"
+    >
+      <Input
+        v-model="selectedName"
+        readonly
+        placeholder="请选择档案类型"
+        :icon="iconInput"
+        @click.stop.native="HandleClickInput"
+      />
+      <DropdownMenu
+        slot="list"
+        :style="dropDownStyle"
+        v-clickoutside="onClickOutSide"
+      >
+        <Tree v-bind="$attrs" v-on="$listeners" @h></Tree>
+      </DropdownMenu>
+    </Dropdown>
+```
+
+
 ### 自定义指令
 
 ### vue-router
@@ -406,6 +438,10 @@ computed: {
 ```js
 vm.$router.options.routes;
 ```
+
+#### 路由传参 
+
+路由传参 vs vuex
 
 ## 进阶活用
 

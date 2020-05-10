@@ -5,6 +5,10 @@
 如果放大后查看大图仍不清晰，请右键新标签页打开。
 <img :src="$withBase('/images/gis-component.png')" class="my-img">
 
+## GIS 专题
+
+- 掘金地址：[GIS 专题概念与应用](https://juejin.im/post/5eb21176e51d4541491aab81)
+
 ## Arcgis 软件介绍
 
 ### Arcgis 的起源与发展

@@ -620,7 +620,7 @@ nslookup -option1 -option2 host-to-find dns-server
 `
 
 ```bash
-ipconfig /all
+ipconfig /all # mac 是 ifconfig
 ```
 
 所有关于您的主机信息都类似如下面的屏幕截图所显示

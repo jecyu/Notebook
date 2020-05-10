@@ -109,6 +109,11 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
  },
 ```
 
+注意上面的设置是也可以直接对 webpack 的命令，无法对 require 进行 debugger 查看属性的。直接输入 `debugger` 是可以在 chrome 浏览器上进行查看的。**具体原因待研究。**
+
+![](../.vuepress/public/images/2020-05-07-10-59-54-debugger-webpack-vscode.png)
+
+
 ##### 使用 attach 模式启动
 
 首先用 live-server 打开 index.html，你会发现浏览器自动跳转到http://localhost:5500上了，接着到launch.json进行配置
@@ -143,6 +148,12 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 ![node](../.vuepress/public/images/2020-05-01-14-17-06-node-runtime.png)
 
 当然除了 node 外，如果要测试浏览器的 api，则可以打开 chrome 的控制台进行编码快速测试。
+
+### vscode 设置超过屏幕自动换行
+
+请求 url，避免空格换行。
+
+![vscode 换行设置](../.vuepress/public/images/2020-05-07-09-09-43-vscode-wrap.png)
 
 
 ## 进阶活用

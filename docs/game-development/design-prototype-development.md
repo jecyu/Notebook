@@ -1682,6 +1682,34 @@ public class CubeSpawner3 : MonoBehaviour
 
 #### 函数重载
 
+函数重载用于参数类型不多的情况，如果较多的话则可以采用抽象思想，策略模式来处理。
+```cs
+  // 下面两个函数在 this.parts 中按名称或游戏对象查找某个组件
+  Part FindPart(string n)
+  {
+    foreach (Part prt in parts)
+    {
+      if (prt.name == n)
+      {
+        return prt;
+      }
+    }
+    return null;
+  }
+
+  Part FindPart(GameObject go)
+  {
+    foreach (Part prt in parts)
+    {
+      if (prt.go == go)
+      {
+        return prt;
+      }
+    }
+    return null;
+  }
+```
+
 #### 可选参数
 
 #### param 关键字
@@ -3105,7 +3133,7 @@ OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = f
 
 ##### 问题4：如何知道同一场景下，不同游戏对象的 Awake() 和 Start() 等执行的顺序？
 
-举例子，A 对象的 Awake() 方法是否一定比 B 对象的 Start() 方法要早执行？
+举例子，A 对象的 Awake() 方法是否一定比 B 对象的 Start() 方法要早执行？还有就是派生类与父类的生命周期执行顺序，这个跟前端组件很类似。
 
 ### 游戏原型 4：《矿工接龙》
 
