@@ -8,3 +8,8 @@
 、、
 
 websocket 对 web 性能影响大吗？
+
+## 参考资料
+
+- [WebSocket 教程](http://www.ruanyifeng.com/blog/2017/05/websocket.html)
+- https://github.com/joewalnes/websocketd

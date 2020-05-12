@@ -9,7 +9,6 @@ const server = http.createServer((req, res) => {
       name: "jecyu"
     }
   setTimeout(() => {
-    debugger;
     res.end(JSON.stringify(obj));
   }, 100000)
 });

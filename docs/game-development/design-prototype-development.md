@@ -3058,14 +3058,122 @@ OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = f
 
 ### 游戏原型 3：《太空射击》
 
-在本章中，你将使用几种编程技术创建自己的射击游戏，这些技术包括类继承、枚举类型（enum）、静态字段和方法以及单例模式，在你的编程和原型制作生涯中，这些技术会派上用场。
-
+在本章中，你将使用几种编程技术创建自己的射击游戏，这些技术包括`类继承`、`枚举类型（enum）`、`静态字段和方法`以及`单例模式`，在你的编程和原型制作生涯中，这些技术会派上用场。
 
 #### 准备工作
 
+##### 导入 Unity 资源包
+
+当你制作游戏原型时，它的玩法和体验要比外观重要，但我们要理解游戏如何运作，仍然需要用到绘图资源，比如一些材质（可以通过 Photoshop 制作）和着色器。
+
+着色器是让计算机知道如何在游戏对象上渲染材质的程序，可以让场景看起来更有真实感或卡通感，或者产生其他感觉，着色器是现代游戏图形的一个重要部分。Unity 使用自己独有的着色器语言 ShaderLab。
+
 #### 设置场景
 
+因为游戏是垂直方向从下向上射击，所以我们需要为游戏面板设置一个纵向的宽高比。单击游戏面板上位于选项卡下方的宽高比弹出菜单，单击菜单项列表最下方的加号（+）图标。将游戏面板宽高比设置为新增加的 Portrait（3:4）。
+
 #### 创建主角飞船
+
+在本章中，我们会一边创建图形一边写代码，而不是提前创建出所有的图形。这个思路也算是敏捷开发，按模块一步步创建。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Hero : MonoBehaviour
+{
+  static public Hero S; // 单例对象
+  public float gameRestartDelay = 2f;
+
+  // 以下字段用来控制飞船的运动
+  public float speed = 30;
+  public float rollMult = -45;
+  public float pitchMult = 30;
+
+  public bool ______________________;
+ 
+  private void Awake()
+  {
+    S = this; // 设置单例对象
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 从 Input（用户输入）类中获取信息，读取水平和竖直轴
+    float xAxis = Input.GetAxis("Horizontal");
+    float yAxis = Input.GetAxis("Vertical");
+    // 基于获取的水平轴和竖直轴信息修改 transform.position
+    Vector3 pos = transform.position;
+    pos.x += xAxis * speed * Time.deltaTime;
+    pos.y += yAxis * speed * Time.deltaTime;
+    transform.position = pos;
+
+    // 让飞船旋转一个角度，使它更具动感
+    transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+  }
+}
+
+```
+
+[查看 InputManager 信息](./unity.md#用户输入)
+
+##### 主角飞船的护盾
+
+_Hero 的护盾由透明度、带贴图的正方形（产生图像）和球状碰撞器（用于处理碰撞）组合而成。
+
+新建一个矩形（执行 GameObject > 3D Object > Quad 命令），将其命名为 Shield 并设置为 _Hero 的子对象。
+
+在层级面板中选中 Shield，你会在检视面板中看到 Mat_Shield 组件。将 Mat_Shield 的 `Shader` 组件设置为 `Custom > UnlitAlpha`。在 Mat_Shield 下方有一块区域可以选择材质的`主色`和`纹理`。单击选择右下角的纹理区域，并选中名为 Shields 的纹理。单击颜色选取块，选择一种浅绿色，然后将 `Tiling.x` 的设置为 0.2，`Offset.x` 设置为 0.4，<u>前者使 Mat_Shield 在水平方向上只使用 Shield 纹理的 1/5，后者则指定是哪 1/5.</u>
+
+`Tiling.y` 应保持 1.0 不变，`Offset.y` 应保持 0 不变。这是因为纹理在水平方向上分为五部分，但竖直方向上只有一部分。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Shield : MonoBehaviour
+{
+  public float rotationsPerSecond = 0.1f;
+  public bool __________________________;
+  public int levelShown = 0;
+
+  // Start is called before the first frame update
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 读取 Hero 单例对象的当前护盾等级，向下取整确保 shield 纹理的水平偏移量为单幅纹理宽度的倍数，而不会偏移到两幅纹理图像之间
+    int currLevel = Mathf.FloorToInt(Hero.S.shieldLevel); 
+    // 通过
+    // 如果当前护盾等级与显示的等级不符......
+    if (levelShown != currLevel)
+    {
+      levelShown = currLevel;
+      Renderer renderer = this.gameObject.GetComponent<Renderer>();
+      Material mat = renderer.material;
+      // 则调整纹理偏移量，呈现正确的护盾画面
+      mat.mainTextureOffset = new Vector2(0.2f * levelShown, 0);
+    }
+
+    // 每秒钟将护盾旋转到一定角度
+    float rZ = (rotationsPerSecond * Time.time * 360) % 360f; 
+    transform.rotation = Quaternion.Euler(0, 0, rZ);
+  }
+}
+```
+
+- [材质、纹理、着色器](./unity.md#Materials、Shaders&Textures)
+
+##### 将 _Hero 限制在屏幕内
+
+边界框查看：[（Bounds）边界框](unity.md#Bounds（边界框）)
 
 #### 添加敌机
 

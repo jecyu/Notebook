@@ -1,5 +1,6 @@
 # Git 常用命令集合
 
+
 ![git 常用命令](../.vuepress/public/images/git-command.jpg)
 
 > Git 常用命令集合，Fork 于[tips](https://github.com/521xueweihan/git-tips#%E6%9F%A5%E7%9C%8B%E6%9F%90%E6%AE%B5%E4%BB%A3%E7%A0%81%E6%98%AF%E8%B0%81%E5%86%99%E7%9A%84)项目
@@ -34,6 +35,12 @@ git 版本最重要的功能之一就是回退版本了。
 - revert
 
 ![rebase](../.vuepress/public/images/2020-04-30-16-18-03-rebase.png)
+
+### 设置大小写不敏感
+
+```bash
+git config core.ignorecase false
+```
 
 ### 展示帮助信息
 

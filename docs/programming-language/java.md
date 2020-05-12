@@ -156,7 +156,90 @@ Java 因为 JVM 运行效率高，原因是 Java 将代码编译成一种`“字
 
 #### 设置环境变量
 
+安装完 JDK 后， 需要设置一个 `JAVA_HOME` 的环境变量，它指向 JDK 的安装目录。把 `JAVA_HOME` 的 `bin` 目录添加到系统的 `PATH` 中是为了在任意文件夹下都可以运行 `java`。
+
+在 Mac 下，它在 `~/.bash_profile` 或 `~/.zprofile` 里，下面的命令设置默认的 `JAVA_HOME` 指向 14，并写入到  `~/.bash_profile` 文件中（这个文件是 Shell 配置文件，也可以看到其他程序的配置，如 vscode）
+
+```bash
+echo 'export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-14.0.1.jdk/Contents/Home"' >> ~/.bash_profile 
+```
+
+然后，把 `JAVA_HOME` 的 `bin` 目录附加到系统变量 `PATH` 上。
+```bash
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bash_profile
+```
+
+打开命令行终端，输入命令 `java -version`，如果一切正常，你会看到如下输出。
+
+```bash
+java -version # 查看默认的 Java_Home，即当前的运行环境                                      
+# java version "14" ...    
+#Java(TM) SE Runtime Environment                         
+# Java HotSpot(TM) 64-Bit Server VM                       
+```
+
+也可以使用 `echo $JAVA_HOME` 查看默认的 java 版本。
+```bash
+/Library/Java/JavaVirtualMachines/jdk-14.0.1.jdk/Contents/Home
+```
+
+另外可以使用 -V 选项列出所有版本的 `JAVA_HOME`，列出所有的 `JAVA_HOME` 指向的 JDK 安装目录：
+
+```bash
+/usr/libexec/java_home -V
+
+Matching Java Virtual Machines (2):
+    14.0.1, x86_64:	"Java SE 14.0.1"	/Library/Java/JavaVirtualMachines/jdk-14.0.1.jdk/Contents/Home
+    1.8.0_191, x86_64:	"Java SE 8"	/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home
+```
+
+（其实 JDK 跟前端工程化安装 Node 环境一样类似。）
+
+
+如果你看到的版本号不是 `14`，而是`12`、`1.8`之类，说明系统存在多个 JDK，且默认 JDK 不是 JDK 14，需要把 JDK 14 提到 PATH 前面。
+
+为了快速切换 java 版本，在 Mac  上可以使用 `jEnv` 工具。
+
+1. 安装 jenv（类似 nvm 管理 node 版本工具，但 jenv 只能管理版本，并不能安装 JDK。）
+2. 配置环境变量
+```bash
+echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> ~/.bash_profile   
+echo 'eval "$(jenv init -)"' >> ~/.bash_profile
+source ~/.bash_profile
+```
+3. 添加版本 `jenv add jdk安装的路径 # 这里的路径`，可以通过运行 `/usr/libexec/java_home -V` 查找 `JDK` 路径
+```bash
+jenv add /Library/Java/JavaVirtualMachines/jdk-14.0.1.jdk/Contents/Home
+oracle64-14.0.1 added
+14.0.1 added
+14.0 added
+```
+4. 通过安装 jenv 插件，切换 JDK 版本时，将会同步设置 `${JAVA_HOME}` 变量。
+
+```bash
+jenv enable-plugin export
+## 运行这个才会生效
+```
+4. 查看当前系统 jenv 管理所有 JDK 版本。
+```bash
+jenv versions
+```
+5. 切换版本
+```bash
+jenv local xxx # 这里需要注意的，jenv local 切换 JDK 版本只对当前文件夹有效,如果切换到其他文件夹，将会切换会当前默认 JDK 版本
+jenv global xxxx # jenv global 将会设置一个全局默认的 JDK 版本，即使重启 Shell 窗口，该配置也不会改变
+```
+
 #### JDK
+
+在 `JAVA_HOME` 指向 JDK 的 `bin` 目录下可以周到很多可执行文件：
+- java：这个可执行程序其实就是 JVM，运行 Java 程序，就是启动 JVM ，然后让 JVM 执行指定的编译后的代码；
+- javac：这是 Java 的编译器，它用于把 Java 源码文件（以 `.java` 后缀结尾）编译为 Java 字节码文件（以 `.class`后缀结尾）；
+- jar：用于把一组 `.class` 文件打包成一个 `.jar` 文件，便于发布；
+- javadoc：用于从 Java 源码中自动提取注释并生成文档；
+- jdb：Java 调试器，用于开发阶段的运行调试。
+
+### 第一个 Java 程序
 
 ### 使用 IDE
 
@@ -209,3 +292,6 @@ Java 因为 JVM 运行效率高，原因是 Java 将代码编译成一种`“字
 
 - [Java虚拟机——字节码、机器码和JVM](https://zhuanlan.zhihu.com/p/44657693) 本文主要讲解Java虚拟机的概念，字节码、机器码、编译器、解释器的概念。
 - [廖雪峰 Java 教程](https://www.liaoxuefeng.com/wiki/1252599548343744)
+- [如何设置或更改 PATH 系统变量？](https://www.java.com/zh_CN/download/help/path.xml)
+- [Mac 上管理多个 java 版本](https://segmentfault.com/a/1190000004332179)jenv 是一个命令行工具，可以在 Linux/OS X 平台使用，可以管理多个版本 JDK，方便在多个版本 JDK 之间切换，另外其还可以设置 JAVA_HOME 环境变量。
+- [Java 又双叒叕发布新版本，这么多版本如何灵活管理？](http://www.justdojava.com/2019/11/20/jenv/)

@@ -79,6 +79,52 @@ JS 中的函数调用
 - 使用构造函数调用函数
 - 作为函数方法调用函数
 
+#### 闭包
+
+##### 一个简单的闭包
+
+![](../.vuepress/public/images/2020-05-12-12-43-20-js-closure-1.png)
+
+我们在同一作用域中声明了变量 outerValue 及外部函数 outerFunction——本例中，是全局作用域。然后，执行外部函数。如图，<u>该函数可以“看见”并访问变量 outerValue</u>。这个便是一个简单的闭包。
+
+因为外部变量 `outerValue` 和外部函数 `outerFunction` <u>都是在全局作用域中声明的，该作用域（实际上就是 i一个闭包）从未消失（只要应用处于运行状态，这里可以 探讨为什么很多东西要 destroy）。这也不足为奇，该函数可以访问到外部变量，因为它仍然在作用域内并且是可见的。</u>
+
+##### 回调函数
+
+这里传入 callback 函数，并访问当前 traverseTree 的作用域变量，便是形成了闭包。闭包不是在创建的那一时刻的状态的快照，而是一个真实的状态封装，只有闭包存在，就可以对变量进行修改。
+
+```ts
+
+/**
+ * @description: 遍历树
+ * @param {Object} node
+ * @param {Function} callback
+ * @param {Object} parentNode
+ * @return: null
+ */
+export const traverseTree = (
+  node: any,
+  callback: Function,
+  parentNode: any
+) => {
+  if (node === null) {
+    return;
+  }
+  callback && callback(node, parentNode);
+  if (node.children && node.children.length > 0) {
+    const children = node.children;
+    for (let i = 0; i < children.length; i++) {
+      node && traverseTree(children[i], callback, node);
+    }
+  }
+};
+
+```
+
+##### 私有变量
+
+##### 函数里返回函数
+
 ### 事件
 
 #### 事件阶段
@@ -335,6 +381,8 @@ jQuery.eq().show();
 ## 进阶
 
 ### 高阶函数
+
+接收一个函数参数，或者
 
 ### setTimeout, setInterval 和 requestAnimationFrame
 

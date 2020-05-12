@@ -1198,6 +1198,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npm.taobao.org/isobject/download/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
+jecyu-util@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/jecyu-util/-/jecyu-util-1.0.0.tgz#d8b8dcb6a313261c7ada0ed1a982e6e10396d179"
+
 json-parse-better-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npm.taobao.org/json-parse-better-errors/download/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"

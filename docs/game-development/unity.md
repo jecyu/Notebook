@@ -126,7 +126,66 @@ public class Test: MonoBehaviour {
 foreach（Transform t in transform）｛  ｝
 ```
 
-### 鼠标
+### 用户输入
+
+#### InputManager 输入管理器
+
+Unity 的输入管理器中可以设置多个输入轴，`Input.GetAxis()` 可用于读取这些轴，要查看默认的输入轴列表。请在菜单栏中执行编辑（Edit）> 项目设置（Project Setting）> 输入（Input）命令。
+
+![InputManager](../.vuepress/public/images/2020-05-11-20-54-06-unity-input.png)
+
+在如图所示的设置中，需要注意有些轴出现了两次（例如 Horizontal、Vertical、Jump）。从图中展开的 `Horizontal` 轴可以看到，这样既可以通过键盘按钮控制 `Horizontal` 轴，也可以通过游戏手柄的摇杆控制。可以通过多种不同的输入设置控制同一个输入轴，这是使用输入轴的最大优势之一。因此，你的游戏只需要一行代码读取输入轴的内容，而不必分别使用一行代码处理游戏手柄、键盘上的各个方向键和 A、D 按键。
+
+![](../.vuepress/public/images/2020-05-11-21-01-55-unity-input-2.png)
+
+每次调用 `Input.GetAxis()` 都会返回一个 <u>-1 到 1 之间的浮点数值（默认值为0）</u>。输入管理器中的每个轴还包括了灵敏度（`Sensitivity`）和重力（`Gravity`）的数值，但这两个值只适用于`键盘`和`鼠标输入`。灵敏度和重力可以在按下或松开按键时平滑插值（即在每次使用键盘或鼠标操作时，轴的数值不是立即跳到最终数值，而是从当前数值平滑过渡到最终数值）。在图中所示的 Horizontal 轴灵敏度为 3，表示当按下右方向键时，数值从 0 平滑过渡到 1 要经过 1/3 秒的时间。<u>灵敏度或重力数值越高，平滑过渡所需的时间越短。</u>
+
+与 Unity 中其他很多功能一样，你可以单击帮助按钮按钮（外观像一本带有问号的书，位于检视面板上 InputManager 字样和齿轮图标之间），查看关于输入管理器的更多内容。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Hero : MonoBehaviour
+{
+  static public Hero S; // 单例对象
+  public float gameRestartDelay = 2f;
+
+  // 以下字段用来控制飞船的运动
+  public float speed = 30;
+  public float rollMult = -45;
+  public float pitchMult = 30;
+
+  public bool ______________________;
+ 
+  private void Awake()
+  {
+    S = this; // 设置单例对象
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 从 Input（用户输入）类中获取信息，读取水平和竖直轴
+    float xAxis = Input.GetAxis("Horizontal");
+    float yAxis = Input.GetAxis("Vertical");
+    // 基于获取的水平轴和竖直轴信息修改 transform.position
+    Vector3 pos = transform.position;
+    pos.x += xAxis * speed * Time.deltaTime;
+    pos.y += yAxis * speed * Time.deltaTime;
+    transform.position = pos;
+
+    // 让飞船旋转一个角度，使它更具动感
+    transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+  }
+}
+
+```
+
+_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 _Hero 的运动和可操作性。
+
+#### 鼠标
 
 ```cs
 // 获取鼠标光标在二维窗口中的坐标
@@ -184,7 +243,120 @@ if (Input.GetMouseButtonUp(0))
     }
 ```
 
+
+
 ### 碰撞检测
+
+### 刚体
+
+### Materials、Shaders&Textures
+
+材质（Material）包含贴图 Map，贴图包含纹理 Texture。此外还有程序化（Shader）生成的纹理 Procedural Texture。
+
+一句话，`贴图是现象，纹理是特征，材质是性质`。比如说木头，贴图只有看着像木头，摸上去则是平面；纹理是看上去摸上去都像木头，但不一定真是木头；材质是不仅看和摸都像，都具有木头纤维各向异性的材料特征。
+
+|英文|中文|本质|释义|
+|--|--|--|--|
+|Material|材质|数据集|表现物体对光的交互，供渲染器读取的数据集，包括贴图纹理、光照算法等|
+|Texture mapping|纹理贴图|图像映射规则|把存储在内存里的位图，通过 UV 坐标映射到渲染物体的表面|
+|Shading|底纹、阴影|光影效果|根据表面法线、光照、视角等计算得出的光照效果|
+|Shader|着色器|程序|编写显卡渲染画面的算法来即时演算生成贴图的程序|
+|GLSL||程序语言|OpenGL 着色语言|
+
+
+这些概念都是为了完成一个共同目录：<u>用计算机表现真实可信的 Shading。</u>
+
+`Shading` 是真实世界中的光影效果，它是由物体表面材质、灯光、观察者的视角等多种因素共同决定的。要实现计算机的模拟生成，是一个非常复杂的过程。不过它的原理大概可以简化为一个函数：
+
+> Intensity = Material(Light, Eye)
+
+也就是说，光影的强度是由 a. 照在材质上的光 b. 视线共同决定的。
+
+#### 如何制造 Shading 效果？
+
+纹理就是一段有规律、可重复的图像。利用纹理，我们可以非常取巧地让三维物体看起来更真实。
+
+![飞机的护盾材质](../.vuepress/public/images/2020-05-12-21-34-06-unity-texture.png)
+
+贴图可以说是最简单的材质方法：
+- 选定物体表面的某些区域
+- 更改这个区域的一些属性（如颜色、反光度、透明度等）
+
+那么 `UV Mapping` 是什么呢？跟 `Texture Mapping` 有什么区别呢？
+
+可以这么理解，`Texture Mapping` 是目标，把材质用一种`规则`映射到物体表面。而 `UV Mapping` 就是映射的规则。在这个规则中，给三维体每一个顶点增加两个值 U 和 V，它们记录了三维表面和二维表面的坐标对应关系：
+
+![](../.vuepress/public/images/2020-05-12-21-37-02-texture-uv.png)
+
+有了映射关系，我们就可以分门别类地把影响光照的不同参数，都通过图片映射到三维几何体上。
+
+贴上皮肤的方法虽好，但是局限也很明显。如果没有合适的图像，或者要创建真实世界中罕见的材质，皮肤就不好找了。<u>这个时候需要让程序帮忙生长出新的皮肤。</u>
+
+我们把这种程序叫做 `Shaders`。`Shading` 是始终如一的终极目标，那么应该就能明白为什么实现这个目标的程序叫做 Shaders 了。
+
+它实际上是一个程序片段、一系列的命令，可以将三维 Mesh（网格）以指定方式完成与颜色、贴图等组合，完成复杂的计算输出（渲染器可读取的点和颜色的对应关系），会对屏幕上的每个像素同时下达命令。也就是说，代码必须根据像素在屏幕上的不同位置执行不同的操作。就像活字印刷，你的程序就像一个 funciton（函数），输入位置信息，输出颜色信息，当它编译完之后会以相当快的速度运行。
+
+#### 在 Unity 中的使用
+
+在 Unity 中，设置完材质后，可以选择不同的着色类型程序，不同的着色器暴露不同的选项给我们，通过改变这些选项的数值，可以通知着色器如何处理材质，渲染出不同的效果。
+
+- 材质（Materials）定义了如何渲染表面，通过纹理（Texture）、tiling（瓷砖，设置这个值把纹理图分为多少份）、颜色等。可以设置的选项依赖于材质使用的 Shader。
+- 着色器（Shaders）：它是一段小的脚本，基于光照输入（lighting input）和材质配置，包含了数学计算和每个像素的颜色计算算法。
+- 纹理（Textures）：纹理是位图，材质可以包含对纹理的引用，这样材质的着色器可以使用纹理计算游戏对象的表面。另外，对于游戏对象的基本颜色（Albedo），纹理可以代表材质表面的许多其他方面，例如反射率和粗糙度。
+
+
+参考资料
+- [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)
+
+### Bounds（边界框）
+
+渲染器和碰撞器都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是由一个中心点（center）和一个尺寸
+
+todo ：需要学习向量的知识，再回顾边界框。
+
+### 时间
+
+- Time.time
+- Time.deletaTime 区别
+
+#### Rigidbody 中的 isKinematic 作用是什么？
+
+功能区别：
+
+Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象不会被物理所控制，只能通过直接设置位置、旋转和缩放来操作它</u>，一般用来实现移动平台，或者带有 HingeJoint 的动画刚体
+
+当 Rigidbody 为运动学刚体（即 isKinematic == true）时，对象的运动不会自动遵循物理原理，但仍然属于物理模拟的构成部分（**即刚体的运动不会收到碰撞和重力的影响，但仍然会影响其他非运动学刚体的运动**）。
+
+举例说明：如图 10-19 所示，A 和 B 为两个刚体物体，A 在 B 的正上方，开始时 A 和 B 的重力感应都被关闭，都处于静止状态，且接受动力学模拟即 isKinematic 为 false。现在开启 A 的重力感应，则 A 从 1 处开始加速下落，当下落到 2 处时，关闭 A 的重力感应，但 isKinematic 依然为 false（即接受动力学模拟），则 A 将以当前速度匀速下落。但是此时若关闭物理感应，即 isKinematic=true，则 A 将立即停止移动。当 A 与 B 发生碰撞时，若 B 的重力感应依然关闭，但接受动力学模拟，即 `isKinematic=false`，则根据动量守恒 B 将产生一个向下的速度。但是若关闭 B 物体的动力学模拟，即 `isKinematic=true`，则 B 保持静止，不会因受到 A 的碰撞而下落。
+
+在 Unity 中在刚体不与其他物体接触的情况下 `velocity` 的值只与 `Gravity`、`drag` 及 `Kinematic` 有关，与质量 `mass` 及物体的 `Scale` 值无关。 `isKinematic` 为 `true` 时，`velocity` 将不起作用。
+
+### Camera
+
+1. Clear Flags：清除标记。决定屏幕的哪部分将被清除。一般使用摄像机来描绘不同游戏对象的情况：
+   1. Skybox：天空盒。默认模式。在屏幕中年的空白部分将显示当前摄像机的天空盒。如果当前摄像机没有设置天空盒，会默认用 Background 色。
+   2. Solid Color：纯色。选择该模式屏幕上的空白部分江南显示当前摄像机的 `background` 色。
+   3. Depth only：不清除。该模式下不清除任何颜色或深度缓存。其结果是，每一帧渲染的结果叠加在下一帧之上。一般与自定义的 shader 配合使用。
+2. Background：背景。设置背景颜色。在镜头中的所有元素`渲染完成`(即运行play 模式)且没有指定 skybox 的情况下，将设置的颜色应用到屏幕的空白处。
+3. Culling Mask：剔除遮罩，选择要显示的 layer图层。
+4. Projection：投射方法。
+   1. Perspective：透视。摄像机将用透视的方式来渲染游戏对象。
+      1. Field of view：视野范围。用于控制摄像机的视角宽带以及纵向的角度尺寸。
+   2. Orthographic：正交。摄像机将用无透视的方式来渲染游戏对象。
+      1. Size：大小。用于控制正交模式摄像机的视口大小。
+5. Clipping Planes：剪裁平面。摄像机开始渲染与停止渲染之间的距离。
+  - Near：近点。摄像机开始渲染的最近的点。
+  - Far ：远点。摄像机开始渲染的最远的点。
+6. Viewport Rect：标准视图矩形。用四个数值（X，Y，W，H）来控制`摄像机的视图`绘制在屏幕的位置和大小，使用的是屏幕坐标系，数值在 `0～1`之间。
+   1. ![](../.vuepress/public/images/2020-05-10-18-22-57-unity-camera-viewport.png)
+7. Depth：深度。用于控制摄像机的渲染顺序，较大值的摄像机将被渲染在较小值的摄像机之上。
+8. Rendering Path：渲染路径。用于指定摄像机的渲染方法。
+   1. Use Player Settings：使用 Project Settings --》Player 中的设置。
+   2. Vertex Lit：顶点光照。摄像机将对所有的游戏对象座位顶点光照对象渲染。
+   3. Forward：快速渲染。摄像机将所有游戏对象将按每一种材质一个通道的方式来渲染。
+   4. Deferred Lighting：延迟光照。摄像机先对所有游戏对象进行一次无光照渲染，用屏幕空间大小的 Buffer 保持几何体的深度、法线已经高光强度，生成的 Buffer 将用于计算光照，同时生成一张新的光照信息 Buffer。最后所有的游戏对象会被再次渲染，渲染时叠加光照信息 Buffer 的内容。
+9.  Target Texture：目标纹理。用于将摄像机视图输出并渲染到屏幕。一般用于制作导航图或者画中画等效果。
+10. HDR：高动态光照渲染。用于启用摄像机的高动态范围渲染功能。
 
 ## 进阶
 
