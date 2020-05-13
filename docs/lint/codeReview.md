@@ -1,14 +1,15 @@
-# Code Review CheckList
+# CheckList
 
 ## 进行形式
 
 项目迭代中：主要负责人以抽查浏览的形式快速审阅成员提交的代码，发现有问题的地方提出并打回改进。
 
-团队定期：可以每周抽一个小时进行 code review + 后续的编写，针对 checklist 的某一个模块进行review，成员之间互相审阅提交的编码，学习好的编码方式、探讨不好的编码的理由。
+团队定期：可以每周抽一个小时进行 code review + 后续的编写，针对 checklist 的某一个模块进行 review，成员之间互相审阅提交的编码，学习好的编码方式、探讨不好的编码的理由。
 
 针对某几个模块 review，提出问题，然后再分配进行修改。1. review
- 2. 熟悉模块功能。
-  
+
+2.  熟悉模块功能。
+
 ## 代码风格
 
 - ESLINT + Prettier
@@ -17,13 +18,48 @@
 
 - 变量名需要能够表明其含义，以小写字母开头，使用驼峰式命名法。
 - 函数名也是一样，但是函数名应该以大写字母开头，这样便于和变量名区分开来。
-  
+  s
+
+### CSS 类名采用横线命名规范
+
+推荐：
+
+```css
+.block {
+}
+.block-element {
+}
+.block-element.modifier {
+}
+```
+
+应用：
+
+```css
+.ivu-form {
+}
+.ivu-form-item {
+}
+.ivu-form-item.active {
+}
+.ivu-form-item-label {
+}
+.ivu-form-item-content {
+}
+```
+
+一般不超过四级，超过 4 级后，到第 5 级时，起步。
+
+```css
+.ivu-xxxx第5级
+```
+
 ### JS 命名规范
 
 #### 采用 Camel Case 小驼峰式命名
 
 ```js
-studentInfo
+studentInfo;
 ```
 
 #### 针对常量，采用全大写+下划线形式
@@ -40,8 +76,8 @@ const TIMES = 10;
 const Car = {
   make: "Honda",
   model: "Accord",
-  color: "Blue"
-}
+  color: "Blue",
+};
 ```
 
 不推荐：
@@ -50,8 +86,8 @@ const Car = {
 const Car = {
   carMake: "Honda",
   carModel: "Accord",
-  carColor: "Blue"
-}
+  carColor: "Blue",
+};
 ```
 
 应用：
@@ -59,46 +95,26 @@ const Car = {
 ```js
 const formModalStatus = {
   add: false,
-  edit: false
-}
-```
-
-### CSS 类名采用横线命名规范
-
-推荐：
-
-```css
-.block {}
-.block-element {}
-.block-element.modifier {}
-```
-
-应用：
-
-```css
-.ivu-form {}
-.ivu-form-item {}
-.ivu-form-item.active {}
-.ivu-form-item-label {}
-.ivu-form-item-content {}
+  edit: false,
+};
 ```
 
 ### Vue 命名规范
 
 - 组件名采用大写字母开头的驼峰式命名
 
-### 命名符号语义化
+### 命名符合语义化
 
 命名需要符合语义化，如果`函数命名`，可以采用加上动词前缀：
 
-|动词|含义|
-|--|--|
-|can| 判断是否可执行某个动作|
-|has| 判断是否含有某个值|
-|is| 判断是否为某个值|
-|get| 获取某个值|
-|set| 设置某个值|
-|set| 设置某个值|
+| 动词 | 含义                   |
+| ---- | ---------------------- |
+| can  | 判断是否可执行某个动作 |
+| has  | 判断是否含有某个值     |
+| is   | 判断是否为某个值       |
+| get  | 获取某个值             |
+| set  | 设置某个值             |
+| set  | 设置某个值             |
 
 推荐：
 
@@ -113,7 +129,7 @@ function getName() {
   return this.name;
 }
 ```
-  
+
 ## JS 推荐写法
 
 ### 每个常量都需命名
@@ -124,15 +140,114 @@ function getName() {
 
 ```js
 const COL_NUM = 10;
-let row = Math.ceil(num/COL_NUM);
+let row = Math.ceil(num / COL_NUM);
 ```
 
 不推荐：
+
 ```js
-let row = Math.ceil(num/10);
+let row = Math.ceil(num / 10);
 ```
 
-### 推荐使用
+对于多个状态的常量，抽离成一个对象进行枚举。
+
+```js
+const templateType = {
+  extend: 0,
+  system: 1,
+};
+```
+
+### 推荐使用字面量
+
+创建对象和数组推荐使用字面量，因为这不仅是性能最优（[js 为什么说对象字面量赋值比 new Object()高效？](https://www.jianshu.com/p/2abed1d35e38)）也有助于节省代码量。
+
+good
+```js
+let obj = {
+  name: "tom",
+  age: 15,
+  sex: '男'
+}
+```
+
+不推荐：
+
+```js
+let obj = {};
+obj.name = "tom";
+obj.age = 15;
+obj.sex = "男"
+```
+
+### 对象设置默认属性的推荐写法
+
+推荐1:
+```js
+const menuConfig = {
+  title: "Order",
+  // User did not include 'body' key
+  buttonText: "Send",
+  cancellable: true
+}
+
+function createMenu(config) {
+  config = Object.assign(
+    {
+      title: "Foo",
+      body: "Bar",
+      buttonText: "Baz",
+      cancellable: true
+    },
+    config
+  );
+  // config now equals: {title: "Order", body: "Bar", buttonText: "Send", cancelable}
+}
+createMenu(menuConfig);
+```
+
+推荐2：
+```js
+const menuConfig = {
+  title: "Order",
+  // User did not include 'body' key
+  buttonText: "Send",
+  cancellable: true
+}
+
+function createMenu({title = "Foo", body = "Bar",   buttonText: "Baz", cancellable = true}) {
+  // config now equals: {title: "Order", body: "Bar", buttonText: "Send", cancelable}
+}
+createMenu(menuConfig);
+```
+推荐1和推荐2都是把默认属性内置到函数里面，这样这个函数就不会受到外部状态的影响，由参数决定。
+
+不推荐：
+
+```js
+const menuConfig = {
+  title: null,
+  body: "Bar",
+  buttonText: null,
+  cancellable: true
+}
+
+function createMenu(config) {
+  config.title = config.title || "Foo";
+  config.body = config.body || "Bar";
+  config.buttonText = config.buttonText || "Baz";
+  config.cancellable = config.cancellable !== undefined ? config.cancellable : true;
+}
+createMenu(menuConfig);
+```
+
+### 遍历
+
+![](../.vuepress/public/images/2020-05-13-10-51-270-js-coder-review-1.png)
+
+1. 使用 map。
+2. 临时数组
+3.
 
 ### 函数参数写法
 
@@ -177,7 +292,7 @@ let row = Math.ceil(num/10);
 
 ## 其他
 
-- [ES6规范](../lint/es6.md)
+- [ES6 规范](../lint/es6.md)
 - [VUE 规范](../lint/vue.md)
 
 ### 尽量不手动操作 DOM
