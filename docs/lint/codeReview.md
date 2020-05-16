@@ -156,19 +156,46 @@ const templateType = {
   extend: 0,
   system: 1,
 };
+
+const templates = {
+  [this.templateType.extend]: "",
+  [this.templateType.system]: ""
+}
 ```
+
+<!-- 表格下拉框选项数据，可以集中管理，模块化 -->
+<!-- ```js
+  // 枚举类型匹配
+  private enumModuleOptionField = {
+    required: "必填",
+    filedValueFillWay: "模板填写方式",
+    filedType: "模板字段类型"
+  };
+
+  // 选择类型
+  private moduleOptions = {
+    [this.enumModuleOptionField.required]: [
+      { name: "是", code: true, id: 1 },
+      { name: "否", code: false, id: 0 }
+    ],
+    [this.enumModuleOptionField.filedType]: [],
+    [this.enumModuleOptionField.filedValueFillWay]: []
+  };
+``` -->
+
 
 ### 推荐使用字面量
 
 创建对象和数组推荐使用字面量，因为这不仅是性能最优（[js 为什么说对象字面量赋值比 new Object()高效？](https://www.jianshu.com/p/2abed1d35e38)）也有助于节省代码量。
 
 good
+
 ```js
 let obj = {
   name: "tom",
   age: 15,
-  sex: '男'
-}
+  sex: "男",
+};
 ```
 
 不推荐：
@@ -177,19 +204,20 @@ let obj = {
 let obj = {};
 obj.name = "tom";
 obj.age = 15;
-obj.sex = "男"
+obj.sex = "男";
 ```
 
 ### 对象设置默认属性的推荐写法
 
-推荐1:
+推荐 1:
+
 ```js
 const menuConfig = {
   title: "Order",
   // User did not include 'body' key
   buttonText: "Send",
-  cancellable: true
-}
+  cancellable: true,
+};
 
 function createMenu(config) {
   config = Object.assign(
@@ -197,7 +225,7 @@ function createMenu(config) {
       title: "Foo",
       body: "Bar",
       buttonText: "Baz",
-      cancellable: true
+      cancellable: true,
     },
     config
   );
@@ -206,7 +234,8 @@ function createMenu(config) {
 createMenu(menuConfig);
 ```
 
-推荐2：
+推荐 2：
+
 ```js
 const menuConfig = {
   title: "Order",
@@ -220,7 +249,8 @@ function createMenu({title = "Foo", body = "Bar",   buttonText: "Baz", cancellab
 }
 createMenu(menuConfig);
 ```
-推荐1和推荐2都是把默认属性内置到函数里面，这样这个函数就不会受到外部状态的影响，由参数决定。
+
+推荐 1 和推荐 2 都是把默认属性内置到函数里面，这样这个函数就不会受到外部状态的影响，由参数决定。
 
 不推荐：
 
@@ -229,14 +259,15 @@ const menuConfig = {
   title: null,
   body: "Bar",
   buttonText: null,
-  cancellable: true
-}
+  cancellable: true,
+};
 
 function createMenu(config) {
   config.title = config.title || "Foo";
   config.body = config.body || "Bar";
   config.buttonText = config.buttonText || "Baz";
-  config.cancellable = config.cancellable !== undefined ? config.cancellable : true;
+  config.cancellable =
+    config.cancellable !== undefined ? config.cancellable : true;
 }
 createMenu(menuConfig);
 ```
@@ -247,7 +278,18 @@ createMenu(menuConfig);
 
 1. 使用 map。
 2. 临时数组
-3.
+
+
+### 相同功能的业务逻辑放在一块
+
+```js
+// 元数据
+// del
+// add
+// edit
+// 字典
+
+```
 
 ### 函数参数写法
 
@@ -260,6 +302,28 @@ createMenu(menuConfig);
 举个例子，策略模式
 
 ## Vue
+
+### 使用动态组件代替 v-if 渲染
+
+推荐：
+```html
+```
+
+不推荐：
+```html
+<div class="ysjgl-body">
+  <transition enter-active-class="fadeIn">
+    <div class="tab-box" v-if="activeTab === '元数据'">
+      <YSJ></YSJ>
+    </div>
+  </transition>
+  <transition enter-active-class="fadeIn">
+    <div class="tab-box" v-if="activeTab === '字典表'">
+      <dictionary-table></dictionary-table>
+    </div>
+  </transition>
+</div>
+```
 
 ## TS
 

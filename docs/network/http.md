@@ -191,6 +191,10 @@ saveAs(blob, filename);
 
 - [Vuejs 之 axios 获取 Http 响应头](https://segmentfault.com/a/1190000009125333)
 
+### 常见状态码
+
+301，搜索引擎可以根据 301 更改失效的路径。
+
 ## 参考资料
 
 - [HTTP 请求方法详解](https://juejin.im/entry/5b004085f265da0b886daf7c)

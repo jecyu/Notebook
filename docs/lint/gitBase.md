@@ -36,6 +36,8 @@ git 版本最重要的功能之一就是回退版本了。
 
 ![rebase](../.vuepress/public/images/2020-04-30-16-18-03-rebase.png)
 
+### 合并操作
+
 ### 设置大小写不敏感
 
 ```bash
@@ -919,3 +921,8 @@ git push -f <remote-name> <branch-name>
 ```
 
 **[⬆ 返回顶部](#)**
+
+## 参考资料
+
+- [小姐姐用动图展示 10 个 Git 命令](https://mp.weixin.qq.com/s/cSaTdFfrc_u7YPmgFdYdAQ)
+- [learnGitBranching](https://github.com/pcottle/learnGitBranching) 一个 git 交互沙箱，可以让你直观看到 git 背后做了什么。

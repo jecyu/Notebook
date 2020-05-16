@@ -158,7 +158,7 @@ Java 因为 JVM 运行效率高，原因是 Java 将代码编译成一种`“字
 
 安装完 JDK 后， 需要设置一个 `JAVA_HOME` 的环境变量，它指向 JDK 的安装目录。把 `JAVA_HOME` 的 `bin` 目录添加到系统的 `PATH` 中是为了在任意文件夹下都可以运行 `java`。
 
-在 Mac 下，它在 `~/.bash_profile` 或 `~/.zprofile` 里，下面的命令设置默认的 `JAVA_HOME` 指向 14，并写入到  `~/.bash_profile` 文件中（这个文件是 Shell 配置文件，也可以看到其他程序的配置，如 vscode）
+在 Mac 下，它在 `~/.bash_profile` 或 `~/.zprofile` 里，下面的命令设置默认的 `JAVA_HOME` 指向 `14`，并写入到  `~/.bash_profile` 文件中（这个文件是 Shell 配置文件，也可以看到其他程序的配置，如 vscode）
 
 ```bash
 echo 'export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-14.0.1.jdk/Contents/Home"' >> ~/.bash_profile 
@@ -233,17 +233,165 @@ jenv global xxxx # jenv global 将会设置一个全局默认的 JDK 版本，�
 #### JDK
 
 在 `JAVA_HOME` 指向 JDK 的 `bin` 目录下可以周到很多可执行文件：
-- java：这个可执行程序其实就是 JVM，运行 Java 程序，就是启动 JVM ，然后让 JVM 执行指定的编译后的代码；
-- javac：这是 Java 的编译器，它用于把 Java 源码文件（以 `.java` 后缀结尾）编译为 Java 字节码文件（以 `.class`后缀结尾）；
-- jar：用于把一组 `.class` 文件打包成一个 `.jar` 文件，便于发布；
-- javadoc：用于从 Java 源码中自动提取注释并生成文档；
-- jdb：Java 调试器，用于开发阶段的运行调试。
+- **java**：这个可执行程序其实就是 JVM，运行 Java 程序，就是启动 JVM ，然后让 JVM 执行指定的编译后的代码；
+- **javac**：这是 Java 的编译器，它用于把 Java 源码文件（以 `.java` 后缀结尾）编译为 Java 字节码文件（以 `.class`后缀结尾）；
+- **jar**：用于把一组 `.class` 文件打包成一个 `.jar` 文件，便于发布；
+- **javadoc**：用于从 Java 源码中自动提取注释并生成文档；
+- **jdb**：Java 调试器，用于开发阶段的运行调试。
 
 ### 第一个 Java 程序
 
+```java
+public class Hello {
+  public static void main(String[] args) {
+    System.out.println("Hello, word!");
+  }
+}
+```
+
+在一个 Java 程序中，你总能找到一个类似：
+
+```java
+public class Hello {
+  ...
+}
+```
+
+的定义，这个定义被称为 class(类)，这里的类名是 `Hello`，大小写敏感，`class` 用来定义一个类，`public` 表示这个类是公开的，`public`、`class` 都是 Java 的关键字，必须小写，`Hello` 是类的名字，按照习惯，首字母 `H` 要大写。而花括号 `{}` 中间则是类的定义。
+
+注意到类的定义中，我们定义了一个名为 `main` 的方法：
+
+```java
+public static void main(String[] args) {
+  ...
+}
+```
+
+方法是可执行的代码块，一个方法除了`main`，还有用 `()` 括起来的方法参数参数类型是 `String[]`，参数名是 `args`，`public`，`static` 用来修饰方法，这里表示它是一个公开的静态方法，`void` 是方法的返回类型，而花括号 `{}` 中间的就是方法的代码。
+
+方法的代码每一行用 `;` 结束，这里只有一行代码，就是
+```java
+System.out.println("Hello, world!");
+```
+
+<u>Java 规定，某个类定义的 `public static void main(String[] args)` Java 程序的固定入口方法，因此，Java 程序总是从 `main` 方法执行的。</u>
+
+注意到 Java 源码的缩进不是必须的，但是用缩进后，格式好看，很容易看出代码块的开始和结束，缩进一般是 4 个空格或者一个 tab。（生产环境下，则经过压缩，去掉不必要的空白符。）
+
+最后，<u>当我们把代码保存为文件时，文件名必须时 `Hello.java`，而且文件名也要注意大小写，因为要和我们定义的类名 `Hello` 完全保持一致。</u>
+
+#### 如何运行 Java 程序 
+
+Java 源码本质上是一个文本文件，我们需要先用 `javac` 把 `Hello.java` 编译成字节码文件 `Hello.class` ，然后，用 `java` 命令执行这个字节码文件：
+
+```bash
+┌──────────────────┐
+│    Hello.java    │<─── source code
+└──────────────────┘
+          │ compile
+          ▼
+┌──────────────────┐
+│   Hello.class    │<─── byte code
+└──────────────────┘
+          │ execute
+          ▼
+┌──────────────────┐
+│    Run on JVM    │
+└──────────────────┘
+```
+
+因此，可执行文件 `javac` 是编译器，而可执行文件 `java` 就是虚拟机。
+
+第一步，在保存呢 `Hello.java` 的目录下执行命令：
+
+```bash
+$ javac Hello.java
+```
+
+如果源代码无误，上述命令不会有任何输出，而当前目录下会产生一个 `Hello.class` 文件：
+
+```bash
+$ ls 
+Hello.class Hello.java
+```
+
+第二步：执行 `Hello.class`，使用命令：
+```
+$ java Hello
+Hello, world!
+```
+
+<u>注意：给虚拟机传递的参数 `Hello` 是我们定义的类名，虚拟机自动查找对应的 class 文件并执行。</u>
+
+另外，直接运行 `java Hello.java` 也是可以的：
+
+```bash
+$ java Hello.java
+Hello, world!
+```
+
+这是 Java 11 新增的一个功能，它可以直接运行一个单文件源码！
+
+<u>需要注意的是，在实际项目中，单个不依赖第三方库的 Java 源码是非常罕见的，所以，绝不大多数情况下，我们无法直接运行一个 Java 源码文件，原因是它需要依赖其他的库。</u>
+
+（备注：TODO，怎么运行，需要用例子来证明。）
+
+打包 `jar` 文件命令：
+```bash
+$ jar cvf test.jar Hello.class 
+```
+<!-- 第三库是打包成 `.class` 的 jar 包，因此可以使用命令行这样
+```bash
+// 同一目录
+```
+```
+$ java -classpath xxxx.jar 
+// 不同目录
+$ java 
+``` -->
+
+如果要利用原始的 javac 编译整个 Java 项目，可以看这篇文章利用脚本批量编译。[利用原始的javac编译整个Java项目](https://zhuanlan.zhihu.com/p/29345229)，这也是有应用场景的，当你要部署的主机上没有任何软件。
+
+（Java 中的 package 和 import，跟 C# 的 namespace 和 using 类似？后续研究）
+
+#### 小结
+
+- 一个 Java 源码只能定义一个 `public` 类型的 class，并且 class 名称和文件名要完全一致；
+- 使用 `javac` 可以 `.java` 源码编译成 `.class` 字节码；
+- 使用 `java` 可以运行一个已编译的 Java 程序，参数是类名。
+
 ### 使用 IDE
 
-### 使用 IED
+IDE 是集成开发环境：Integrated Development Environment 的缩写。
+
+使用 IDE 的好处在于，<u>可以把编写代码、组织项目、编译、运行、调试等放到一个环境中运行，能极大地提高开发效率。</u>
+
+IDE 提升开发效率主要靠以下几点：
+- 编辑器的自动提示，可以大大提高敲代码的速度；
+- 代码修改后可以自动重新编译，并直接运行；
+- 可以方便地进行断点调试。
+
+目前，流行的用于 Java 开发的 IDE 有：
+
+**Eclipse**
+
+Eclipse 是由 IBM 开发并捐赠给开源社区的一个 IDE，也是目前应用最广泛的 IDE。Eclipse 的特点是它本身是 Java 开发的，并且基于插件结构，即是对 Java 开发的支持也是通过插件 `JDT` 实现的。
+
+**IntelliJ Idea**
+
+**NetBeans**
+
+[Eclipse](Eclipse) 是由 JetBrains 公司开发的一个功能强大的 IDE
+
+#### 使用 Eclipse
+
+#### 安装 Eclipse
+
+![](../.vuepress/public/images/2020-05-16-16-33-22-eclipse-jre-setting.png)
+
+上图是 eclipse 添加安装到主机上的 jre ，供 eclipse 环境选择。IDE 工具并不是说编译、运行的 JRE 环境都安装了，它只不过是把前面安装的 JDK 工具引用集成到工具中，便于开发。（例如 visual studio code 运行 node 程序，也要先在电脑上安装了 Node.js 的编译运行环境。）
+
+### 使用 IDE 练习插件
 
 ## 类与对象
 
@@ -295,3 +443,5 @@ jenv global xxxx # jenv global 将会设置一个全局默认的 JDK 版本，�
 - [如何设置或更改 PATH 系统变量？](https://www.java.com/zh_CN/download/help/path.xml)
 - [Mac 上管理多个 java 版本](https://segmentfault.com/a/1190000004332179)jenv 是一个命令行工具，可以在 Linux/OS X 平台使用，可以管理多个版本 JDK，方便在多个版本 JDK 之间切换，另外其还可以设置 JAVA_HOME 环境变量。
 - [Java 又双叒叕发布新版本，这么多版本如何灵活管理？](http://www.justdojava.com/2019/11/20/jenv/)
+- [JAVA-包package、import使用](https://www.cnblogs.com/lifexy/p/10855188.html)
+- [Java 包(package)](https://www.runoob.com/java/java-package.html)

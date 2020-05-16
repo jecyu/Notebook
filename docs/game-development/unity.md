@@ -57,7 +57,7 @@ Apple Pcker Prototyp
 
 ### Transform
 
-`Transform` 可以说是每个游戏对象上必备的组件，主要有两个作用：一个是控制游戏对象的位置、旋转和缩放，**第二个是管理游戏对象间的父子关系。**所以说 Transform 并不止是在 Unity Inspector 上看到的仅仅三个属性：position、rotation、Scale。
+`Transform` 可以说是每个游戏对象上必备的组件，主要有两个作用：一个是控制游戏对象的位置、旋转和缩放，<u>第二个是管理游戏对象间的父子关系。</u>Transform 并不止是在 Unity Inspector 上看到的仅仅三个属性：position、rotation、Scale。
 
 打开 Unity 创建一个 Cube 物体，然后给 Cube 物体添加一个脚本,新建的 cube 可能不在原点，这时可以选中 Cube 物体，然后在 Inspector 面板中找到 Transform 属性，右键点击 Transform，可以弹出下面的对话框，点击 reset 就可设置 Cube 物体到原点了。
 
@@ -125,6 +125,22 @@ public class Test: MonoBehaviour {
 ```cs
 foreach（Transform t in transform）｛  ｝
 ```
+
+### （Bounds）边界框
+
+渲染器和碰撞器都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是<u>由一个中心点（center）和一个尺寸男（size）定义的，二者均为`三维向量类型`。</u>如图所示是二维图解，但在 Unity 中 z 方向上原理相同。
+
+![unity-bounnds](../.vuepress/public/images/2020-05-14-21-37-09-unity-bounnds.png)
+
+```cs
+Bounds Bnd = new Bounds(new Vector3(3, 4, 0), new Vector3(16, 16, 0));
+```
+
+#### 将 Hero 限制在屏幕内
+
+#### 查找镜头范围的边界框
+
+#### 测试两个边界框是否交叠并作出响应
 
 ### 用户输入
 
@@ -294,7 +310,7 @@ if (Input.GetMouseButtonUp(0))
 
 我们把这种程序叫做 `Shaders`。`Shading` 是始终如一的终极目标，那么应该就能明白为什么实现这个目标的程序叫做 Shaders 了。
 
-它实际上是一个程序片段、一系列的命令，可以将三维 Mesh（网格）以指定方式完成与颜色、贴图等组合，完成复杂的计算输出（渲染器可读取的点和颜色的对应关系），会对屏幕上的每个像素同时下达命令。也就是说，代码必须根据像素在屏幕上的不同位置执行不同的操作。就像活字印刷，你的程序就像一个 funciton（函数），输入位置信息，输出颜色信息，当它编译完之后会以相当快的速度运行。
+<u>它实际上是一个程序片段、一系列的命令，可以将三维 Mesh（网格）以指定方式完成与颜色、贴图等组合，完成复杂的计算输出（渲染器可读取的点和颜色的对应关系），会对屏幕上的每个像素同时下达命令。</u>也就是说，代码必须根据像素在屏幕上的不同位置执行不同的操作。就像活字印刷，你的程序就像一个 funciton（函数），输入位置信息，输出颜色信息，当它编译完之后会以相当快的速度运行。
 
 #### 在 Unity 中的使用
 
