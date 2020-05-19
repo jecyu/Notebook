@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>创建用于展示动画的 DOM 元素</title>
+    <style>
+      #box1 {
+        width: 100px;
+        height: 100px;
+        background: red;
+      }
+      #box2 {
+        width: 100px;
+        height: 100px;
+        background: yellow;
+      }
+      .container {
+        height: 400px;
+        width: 400px;
+        background: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="box1">First Box</div>
+      <div id="box2">Second Box</div>
+    </div>
+    <script>
+      function animateIt(elementId) {
+        debugger
+        var elem = document.getElementById(elementId);
+        var tick = 0; // 创建一个计时器用于记录动画执行的次数
+        var timer = setInterval(function() {
+          // 创建并启动一个 JavaScript 内置的计时器，传入一个回调函数
+          if (tick < 100) {
+            // 每隔10毫秒调用一次计时器的回调函数，调整元素的位置 100 次
+            elem.style.left = elem.style.top = tick + "px";
+            tick++;
+          } else {
+            clearInterval(timer);
+            // 执行了 100 次之后，停止计时器，并验证我们还可以看到与执行动画有关的变量
+            console.log(
+              "tick === 100, Tick accessed via a closure",
+              tick === 100
+            );
+            console.log("Element also accessed via a closure.", elem);
+            console.log("Timer reference also obtained via a closure.", timer);
+          }
+        }, 10);
+      }
+      animateIt("box1");
+      animateIt("box2");
+    </script>
+  </body>
+</html>

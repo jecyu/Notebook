@@ -36,11 +36,11 @@ Java语言使用 Java 虚拟机屏蔽了与具体平台相关的信息，使得J
 └───────────────────────────┘
 ```
 
-简单来说，Java SE 就是标准版，包含标准的 JVM 和标准库，而 Java EE 是企业版，它只是 Java SE 的基础啥昂加上了大量的 API 和库，以便方便开发 Web 应用、数据库、消息服务等，Java EE 的应用使用的虚拟机和 Java SE 完全相同。
+简单来说，`Java SE` 就是标准版，包含标准的 JVM 和标准库，而 `Java E`E 是企业版，它只是 Java SE 的<u>基础上加上了大量的 API 和库</u>，以便方便开发 Web 应用、数据库、消息服务等，Java EE 的应用使用的虚拟机和 Java SE 完全相同。
 
 Java ME 和 Java SE 不同，它是一个针对嵌入式的设备的“瘦身版”，JavaSE 的标准库无法在 Java ME 上使用，<u>Java ME 的虚拟机也是“瘦身版”。</u>
 
-毫无疑问，Java SE 是整个 Java 平台，<u>而 Java EE 是进一步学习 Web 应用所必须的。我们熟悉的 Spring 等框架都是 Java EE 开源生态系统的一部分。</u>不幸的，Java ME 从来没有真正流行起来，反而是 Android 开发成为了移动平台的标准之一，因此，没有特殊需求，不建议学习 Java ME。
+毫无疑问，Java SE 是整个 Java 平台，而 Java EE 是进一步学习 Web 应用所必须的。<u>我们熟悉的 `Spring` 等框架都是 `Java EE` 开源生态系统的一部分。</u>而不幸的，Java ME 从来没有真正流行起来，反而是 Android 开发成为了移动平台的标准之一，因此，没有特殊需求，不建议学习 Java ME。
 
 因此我们推荐的 Java 学习路线图如下：
 1. 首先要学习 Java SE，掌握 `Java 语言本身`、Java `核心开发技术`以及 `Java 标准库`的使用。
@@ -95,7 +95,7 @@ Java版本
         └───────┘└───────┘└───────┘└───────┘
 ```
 
-简单说，<u>JRE 就是运行 Java 字节码的虚拟机。但是如果只有 Java 源码，要编译成 Java 字节码，就需要 `JDK`，因为 JDK 除了包含 JRE，还提供了编译器、调试器等工具。</u>
+简单说，<u>`JRE` 就是运行 Java 字节码的`虚拟机`。但是如果只有 Java 源码，要编译成 Java 字节码，就需要 `JDK`，因为 JDK 除了包含 JRE，还提供了`编译器`、`调试器`等工具。</u>
 
 要学习 Java 开发，当然需要安装 JDK 了。
 
@@ -375,21 +375,78 @@ IDE 提升开发效率主要靠以下几点：
 
 **Eclipse**
 
-Eclipse 是由 IBM 开发并捐赠给开源社区的一个 IDE，也是目前应用最广泛的 IDE。Eclipse 的特点是它本身是 Java 开发的，并且基于插件结构，即是对 Java 开发的支持也是通过插件 `JDT` 实现的。
+[Eclipse](https://www.eclipse.org/) 是由 IBM 开发并捐赠给开源社区的一个 IDE，也是目前应用最广泛的 IDE。Eclipse 的特点是它本身是 Java 开发的，并且基于插件结构，即是对 Java 开发的支持也是通过插件 `JDT` 实现的。
 
 **IntelliJ Idea**
 
+[IntelliJ Idea](https://www.jetbrains.com/idea/) 是由 JetBrains 公司开发的一个功能强大的 IDE，分为免费版和商用付费版。JetBrains 公司的 IDE 平台也是基于 IDE
+平台 + 语言插件的模式，支持 Python 开发环境、Ruby 开发环境、PHP 开发环境等，这些开发环境也分为免费版和付费版。
+
 **NetBeans**
+
+[NetBeans](https://netbeans.org/) 是最早由 SUN 开发的开源 IDE，由于使用人数较少，目前已不再流行。
 
 [Eclipse](Eclipse) 是由 JetBrains 公司开发的一个功能强大的 IDE
 
 #### 使用 Eclipse
 
+- 完全免费
+- 所有功能完全满足 Java 开发需求。
+
 #### 安装 Eclipse
+
+下载的版本是：Eclipe IDE for Java Developers：
+
+![](../.vuepress/public/images/2020-05-18-23-21-19-java-developers.png)
+
+#### 设置 Eclipse
+
+下载并安装完成后，我们启动 Eclipse，对 IDE 环境做一个基本设置：
+
+选择菜单“Eclipse” - “Preferences”，打开配置对话框：
+
+![](../.vuepress/public/images/2020-05-18-23-25-52-eclipse-setting-01.png)
+
+我们需要调整以下设置项：
+
+##### General > Editors > Text Editors
+
+钩上“Show me line numbers”，这样编辑器会显示行号；
+
+##### General > Workspace
+
+钩上“Refresh using native hooks or polling”，这样 Eclipse 会自动刷新文件夹的改动；
+
+![](../.vuepress/public/images/2020-05-18-23-30-36-eclipse-setting-02.png)
+
+对于 “Text file encoding”，如果 Default 不是 `UTF-8`，一定要改为“Ohter：UTF-8”，所有文本你文件均使用 `UTF-8` 编码；
+
+对于 “New text file line delimiter”，建议使用 Unix，即换行符使用 `\n` 而不是 Windows 的 `\r\n`。
+
+
+
+##### Java > Compiler
+
+将 “Complier compliance level” 设置为 `14`，去掉“Use default compliance settings” 并钩上“Enable preview features for Java 14”，这样我们就可以使用 Java 14 的预览功能。
 
 ![](../.vuepress/public/images/2020-05-16-16-33-22-eclipse-jre-setting.png)
 
-上图是 eclipse 添加安装到主机上的 jre ，供 eclipse 环境选择。IDE 工具并不是说编译、运行的 JRE 环境都安装了，它只不过是把前面安装的 JDK 工具引用集成到工具中，便于开发。（例如 visual studio code 运行 node 程序，也要先在电脑上安装了 Node.js 的编译运行环境。）
+上图是 eclipse 添加安装到主机上的 jre ，供 eclipse 环境选择。IDE 工具并不是说编译、运行的 `JRE` 环境都安装了，它只不过是把前面安装的 JDK 工具引用集成到工具中，便于开发。（例如 visual studio code 运行 node 程序，也要先在电脑上安装了 Node.js 的编译运行环境，v8 引擎。）
+
+然后进行Java Compile版本的设置
+
+Eclipse中 普通Java工程与 Java EE 工程 Java Compile 版本设置时是分开的。
+
+普通Java工程
+
+- Properties > Java Compiler
+
+J2EE工程
+
+- Properties -> Project Facets -> Java facet
+
+![](../.vuepress/public/images/2020-05-19-00-20-48-eclipse-setting-03.png)
+
 
 ### 使用 IDE 练习插件
 

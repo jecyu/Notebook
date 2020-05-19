@@ -55,6 +55,13 @@ Apple Pcker Prototyp
 
 ## 入门
 
+### 坐标系和坐标系转换
+
+- 世界坐标系
+- 本地坐标系
+- 屏幕坐标系
+- 视口坐标系
+
 ### Transform
 
 `Transform` 可以说是每个游戏对象上必备的组件，主要有两个作用：一个是控制游戏对象的位置、旋转和缩放，<u>第二个是管理游戏对象间的父子关系。</u>Transform 并不止是在 Unity Inspector 上看到的仅仅三个属性：position、rotation、Scale。
@@ -63,7 +70,7 @@ Apple Pcker Prototyp
 
 #### 管理游戏对象间的父子关系
 
-可以通过 transfrom 查找当前游戏对象的孩子游戏对象或者父亲游戏对象
+可以通过 `transfrom` 查找当前游戏对象的孩子游戏对象或者父亲游戏对象
 
 ```cs
 public class Test: MonoBehaviour {
@@ -128,12 +135,36 @@ foreach（Transform t in transform）｛  ｝
 
 ### （Bounds）边界框
 
-渲染器和碰撞器都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是<u>由一个中心点（center）和一个尺寸男（size）定义的，二者均为`三维向量类型`。</u>如图所示是二维图解，但在 Unity 中 z 方向上原理相同。
+`渲染器`和`碰撞器`都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是<u>由一个中心点（center）和一个尺寸（size）定义的，二者均为`三维向量类型`。</u>如图所示是二维图解，但在 Unity 中 z 方向上原理相同。
 
 ![unity-bounnds](../.vuepress/public/images/2020-05-14-21-37-09-unity-bounnds.png)
 
 ```cs
 Bounds Bnd = new Bounds(new Vector3(3, 4, 0), new Vector3(16, 16, 0));
+```
+
+```cs
+ // 接收两个 Bounds 类型变量，并返回包含这两个 Bounds 的新 Bounds
+  public static Bounds BoundsUnion(Bounds b0, Bounds b1)
+  {
+    // 如果其中一个 Bounds 的 size 为 0，则忽略它
+    if (b0.size == Vector3.zero && b1.size != Vector3.zero)
+    {
+      return b1;
+    }
+    else if (b0.size != Vector3.zero && b1.size == Vector3.zero)
+    {
+      return b0;
+    }
+    else if (b0.size == Vector3.zero && b1.size == Vector3.zero)
+    {
+      return b0;
+    }
+    // 扩展 b0，使其可以包含 b1.min 和 b1.max
+    b0.Encapsulate(b1.min);
+    b0.Encapsulate(b1.max);
+    return (b0);
+  }
 ```
 
 #### 将 Hero 限制在屏幕内
@@ -320,10 +351,6 @@ if (Input.GetMouseButtonUp(0))
 - 着色器（Shaders）：它是一段小的脚本，基于光照输入（lighting input）和材质配置，包含了数学计算和每个像素的颜色计算算法。
 - 纹理（Textures）：纹理是位图，材质可以包含对纹理的引用，这样材质的着色器可以使用纹理计算游戏对象的表面。另外，对于游戏对象的基本颜色（Albedo），纹理可以代表材质表面的许多其他方面，例如反射率和粗糙度。
 
-
-参考资料
-- [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)
-
 ### Bounds（边界框）
 
 渲染器和碰撞器都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是由一个中心点（center）和一个尺寸
@@ -380,5 +407,7 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 
 ## 参考资料
 
-- 《游戏引擎架构》深入某个方向（如渲染、动画）
-- Unity 工作一年能力应该达到什么水平？
+<!-- - 《游戏引擎架构》深入某个方向（如渲染、动画） -->
+<!-- - [Unity 工作一年能力应该达到什么水平？]() -->
+- [坐标系和坐标系转换](https://zhuanlan.zhihu.com/p/43348414)、
+- [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)

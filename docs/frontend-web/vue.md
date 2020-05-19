@@ -6,7 +6,7 @@
 
 ## 基础
 
-## 计算属性
+### 计算属性
 
 计算属性默认只有 getter，不过在需要时你也可以提供一个 setter：
 
@@ -248,6 +248,7 @@ export default {
 下面对 view-ui table 的二次封装
 
 外部 Parent.vue 组件
+
 ```html
 <template>
   <div class="EdTableDemo">
@@ -272,9 +273,10 @@ export default {
 ```
 
 这是二次封装的 EdTable.vue 组件
+
 ```html
 <template>
-  <Table
+  <table
     ref="table"
     v-bind="$attrs"
     v-on="$listeners"
@@ -287,17 +289,17 @@ export default {
     <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
       <slot :name="slot" v-bind="scope"></slot>
     </template>
-  </Table>
+  </table>
 </template>
 ```
 
-
 关键代码分析：
+
 1. 通过 `$scopedSlots` 动态读取 `Table.vue` 传递过来的 prop 对象。`v-slot:[slot]="scope"`，`scope` 即是对应 `slot` 绑定的 `prop` 值。
 2. 然后再使用 `<slot :name="slot" v-bind="scope"></slot>`动态创建 slot 给外面的 `Parent.vue` 使用，从而达到桥接的作用。
-3. 这里的 `v-for="(_, slot) of $scopedSlots"` 下滑线 `_` 代表什么？一个vnode 函数，slot 代表 name。
+3. 这里的 `v-for="(_, slot) of $scopedSlots"` 下滑线 `_` 代表什么？一个 vnode 函数，slot 代表 name。
 4. `v-slot:[]`。从 2.6.0 开始，可以用方括号括起来的 JavaScript 表达式作为一个指令的参数：
-  
+
 ```html
 <!-- 绑定动态插槽名 slot 值为 scope，例如 slot 为 name，则 v-slot:name="scope" -->
 <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
@@ -307,9 +309,10 @@ export default {
 ```
 
 补充：
+
 - `$scopedSlots`：用来访问作用域插槽。对于包括 默认 slot 在内的每一个插槽，该对象都包含一个返回相应 `VNode 的函数`。
 - `$slots`：用来访问被插槽分发的内容。每个具名插槽有其相应的属性 (例如：`v-slot:foo` 中的内容将会在 `vm.$slots.foo` 中被找到)。`default` 属性包括了所有没有被包含在具名插槽中的节点，或 `v-slot:default` 的内容。返回 VNode。
-  
+
 ```html
 <!-- vm.$scopedSlots -->
 <template slot-scope="{ row }" slot="name">
@@ -317,13 +320,12 @@ export default {
 </template>
 
 <!-- vm.$slots -->
-<template slot="name"> 
+<template slot="name">
   <span class="jg-name">{{ name }}</span>
 </template>
 ```
 
 进一步阅读：源码、理解函数。
-
 
 #### 如何设计一个同时支持具名插槽和默认插槽的 vue 组件
 
@@ -391,37 +393,113 @@ computed: {
 
 ### 组件
 
+#### 动态组件
+
+- v-show
+- v-if
+- is
+- keep-alive
+
+##### is
+
+is 可以接受一个组件实例或组件的选项对象。
+
+Before：
+
+```html
+<div class="ysjgl-body">
+  <transition enter-active-class="fadeIn">
+    <div class="tab-box" v-if="activeTab === '元数据'">
+      <YSJ></YSJ>
+    </div>
+  </transition>
+  <transition enter-active-class="fadeIn">
+    <div class="tab-box" v-if="activeTab === '字典表'">
+      <dictionary-table></dictionary-table>
+    </div>
+  </transition>
+</div>
+```
+
+After：
+
+```html
+<transition enter-active-class="fadeIn">
+  <component v-bind:is="currentTabComponent"></component>
+</transition>
+
+<script lang="ts">
+private tabsNav = [
+ {
+   label: "元数据",
+   value: YSJ
+ },
+ {
+   label: "字典表",
+   value: DictionaryTable
+ }
+];
+
+get currentTabComponent() {
+ const tab: any = this.tabsNav.find(
+   (item: any) => this.activeTab === item.label
+ );
+ return tab.value;
+}
+<script>
+```
+
+##### keep-alive
+
+`<keep-alive>` 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。
+
+```html
+<transition enter-active-class="fadeIn">
+  <keep-alive>
+    <component :is="currentTabComponent"></component>
+  </keep-alive>
+</transition>
+```
+
+注意，`<keep-alive>` 是用在其一个直属的子组件被开关的情形，要求同时只有一个子元素被渲染，如果在 `v-for` 中则不会工具。
+
+> 注意这个 `<keep-alive>` 要求被切换到的组件都有自己的名字，不论是通过组件的 name 选项还是局部/全局注册。
+
+为什么不使用 `v-show` 来切换呢，`v-show` 会第一时间加载两个组件，两个组件的生命周期都会触发，会造成不必要的性能浪费。
+
+使用 `v-if` 的缺点是，随着分支的增多，html template 模版很难维护（v-show 也是一样），其次是 `v-if` 的话，每次切换都会条件都会重新挂载一次，如果不需要重新渲染的需要（例如需要同步 tab 之间的数据），会造成性能的浪费，除非使用 keep-alive。
+
 #### 自定义事件
 
 封装一个下拉树中，由于 ViewUI 提供的 `on-click` 接口只能在点击 icon 才能触发，因此不符合点击 input 框也能展开或关闭下拉菜单的条件。
 
-一开始想着只能写原生input 标签，然后进行绑定，但是需要把整个 ViewUI 的样式拷贝过来还要处理 icon，不理想。
+一开始想着只能写原生 input 标签，然后进行绑定，但是需要把整个 ViewUI 的样式拷贝过来还要处理 icon，不理想。
 
 好在 Vue 提供了 native 修饰符，这样就很方便地对组件的根标签进行 click 的监听了。
-```html
-   <Dropdown
-      transfer
-      trigger="custom"
-      style="width: 100%;"
-      :visible="selectVisible"
-    >
-      <Input
-        v-model="selectedName"
-        readonly
-        placeholder="请选择档案类型"
-        :icon="iconInput"
-        @click.stop.native="HandleClickInput"
-      />
-      <DropdownMenu
-        slot="list"
-        :style="dropDownStyle"
-        v-clickoutside="onClickOutSide"
-      >
-        <Tree v-bind="$attrs" v-on="$listeners" @h></Tree>
-      </DropdownMenu>
-    </Dropdown>
-```
 
+```html
+<Dropdown
+  transfer
+  trigger="custom"
+  style="width: 100%;"
+  :visible="selectVisible"
+>
+  <input
+    v-model="selectedName"
+    readonly
+    placeholder="请选择档案类型"
+    :icon="iconInput"
+    @click.stop.native="HandleClickInput"
+  />
+  <DropdownMenu
+    slot="list"
+    :style="dropDownStyle"
+    v-clickoutside="onClickOutSide"
+  >
+    <Tree v-bind="$attrs" v-on="$listeners" @h></Tree>
+  </DropdownMenu>
+</Dropdown>
+```
 
 ### 自定义指令
 
@@ -439,7 +517,7 @@ computed: {
 vm.$router.options.routes;
 ```
 
-#### 路由传参 
+#### 路由传参
 
 路由传参 vs vuex
 
@@ -644,7 +722,7 @@ Vue 1.0 api，Vue 2.0 已经废弃。
 
 ### this.$child & this.$parent
 
-如果不需要调用 this.$parent 太多的东西，仅仅是使用父组件的函数，那么也可以通过 prop 传递一个函数进来。
+如果不需要调用 this.\$parent 太多的东西，仅仅是使用父组件的函数，那么也可以通过 prop 传递一个函数进来。
 
 ## 框架原理
 
@@ -859,6 +937,7 @@ export function defineReactive(
 ![](../.vuepress/public/images/vue-reactiveObj-defineReactive.png)
 
 在游戏中 C# 中的编写，也利用了 getter 和 setter 来处理一些事情：
+
 ```cs
   public float shieldLevel
   {
@@ -1807,3 +1886,4 @@ handleClick(name) {
 - [Vue.js 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/prepare/)
 - [vue - how to pass down slots inside wrapper component?
   ](https://stackoverflow.com/questions/50891858/vue-how-to-pass-down-slots-inside-wrapper-component)
+- [vue动态组件和异步组件相关](https://juejin.im/post/5c863924e51d4561a0778dd5)

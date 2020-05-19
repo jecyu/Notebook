@@ -159,8 +159,8 @@ const templateType = {
 
 const templates = {
   [this.templateType.extend]: "",
-  [this.templateType.system]: ""
-}
+  [this.templateType.system]: "",
+};
 ```
 
 <!-- 表格下拉框选项数据，可以集中管理，模块化 -->
@@ -182,7 +182,6 @@ const templates = {
     [this.enumModuleOptionField.filedValueFillWay]: []
   };
 ``` -->
-
 
 ### 推荐使用字面量
 
@@ -279,7 +278,6 @@ createMenu(menuConfig);
 1. 使用 map。
 2. 临时数组
 
-
 ### 相同功能的业务逻辑放在一块
 
 ```js
@@ -288,28 +286,214 @@ createMenu(menuConfig);
 // add
 // edit
 // 字典
-
 ```
 
 ### 函数参数写法
 
-函数参数越少越好，如果参数超过两个，要使用 `ES6` 的解构语法
+函数参数越少越好，如果参数超过两个，要使用 `ES6` 的解构语法，不用考虑参数的顺序。
+
+推荐：
+
+```js
+function createMenu({ title, body, buttonText, cancellable }) {
+  // ...
+}
+
+createMenu({
+  title: "Foo",
+  body: "Bar",
+  buttonText: "Baz",
+  cancellable: true,
+});
+```
+
+### 使用函数默认值
+
+使用参数默认值替代使用条件语句进行赋值。
+
+推荐：
+
+```js
+function createMicrobrewery(name = "Hipster Brew Co.") {
+  //...
+}
+```
+
+不推荐：
+
+```js
+function createMicrobrewery(name) {
+  const breweryName = name || "Hipster Brew Co.";
+}
+```
+
+### 最小函数准则
+
+避免函数过长，可以把函数拆分为更小的函数。可以遵循这样的原则：每当感觉需要以注释来说明点什么的时候，我们就把需要说明的东西写进一个独立函数中，并以其用途（而非实现手法）命名。<u>关键不在于函数的长度，而在于函数“做什么”和“如何做”之间的语义距离。</u>
+
+Before:
+
+```java
+void printOwing(double amount) {
+  printBanner();
+
+  // print details
+  System.out.println("name: " + _name);
+  System.out.println("amount: " + _amount);
+}
+```
+
+After:
+
+```java
+void printOwing(double amount) {
+  printBanner(amount); // 把参数传递过去
+}
+// 命名是什么：打印细节，而不是做什么：打印name 和 amout
+void printDetails(double amount) {
+  System.out.println("name: " + _name);
+  System.out.println("amount: " + _amount);
+}
+```
+
+除了注释，条件表达式和循环常常也是提炼的信号。
+
+<!-- ### 不要写全局方法 -->
+
+<!-- TODO -->
 
 ### 推荐函数式编程
 
+过程式的编程是把过程具体的流程描述出来，而函数式编程更多是描述性，并且不依赖外部状态的纯函数，举个例子，使用 map 是函数式编程（传入一个回调函数），而使用 for 循环则是过程式编程，需要把具体的流程编写出来。 
+
+函数式编程使用的一些技术：
+
+- 头等函数，函数可以像对象一样使用，参数传递、reture 出去、赋值、嵌套等。
+- 递归&尾递归（复用调用栈）
+- map&reduce
+- pipeline 管道
+- 柯里化
+- 高阶函数
+
+#### map&reduce
+
+推荐：
+
+```js
+const programmerOutput = [
+  {
+    name: "Uncle Bobby",
+    linesOfCode: 500
+  },
+  {
+    name: "Suzie Q",
+    linesOfCode: 1500
+  },
+  {
+    name: "Gracie Hopper",
+    linesOfCode: 1000
+  }
+]
+
+let totalOutput = programmerOutput
+  .map(output => output.lineOfCode)
+  .reduce((totalLines, lines) => totalLines + lines, 0);
+```
+
+不推荐：
+
+```js
+const programmerOutput = [
+  {
+    name: "Uncle Bobby",
+    linesOfCode: 500
+  },
+  {
+    name: "Suzie Q",
+    linesOfCode: 1500
+  },
+  {
+    name: "Gracie Hopper",
+    linesOfCode: 1000
+  }
+]
+let totalOutput = 0;
+for (let i = 0; i < programmerOutput.length; i++) {
+  totalOutput += programmerOutput[i].linesOfCode;
+};
+```
+
+应用：
+
+```ts
+/**
+* 处理进度条样式
+*/
+private ProgressStyle(row: any) {
+  const style: any = {};
+  style.left = `${row.uploadProgress - 100}%`;
+  style.height = `${this.rowHeights[row._index]}px`; // 获取行高
+  style.top = `${this.rowHeights
+    .filter((item, index) => index < row._index)
+    .reduce((item, sum) => item + sum, 0)}px`; // 过滤高度
+  return style;
+}
+
+```
+
 ### 使用多态替换条件语句
 
-举个例子，策略模式
+遵循原则：策略模式 > switch > if
 
-## Vue
+<!-- ### 时间复杂度&空间复杂度 -->
+
+### 内存泄漏
+
+- 定时器是否在不使用时清除，如 `setTimeout` 和 `setInterval`。
+- 事件监听器（addEventListener、EventBus.emit）
+
+## SCSS 推荐写法
+
+## CSS 布局
+
+- 遵循原则：flex 布局 > calc() > position: absolute
+
+<!-- 考虑 flex 中，iview table 的影响 -->
+
+## Vue 项目规范
 
 ### 使用动态组件代替 v-if 渲染
 
 推荐：
+
 ```html
+<transition enter-active-class="fadeIn">
+  <component v-bind:is="currentTabComponent"></component>
+</transition>
+
+<script lang="ts">
+private tabsNav = [
+ {
+   label: "元数据",
+   value: YSJ
+ },
+ {
+   label: "字典表",
+   value: DictionaryTable
+ }
+];
+
+get currentTabComponent() {
+ const tab: any = this.tabsNav.find(
+   (item: any) => this.activeTab === item.label
+ );
+ return tab.value;
+}
+<script>
 ```
 
 不推荐：
+
 ```html
 <div class="ysjgl-body">
   <transition enter-active-class="fadeIn">
@@ -325,9 +509,20 @@ createMenu(menuConfig);
 </div>
 ```
 
-## TS
+<!-- 为什么 iview select v-model 只接收 string | number
+ 不接受 boolean -->
 
-## 错误列表
+### 少见的控制结构
+
+#### Return 语句
+
+#### 递归调用
+
+### 异常处理
+
+## TS 项目规范
+
+<!-- ## 错误列表
 
 ### 数据引用错误
 
@@ -352,7 +547,7 @@ createMenu(menuConfig);
 - 是否判断文件结束的条件，并正确处理？
 - 对 I/O 出错情况处理是否正确？
 - 任何打印或显示的文本信息中是否存在拼写或语法错误？
-- 程序是否正确处理类似于“File Not Found” 这样的错误？
+- 程序是否正确处理类似于“File Not Found” 这样的错误？ -->
 
 ## 其他
 
@@ -365,7 +560,13 @@ createMenu(menuConfig);
 
 因为团队现在使用 `vue` 框架，所以在项目开发中尽量使用 `vue` 的特性去满足我们的需求，尽量不要手动操作 `DOM`，包括：增删改 `dom` 元素、以及更改样式、添加事件等。
 
+### 编码规范
+
+### 注释规范
+
 ## 参考资料
 
 - [前端团队代码评审 CheckList 清单](https://juejin.im/post/5d1c6550518825330a3bfa01#heading-37)
 - [如何保障前端项目的代码质量](https://juejin.im/post/5b911f306fb9a05cdb1013b9)
+- 《代码大全》
+- 《重构，改善现有的代码》

@@ -6,6 +6,49 @@
 
 ## 连接远程主机
 
+### 密钥文件
+
+[PuTTY的ppk密钥与OpenSSH密钥之间的相互转换](https://www.jianshu.com/p/7818b3ad1d72)
+
+### 连接登录
+
+通过密钥文件 `.pem`，否则可能会出现格式不正确的问题。https://hostingwiki.cn/%E8%AE%BE%E7%BD%AE%E5%85%8D%E5%AF%86%E7%A0%81ssh%E5%90%8E%E5%87%BA%E7%8E%B0key_load_public-invalid-format/
+
+```bash
+sudo ssh -i 密钥地址 user@服务器地址 -p 端口号
+```
+
+查看 tomcat 启动状态
+```bash
+ps -ef|grep java
+```
+`ps -ef|grep java` 此条命令具体含义 ps:将某个进程显示出来
+
+-A 　显示所有程序。
+
+-e 　此参数的效果和指定"A"参数相同。
+
+-f 　显示UID,PPIP,C与STIME栏位。
+
+grep命令是查找
+
+如果显示以下相似信息，说明Tomcat还没有关闭
+
+```bash
+root      7010
+
+     1  0 Apr19 ?        00:30:13 /usr/local/java/bin/java
+     ....
+     ....
+     g.apache.catalina.startup.Bootstrap start
+```
+
+如果出现以下信息，则表示Tomcat已经关闭
+
+```bash
+root      7010    1  0 Apr19 ?        00:30:30 [java]
+```
+
 ### 生成 SSH
 
 ```bash
@@ -176,3 +219,7 @@ copy命令的功能是将给出的文件或目录拷贝到另一文件或目录�
 - l 不作拷贝，只是链接文件。
 
 需要说明的是，为防止用户在不经意的情况下用cp命令破坏另一个文件，如用户指定的目标文件名已存在，用cp命令拷贝文件后，这个文件就会被新源文件覆盖，因此，建议用户在使用cp命令拷贝文件时，最好使用i选项。
+
+## 参考资料
+
+- [Linux下如何查看tomcat是否启动/系统日志等](https://blog.csdn.net/colin_yu/article/details/77853506)

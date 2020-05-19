@@ -3,7 +3,7 @@
  * 性能提升的多少，牺牲内存
  */
 (function() {
-  // answers 作为函数的属性一直存储在内存里，不会因为执行完该函数后就会清除。
+  // answers 作为函数的属性一直存储在内存里，不会因为执行完该函数后就会清，isPrime 是该自执行作用域下一直存在的局部变量
   function isPrime(value) {
     if (!isPrime.answers) {
       // 创建缓存

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="file" id="inp" />
+  <script>
+    const inp = document.getElementById('inp');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+       console.log(reader.result);
+       const bytes = new Uint8Array(reader.result); // 每位都是8位字节转换后的十进制数字
+      const length = bytes.byteLength;
+      for (var i = 0; i < length; i++) {
+        // 转为二进制
+        binary += parseInt(bytes[i]).toString(2); // 这里得出的严字，以前面根据 严的 unicode 编码得出的二进制是一致的，严的 UTF-8 二进制编码是11100100 10111000 10100101
+      }
+    }
+    inp.onchange = function(e) {
+      const file = e.target.files[0];
+      // reader.readAsText(file, 'utf-8');
+      reader.readAsBinaryString(file);
+      // reader.readAsArrayBuffer(file);
+    };
+  </script>
+</body>
+</html>

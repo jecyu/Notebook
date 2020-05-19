@@ -87,14 +87,13 @@ JS 中的函数调用
 
 我们在同一作用域中声明了变量 outerValue 及外部函数 outerFunction——本例中，是全局作用域。然后，执行外部函数。如图，<u>该函数可以“看见”并访问变量 outerValue</u>。这个便是一个简单的闭包。
 
-因为外部变量 `outerValue` 和外部函数 `outerFunction` <u>都是在全局作用域中声明的，该作用域（实际上就是 i一个闭包）从未消失（只要应用处于运行状态，这里可以 探讨为什么很多东西要 destroy）。这也不足为奇，该函数可以访问到外部变量，因为它仍然在作用域内并且是可见的。</u>
+因为外部变量 `outerValue` 和外部函数 `outerFunction` <u>都是在全局作用域中声明的，该作用域（实际上就是 i 一个闭包）从未消失（只要应用处于运行状态，这里可以 探讨为什么很多东西要 destroy）。这也不足为奇，该函数可以访问到外部变量，因为它仍然在作用域内并且是可见的。</u>
 
 ##### 回调函数
 
 这里传入 callback 函数，并访问当前 traverseTree 的作用域变量，便是形成了闭包。闭包不是在创建的那一时刻的状态的快照，而是一个真实的状态封装，只有闭包存在，就可以对变量进行修改。
 
 ```ts
-
 /**
  * @description: 遍历树
  * @param {Object} node
@@ -118,7 +117,6 @@ export const traverseTree = (
     }
   }
 };
-
 ```
 
 ##### 私有变量
@@ -378,6 +376,189 @@ jQuery.eq().show();
 
 参考资料：[掌握 jQuery 插件开发，这篇文章就够了](https://juejin.im/entry/57a1b817c4c971005af56343) -- 从概念到实战，讲清了 jQuery 插件的开发。
 
+### 异常处理
+
+#### 异常分类
+
+- JS 语法错误、代码异常
+- AJAX 请求异常
+- 静态资源加载异常
+- Promise 异常
+- Iframe 异常
+- 跨域 Script Error
+- 崩溃和卡顿
+
+#### Error 对象
+
+- name
+- message
+- stack
+
+#### try...catch
+
+![](../.vuepress/public/images/2020-05-19-10-57-59-js-try-catch.png)
+
+#### 全局 catch
+
+- window.onerror
+  - onerror 最好写在所有 JS 脚本的前面，否则有可能捕获不到错误；
+  - onerror 无法捕获语法错误
+- unhandledrejection（针对 promise）
+- addEventListener('error') 
+
+##### Promise Catch 
+
+在 promise 中使用 catch 可以非常方便的捕获到异步 error。没有写 catch 的 Promise 中抛出的错误无法被 onerror 或 try-catch 捕获到，所以我们务必要在 Promise 中不要忘记写 catch 处理抛出的异常。
+
+解决方案：为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandlerejection 的监听，用来全局监听 Uncaught Promise 的Error。使用方式：
+
+```js
+window.addEventListener("unhandledrejection", function(e){
+  // 补充一点：如果去掉控制台的异常显示，需要加上：
+  e.preventDefault()
+  console.log('捕获到异常：', e);
+  return true;
+});
+```
+
+#### axios 异常拦截
+
+- Error
+  - 请求 error
+  - 响应 error
+    - 响应 200 成功，返回不符合的约定码 error
+
+```ts
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+} from "axios";
+
+interface Options {
+  baseUrl: string;
+  timeout: number;
+  useInterceptors: boolean; // 安装拦截器
+  withCredentials: boolean; // cookie?
+  errorHook?: Function; // 异常钩子
+}
+
+const TIME = 10000; // 10s
+const URL = "/";
+
+export default class HttpRequest {
+  public config: AxiosRequestConfig;
+  public axiosInstance: AxiosInstance;
+  public errorHook: Function;
+
+  constructor({
+    baseUrl = URL,
+    timeout = TIME,
+    useInterceptors = true,
+    withCredentials = false,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    errorHook = () => {},
+  }: Options) {
+    this.config = {
+      baseURL: baseUrl,
+      timeout: timeout,
+      withCredentials,
+    };
+    this.axiosInstance = axios.create(this.config);
+    this.errorHook = errorHook;
+    // 安装拦截器
+    useInterceptors && this.interceptors();
+  }
+  // 拦截器
+  interceptors(instance = this.axiosInstance) {
+    // 请求拦截
+    instance.interceptors.request.use(
+      (config: AxiosRequestConfig) => {
+        return config;
+      },
+      (error: Error) => {
+        // console.log("请求 error =>", error);
+        // 请求失败
+        return Promise.reject(error);
+      }
+    );
+    // 响应拦截
+    instance.interceptors.response.use(
+      (response: AxiosResponse) => {
+        const { status } = response;
+        console.log("response detail =>", response);
+
+        if (status === 200) {
+          // 请求成功
+          const { data } = response;
+          const { code, message } = data;
+
+          // 后端约定
+          if (code === 1000 || code === 200) {
+            // 1000 为 电子资料管理系统，200 为元数据管理系统
+            return Promise.resolve(data);
+          } else {
+             console.log("code 不符合约定的 error => ", error);
+            const error = new Error(message);
+            this.errorHook(error);
+            return Promise.reject(error); // 把 message 传递出去，给 catch 后，弹框提示用的进一步处理，需要统一 error 传递的值
+          }
+        } else {
+          return Promise.reject(status);
+        }
+      },
+      (error: AxiosError) => {
+        // console.log("响应 error => ", error);
+        // axios捕获服务器异常
+        this.errorHook(error); // 异常处理
+        return Promise.reject(error);
+      }
+    );
+  }
+}
+```
+
+是否统一使用 errorHook 做弹框提醒，看业务需求。如果有某个业务需要在获取上一个接口的错误信息提醒给用户，然后由用户确定是否需要进一步请求。
+
+```ts
+try {
+  const data = await PostUpdateOrCreateDataTypeDetail(param); 
+  if (data) {
+    // 重置模块为显示状态
+    module.operaMode = this.ysjModuleOperaMode.show;
+    this.$Message.success("模版更新成功。");
+  }
+} catch (error) {
+  const message = error.message;
+  this.$Modal.confirm({
+    title: "提示",
+    content: `${message}，确定继续编辑？`,
+    onOk: async () => {
+      try {
+        const data = await UpdateDataTypeDetailForce(param);
+        if (data) {
+          // 重置模块为显示状态
+          module.operaMode = this.ysjModuleOperaMode.show;
+          this.$Message.success("模版更新成功。");
+        }
+      } catch (err) {
+        this.$Message.error(err.message); 
+      }
+    },
+  });
+}
+```
+
+后续在 catch 是否需要重新抛出其他意料之外的错误呢？看具体的需要，是否还有外部的函数，如 window.onerror 进行统一处理了？
+
+#### 小结
+
+- 异步错误：没有 await 的异步函数、setInterval 等将来的函数不会被 try...catch 捕获，但是会被 window.onerror 和 process.on("uncaughtException")
+- 实践证明，Promise 错误可以被 try...catch 捕获。
+
+注意：在局部被 try...catch 的错误是不会继续向上抛出，除非继续 throw ，否则全局处理会捕获不到。
+
 ## 进阶
 
 ### 高阶函数
@@ -413,7 +594,7 @@ var a = {
   name: "Cherry",
   fn: function() {
     console.log(this.name); // Cherry
-  }
+  },
 };
 a.fn(); // 上下文对象调用
 ```
@@ -426,7 +607,7 @@ var a = {
   name: "Cherry",
   fn: function() {
     console.log(this.name); // Cherry
-  }
+  },
 };
 a.fn();
 
@@ -450,7 +631,7 @@ var a = {
     setTimeout(function() {
       this.func1();
     }, 100);
-  }
+  },
 };
 a.func2(); // this.func1 is not a function
 ```
@@ -476,7 +657,7 @@ var a = {
   name: "Cherry",
   fn: function(a, b) {
     console.log(a + b);
-  }
+  },
 };
 
 var b = a.fn;
@@ -492,7 +673,7 @@ var a = {
   name: "Cherry",
   fn: function(a, b) {
     console.log(a + b);
-  }
+  },
 };
 
 var b = a.fn;
@@ -508,7 +689,7 @@ const a = {
   name: "Cherry",
   fn: function(a, b) {
     console.log("a + b =", a + b);
-  }
+  },
 };
 const b = a.fn;
 b.apply(a, [1, 2]); // 3
@@ -903,7 +1084,7 @@ Await - 暂停异步函数的执行（`var result = await someAsyncCall()`）
     // 2. 并行请求
     let chapterPromises = story.chapterUrls.map(getJSON);
     const chapters = await Promise.all(chapterPromises);
-    chapters.forEach(chapter => {
+    chapters.forEach((chapter) => {
       addHtmlToPage(chapter.html);
     });
     addTextToPage("All done");
@@ -1062,6 +1243,12 @@ result(); // 999
 
 #### 闭包的用途
 
+##### 回调函数
+
+![](../.vuepress/public/images/2020-05-19-12-45-57-js-closure-callback.png)
+
+如图，这里的匿名函数以及函数外部的三个变量所在的作用域形成了闭包，引擎通过坏境变量记录了这时候的状态，从而在执行栈执行该匿名函数的时候能够访问到这三个变量。
+
 闭包可以用在许多地方。它的最大用处有两个，一个是前面提到的可以读取函数内部的变量，另一个就是让这些变量的值始终保持在内存中。（高阶函数）
 
 ```js
@@ -1101,10 +1288,11 @@ const module = (function() {
     console.log("私有函数"); // 私有函数
   };
   return {
-    sayName: function() { // 在函数外部是无法访问
+    sayName: function() {
+      // 在函数外部是无法访问
       // 公有函数
       console.log(privateName);
-    }
+    },
   };
 })();
 ```
@@ -1180,7 +1368,7 @@ const module1 = {
   },
   m2: function() {
     //...
-  }
+  },
 };
 ```
 
@@ -1212,7 +1400,7 @@ const module = (function() {
     sayName: function() {
       // 公有函数
       console.log(this.name);
-    }
+    },
   };
 })();
 // 使用
@@ -1238,7 +1426,7 @@ const module1 = (function(mod) {
       console.log(this.name);
     },
     anotherName: mod.name, // 另一个模块上的公用参数
-    sayAnotherName: mod.sayname // 另一个模块上的公有方法
+    sayAnotherName: mod.sayname, // 另一个模块上的公有方法
   };
 })(anotherModule); // 引入了另一个模块
 // 使用
@@ -1406,7 +1594,7 @@ ES6 规范/webpack/rollup 模块化处理
     }
     module.exports = {
       counter: counter,
-      incCounter: incCounter
+      incCounter: incCounter,
     };
 
     // 引入模块 main.js
@@ -1438,7 +1626,7 @@ ES6 规范/webpack/rollup 模块化处理
     ```js
     // 输出模块 counter.js
     var counter = {
-      value: 3
+      value: 3,
     };
 
     function incCounter() {
@@ -1446,7 +1634,7 @@ ES6 规范/webpack/rollup 模块化处理
     }
     module.exports = {
       counter: counter,
-      incCounter: incCounter
+      incCounter: incCounter,
     };
     // 引入模块 main.js
     var mod = require("./counter.js");
@@ -1540,17 +1728,17 @@ const config = {
     filename: outputFile,
     library: libraryName,
     libraryTarget: "umd", // umd
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   module: {
     rules: [
       {
         test: /(\.jsx|\.js)$/,
         loader: "babel-loader",
-        exclude: /(node_modules)|bower_components/
-      }
-    ]
-  }
+        exclude: /(node_modules)|bower_components/,
+      },
+    ],
+  },
 };
 ```
 
@@ -1589,6 +1777,18 @@ require(["./vendor/multi"], function(multi) {
 通过打包工具快速实现各种模块化方案，前端就可以实现整个模块的封装，模块里包括封装数据、封装实现、封装类型、封装变化。
 []链接
 
+## 底层原理
+
+### v8 垃圾回收机制
+
+- 内存泄漏
+- 全局变量
+- 闭包
+- 慎将内存做为缓存
+- 模块私有变量内存永驻
+- 事件重复监听
+- 其他注意事项
+
 ### 参考资料
 
 - [ES6 系列之模块加载方案](https://juejin.im/post/5bea425751882508851b45d6#heading-11) -- 从模块说到 webpack 打包、babel 有比较深的探讨。
@@ -1616,8 +1816,8 @@ const isNumberStr = function(str) {
 #### 求交集和并集
 
 ```js
-let intersection = a.filter(v => b.includes(v));
-let difference = a.concat(b).filter(v => !a.includes(v) || !b.includes(v));
+let intersection = a.filter((v) => b.includes(v));
+let difference = a.concat(b).filter((v) => !a.includes(v) || !b.includes(v));
 ```
 
 #### 用 apply 将数组添加到另一个数组
@@ -1647,7 +1847,7 @@ function recursive(node, parentNode) {
     }
   }
 }
-this.indicators.forEach(val => {
+this.indicators.forEach((val) => {
   let obj = {}; // 新建节点
   obj.title = val.title;
   category.push(obj);
@@ -1679,9 +1879,9 @@ getStyle(document.querySelector("p"), "font-size");
 该代码块可将指定元素滚动到浏览器窗口的可见区域。
 
 ```js
-const smoothScroll = element => {
+const smoothScroll = (element) => {
   document.querySeletor(element).scrollIntoView({
-    behavior: "smooth"
+    behavior: "smooth",
   });
 };
 smoothScroll("#fooBar");
@@ -1733,13 +1933,11 @@ function Random(min, max) {
 
 - [如何写出一个惊艳面试官的深拷贝?](https://juejin.im/post/5d6aa4f96fb9a06b112ad5b1?utm_source=gold_browser_extension#heading-13)
 - [从多线程到 Event Loop 全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15) —— 少有的从计算机方面讲解逐步引申到浏览器的线程文章。
-- [内存管理速成教程](https://mp.weixin.qq.com/s/sVcGRUZqILCVgfhzRyODTg) —— 漫画式讲解 JS 内存管理。
 - [JavaScript 工具函数大全（新）](https://juejin.im/post/5da1a04ae51d45783d6122bf?utm_source=gold_browser_extension#heading-36)
 - [this, appy, call, bind](https://juejin.im/post/59bfe84351882531b730bac2#comment) —— 作者一步步讲解，浅显易懂。
 - [Ajax 知识体系大梳理](https://juejin.im/post/58c883ecb123db005311861a#heading-61)—— 这是一篇万字长文, 系统梳理了 ajax 相关的知识体系, 几乎囊括了所有 ajax 的知识点.
 - [Jquery ajax 同步阻塞引起的 UI 线程阻塞的坑（loading 图片显示不出来，layer.load 延迟）](https://blog.csdn.net/lianzhang861/article/details/79426385) -- ajax 设置为同步请求时的分析。
 - [前端模块化——技术选型](https://segmentfault.com/a/1190000006966358#articleHeader2) -- 说明模块化要解决的问题以及使用模块化构建工具解决依赖管理。
-- [Javascript 的匿名函数与自执行](https://juejin.im/entry/57fee360a22b9d005b1d9ae3) -- 匿名函数与闭包。
 - [npm + webpack + es6 初体验](https://segmentfault.com/a/1190000006968235) -- 前端工程化是大势所趋，我们将不再人工去实现 依赖管理，代码压缩混淆，测试，上线等开发流程，转而交由工具去完成
 - [Javascript 模块化编程（一）：模块的写法](http://www.ruanyifeng.com/blog/2012/10/javascript_module.html) -- 简洁、清晰、透彻
 - [谈谈 Js 前端模块化规范](https://segmentfault.com/a/1190000015991869#articleHeader0) -- 详细的 JS 模块化规范对比。
@@ -1750,3 +1948,12 @@ function Random(min, max) {
 
 - [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
 - 《JavaScript 忍者秘籍》
+- JS 垃圾回收机制
+  - [内存管理速成教程](https://mp.weixin.qq.com/s/sVcGRUZqILCVgfhzRyODTg) —— 漫画式讲解 JS 内存管理。
+  - [Javascript 的匿名函数与自执行](https://juejin.im/entry/57fee360a22b9d005b1d9ae3) -- 匿名函数与闭包。
+  - [前端面试：谈谈 JS 垃圾回收机制](https://segmentfault.com/a/1190000018605776#comment-area) 图例说得不错。
+  - [JavaScript 内存泄漏教程](http://www.ruanyifeng.com/blog/2017/04/memory-leak.html)
+- 异常处理
+  - [前端错误收集以及统一异常处理](https://juejin.im/post/5be2b0f6e51d4523161b92f0?utm_source=gold_browser_extension#heading-15)
+  - [异常处理，"try..catch"](https://mp.weixin.qq.com/s/jHSk4UeNmQ1ih_F5vs0jdw)
+  - [如何优雅处理前端异常？](https://blog.fundebug.com/2018/12/07/how-to-handle-frontend-error/)
