@@ -120,15 +120,17 @@ const formModalStatus = {
 
 ```js
 // 是否可阅读
-function canRead() {
+function CanRead() {
   return true;
 }
 
 // 获取姓名
-function getName() {
+function GetName() {
   return this.name;
 }
 ```
+
+另外，针对处于类编码风格（TS + Vue）里的函数名统一首字母大写，以便区分变量名与函数名。
 
 ## JS 推荐写法
 
@@ -369,7 +371,10 @@ void printDetails(double amount) {
 函数式编程使用的一些技术：
 
 - 头等函数，函数可以像对象一样使用，参数传递、reture 出去、赋值、嵌套等。
-- 递归&尾递归（复用调用栈）
+- 递归&尾递归（复用调用栈），写递归要注意事项：
+  - 爆栈
+  - 重复计算
+  - 循环引用
 - map&reduce
 - pipeline 管道
 - 柯里化
@@ -553,6 +558,7 @@ get currentTabComponent() {
 
 - [ES6 规范](../lint/es6.md)
 - [VUE 规范](../lint/vue.md)
+- [VUE 风格指南](https://cn.vuejs.org/v2/style-guide/)
 
 ### 尽量不手动操作 DOM
 
@@ -570,3 +576,6 @@ get currentTabComponent() {
 - [如何保障前端项目的代码质量](https://juejin.im/post/5b911f306fb9a05cdb1013b9)
 - 《代码大全》
 - 《重构，改善现有的代码》
+- [CSS 样式书写规范最佳实践](https://juejin.im/entry/5967040451882568af7f426f)
+- [CSS学习笔记(十六) CSS最佳实践之可维护性篇](https://segmentfault.com/a/1190000003999308#item-8)
+- [Web前端开发最佳实践](https://book.douban.com/subject/26305106/)

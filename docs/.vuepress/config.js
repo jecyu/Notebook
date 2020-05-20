@@ -178,7 +178,7 @@ module.exports = {
         {
           title: "🚶不止前端",
           collapsable: false,
-          children: ["", "node"]
+          children: ["", "node", "java"]
         }
       ],
       "/rethink/": [

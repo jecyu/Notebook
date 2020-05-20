@@ -1,4 +1,4 @@
-# java
+# Java
 
 ## 入门
 
@@ -274,7 +274,7 @@ public static void main(String[] args) {
 System.out.println("Hello, world!");
 ```
 
-<u>Java 规定，某个类定义的 `public static void main(String[] args)` Java 程序的固定入口方法，因此，Java 程序总是从 `main` 方法执行的。</u>
+<u>Java 规定，某个类定义的 `public static void main(String[] args)` Java 程序的`固定入口`方法，因此，Java 程序总是从 `main` 方法执行的。</u>
 
 注意到 Java 源码的缩进不是必须的，但是用缩进后，格式好看，很容易看出代码块的开始和结束，缩进一般是 4 个空格或者一个 tab。（生产环境下，则经过压缩，去掉不必要的空白符。）
 
@@ -450,6 +450,37 @@ J2EE工程
 
 ### 使用 IDE 练习插件
 
+Eclipse安装反编译插件，查看 `.class` 文件的源码
+
+#### 安装 IDE 练习插件
+
+Eclipse 插件是什么？
+- [Eclipse插件开发基础实践（1）——一个Hello World插件](https://www.jianshu.com/p/11fe13b77777)
+- [21 款好用的 Eclipse 插件](https://juejin.im/entry/5a055c3af265da4312806086)
+- [Eclipse插件终极攻略（一）:基本概念介绍](https://blog.csdn.net/canlets/article/details/27568885)
+
+启动 Eclipse，选择菜单”Help“ - ”Install New Software...“，在打开的对话框：
+
+点击 “Add”，对 Name 填写一个任意的名称，例如“Java Practive Plugin”，对于 Location，填入`https://liaoxuefeng.gitee.io/learn-java-update-site/`，然后点击“Add” 添加：
+
+如果出现了该网站地址不可访问，可以到[https://gitee.com/liaoxuefeng/learn-java-update-site](https://gitee.com/liaoxuefeng/learn-java-update-site) 直接下载源码解压，然后从本地导入进来。
+
+![](../.vuepress/public/images/2020-05-19-20-48-46-eclipse-install-software.png)
+
+在列表中选中”Java Practice Feature“，然后点击”Next“ 安装。
+
+在安装过程中，由于插件代码没有数字签名，所以会弹出一个警告：
+
+![](../.vuepress/public/images/2020-05-19-20-52-38-eclipse-install-software-02.png)
+
+选择 ”Install anyway“ 继续安装，安装成功后，根据提示重启 Eclipse 即可。
+
+![](../.vuepress/public/images/2020-05-19-20-56-17-eclipse-install-software-03.png)
+
+重启 Eclipse 后，选择菜单 ”Window“ - ”Show View（视图）“ - ”Other...“
+
+![](../.vuepress/public/images/2020-05-19-20-57-32-eclipse-software-install-04.png)
+
 ## 类与对象
 
 ## 异常处理
@@ -502,3 +533,5 @@ J2EE工程
 - [Java 又双叒叕发布新版本，这么多版本如何灵活管理？](http://www.justdojava.com/2019/11/20/jenv/)
 - [JAVA-包package、import使用](https://www.cnblogs.com/lifexy/p/10855188.html)
 - [Java 包(package)](https://www.runoob.com/java/java-package.html)
+- [Eclipse安装反编译插件
+](https://www.cnblogs.com/JealousGirl/p/setup_Decompiler.html)
