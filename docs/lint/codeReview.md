@@ -16,9 +16,14 @@
 
 ## 命名规范
 
+常用命名规范有四种：
+- camelCase 驼峰式
+- PascalCase 帕斯卡命名式
+- kabab-case 短横线连接式
+- Snake 下划线连接式
+
 - 变量名需要能够表明其含义，以小写字母开头，使用驼峰式命名法。
 - 函数名也是一样，但是函数名应该以大写字母开头，这样便于和变量名区分开来。
-  s
 
 ### CSS 类名采用横线命名规范
 
@@ -100,6 +105,12 @@ const formModalStatus = {
 ```
 
 ### Vue 命名规范
+
+#### 文件
+
+- `.js`文件， 除 index.js 外，其他都采用 camelCase 风格，如`export2Excel.js`
+- `.vue`文件， 除 index.vue 外，其他统一用 PascalCase 风格, 如`VerticalNav.vue`
+- `.scss`文件， 除 index.scss 外，其他统一用 camelCase 风格，如`controlBorderWarnPanel.scss`
 
 - 组件名采用大写字母开头的驼峰式命名
 
@@ -375,10 +386,9 @@ void printDetails(double amount) {
   - 爆栈
   - 重复计算
   - 循环引用
-- map&reduce
 - pipeline 管道
-- 柯里化
-- 高阶函数
+- 柯里化（复用参数、延迟执行）
+- 高阶函数（尽量使用 map、reduce、filter 代替普通的循环）
 
 #### map&reduce
 
@@ -525,6 +535,8 @@ get currentTabComponent() {
 
 ### 异常处理
 
+## Vue 项目规范
+
 ## TS 项目规范
 
 <!-- ## 错误列表
@@ -579,3 +591,4 @@ get currentTabComponent() {
 - [CSS 样式书写规范最佳实践](https://juejin.im/entry/5967040451882568af7f426f)
 - [CSS学习笔记(十六) CSS最佳实践之可维护性篇](https://segmentfault.com/a/1190000003999308#item-8)
 - [Web前端开发最佳实践](https://book.douban.com/subject/26305106/)
+- TS 最佳实践

@@ -79,6 +79,13 @@ JS 中的函数调用
 - 使用构造函数调用函数
 - 作为函数方法调用函数
 
+函数（function）是指一段可以直接被其名称调用的代码块，它可以传入一些参数进行处理并返回一些数据，所有传入函数的数据都是被明确定义。
+
+方法指的是一段被它关联的对象通过它的名字调用的代码块，函数和方法有下面亮点区别。
+
+1. 一个方法（method）会隐私的传递调用该方法的对象。
+2. 一个方法可以可以处理包含在一个类里面的数据（记住一个对象是一个类的实例）
+
 #### 闭包
 
 ##### 一个简单的闭包
@@ -404,19 +411,19 @@ jQuery.eq().show();
   - onerror 最好写在所有 JS 脚本的前面，否则有可能捕获不到错误；
   - onerror 无法捕获语法错误
 - unhandledrejection（针对 promise）
-- addEventListener('error') 
+- addEventListener('error')
 
-##### Promise Catch 
+##### Promise Catch
 
 在 promise 中使用 catch 可以非常方便的捕获到异步 error。没有写 catch 的 Promise 中抛出的错误无法被 onerror 或 try-catch 捕获到，所以我们务必要在 Promise 中不要忘记写 catch 处理抛出的异常。
 
-解决方案：为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandlerejection 的监听，用来全局监听 Uncaught Promise 的Error。使用方式：
+解决方案：为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandlerejection 的监听，用来全局监听 Uncaught Promise 的 Error。使用方式：
 
 ```js
-window.addEventListener("unhandledrejection", function(e){
+window.addEventListener("unhandledrejection", function(e) {
   // 补充一点：如果去掉控制台的异常显示，需要加上：
-  e.preventDefault()
-  console.log('捕获到异常：', e);
+  e.preventDefault();
+  console.log("捕获到异常：", e);
   return true;
 });
 ```
@@ -499,7 +506,7 @@ export default class HttpRequest {
             // 1000 为 电子资料管理系统，200 为元数据管理系统
             return Promise.resolve(data);
           } else {
-             console.log("code 不符合约定的 error => ", error);
+            console.log("code 不符合约定的 error => ", error);
             const error = new Error(message);
             this.errorHook(error);
             return Promise.reject(error); // 把 message 传递出去，给 catch 后，弹框提示用的进一步处理，需要统一 error 传递的值
@@ -523,7 +530,7 @@ export default class HttpRequest {
 
 ```ts
 try {
-  const data = await PostUpdateOrCreateDataTypeDetail(param); 
+  const data = await PostUpdateOrCreateDataTypeDetail(param);
   if (data) {
     // 重置模块为显示状态
     module.operaMode = this.ysjModuleOperaMode.show;
@@ -543,7 +550,7 @@ try {
           this.$Message.success("模版更新成功。");
         }
       } catch (err) {
-        this.$Message.error(err.message); 
+        this.$Message.error(err.message);
       }
     },
   });
@@ -563,7 +570,362 @@ try {
 
 ### 高阶函数
 
-接收一个函数参数，或者
+#### 前言
+
+高阶函数是一种以函数为参数的函数。它们都被用于映射（mapping）、过滤（filtering）、归档（folding）和排序（sorting）表。编写对各种情况都适用的高阶函数与为单一情况编写递归函数相比，可以使程序更具可读性。比如说，使用一个高阶函数来实现排序可以使得我们使用不同的条件来排序，<u>这就将`排序条件`和`排序过程`清除地划分开来。</u>函数 sort 具有两个参数，其一是待排序的表，其二是定序（Ordering） 的函数。
+
+#### 函数式编程
+
+在大多数简单的术语中，函数式是一种编程形式，你可以将函数作为参数传递给其他函数，并将它们作为值返回。（并输入对应一个输出）。在函数式编程中年，我们以`函数`的形式思考和编程。
+
+#### 一等函数
+
+在 JavaScript 及其他函数式编程，
+
+```js
+/////// JavaScript 函数是对象
+function greeting() {
+  console.log("Hello World");
+}
+greeting();
+
+greeting.lang = "English";
+assert.strictEqual(greeting.lang, "English");
+
+//////// 将函数赋给变量
+const square = function(x) {
+  return x * x;
+};
+assert.strictEqual(square(5), 25);
+// 也可以传递它们
+const foo = square;
+assert.strictEqual(foo(6), 36);
+
+// 将函数作为参数传递给其他函数
+function formalGreeting() {
+  console.log("How are you?");
+}
+function casualGreeting() {
+  console.log("What's up?");
+}
+function greet(type, greetFormal, greetCasual) {
+  if (type === "formal") {
+    // 这种还可以采用策略函数处理
+    greetFormal();
+  } else if (type === "casual") {
+    greetCasual();
+  }
+}
+// print "What's up?"
+greet("casual", formalGreeting, casualGreeting);
+```
+
+#### 高阶函数
+
+高阶函数英文叫做Higher-order function。那么什么是高阶函数呢？
+
+在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+- 接受一个或多个函数作为输入
+- 输出一个参数
+
+```js
+function add(x, y, f) {  // 传入函数
+  return f(x) + f(y)
+}
+```
+
+##### map
+
+map 它接受一个函数 f 作为参数，并返回接受一个列表并应用 f 到它的每个元素的一个函数。
+
+假设我们有一个数字数组，我们想要创建一个新数组，其中包含第一个数组中每个值的两倍。让我们看看如何使用和不使用高阶函数来解决问题。
+
+```js
+// 不使用高阶函数
+const arr1 = [1, 2, 3];
+const arr2 = [];
+for (let i = 0; i < arr1.length; i++) {
+  arr2.push(arr1[i] * 2);
+}
+console.log("arr2 =>", arr2);
+
+// 使用高阶函数 map
+const arr3 = [1, 2, 3];
+const arr4 = arr3.map(function(item) {
+  // 或者使用箭头函数
+  return item * 2;
+});
+// const arr4 = arr3.map(item => item*2);// 箭头函数
+console.log("arr4 =>", arr4);
+// 可以看到高阶函数代码简洁，并且把遍历与具体操作分开来。
+```
+
+##### reduce
+
+reduce 方法对调用数组的每个元素执行回调函数，最后生成一个单一的值并返回。 reduce 方法接受两个参数：
+- 1）reducer 函数（回调），
+- 2）一个可选的 initialValue。
+
+reducer 函数（回调）接受四个参数：accumulator，currentValue，currentIndex，sourceArray。
+
+如果提供了 initialValue，则累加器将等于 initialValue，`currentValue 将等于数组中的第一个元素。
+
+如果没有提供 initialValue，则累加器将等于数组中的第一个元素，currentValue 将等于数组中的第二个元素。
+
+[x1, x2, x3, x4].reduce(f) = f(f(f(x1, x2), x3), x4)
+
+```js
+const arr = [5, 7, 1, 8, 4];
+const sum = arr.reduce((accumulator, currentValue) => accumulator + currentValue, 10)
+// => sum 35
+```
+
+##### filter
+
+filter 也是一个常用的操作，它用于把Array的某些元素过滤掉，然后返回剩下的元素。
+
+和 `map()`类似，Array 的 `filter()` 也接收一个函数。和 `map()` 不同的是，`filter()` 把传入的函数依次作用于每个元素，然后根据返回值是 `true` 还是 `false 决定保留还是丢弃该元素。
+
+##### 实现一个高阶函数：
+
+```js
+const strArray = ["JavaScript", "Python", "PHP", "Java", "C"];
+
+function jecyuMap(arr, fn) {
+  const newArray = [];
+  for (let i = 0; i < arr.length; i++) {
+    newArray.push(fn(arr[i], i));
+  }
+  return newArray;
+}
+
+const lenArray = jecyuMap(strArray, function(item) {
+  return item.length;
+});
+console.log("lenArray =>", lenArray);
+```
+
+#### 应用场景
+
+#### 小结
+
+柯里化函数也是高阶函数的一种，在函数式编程中，返回另一个函数的高阶函数被称为 Curry 化的函数。高阶函数增强了模块化程度。你可以很容易定义高阶函数。当你编写函数时，更要在乎将其实现为更抽象的高阶函数，这样可以让你的代码能够`复用（reusable）`。
+
+#### 前言
+
+### 柯里化
+
+#### 前言
+
+柯里化为了惰性求值，先传入一部分参数，利用闭包的特性返回了一个记住前面的参数的新函数，在调用的时候，让这个新函数处理剩下的参数，也就是延迟执行。
+
+#### 实现 Currying
+
+原始版本
+
+```js
+function add(x, y) {
+  return x + y;
+}
+
+// 假设实现效果
+// curriedAdd(1)(3) === 4
+```
+
+curriedAdd 版本
+
+```js
+function curriedAdd(x) {
+  return function(y) {
+    return x + y;
+  };
+}
+
+const increment = curriedAdd(1);
+const result = increment(2);
+console.assert(increment(2) === 3, "3成功");
+```
+
+进一步抽象，使柯里化更加通用，接收需要转换
+在这个版本里，柯里化的函数柯里化的返回值是一个接收剩余参数并立即返回计算值的参数。返回的函数没有被柯里化。
+
+```js
+function currying(fn, ...arg1) {
+  // 复用了 arg1 参数，并且延迟执行
+  return function(...arg2) {
+    return fn(...arg1, ...arg2);
+  };
+}
+```
+
+继续优化版本，通过递归实现可以无限接收剩余参数，返回柯里化函数。
+
+```js
+function trueCurrying(fn, ...args) {
+  if (args.length >= fn.length) {
+    // 当接收的参数数量大于等于被 Currying 函数的传入参数数量时，就返回计算结果，大于才需要延迟执行，复用参数
+    return fn(...args);
+  }
+  return function(...arg2) {
+    // 否则，就返回一个继续接收参数的函数
+    return trueCurrying(fn, ...args, ...arg2);
+  };
+}
+
+function add(x, y, z) {
+  return x + y + z;
+}
+console.assert(trueCurrying(add, 1, 2, 3) === 6, "1+2+3 = 6"); // 浏览器可以使用这个断言测试，如果是node环境可以使用 assert 模块
+assert.strictEqual(trueCurrying(add, 1, 2, 3), 6); // 错误才会提醒，严格相等才会有更具体的错误信息，实际值，期望值比较
+assert.strictEqual(trueCurrying(add, 1, 2)(3), 6);
+assert.strictEqual(trueCurrying(add, 1)(2)(3), 6);
+```
+
+#### 使用场景
+
+##### 参数复用
+
+固定第一个参数，第二个参数等，如上面的 add 的 1。
+
+##### 延迟执行
+
+在前端开发中，为标签绑定 onClick 事件，同时<u>考虑为绑定的方法传递参数。</u>
+
+1. 通过 data 属性
+
+```html
+<data data-name="name" onClick="{handleOnClick}"><></data>
+```
+
+通过 `data` 属性本质只能传递字符串的数据，如果需要传递复杂对象，只能通过 `JSON.stringify(data)` 来传递满足 JSON 对象格式的数据，但对更加复杂的对象无法支持。（虽然大多数时候也无需传递复杂对象）
+
+2. 通过 bind 方法：
+
+```jsx
+<div onClick={handleOnClick.bind(null, data)} />
+```
+
+bind 放啊放和以上实现 `currying` 方法，在功能上有极大的相似，在实现上也几乎差不多。可能唯一的不同就是 bind 需要强制绑定 context，也就是 bind 的第一个参数会作为原函数运行时的 this 指向。而 `curry` 不需要此参数。
+
+跟 Vue 中的 emit 事件绑定的事件处理函数后，把参数传递的逻辑
+
+```html
+<EdButton
+  @click.stop="HandleDeleteYSJModule(module, index)"
+  style="margin-left: 0.56rem;"
+  :disabled="module.operaMode === ysjModuleOperaMode.show"
+  >x</EdButton
+>
+```
+
+vue 做了处理 `HandleDeleteYSJModule(module, index)`，返回了一个新的函数接收了 moduel，index 参数，然后在触发事件执行，也执行了原来的函数。
+
+```js
+function xxx(fn, ...args) {
+  // args => module, index
+  return fn(...args); // HandleDeleteYSJModule
+}
+```
+
+3. 箭头函数
+
+```jsx
+<div onClick={() => handleOnClick(data)}>
+```
+
+箭头函数能够实现延迟执行，同时也不像 bind 方法必须指定 context。可能唯一要顾虑的就是在 react 中，会有人反对在 jsx 标签内写箭头函数，这样子容易导致直接在 jsx 标签内写业务逻辑。
+
+4. 通过 currying
+
+```jsx
+<div onClick={currying(handleOnClick, data)}>
+```
+
+#### 应用例子
+
+原始版本
+
+```js
+export const GET = (url, serviceName, params, showErrorMessage) => {
+  return get(instanceMap.base, url, serviceName, params, showErrorMessage);
+};
+```
+
+存在的问题，但参数只有 instanceMap.base 不同，其他逻辑都一样，这个时候就需要考虑抽离函数。
+
+手动更改原来的 GET 版本逻辑
+
+```js
+const generateGET = (instanceMap: any, serverName: string) => {
+  return (url: string, serviceName: string, params?: any) => {
+    const { axiosInstance } = instanceMap[serverName];
+    return get(axiosInstance, url, serviceName, params);
+  };
+};
+export const GET = generateGET(instanceMap, "base");
+export const METADATA_GET = generateGET(instanceMap, "metaData");
+```
+
+上述代码复用了 instanceMap 的 axios 实例对象参数，并且在真正进行 GET 函数的调用才会执行，达到延迟执行的效果。
+
+使用柯里化版本
+
+```js
+// 改写一部分原始函数，因为 instanceMap.base 是异步赋值的，所以直接传递 null 值，后续异步更新后就拿不到值
+export const GET = (instanceMap, serverName, serviceName, params, showErrorMessage) => {
+  const { axiosInstance } = instanceMap[serverName];
+  return get(axiosInstance, url, serviceName, params, showErrorMessage);
+};
+
+export baseGET = currying(GET, instanceMap, "base");
+export METADATA_GET = currying(GET, instanceMap, "metadata");
+// 或者 bind 版本
+export baseGET = GET.bind(instanceMap, instanceMap, "base")
+```
+
+这里不需要写成 generateGET 多一层函数了，但是要注意的是 curry 这里是对参数作了判断，因此上述的版本在生成环境下，不适合的。因此请求的时候，实际传入的参数会小于形参的数量，这样会导致一直返回新的函数，并没有执行函数。
+
+```js
+export function BuildArchive(param: ArchiveValidataDto) {
+  return POST(`/rest/edms/archive/v1/build`, `建档`, param);
+}
+```
+
+因此，需要添加一个是否递归标记。
+
+```js
+export const Currying = (isRecursion, fn, ...args) => {
+  if (!isRecursion) {
+    // 不递归转换，则直接返回
+    return function() {
+      return fn(...args);
+    };
+  }
+
+  if (args.length >= fn.length) {
+    // 当接收的参数数量大于等于被 Currying 函数的传入参数数量时，就返回计算结果，大于才需要延迟执行，复用参数
+    return fn(...args);
+  }
+  return function(...arg2) {
+    // 否则，就返回一个继续接收参数的函数
+    return Currying(fn, ...args, ...arg2);
+  };
+};
+```
+
+#### 性能对比
+
+- 箭头函数 > bind > currying > trueCurring
+
+#### 到底需不需要 Currying
+
+- 为了多参数复用性
+- 为了函数式编程而生
+  - 输入输出不受外部影响。
+
+替代方案：bind
+
+curry 提高了函数的复用性，把第一层、第二层等参数抽离了出来，而不是写死。像上面提到的 axios 实例请求。
 
 ### setTimeout, setInterval 和 requestAnimationFrame
 
@@ -1931,23 +2293,27 @@ function Random(min, max) {
 
 ## 参考资料
 
-- [如何写出一个惊艳面试官的深拷贝?](https://juejin.im/post/5d6aa4f96fb9a06b112ad5b1?utm_source=gold_browser_extension#heading-13)
-- [从多线程到 Event Loop 全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15) —— 少有的从计算机方面讲解逐步引申到浏览器的线程文章。
-- [JavaScript 工具函数大全（新）](https://juejin.im/post/5da1a04ae51d45783d6122bf?utm_source=gold_browser_extension#heading-36)
-- [this, appy, call, bind](https://juejin.im/post/59bfe84351882531b730bac2#comment) —— 作者一步步讲解，浅显易懂。
-- [Ajax 知识体系大梳理](https://juejin.im/post/58c883ecb123db005311861a#heading-61)—— 这是一篇万字长文, 系统梳理了 ajax 相关的知识体系, 几乎囊括了所有 ajax 的知识点.
-- [Jquery ajax 同步阻塞引起的 UI 线程阻塞的坑（loading 图片显示不出来，layer.load 延迟）](https://blog.csdn.net/lianzhang861/article/details/79426385) -- ajax 设置为同步请求时的分析。
-- [前端模块化——技术选型](https://segmentfault.com/a/1190000006966358#articleHeader2) -- 说明模块化要解决的问题以及使用模块化构建工具解决依赖管理。
-- [npm + webpack + es6 初体验](https://segmentfault.com/a/1190000006968235) -- 前端工程化是大势所趋，我们将不再人工去实现 依赖管理，代码压缩混淆，测试，上线等开发流程，转而交由工具去完成
-- [Javascript 模块化编程（一）：模块的写法](http://www.ruanyifeng.com/blog/2012/10/javascript_module.html) -- 简洁、清晰、透彻
-- [谈谈 Js 前端模块化规范](https://segmentfault.com/a/1190000015991869#articleHeader0) -- 详细的 JS 模块化规范对比。
-- [npm + webpack + es6 初体验](npm + webpack + es6 初体验)
-- [JavaScript Promise：去而复返](https://www.cnblogs.com/rubylouvre/p/3495286.html) -- 目前看过最好的 Promise 文章，讲解从为什么到怎么做。
-
-- [JavaScript 开发者应懂的 33 个概念(中文版)](https://github.com/stephentian/33-js-concepts)
-
-- [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
-- 《JavaScript 忍者秘籍》
+- 浏览器原理
+  - [从多线程到 Event Loop 全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15) —— 少有的从计算机方面讲解逐步引申到浏览器的线程文章。
+- 临时
+  - [如何写出一个惊艳面试官的深拷贝?](https://juejin.im/post/5d6aa4f96fb9a06b112ad5b1?utm_source=gold_browser_extension#heading-13)
+  - [JavaScript 工具函数大全（新）](https://juejin.im/post/5da1a04ae51d45783d6122bf?utm_source=gold_browser_extension#heading-36)
+  - [v8](https://github.com/v8/v8)
+- 作用域
+  - [this, appy, call, bind](https://juejin.im/post/59bfe84351882531b730bac2#comment) —— 作者一步步讲解，浅显易懂。
+- http 请求
+  - [Ajax 知识体系大梳理](https://juejin.im/post/58c883ecb123db005311861a#heading-61)—— 这是一篇万字长文, 系统梳理了 ajax 相关的知识体系, 几乎囊括了所有 ajax 的知识点.
+  - [JavaScript Promise：去而复返](https://www.cnblogs.com/rubylouvre/p/3495286.html) -- 目前看过最好的 Promise 文章，讲解从为什么到怎么做。
+  - [Jquery ajax 同步阻塞引起的 UI 线程阻塞的坑（loading 图片显示不出来，layer.load 延迟）](https://blog.csdn.net/lianzhang861/article/details/79426385) -- ajax 设置为同步请求时的分析。
+- 模块化
+  - [前端模块化——技术选型](https://segmentfault.com/a/1190000006966358#articleHeader2) -- 说明模块化要解决的问题以及使用模块化构建工具解决依赖管理。
+  - [npm + webpack + es6 初体验](https://segmentfault.com/a/1190000006968235) -- 前端工程化是大势所趋，我们将不再人工去实现 依赖管理，代码压缩混淆，测试，上线等开发流程，转而交由工具去完成
+  - [Javascript 模块化编程（一）：模块的写法](http://www.ruanyifeng.com/blog/2012/10/javascript_module.html) -- 简洁、清晰、透彻
+  - [谈谈 Js 前端模块化规范](https://segmentfault.com/a/1190000015991869#articleHeader0) -- 详细的 JS 模块化规范对比。
+- 书籍
+  - 《JavaScript 忍者秘籍》
+  - [JavaScript 开发者应懂的 33 个概念(中文版)](https://github.com/stephentian/33-js-concepts)
+  - [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
 - JS 垃圾回收机制
   - [内存管理速成教程](https://mp.weixin.qq.com/s/sVcGRUZqILCVgfhzRyODTg) —— 漫画式讲解 JS 内存管理。
   - [Javascript 的匿名函数与自执行](https://juejin.im/entry/57fee360a22b9d005b1d9ae3) -- 匿名函数与闭包。
@@ -1957,3 +2323,10 @@ function Random(min, max) {
   - [前端错误收集以及统一异常处理](https://juejin.im/post/5be2b0f6e51d4523161b92f0?utm_source=gold_browser_extension#heading-15)
   - [异常处理，"try..catch"](https://mp.weixin.qq.com/s/jHSk4UeNmQ1ih_F5vs0jdw)
   - [如何优雅处理前端异常？](https://blog.fundebug.com/2018/12/07/how-to-handle-frontend-error/)
+- 柯里化
+  - [大佬，JavaScript 柯里化，了解一下？](https://juejin.im/post/5af13664f265da0ba266efcfs)
+- 高阶函数
+  - [理解 JavaScript 中的高阶函数](https://zhuanlan.zhihu.com/p/49579052)
+  - [高阶函数](https://deathking.github.io/yast-cn/contents/chapter8.html)
+  - [高阶函数](https://www.liaoxuefeng.com/wiki/1022910821149312/1023021271742944) 廖雪峰博客
+  - [wiki 百科高阶函数](https://zh.wikipedia.org/zh-hans/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0)

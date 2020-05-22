@@ -237,6 +237,13 @@ module.exports = {
           collapsable: false,
           children: ["", "koa"]
         }
+      ],
+      "/math/": [
+        {
+          title: "数学之美",
+          collapsable: false,
+          children: [""]
+        }
       ]
     },
     lastUpdated: "Last Updated",

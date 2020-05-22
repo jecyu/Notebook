@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/examples/algorithm/recursion/demo06.js"
+      "program": "${workspaceFolder}/examples/functional-program/higher-order/demo03.js"
     }
   ]
 }

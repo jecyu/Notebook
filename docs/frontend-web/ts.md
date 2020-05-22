@@ -1652,7 +1652,6 @@ import ReactDOM from "react-dom";
 ## 参考资料
 
 - [TypeScript 中文网](https://www.tslang.cn/docs/handbook/module-resolution.html)
-- [由 shims-vue.d.ts 引发的思考](https://juejin.im/post/5d22b12251882509057e11e9#heading-2)
 - [tsconfig.json 入门指南](https://juejin.im/post/5e34d967f265da3dfa49bdc3#heading-22)
 - [TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427?utm_source=gold_browser_extension#heading-44)
 - [TS in JS 实践指北](https://juejin.im/post/5e0176b4f265da33a159d9e0#heading-16)
@@ -1662,3 +1661,7 @@ import ReactDOM from "react-dom";
 - [传送门--TypeScript 入门教程 (墙裂推荐)](https://github.com/xcatliu/typescript-tutorial/blob/master/README.md)
 - [一篇朴实的文章带你 30 分钟捋完 TypeScript,方法是正反对比](https://juejin.im/post/5d53a8895188257fad671cbc#heading-15)
 - [Vue3.0 前的 TypeScript 最佳入门实践](https://juejin.im/post/5d0259f2518825405d15ae62)
+- 模块声明
+  - [Can't import CSS/SCSS modules. TypeScript says “Cannot Find Module”
+](https://stackoverflow.com/questions/40382842/cant-import-css-scss-modules-typescript-says-cannot-find-module)
+  - [由 shims-vue.d.ts 引发的思考](https://juejin.im/post/5d22b12251882509057e11e9#heading-2)
