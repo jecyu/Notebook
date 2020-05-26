@@ -24,7 +24,8 @@ Apple Pcker Prototyp
 
 游戏的场景跟电影的场景类似，一个场景具有多个人物对象，一部电影由多个场景组成。同理，一个游戏由多个场景组成，可以从一个场景切换到另一个场景，且不同的场景下具有不同的游戏对象。
 
-创建场景：File0 -> New Scene，命名为 _Scene，生成的场景文件有两个：
+创建场景：File0 -> New Scene，命名为 \_Scene，生成的场景文件有两个：
+
 - _Scene_.unity
 - _Scene_.unity.meta
 
@@ -63,16 +64,242 @@ Apple Pcker Prototyp
 
 ![](../.vuepress/public/images/2020-05-21-23-21-52-unity-coordinate-axis-01.png)
 
-
 如上图所示，我们用一个平面世界坐标系来表示红点和蓝点的位置，<u>往后无论增加多少个点，都可以在该坐标系找到一个数值来表示位置，只要被标注位置的物体不变，`位置`数值不变。</u>
 
 所以世界坐标系又叫`绝对坐标系`，wWO
 
 #### 本地坐标系
 
+本地坐标系则是以物体自身位置作为原点，表示物体间相对位置和方向，并且会根据物体自身旋转而旋转：
+
+![](../.vuepress/public/images/2020-05-25-21-49-52-local-coordinate.png)
+
+我们在 Inspector 看到的坐标系其实是本地坐标系，包括旋转、缩放都属于本地：
+
+![](../.vuepress/public/images/2020-05-25-21-50-35-local-coordinate-02.png)
+
+当一个物体有父物体时，无论父物体的位置旋转缩放如何变化，作为子物体它的 Transform 数值始终保持不变，说明它相对于自己的父物体位置始终没有变化，<u>而当一个物体没有父物体时，可以把“世界”就看成它的父物体，它在世界中的一切位置变化都可以看做是和世界的`相对位置`变化，</u>由于世界坐标系和“世界的本地坐标系”也是一样的。
+
+由于物体各自坐标系的不同参考标准，同一个物体，会在不同本地坐标系显示出不同的位置信息，产生各种各样的歧义：
+
 #### 屏幕坐标系
 
+在 Unity 的 Game 视窗中，以屏幕左下角为原点（0，0），像素为单位，坐标轴往屏幕右上方进行延伸，X 轴 和 Y 轴数值不能超过屏幕的最大宽度和最大高度。由于原点位置是唯一的，也可以理解成是一个平面世界坐标系，作用是表示物体在屏幕中的位置。
+
+![](../.vuepress/public/images/2020-05-25-21-56-32-screen-coodinate-03.png)
+
+<center>屏幕越大，屏幕坐标系所能表现的数值就越大</center>
+
+canvas 属于屏幕坐标系？
+
 #### 视口坐标系
+
+视口就是当你在 Unity Scene 面板中看到摄像机的那个白色矩形框：
+
+![](../.vuepress/public/images/2020-05-25-22-00-37-viewport-coodinate-01.png)
+
+视口坐标系同屏幕坐标系相似，也是以左下角为原点的平面坐标系，不同的是视口坐标系的数值上限不受屏幕影响，右上角的坐标永远是（1，1），数值就是<u>物体屏幕坐标与屏幕宽高的比例</u>：（X 轴/宽度，Y 轴/高度），<u>作用是表示物体在摄像机的位置。</u>
+
+![](../.vuepress/public/images/2020-05-25-22-03-32-viewport-coodinate-02.png)
+
+#### 本地坐标 <--> 世界坐标
+
+##### 本地转世界：transform.TransformPoint
+
+```cs
+print("本地转世界" + a.TransformPoint(b.localPosition)); // a 作为 b 物体的参考系 (0, 0, 7)
+```
+
+##### 世界转本地：transform.InverseTransformPoint
+
+```cs
+print("世界转本地" + a.InverseTransformPoint(b.position)); // 以 a 为参考系，转 b 的世界坐标 (0, 0, 2)
+```
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class CoordinateDemo01 : MonoBehaviour
+{
+  public Transform a; // A 物体
+  public Transform b;  // B 物体
+  // Start is called before the first frame update
+  public Transform cube; // 将 Cube 拖进去
+  public Text text; // 将 Text 拖进去、
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (Input.GetKeyDown(KeyCode.A))
+    {
+      print("子物体的本地坐标：" + b.localPosition); // (0, 0, 2)
+      print("子物体的世界坐标：" + b.position); // (0, 0, 7)
+      print("本地转世界" + a.TransformPoint(b.localPosition)); // a 作为 b 物体的参考系 (0, 0, 7)
+      print("世界转本地" + a.InverseTransformPoint(b.position)); // 以 a 为参考系，转 b 的世界坐标 (0, 0, 2)
+    }
+
+    // 获取 Cube 顶上的位置的世界坐标
+    Vector3 pos = cube.position + Vector3.up;
+    text.transform.position = Camera.main.WorldToScreenPoint(pos); // 世界坐标转屏幕坐标
+  }
+}
+
+```
+
+#### 世界坐标 <--> 屏幕坐标
+
+##### 世界转屏幕：Camera.main.WorldToScreenPoint
+
+屏幕坐标是一个二维坐标 (X, Y)，所有被摄像机照的三维物体都可以在这个二维屏幕上找到自己的点：
+
+![](../.vuepress/public/images/unity-world-point-screen-point.gif)
+
+在游戏中我们可以看到这种现象：
+
+![](../.vuepress/public/images/2020-05-25-22-26-48-unity-screen-point-2.png)
+
+显示在人物身上的名字信息，会始终跟着人物移动，并且无论人物离摄像机多远多近，字体大小始终一样（通过两幅图主角血条和顶上的时间显示可以看出两个屏幕一样大小），<u>其实就是将人物的世界坐标转成屏幕坐标，再将这个坐标赋给显示名字的 UI</u>，接下来我们通过一个实例来完成：
+
+创建脚本：
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class CoordinateDemo01 : MonoBehaviour
+{
+  // Start is called before the first frame update
+  public Transform cube; // 将 Cube 拖进去
+  public Text text; // 将 Text 拖进去、
+  // Update is called once per frame
+  void Update()
+  {
+    // 获取 Cube 顶上的位置的世界坐标
+    Vector3 pos = cube.position + Vector3.up;
+    text.transform.position = Camera.main.WorldToScreenPoint(pos); // 世界坐标转屏幕坐标
+  }
+}
+
+```
+
+![](../.vuepress/public/images/unity-world-transform-screen-point-01.gif)
+
+<center>世界坐标在转屏幕坐标时会忽略 z 轴信息，因为屏幕坐标没有 Z 轴。</center>
+
+##### 屏幕转世界：Camera.main.ScreenToWorldPoint
+
+和世界转屏幕相反，屏幕转世界则是，<u>将屏幕坐标的 XY 轴信息转换后再增加一个 Z 轴信息，赋给三维世界的物体：</u>
+
+![](../.vuepress/public/images/unity-world-point-screen-point.gif)
+
+<center>Z 轴数值可以用该物体到屏幕的垂直距离</center>
+
+1. 创建一个物体 Cube，让摄像机正对着它：
+2. 创建脚本：
+
+```cs
+using UnityEngine;
+using System.Collections;
+
+public class CoordinateDemo02 : MonoBehaviour
+{
+  public Transform cube; // 方块
+  public Transform mainCamera; // 主摄像机
+  public bool _______________________;
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (Input.GetMouseButton(0)) // 按住鼠标左键
+    {
+      // 获取鼠标屏幕坐标（Z 轴为0）
+      Vector3 mPos = Input.mousePosition;
+      // 以摄像机 z 轴 为法线创建摄像机 XY 轴组成的平面
+      Plane pla = new Plane(mainCamera.forward, mainCamera.position);
+      // 获取物体到平面的距离（z 轴）垂直距离
+      float dis = pla.GetDistanceToPoint(cube.position);
+      // 将屏幕坐标转为世界坐标
+      cube.position = Camera.main.ScreenToWorldPoint(new Vector3(mPos.x, mPos.y, dis));
+    }
+  }
+}
+
+```
+
+#### 屏幕坐标 <--> 视口坐标
+
+##### 屏幕转视口：Camera.main.ScreenToViewportPoint
+
+##### 视口转屏幕：Camera.main.ScreenToViewportPoint
+
+```cs
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class CoordinateDemo03 : MonoBehaviour
+{
+  public Text text1; // 显示视口坐标
+  public Text text2; // 显示比例
+  // Use this for initialization
+  void Start()
+  {
+
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    ScreenToViewport();
+    //ViewportToScreen();
+  }
+
+  void ScreenToViewport()
+  {
+    // 获取鼠标坐标的屏幕坐标
+    Vector2 mouPos = Input.mousePosition;
+    // 将屏幕坐标转为视口坐标
+    Vector2 viewPos = Camera.main.ScreenToViewportPoint(mouPos);
+    // 显示视口坐标（保留小数点后两位）
+    text1.text = "视口：" + viewPos.ToString("0.00");
+
+    // 获取屏幕坐标与屏幕的宽高比
+    float x = mouPos.x / Screen.width;
+    float y = mouPos.y / Screen.height;
+    Vector2 viewpos1 = new Vector2(x, y);
+    // 显示比例
+    text2.text = "比值：" + viewpos1.ToString("0.00");
+  }
+
+
+  void ViewportToScreen()
+  {
+    // 获取鼠标坐标的屏幕坐标
+    Vector2 mouPos = Input.mousePosition;
+    // 直接显示屏幕坐标
+    text1.text = "直接显示屏幕坐标：" + mouPos.ToString();
+
+    // 获取屏幕坐标与屏幕的宽高比
+    float x = mouPos.x / Screen.width;
+    float y = mouPos.y / Screen.height;
+    Vector2 viewpos = new Vector2(x, y);
+
+    // 将视口坐标转为屏幕坐标
+    Vector2 mouPos1 = Camera.main.ViewportToScreenPoint(viewpos);
+    text2.text = "转换后的屏幕坐标：" + mouPos1.ToString();
+  }
+}
+```
+
+#### GUI 坐标系
 
 ### Transform
 
@@ -94,8 +321,8 @@ public class Test: MonoBehaviour {
     // 获取当前游戏对象 叫做 Cube 的对象的 transform 组件
     transform.Find("Cube");
     // // 获取当前游戏对象 叫做 Cube 的子对象
-    // transform.FindChild("Cube");  
-  } 
+    // transform.FindChild("Cube");
+  }
 }
 
 ```
@@ -197,7 +424,7 @@ Unity 的输入管理器中可以设置多个输入轴，`Input.GetAxis()` 可�
 
 ![](../.vuepress/public/images/2020-05-11-21-01-55-unity-input-2.png)
 
-每次调用 `Input.GetAxis()` 都会返回一个 <u>-1 到 1 之间的浮点数值（默认值为0）</u>。输入管理器中的每个轴还包括了灵敏度（`Sensitivity`）和重力（`Gravity`）的数值，但这两个值只适用于`键盘`和`鼠标输入`。灵敏度和重力可以在按下或松开按键时平滑插值（即在每次使用键盘或鼠标操作时，轴的数值不是立即跳到最终数值，而是从当前数值平滑过渡到最终数值）。在图中所示的 Horizontal 轴灵敏度为 3，表示当按下右方向键时，数值从 0 平滑过渡到 1 要经过 1/3 秒的时间。<u>灵敏度或重力数值越高，平滑过渡所需的时间越短。</u>
+每次调用 `Input.GetAxis()` 都会返回一个 <u>-1 到 1 之间的浮点数值（默认值为 0）</u>。输入管理器中的每个轴还包括了灵敏度（`Sensitivity`）和重力（`Gravity`）的数值，但这两个值只适用于`键盘`和`鼠标输入`。灵敏度和重力可以在按下或松开按键时平滑插值（即在每次使用键盘或鼠标操作时，轴的数值不是立即跳到最终数值，而是从当前数值平滑过渡到最终数值）。在图中所示的 Horizontal 轴灵敏度为 3，表示当按下右方向键时，数值从 0 平滑过渡到 1 要经过 1/3 秒的时间。<u>灵敏度或重力数值越高，平滑过渡所需的时间越短。</u>
 
 与 Unity 中其他很多功能一样，你可以单击帮助按钮按钮（外观像一本带有问号的书，位于检视面板上 InputManager 字样和齿轮图标之间），查看关于输入管理器的更多内容。
 
@@ -217,7 +444,7 @@ public class Hero : MonoBehaviour
   public float pitchMult = 30;
 
   public bool ______________________;
- 
+
   private void Awake()
   {
     S = this; // 设置单例对象
@@ -242,7 +469,7 @@ public class Hero : MonoBehaviour
 
 ```
 
-_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 _Hero 的运动和可操作性。
+\_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 \_Hero 的运动和可操作性。
 
 #### 鼠标
 
@@ -302,8 +529,6 @@ if (Input.GetMouseButtonUp(0))
     }
 ```
 
-
-
 ### 碰撞检测
 
 ### 刚体
@@ -314,14 +539,13 @@ if (Input.GetMouseButtonUp(0))
 
 一句话，`贴图是现象，纹理是特征，材质是性质`。比如说木头，贴图只有看着像木头，摸上去则是平面；纹理是看上去摸上去都像木头，但不一定真是木头；材质是不仅看和摸都像，都具有木头纤维各向异性的材料特征。
 
-|英文|中文|本质|释义|
-|--|--|--|--|
-|Material|材质|数据集|表现物体对光的交互，供渲染器读取的数据集，包括贴图纹理、光照算法等|
-|Texture mapping|纹理贴图|图像映射规则|把存储在内存里的位图，通过 UV 坐标映射到渲染物体的表面|
-|Shading|底纹、阴影|光影效果|根据表面法线、光照、视角等计算得出的光照效果|
-|Shader|着色器|程序|编写显卡渲染画面的算法来即时演算生成贴图的程序|
-|GLSL||程序语言|OpenGL 着色语言|
-
+| 英文            | 中文       | 本质         | 释义                                                               |
+| --------------- | ---------- | ------------ | ------------------------------------------------------------------ |
+| Material        | 材质       | 数据集       | 表现物体对光的交互，供渲染器读取的数据集，包括贴图纹理、光照算法等 |
+| Texture mapping | 纹理贴图   | 图像映射规则 | 把存储在内存里的位图，通过 UV 坐标映射到渲染物体的表面             |
+| Shading         | 底纹、阴影 | 光影效果     | 根据表面法线、光照、视角等计算得出的光照效果                       |
+| Shader          | 着色器     | 程序         | 编写显卡渲染画面的算法来即时演算生成贴图的程序                     |
+| GLSL            |            | 程序语言     | OpenGL 着色语言                                                    |
 
 这些概念都是为了完成一个共同目录：<u>用计算机表现真实可信的 Shading。</u>
 
@@ -338,6 +562,7 @@ if (Input.GetMouseButtonUp(0))
 ![飞机的护盾材质](../.vuepress/public/images/2020-05-12-21-34-06-unity-texture.png)
 
 贴图可以说是最简单的材质方法：
+
 - 选定物体表面的某些区域
 - 更改这个区域的一些属性（如颜色、反光度、透明度等）
 
@@ -363,11 +588,7 @@ if (Input.GetMouseButtonUp(0))
 - 着色器（Shaders）：它是一段小的脚本，基于光照输入（lighting input）和材质配置，包含了数学计算和每个像素的颜色计算算法。
 - 纹理（Textures）：纹理是位图，材质可以包含对纹理的引用，这样材质的着色器可以使用纹理计算游戏对象的表面。另外，对于游戏对象的基本颜色（Albedo），纹理可以代表材质表面的许多其他方面，例如反射率和粗糙度。
 
-### Bounds（边界框）
-
-渲染器和碰撞器都有边界框（`Bounds`）类型的 `bounds` 字段。边界框是由一个中心点（center）和一个尺寸
-
-todo ：需要学习向量的知识，再回顾边界框。
+### UGUI
 
 ### 时间
 
@@ -392,16 +613,18 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
    1. Skybox：天空盒。默认模式。在屏幕中年的空白部分将显示当前摄像机的天空盒。如果当前摄像机没有设置天空盒，会默认用 Background 色。
    2. Solid Color：纯色。选择该模式屏幕上的空白部分江南显示当前摄像机的 `background` 色。
    3. Depth only：不清除。该模式下不清除任何颜色或深度缓存。其结果是，每一帧渲染的结果叠加在下一帧之上。一般与自定义的 shader 配合使用。
-2. Background：背景。设置背景颜色。在镜头中的所有元素`渲染完成`(即运行play 模式)且没有指定 skybox 的情况下，将设置的颜色应用到屏幕的空白处。
-3. Culling Mask：剔除遮罩，选择要显示的 layer图层。
+2. Background：背景。设置背景颜色。在镜头中的所有元素`渲染完成`(即运行 play 模式)且没有指定 skybox 的情况下，将设置的颜色应用到屏幕的空白处。
+3. Culling Mask：剔除遮罩，选择要显示的 layer 图层。
 4. Projection：投射方法。
    1. Perspective：透视。摄像机将用透视的方式来渲染游戏对象。
       1. Field of view：视野范围。用于控制摄像机的视角宽带以及纵向的角度尺寸。
    2. Orthographic：正交。摄像机将用无透视的方式来渲染游戏对象。
       1. Size：大小。用于控制正交模式摄像机的视口大小。
 5. Clipping Planes：剪裁平面。摄像机开始渲染与停止渲染之间的距离。
-  - Near：近点。摄像机开始渲染的最近的点。
-  - Far ：远点。摄像机开始渲染的最远的点。
+
+- Near：近点。摄像机开始渲染的最近的点。
+- Far ：远点。摄像机开始渲染的最远的点。
+
 6. Viewport Rect：标准视图矩形。用四个数值（X，Y，W，H）来控制`摄像机的视图`绘制在屏幕的位置和大小，使用的是屏幕坐标系，数值在 `0～1`之间。
    1. ![](../.vuepress/public/images/2020-05-10-18-22-57-unity-camera-viewport.png)
 7. Depth：深度。用于控制摄像机的渲染顺序，较大值的摄像机将被渲染在较小值的摄像机之上。
@@ -410,7 +633,7 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
    2. Vertex Lit：顶点光照。摄像机将对所有的游戏对象座位顶点光照对象渲染。
    3. Forward：快速渲染。摄像机将所有游戏对象将按每一种材质一个通道的方式来渲染。
    4. Deferred Lighting：延迟光照。摄像机先对所有游戏对象进行一次无光照渲染，用屏幕空间大小的 Buffer 保持几何体的深度、法线已经高光强度，生成的 Buffer 将用于计算光照，同时生成一张新的光照信息 Buffer。最后所有的游戏对象会被再次渲染，渲染时叠加光照信息 Buffer 的内容。
-9.  Target Texture：目标纹理。用于将摄像机视图输出并渲染到屏幕。一般用于制作导航图或者画中画等效果。
+9. Target Texture：目标纹理。用于将摄像机视图输出并渲染到屏幕。一般用于制作导航图或者画中画等效果。
 10. HDR：高动态光照渲染。用于启用摄像机的高动态范围渲染功能。
 
 ## 进阶
@@ -421,6 +644,7 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 
 <!-- - 《游戏引擎架构》深入某个方向（如渲染、动画） -->
 <!-- - [Unity 工作一年能力应该达到什么水平？]() -->
+
 - [坐标系和坐标系转换](https://zhuanlan.zhihu.com/p/43348414)、
 - [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)
 - [游戏开发入门指南——Unity+](https://zhuanlan.zhihu.com/gdguide)

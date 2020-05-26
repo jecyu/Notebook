@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        display: flex;
+        height: 500px;
+      }
+      .sidebar {
+        width: 200px;
+        height: 100%;
+        background: blueviolet;
+      }
+      .content {
+        flex-grow: 1;
+        background: green;
+        height: 100%;
+      }
+      .content-body {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar"></div>
+      <div class="content">
+        <div class="content-body">
+          <table>
+            <thead><tr><th>哈哈哈</th></tr></thead>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      const container = document.querySelector(".container");
+      window.addEventListener("resize", () => {
+        console.log("container =>", container.offsetWidth);
+      });
+    </script>
+  </body>
+</html>

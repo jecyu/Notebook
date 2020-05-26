@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chrome 60下，height： 100；无法继承外部flex-grow: 1的容器</title>
+  <style>
+    .parent {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      background: gray;
+    }
+    .child1 {
+      width: 100%;
+      flex-grow: 1;
+      /* display: flex;
+      flex-direction: column; 解决方案 */ 
+      background: lightgreen;
+    }
+    .child11 {
+      height: 100%;
+      /* webpack 环境中，能否直接用 browserlist 解决兼容问题.browserslistrc */
+      /* flex-grow: 1; 解决方案：flex-grow */
+      width: 100%;
+      background: lightpink;
+    }
+    .child2 {
+      width: 100%;
+      height: 50px;
+      background: lightblue;
+    }
+  </style>
+</head>
+<body>
+  <div class="parent">
+    parent
+    <div class="child1">
+      child1
+      <div class="child11">child11</div>
+    </div>
+    <div class="child2">child2</div>
+  </div>
+</body>
+</html>

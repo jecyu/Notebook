@@ -1,5 +1,15 @@
 # mac
 
+类 linux 系统
+
+## 启动程序
+
+```bash
+$ "/Applications/Google Chrome 60.app/Contents/MacOS/Google Chrome" --user-data-dir="/Users/linjy/Library/Application Support/Google/Chrome60" > /dev/null 2>&1 &
+[2] 2119
+[1]   Done                  
+```
+
 ## 文件权限
 
 ## 如何通过终端验证文件的 MD5 和 SHA-1
@@ -156,3 +166,5 @@ tree -a
   </tbody>
 </table>
 这里，这里的参数 `-d`、`-D`区分大小写。
+
+## 参考资料

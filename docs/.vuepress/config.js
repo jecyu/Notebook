@@ -34,7 +34,7 @@ module.exports = {
           {
             text: "️️🧘算法修炼",
             items: [
-              { text: "计算机基础", link: "/algorithm/computerBasics" },
+              { text: "理解计算机", link: "/understand-the-computer/" },
               { text: "数据结构", link: "/algorithm/dataStructure" },
               { text: "算法分类", link: "/algorithm/algorithm" },
               { text: "数据库", link: "/dataBase/index" }
@@ -178,7 +178,7 @@ module.exports = {
         {
           title: "🚶不止前端",
           collapsable: false,
-          children: ["", "node", "java"]
+          children: ["", "node", "java", "c"]
         }
       ],
       "/rethink/": [
@@ -195,17 +195,25 @@ module.exports = {
           children: ["", "http"]
         }
       ],
+      "/understand-the-computer/": [
+        {
+          title: "理解计算机",
+          collapsable: false,
+          children: [
+            "",
+            "computerBasics"
+          ]
+        }
+      ],
       "/algorithm/": [
         {
           title: "算法",
           collapsable: false,
           children: [
-            "computerBasics",
+            "design-principles",
             "dataStructure",
             "algorithm",
-            "design-principles",
             "patterns",
-            "c",
           ]
         }
       ],

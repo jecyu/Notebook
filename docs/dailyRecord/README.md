@@ -4,6 +4,80 @@
 
 <!-- 横向和纵向排版统一使用 flex 布局。 -->
 
+## 五月
+
+### 在同一个机器上安装 chrome 多个版本共存
+
+#### 前言
+
+一个兼容性的问题，flex 布局。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chrome 60下，height： 100；无法继承外部flex-grow: 1的容器</title>
+  <style>
+    .parent {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      background: gray;
+    }
+    .child1 {
+      width: 100%;
+      flex-grow: 1;
+      /* display: flex;
+      flex-direction: column; 解决方案 */ 
+      background: lightgreen;
+    }
+    .child11 {
+      height: 100%;
+      /* webpack 环境中，能否直接用 browserlist 解决兼容问题.browserslistrc */
+      /* flex-grow: 1; 解决方案：flex-grow */
+      width: 100%;
+      background: lightpink;
+    }
+    .child2 {
+      width: 100%;
+      height: 50px;
+      background: lightblue;
+    }
+  </style>
+</head>
+<body>
+  <div class="parent">
+    parent
+    <div class="child1">
+      child1
+      <div class="child11">child11</div>
+    </div>
+    <div class="child2">child2</div>
+  </div>
+</body>
+</html>
+```
+
+window 版本
+
+mac 版本
+
+
+```bash
+$ "/Applications/Google Chrome 60.app/Contents/MacOS/Google Chrome" --user-data-dir="/Users/linjy/Library/Application Support/Google/Chrome60" > /dev/null 2>&1 &
+[2] 2119
+[1]   Done                  
+```
+
+#### 如何禁用Chrome版本自动更新
+
+#### 参考资料
+
+- [在 macOS 上面安装多个版本的 Chrome](https://blog.leodots.me/post/36-install-multiple-chrome-macos.html)
+- [https://www.slimjet.com/chrome/google-chrome-old-version.php](https://www.slimjet.com/chrome/google-chrome-old-version.php)
+
 ## 四月
 
 ### 分页功能
