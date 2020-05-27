@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>点赞按钮</title>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- <button class="like-btn">
+      <span class="like-text">点赞</span>
+      <span>👍</span>
+    </button> -->
+  </div>
+  <script>
+    // 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
+    const createDOMFromString = (domString) => {
+      const div = document.createElement('div');
+      div.innerHTML = domString;
+      return div;
+    }
+    class LikeButton {
+      render() {
+        this.el = createDOMFromString(
+          `
+            <button id='like-btn'>
+              <span class="like-text">点赞</span>
+              <span>👍</span>
+            </button>
+          `
+        )
+        this.el.addEventListener('click', () => {
+          console.log('click')
+        }, false)
+        return this.el;
+      }
+    }
+    
+    const wrapper = document.querySelector('.wrapper');
+    const likeButton1 = new LikeButton();
+    wrapper.appendChild(likeButton1.render());
+
+    const likeButton2 = new LikeButton()
+    wrapper.appendChild(likeButton2.render());
+    // 解决：简单的组件化
+    // 痛点：dom 操作很多，复杂
+  </script>
+</body>
+</html>

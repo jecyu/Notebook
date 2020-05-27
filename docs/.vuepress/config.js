@@ -171,7 +171,7 @@ module.exports = {
         {
           title: "游戏开发",
           collapsable: false,
-          children: ["design-prototype-development", "", "unity"]
+          children: ["design-prototype-development", "", "unity", "graphic"]
         }
       ],
       "/programming-language/": [

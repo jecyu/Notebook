@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>一个简单的例子——点赞按钮</title>
+</head>
+<body>
+  <div class="wrapper">
+    <button class="like-btn">
+      <span class="like-text">点赞</span>
+      <span>👍</span>
+    </button>
+  </div>
+  <script>
+    const button = document.querySelector('.like-btn')
+    const buttonText = button.querySelector('.like-text')
+    let isLiked = false
+    button.addEventListener('click', () => {
+      isLiked = !isLiked;
+      if (isLiked) {
+        buttonText.innerHTML = '取消';
+      } else {
+        buttonText.innerHTML = '点赞'
+      }
+    }, false)
+    // 痛点：无法结构复用
+  </script>
+</body>
+</html>

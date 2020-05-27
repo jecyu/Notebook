@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>抽象出公共组件类——点赞按钮</title>
+</head>
+<body>
+  <div class="wrapper">
+  </div>
+  <script>
+    // 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
+    const createDOMFromString = (domString) => {
+      const div = document.createElement('div');
+      div.innerHTML = domString;
+      return div;
+    }
+    // 抽象公共组件类，不需要说实现其他组件，也要重新 setState 等方法
+    class Component {
+      setState(state) {
+        const oldEl = this.el;
+        this.state = state;
+        this._renderDOM();
+        if (this.onStateChange) this.onStateChange(oldEl, this.el);
+      }
+      /**
+       * @description: 构建 DOM 元素并监听 onClick 事件
+       * @param {type} 
+       * @return: el
+       */
+      _renderDOM() {
+        this.el = createDOMFromString(this.render());
+        if (this.onClick) {
+          this.el.addEventListener('click', this.onClick.bind(this), false)
+        }
+        return this.el;
+      }
+    }
+    /**
+      * @description: 把组件的 DOM 元素插入到页面中
+      * @param {Object} 
+      * @param {Object} 
+      * @return: null
+      */
+    const mount = (component, wrapper) => {
+      wrapper.appendChild(component._renderDOM())
+      component.onStateChange = (oldEl, newEl) => {
+        wrapper.insertBefore(newEl, oldEl);
+        wrapper.removeChild(oldEl);
+      }
+    }
+    
+    // 痛点：避免 changeLikeText 过多的 dom 操作
+    // 解决：状态改变 ➡️ 构建新的 DOM 元素更新页面 （Model View Controller）,重新插入新的 DOM 元素 
+    class LikeButton extends Component{
+      constructor() {
+        super()
+        this.state = { isLiked: false }
+      }
+      onClick() {
+        this.setState({
+          isLiked: !this.state.isLiked
+        })
+      }
+      /**
+       * @description: 返回 HTML 字符串
+       * @param {type} 
+       * @return: 
+       */
+      render() {
+        return`
+            <button id='like-btn'>
+              <span class="like-text">${this.state.isLiked ? '取消': '点赞' }</span>
+              <span>👍</span>
+            </button>
+          `
+      }
+    }
+    
+    const wrapper = document.querySelector('.wrapper');
+    mount(new LikeButton(), wrapper);
+    // 解决：抽离公共组件
+    // 痛点：无法定制化配置，按钮的样式
+  </script>
+</body>
+</html>

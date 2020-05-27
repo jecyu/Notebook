@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>点赞按钮</title>
+</head>
+<body>
+  <div class="wrapper">
+  </div>
+  <script>
+    // 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
+    const createDOMFromString = (domString) => {
+      const div = document.createElement('div');
+      div.innerHTML = domString;
+      return div;
+    }
+    // 痛点：避免 changeLikeText 过多的 dom 操作
+    // 解决：状态改变 ➡️ 构建新的 DOM 元素更新页面 （Model View Controller）,重新插入新的 DOM 元素 
+    class LikeButton {
+      constructor() {
+        this.state = { isLiked: false }
+      }
+      changeLikeText() {
+          // const likeText = this.el.querySelector('.like-text');
+          // this.state.isLiked = !this.state.isLiked;
+          // likeText.innerHTML = this.state.isLiked ? '取消' : "点赞"
+          this.setState({
+            isLiked: !this.state.isLiked
+          })
+      }
+      /**
+       * @description: 设置实例的 state，然后重新调用一下 render 方法，
+        只要调用 setState() 组件就会重新渲染，这样就不用手动操作 dom 了。
+       * @param {Object}  
+       * @return: null
+       */
+       setState(state) {
+        const oldEl = this.el;
+        this.state = state;
+        this.el = this.render();
+        if (this.onStateChange) this.onStateChange(oldEl, this.el)
+      }
+      render() {
+        this.el = createDOMFromString(
+          `
+            <button id='like-btn'>
+              <span class="like-text">${this.state.isLiked ? '取消': '点赞' }</span>
+              <span>👍</span>
+            </button>
+          `
+        )
+        this.el.addEventListener('click',this.changeLikeText.bind(this), false)
+        return this.el;
+      }
+    }
+    
+    const wrapper = document.querySelector('.wrapper');
+    const likeButton = new LikeButton();
+    wrapper.appendChild(likeButton.render());
+    likeButton.onStateChange = (oldEl, newEl) => {
+      wrapper.insertBefore(newEl, oldEl); // 插入新的元素
+      wrapper.removeChild(oldEl); // 删除旧的元素
+    }
+
+    // 解决：每当 setState 构造完新的 DOM 元素后，就会通过 onStateChange 告知外部插入新的 DOM 元素，然后删除旧的元素，页面就更新了。不再需要手动更新
+    // 这里每次 setState 都重新构造、新增、删除 DOM 元素，会导致浏览器进行大量的重排，严重影响性能，但是可以通过 Virtual-DOM 的策略规避掉。
+    // 痛点：重新另外做一个新组件，譬如说评论组件，那么里面的这些 setState 方法要重新写一遍
+  </script>
+</body>
+</html>

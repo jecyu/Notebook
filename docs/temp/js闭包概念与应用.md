@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: Jecyu
  * @Date: 2020-05-19 19:12:07
- * @LastEditTime: 2020-05-26 10:45:09
+ * @LastEditTime: 2020-05-27 14:01:31
  * @LastEditors: Jecyu
 --> 
 ## 前言
@@ -13,6 +13,7 @@
   - 栈（js 单线程占用一个独立的栈）
   - 堆
   - 函数调用入栈
+  - 原始值，引用值
 - 内存垃圾回收机制（chrome 调试工具）
 - 内存管理（引用计数）应用
   - 闭包概念
@@ -23,6 +24,14 @@
     - performance
     - more tools -> performance monitor 实时监控
     - memory 面板
+
+```
+> b = a
+{ name: 'jecyu' }
+> a = null;
+null
+> b 
+{ name: 'jecyu' }
 
 ## 参考资料
 

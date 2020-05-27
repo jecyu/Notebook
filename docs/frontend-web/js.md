@@ -10,6 +10,18 @@
 
 ### 面向对象与原型
 
+![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
+
+- __proto__ 与 prototype 的区别
+- 构造器与原型的区别，两者的作用用于哪里，有哪些应用场景
+- contructor
+- 什么是原型链
+- js 构建类与其他面向对象语言的区别如 C#、java
+- 如何判断类型 typeof 与 instanceof
+- vue 的原型链，给 vue 原型添加方法
+
+
+
 ### ajax
 
 ![ajax](../.vuepress/public/images/ajax.png)
@@ -129,6 +141,9 @@ export const traverseTree = (
 ##### 私有变量
 
 ##### 函数里返回函数
+
+
+### 对象
 
 ### 事件
 
@@ -2315,6 +2330,7 @@ function Random(min, max) {
   - [JavaScript 开发者应懂的 33 个概念(中文版)](https://github.com/stephentian/33-js-concepts)
   - [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)
 - JS 垃圾回收机制
+  - [https://developer.mozilla.org/en-US/docs/Glossary/Primitive](https://developer.mozilla.org/en-US/docs/Glossary/Primitive)
   - [内存管理速成教程](https://mp.weixin.qq.com/s/sVcGRUZqILCVgfhzRyODTg) —— 漫画式讲解 JS 内存管理。
   - [Javascript 的匿名函数与自执行](https://juejin.im/entry/57fee360a22b9d005b1d9ae3) -- 匿名函数与闭包。
   - [前端面试：谈谈 JS 垃圾回收机制](https://segmentfault.com/a/1190000018605776#comment-area) 图例说得不错。
@@ -2335,3 +2351,7 @@ function Random(min, max) {
   - [高阶函数](https://deathking.github.io/yast-cn/contents/chapter8.html)
   - [高阶函数](https://www.liaoxuefeng.com/wiki/1022910821149312/1023021271742944) 廖雪峰博客
   - [wiki 百科高阶函数](https://zh.wikipedia.org/zh-hans/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0)
+- 对象
+  - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
+  - [【进阶5-2期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)
+  - [【进阶5-1期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)
