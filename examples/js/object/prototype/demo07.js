@@ -2,7 +2,7 @@
  * @Description: 尝试实现原型继承
  * @Author: Jecyu
  * @Date: 2020-05-27 14:04:50
- * @LastEditTime: 2020-05-27 14:21:34
+ * @LastEditTime: 2020-05-28 09:00:33
  * @LastEditors: Jecyu
  */ 
 const assert = require('assert');
@@ -11,7 +11,7 @@ function Person() {}
 Person.prototype.dance = function() {}; // 通过构造函数及其原型，创建一个具有 dance 方法的 Person 类型
 
 function Ninja() {} // 定义 Ninja 构造函数
-Ninja.prototype = { // 试图附着iPerson 的原型方法 dance 到 Ninja 的原型上 
+Ninja.prototype = { // 试图附着 Person 的原型方法 dance 到 Ninja 的原型上 
   dance: Person.prototype.dance 
 }
 

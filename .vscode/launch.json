@@ -9,7 +9,8 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/examples/js/object/demo07.js"
+      // "program": "${workspaceFolder}/examples/js/object/prototype/demo12.js"
+      "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
     }
   ]
 }

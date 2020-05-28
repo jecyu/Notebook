@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <name>demo1 测试</name>
+  </head>
+  <body>
+    <div id="wrapper">
+      <!-- <div class="tiny-tree-wrapper">
+      <ul class="tiny-tree"> 
+        <li class="tiny-tree-node">
+          <div class="tiny-tree-node-content"></div>
+          <ul class="tiny-tree-node-children"></ul>  
+        </li>
+      </ul>
+    </div> -->
+    </div>
+    <!-- <script src="../dist/easy-tree.js"></script> -->
+    <!-- 导入 DevServer 输出的 JavaScript 文件 -->
+    <script src="easy-tree.js"></script>
+    <script>
+      const treeData = [
+        {
+          name: "业务热点",
+          id: "0",
+          folder: false,
+        },
+        {
+          name: "资源监测",
+          id: "1",
+          folder: true,
+          expand: true,
+          children: [
+            {
+              name: "供应计划",
+              id: "2",
+              folder: true,
+              expand: true,
+              children: [
+                {
+                  name: "土地储备",
+                  id: "3",
+                },
+                {
+                  name: "土地供应",
+                  id: "4",
+                },
+                {
+                  name: "用地建设",
+                  id: "5",
+                },
+              ],
+            },
+            {
+              name: "土地储备",
+              id: "3",
+            },
+            {
+              name: "土地供应",
+              id: "4",
+            },
+            {
+              name: "用地建设",
+              id: "5",
+            },
+          ],
+        },
+        {
+          name: "资源监测",
+          id: "1",
+          folder: true,
+          expand: true,
+          children: [
+            {
+              name: "供应计划",
+              id: "2",
+              folder: true,
+              expand: true,
+              children: [
+                {
+                  name: "资源监测",
+                  id: "1",
+                  folder: true,
+                  expand: true,
+                  children: [
+                    {
+                      name: "土地供应",
+                      id: "5",
+                    },
+                    {
+                      name: "用地建设",
+                      id: "6",
+                    },
+                  ],
+                },
+                {
+                  name: "土地储备",
+                  id: "3",
+                },
+              ],
+            },
+            {
+              name: "土地储备",
+              id: "3",
+            },
+            {
+              name: "土地供应",
+              id: "4",
+            },
+            {
+              name: "用地建设",
+              id: "5",
+            },
+          ],
+        },
+      ];
+      const wrapper = document.querySelector("#wrapper");
+      const tree = new easyTree({ baseNode: wrapper, data: treeData });
+    </script>
+  </body>
+</html>
