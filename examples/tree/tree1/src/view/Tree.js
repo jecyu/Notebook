@@ -2,7 +2,7 @@
  * @Description:
  * @Author: Jecyu
  * @Date: 2020-05-26 15:11:24
- * @LastEditTime: 2020-05-28 15:58:35
+ * @LastEditTime: 2020-05-28 16:27:20
  * @LastEditors: Jecyu
  */
 
@@ -41,6 +41,7 @@ export default class EasyTree {
     };
     this.opts = Object.assign(this.defaultOpt, prop);
     this.init(); // 初始化
+    this.prefix = "easy"
   }
   init() {
     this.initState();
@@ -63,12 +64,12 @@ export default class EasyTree {
     const treeWrapper = createDOMFromString(`<ul class="easy-tree"></ul>`);
     // const treeNode = new node(this.root).render();
     this.roots.forEach(nodeModel => {  // 遍历渲染
-      const treeNode = this.renderTreeNode(nodeModel);
+      const treeNode =  this.renderTreeNode(nodeModel);
       treeWrapper.appendChild(treeNode); // 添加进根节点
     })
     this.opts.baseNode.appendChild(treeWrapper); // 渲染完成再添加进 web 浏览器，添加到外部容器
     // 给 ul 树容器添加事件委托，展开、收缩如何处理？改变 dom 数据的 expand 属性
-    // 给 ul 容器添加事件，给每个节点分配 id，然后点击事件的时候，通过 id 寻找对应的 nodeData，进行属性值的更改，如 expand、visiable等。
+    // 给 ul 容器添加事件，给每个节点分配 id，然后点击事件的时候，通过 id 寻找对应的 nodeData，进行属性值的更改，如 expand、visiable等。 settArribute，原始是通过
   }
   renderTreeNode(nodeModel) {
     // 渲染节点。绑定事件，后续再看怎么处理
@@ -79,8 +80,9 @@ export default class EasyTree {
     //   {renderChildren}
     // </li>
     const { data } = nodeModel;
+    debugger;
     const li = `<li class="easy-tree-node"></li>`; // 节点模版
-    const div = `<div class="easy-tree-node-content">${data.name}</div>`;
+    const div = `<div class="easy-node-content">${data.name}</div>`;
     const liDom = createDOMFromString(li);
     const divDom = createDOMFromString(div);
     liDom.appendChild(divDom);
