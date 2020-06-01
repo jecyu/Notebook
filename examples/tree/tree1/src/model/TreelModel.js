@@ -2,7 +2,7 @@
  * @Description: 树的根
  * @Author: Jecyu
  * @Date: 2020-05-27 17:01:31
- * @LastEditTime: 2020-05-28 15:48:42
+ * @LastEditTime: 2020-05-29 21:57:58
  * @LastEditors: Jecyu
  */
 
@@ -14,6 +14,7 @@ export default class TreeModel {
    */
   constructor(data) {
     this._roots = []; // 多个根
+    this.nodeModelMap = {}
     this.initTree(data);
   }
 
@@ -37,11 +38,32 @@ export default class TreeModel {
   convertDataToTree(data, parent) {
     data.forEach(item => {
       const node = new NodeModel({ name: item.name }, null);
+      this.nodeModelMap[node.id] = node;
       parent.push(node);
       if (item.children && item.children.length) {
         this.convertDataToTree(item.children, node.children);
       }
     })
+  }
+
+  /** 
+   * 根据 id 设置节点的显示
+  */
+ setChildNodeVisible(id) {
+    // 根据 id 找到 nodeModel
+    const targetNodeModel = this.findNodeModel(id);
+    if (!targetNodeModel) return;
+    // 设置 visible 值
+    if(!targetNodeModel.visible) {
+      targetNodeModel.setChildNodesShow(targetNodeModel);
+    } else {
+      targetNodeModel.setChildNodesHide(targetNodeModel);
+
+    }
+  }
+
+  findNodeModel(id) {
+    return this.nodeModelMap[id];
   }
 
   getTreeRoot() {

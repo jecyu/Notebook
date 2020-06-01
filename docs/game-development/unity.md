@@ -13,9 +13,11 @@
 
 ![](../.vuepress/public/images/2020-05-26-20-43-31-unity-component-vs-extend.png)
 
-在组件系统中，物体存在于一个扁平的层级结构，不同的物体有不同的组件集合，而不像继承结构，不同物体处于树的完全不同的分支中。<u>这种设计加快原型的开发，因为当物体改变时，你能快速混合搭配不同组件而不必重构继承链。</u>
+在组件系统中，物体存在于一个扁平的层级结构，不同的物体有不同的组件集合，而不像继承结构，不同物体处于树的完全不同的分支中。<u>这种设计加快原型的开发，因为当物体改变时，你能快速混合搭配不同组件而不必重构继承链。</u>跟装饰器的概念很类似。（也像鸭子类型）
 
 当没有组件系统时，虽然你也可以编写代码实现自定义的组件系统，但是 Unity 已经有一个健壮的组件系统，这个系统甚至编辑器附加和移除组件。<u>另外，你不再仅限于只能通过组件构建对象，也可以在代码中选择使用继承，包括所有基于继承的最佳设计模式。</u>
+
+应用场景：FPS 人称，hero 和摄像机同时挂载 mouselook 脚本组件。
 
 ### Unity 的缺点
 
@@ -142,6 +144,16 @@ Apple Pcker Prototyp
 
 #### 应用变换
 
+## 游戏类型
+
+### FPS
+
+- 3D 坐标空间由 X，Y，Z 轴定义。
+- 房间中的对象和灯光构成场景。
+- 第一人称场景中的玩家本质上是一个摄像机。
+- 移动代码不停在每帧应用小的变换。
+
+- FPS 控件由鼠标旋转和键盘移动构成。
 ## 入门
 
 ### 灯光
@@ -216,6 +228,21 @@ canvas 属于屏幕坐标系？
 print("本地转世界" + a.TransformPoint(b.localPosition)); // a 作为 b 物体的参考系 (0, 0, 7)
 ```
 
+应用场景：玩家的移动
+
+```cs
+  void Update()
+  {
+    float deltaX = Input.GetAxis("Horizontal") * speed;
+    float deltaZ = Input.GetAxis("Vertical") * speed;
+    Vector3 movement = new Vector3(deltaX, 0, deltaZ);
+    movement = Vector3.ClampMagnitude(movement, speed); // 将对角移动的速度限制为和沿着轴移动的速度一样
+    movement *= Time.deltaTime;
+    movement = transform.TransformDirection(movement); // 把 movement 向量从本地变换为全局坐标
+    _charController.Move(movement); // 告知 CharacterController 通过 movement 向量移动
+  }
+```
+
 ##### 世界转本地：transform.InverseTransformPoint
 
 ```cs
@@ -274,6 +301,7 @@ public class CoordinateDemo01 : MonoBehaviour
 显示在人物身上的名字信息，会始终跟着人物移动，并且无论人物离摄像机多远多近，字体大小始终一样（通过两幅图主角血条和顶上的时间显示可以看出两个屏幕一样大小），<u>其实就是将人物的世界坐标转成屏幕坐标，再将这个坐标赋给显示名字的 UI</u>，接下来我们通过一个实例来完成：
 
 创建脚本：
+
 ```cs
 using System.Collections;
 using System.Collections.Generic;
@@ -413,6 +441,10 @@ public class CoordinateDemo03 : MonoBehaviour
 
 打开 Unity 创建一个 Cube 物体，然后给 Cube 物体添加一个脚本,新建的 cube 可能不在原点，这时可以选中 Cube 物体，然后在 Inspector 面板中找到 Transform 属性，右键点击 Transform，可以弹出下面的对话框，点击 reset 就可设置 Cube 物体到原点了。
 
+#### 设置 transform 值
+
+我们需要创建一个新的 Vector3 而不是修改 transform 已经存在的向量值，因为 transform 的那些值是只读的。
+
 #### 管理游戏对象间的父子关系
 
 可以通过 `transfrom` 查找当前游戏对象的孩子游戏对象或者父亲游戏对象
@@ -520,6 +552,35 @@ Bounds Bnd = new Bounds(new Vector3(3, 4, 0), new Vector3(16, 16, 0));
 
 ### 用户输入
 
+#### 键盘输入组件
+
+提示：
+
+键盘和鼠标控件被分离到单独的脚本中。你可以不用这种方式组织代码，可以将所有东西打包到一个单独的 “player controls” 脚本中，但组件系统（诸如 Unity 的组件系统）在你将功能切分到每个小组件时最灵活且最有用。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FPSInput : MonoBehaviour
+{
+  public float speed = 6.0f;
+  public bool _____________________; // 配置
+  // Update is called once per frame
+  void Update()
+  {
+    float deltaX = Input.GetAxis("Horizontal") * speed;
+    float deltaZ = Input.GetAxis("Vertical") * speed;
+    transform.Translate(deltaX, 0, deltaZ);
+  }
+}
+
+
+```
+
+`左/右箭头`按键和字母 `A/D` 都映射到 `Horizontal`，而所有的 `up/down` 箭头按键和字母键 `W/S` 都映射到 `Vertical`。
+
 #### InputManager 输入管理器
 
 Unity 的输入管理器中可以设置多个输入轴，`Input.GetAxis()` 可用于读取这些轴，要查看默认的输入轴列表。请在菜单栏中执行编辑（Edit）> 项目设置（Project Setting）> 输入（Input）命令。
@@ -577,7 +638,7 @@ public class Hero : MonoBehaviour
 
 \_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 \_Hero 的运动和可操作性。
 
-例子2：mouseLook 随着鼠标旋转
+例子 2：mouseLook 随着鼠标旋转
 
 #### 鼠标
 
@@ -639,6 +700,72 @@ if (Input.GetMouseButtonUp(0))
 
 ### 碰撞检测
 
+在 Unity 中参与碰撞的物体分 2 大块：**1.发起碰撞的物体。2.接收碰撞的物体。**
+
+**1. 发起碰撞物体有**：`Rigodbody` , `CharacterController` .
+
+**2. 接收碰撞物体由**：所有的 `Collider` .
+
+**工作的原理为：发生碰撞的物体中必须要有“发起碰撞”的物体。否则，碰撞不响应。**
+
+比如：墙用 BoxCollider ，所以墙与墙之间无反应。
+
+比如：一个带有 `Rigidbody` 属性的箱子，能落到带有 `MeshCollider` 属性的地面上。
+
+比如：一个带有 `Rigidbody`属性的箱子，可以被一个带有 `CharacterController` 属性的人推着跑。
+
+就是此原因。
+
+在所有 `Collider`上有一个 `Is Trigger` 的 `boolean` 型参数。
+
+当发生碰撞反应的时候，会先检查此属性。
+
+<u>当激活此选项时，会调用碰撞双方的脚本 `OnTrigger***`， 反之，脚本方面没有任何反应。</u>
+
+当激活此选项时，不会发生后续物理的反应。反之，发生后续的物理反应。
+
+**总结：`Is Trigger` 好比是一个物理功能的开关， 是要“物理功能”还是要“OnTrigger 脚本”。**
+
+`OnTriggerEnter` 触发条件：
+
+- 碰撞双方都必须是碰撞体
+- 碰撞双方其中一个碰撞体必须勾选 `IsTigger` 选项
+- 碰撞双方其中一个必须是刚体
+- 刚体的 `IsKinematic` 选项可以勾选也可以不勾选
+
+只要满足上面两个条件，不管谁主动都会触发
+
+备注：
+
+- `OnTriggerEnter` 方法的形参对象指的是碰撞双方中没有携带 `OnTriggerEnter` 方法的一方
+- `OnTriggerEnter` 方法前可以带上 `public` 或 `private`，或者干脆两个都不带
+
+**collider 的作用以及 isTrigger 的属性用法是什么？**
+
+OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false。为什么呢，这里涉及到触发器和碰撞器。
+
+1.系统默认会给每个对象 (GameObject) 添加一个碰撞组件 (ColliderComponent)，一些背景对象则可以取消该组件。
+
+2.在 unity3d 中，能检测碰撞发生的方式有两种，**一种是利用碰撞器，另一种则是利用触发器**。这两种方式的应用非常广泛。为了完整的了解这两种方式，我们必须理解以下概念：
+
+（一）碰撞器是一群组件，它包含了很多种类，比如：`Box Collider`，`Capsule Collider` 等，这些碰撞器应用的场合不同，但都必须加到 `GameObjecet` 身上。
+（二）所谓触发器，只需要在检视面板中的碰撞器组件中勾选 `IsTrigger` 属性选择框。
+（三）在 Unity3d 中，主要有以下接口函数来处理这两种碰撞检测：
+
+- 触发信息检测：
+
+1. MonoBehaviour.OnTriggerEnter( Collider other )当进入触发器
+2. MonoBehaviour.OnTriggerExit( Collider other )当退出触发器
+3. MonoBehaviour.OnTriggerStay( Collider other )当逗留触发器
+
+- -碰撞信息检测：
+
+1. MonoBehaviour.OnCollisionEnter( Collision collisionInfo ) 当进入碰撞器
+2. MonoBehaviour.OnCollisionExit( Collision collisionInfo ) 当退出碰撞器
+3. MonoBehaviour.OnCollisionStay( Collision collisionInfo )   当逗留碰撞器
+
+
+
 ### 刚体
 
 ### Materials、Shaders&Textures
@@ -698,10 +825,27 @@ if (Input.GetMouseButtonUp(0))
 
 ### UGUI
 
+https://zhuanlan.zhihu.com/p/37726559
+
 ### 时间
 
 - Time.time
-- Time.deletaTime 区别
+- Time.deletaTime：deltaTime 是经过两帧之间的时间
+
+#### 设置独立于计算机运行速度的运动速率
+
+想象你在两台不同的计算机上运行这个示例，一个是 `30fps`（frames per second，帧每秒）而另一个是 `60 fps`。这意味着在第二台计算机上 Update() 将会被调用两倍，而相同的速度值 6 将会在每帧被应用。在 30 fps 机器上的移动将会是 180 单位/秒，而在 60 fps 的机器上移动速度则是 360 单位/秒。对于大多数游戏而言，这样带来的速度不同其实并不是一件好事情。
+
+解决方案就是调整运动代码，使得它和帧率独立。这意味移动速度不依赖游戏的帧率。为此就不能在每帧应用相同的速度值。而是根据计算机运行的快慢缩放速度，使得更快或更慢。这通过把速度值和另一个称为 `deltaTime` 的值相乘来实现。
+
+```cs
+...
+void Update() {
+  float deltaX = Input.GetAxis("Horizontal") * speed;
+  float deltaZ = Input.GetAxis("Vertical") * speed;
+  transform.Translate(deltaX * Time.deltaTime, 0, deltaZ * Time.deltaTime);
+}
+```
 
 #### Rigidbody 中的 isKinematic 作用是什么？
 
@@ -755,4 +899,6 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 
 - [坐标系和坐标系转换](https://zhuanlan.zhihu.com/p/43348414)、
 - [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)
-- [游戏开发入门指南——Unity+](https://zhuanlan.zhihu.com/gdguide)
+- [游戏开发入门指南——Unity+](https://zhuanlan.zhihu.com/p/50876776)
+- 《Unity 5 实战》
+- [Unity3D 碰撞检测和 OnTriggerEnter 用法](https://blog.csdn.net/qq_30454411/article/details/79810922) 详细介绍了碰撞以及 OnTriggerEnter 的使用]

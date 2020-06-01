@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <name>demo1 测试</name>
+    <name>Easy Tree</name>
+    <!-- 后续添加到本地 -->
+    <link
+      rel="stylesheet"
+      href="//at.alicdn.com/t/font_1261797_48wm20jf8z.css"
+    />
   </head>
   <body>
     <div id="wrapper">
@@ -15,108 +20,187 @@
         </li>
       </ul>
     </div> -->
+      <button id="remove">remove tree</button>
     </div>
     <!-- <script src="../dist/easy-tree.js"></script> -->
     <!-- 导入 DevServer 输出的 JavaScript 文件 -->
     <script src="easy-tree.js"></script>
     <script>
-      const treeData = [
-        {
-          name: "业务热点",
-          id: "0",
-          folder: false,
-        },
-        {
-          name: "资源监测",
-          id: "1",
-          folder: true,
-          expand: true,
-          children: [
-            {
-              name: "供应计划",
-              id: "2",
-              folder: true,
-              expand: true,
-              children: [
-                {
-                  name: "土地储备",
-                  id: "3",
-                },
-                {
-                  name: "土地供应",
-                  id: "4",
-                },
-                {
-                  name: "用地建设",
-                  id: "5",
-                },
-              ],
-            },
-            {
-              name: "土地储备",
-              id: "3",
-            },
-            {
-              name: "土地供应",
-              id: "4",
-            },
-            {
-              name: "用地建设",
-              id: "5",
-            },
-          ],
-        },
-        {
-          name: "资源监测",
-          id: "1",
-          folder: true,
-          expand: true,
-          children: [
-            {
-              name: "供应计划",
-              id: "2",
-              folder: true,
-              expand: true,
-              children: [
-                {
-                  name: "资源监测",
-                  id: "1",
-                  folder: true,
-                  expand: true,
-                  children: [
-                    {
-                      name: "土地供应",
-                      id: "5",
-                    },
-                    {
-                      name: "用地建设",
-                      id: "6",
-                    },
-                  ],
-                },
-                {
-                  name: "土地储备",
-                  id: "3",
-                },
-              ],
-            },
-            {
-              name: "土地储备",
-              id: "3",
-            },
-            {
-              name: "土地供应",
-              id: "4",
-            },
-            {
-              name: "用地建设",
-              id: "5",
-            },
-          ],
-        },
-      ];
+      // const treeData = [
+      //   {
+      //     name: "业务热点",
+      //     id: "0",
+      //     folder: false,
+      //   },
+      //   {
+      //     name: "资源监测",
+      //     id: "1",
+      //     folder: true,
+      //     expand: true,
+      //     children: [
+      //       {
+      //         name: "供应计划",
+      //         id: "2",
+      //         folder: true,
+      //         expand: true,
+      //         children: [
+      //           {
+      //             name: "土地储备",
+      //             id: "3",
+      //           },
+      //           {
+      //             name: "土地供应",
+      //             id: "4",
+      //           },
+      //           {
+      //             name: "用地建设",
+      //             id: "5",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         name: "土地储备",
+      //         id: "3",
+      //       },
+      //       {
+      //         name: "土地供应",
+      //         id: "4",
+      //       },
+      //       {
+      //         name: "用地建设",
+      //         id: "5",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     name: "资源监测",
+      //     id: "1",
+      //     folder: true,
+      //     expand: true,
+      //     children: [
+      //       {
+      //         name: "供应计划",
+      //         id: "2",
+      //         folder: true,
+      //         expand: true,
+      //         children: [
+      //           {
+      //             name: "资源监测",
+      //             id: "1",
+      //             folder: true,
+      //             expand: true,
+      //             children: [
+      //               {
+      //                 name: "土地供应",
+      //                 id: "5",
+      //               },
+      //               {
+      //                 name: "用地建设",
+      //                 id: "6",
+      //               },
+      //             ],
+      //           },
+      //           {
+      //             name: "土地储备",
+      //             id: "3",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         name: "土地储备",
+      //         id: "3",
+      //       },
+      //       {
+      //         name: "土地供应",
+      //         id: "4",
+      //       },
+      //       {
+      //         name: "用地建设",
+      //         id: "5",
+      //       },
+      //     ],
+      //   },
+      // ];
+      const dataMaker = function(count) {
+        var nodes = [],
+          pId = -1,
+          min = 10,
+          max = 90,
+          level = 0,
+          curLevel = [],
+          prevLevel = [],
+          levelCount,
+          i = 0,
+          j,
+          k,
+          l,
+          m;
+
+        while (i < count) {
+          if (level == 0) {
+            pId = -1;
+            levelCount = Math.round(Math.random() * max) + min;
+            for (j = 0; j < levelCount && i < count; j++, i++) {
+              var n = { id: i, pId: pId, name: "Big-" + i };
+              nodes.push(n);
+              curLevel.push(n);
+            }
+          } else {
+            for (l = 0, m = prevLevel.length; l < m && i < count; l++) {
+              pId = prevLevel[l].id;
+              levelCount = Math.round(Math.random() * max) + min;
+              for (j = 0; j < levelCount && i < count; j++, i++) {
+                var n = { id: i, pId: pId, name: "Big-" + i };
+                nodes.push(n);
+                curLevel.push(n);
+              }
+            }
+          }
+          prevLevel = curLevel;
+          curLevel = [];
+          level++;
+        }
+        return nodes;
+      };
+      const BuildTree = (
+        tree,
+        childrenKey = "children",
+        key = "nodeKey",
+        parentKey = "parent"
+      ) => {
+        const n = []; // 添加多一个数组，记录父级
+        const treeMap = {};
+        // 删除 所有 children，传入的值带有 children），以防止孩子重复（
+        tree.forEach((node) => {
+          node[childrenKey] && delete node[childrenKey];
+        });
+
+        tree.forEach((node) => (treeMap[node[key]] = node));
+        tree.forEach((node) => {
+          const parent = treeMap[node[parentKey]];
+          // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到它对应的父级中
+          if (parent) {
+            const children = parent[childrenKey] || []; // parent.children ，避免相同值
+            children.push(node);
+            parent[childrenKey] = children;
+          } else {
+            // 如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 n 结果集中，作为顶级
+            n.push(node);
+          }
+        });
+        return n;
+      };
+
+      const treeData = BuildTree(dataMaker(100), "children", "id", "pId");
       const wrapper = document.querySelector("#wrapper");
-      const tree = new easyTree({ baseNode: wrapper, data: treeData });
+      let easyTreeHHH = new EasyTree({ baseNode: wrapper, data: treeData });
+      document.querySelector("#remove").addEventListener("click", () => {
+        // 移除 tree
+        wrapper.removeChild(document.querySelector(".easy-tree"));
+        easyTreeHHH.destroy();
+        easyTreeHHH = null; 
+        // 普通的 dom 引用以及点击事件都会被回收，但是对于 window.addEventList("resize") 这种挂载在全局对象上，是会一直监听的。因为 tree = null了，但是如果内部存在定时器等则会有问题，所以调用 destroy
+      });
     </script>
   </body>
 </html>

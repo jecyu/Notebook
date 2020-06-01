@@ -18,6 +18,7 @@
 - 什么是原型链
 - js 构建类与其他面向对象语言的区别如 C#、java
 - 如何判断类型 typeof 与 instanceof
+- in 操作符的使用
 - vue 的原型链，给 vue 原型添加方法
 - 应用场景：一些库、旧项目？
 
@@ -2337,7 +2338,7 @@ function Random(min, max) {
   - [JavaScript 内存泄漏教程](http://www.ruanyifeng.com/blog/2017/04/memory-leak.html)
   - [4种JavaScript内存泄漏浅析及如何用谷歌工具查内存泄露](https://www.jianshu.com/p/24874469dafd)
   - [垃圾回收 (计算机科学)](https://zh.wikipedia.org/wiki/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8))
-  - [使用 chrome-devtools Memory 面板](https://zhuanlan.zhihu.com/p/80792297
+  - [使用 chrome-devtools Memory 面板](https://zhuanlan.zhihu.com/p/80792297)
   - [解决内存问题](https://developers.google.com/web/tools/chrome-devtools/memory-problems?hl=zh-cn#%E4%BD%BF%E7%94%A8%E5%88%86%E9%85%8D%E6%97%B6%E9%97%B4%E7%BA%BF%E7%A1%AE%E5%AE%9A_js_%E5%A0%86%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F)
   - [JS内存泄漏实例解析](https://juejin.im/post/5a8e7f6df265da4e832677ec)
 - 异常处理

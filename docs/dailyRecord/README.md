@@ -6,6 +6,90 @@
 
 ## 五月
 
+### 生成任意数量的树数据
+
+在测试树的渲染性能问题时，大量的测试数据是个问题。
+
+首先：可以采用这个函数，动态生成扁平化的树节点，参考 zTree 源码：
+```js
+const dataMaker = function(count, nodeKey = "id", parentKey = "pId") {
+  let nodes = [],
+    min = 10,
+    max = 90,
+    level = 0,
+    curLevel = [],
+    prevLevel = [],
+    levelCount,
+    i = 0,
+    j,
+    k,
+    l,
+    m;
+  while (i < count) {
+    if (level == 0) {
+      levelCount = Math.round(Math.random() * max) + min;
+      for (j = 0; j < levelCount && i < count; j++, i++) {
+        const n = { [nodeKey]: i, [parentKey]: -1, name: "Big-" + i };
+        nodes.push(n);
+        curLevel.push(n);
+      }
+    } else {
+      for (l = 0, m = prevLevel.length; l < m && i < count; l++) {
+        levelCount = Math.round(Math.random() * max) + min;
+        for (j = 0; j < levelCount && i < count; j++, i++) {
+          const n = {
+            [nodeKey]: i,
+            [parentKey]: prevLevel[l][nodeKey],
+            name: "Big-" + i,
+          };
+          nodes.push(n);
+          curLevel.push(n);
+        }
+      }
+    }
+    prevLevel = curLevel;
+    curLevel = [];
+    level++;
+  }
+  return nodes;
+};
+```
+然后：根据扁平化的带有父子关系的节点，重新构建一棵树数据：
+```js
+const BuildTree = (
+  tree,
+  childrenKey = "children",
+  key = "nodeKey",
+  parentKey = "parent"
+) => {
+  const n = []; // 添加多一个数组，记录父级
+  const treeMap = {};
+  // 删除 所有 children，传入的值带有 children，以防止孩子重复
+  tree.forEach((node) => {
+    node[childrenKey] && delete node[childrenKey];
+  });
+
+  tree.forEach((node) => (treeMap[node[key]] = node));
+  tree.forEach((node) => {
+    const parent = treeMap[node[parentKey]];
+    // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到它对应的父级中
+    if (parent) {
+      const children = parent[childrenKey] || []; // parent.children ，避免相同值
+      children.push(node);j
+      parent[childrenKey] = children;
+    } else {
+      // 如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 n 结果集中，作为顶级
+      n.push(node);
+    }
+  });
+  return n;
+};
+```
+最后：丢给树组件渲染测试即可
+```js
+const treeData = BuildTree(dataMaker(5000), "children", "id", "pId");
+```
+
 ### 在同一个机器上安装 chrome 多个版本共存
 
 #### 前言
@@ -15,48 +99,48 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>chrome 60下，height： 100；无法继承外部flex-grow: 1的容器</title>
-  <style>
-    .parent {
-      display: flex;
-      flex-direction: column;
-      height: 500px;
-      background: gray;
-    }
-    .child1 {
-      width: 100%;
-      flex-grow: 1;
-      /* display: flex;
-      flex-direction: column; 解决方案 */ 
-      background: lightgreen;
-    }
-    .child11 {
-      height: 100%;
-      /* webpack 环境中，能否直接用 browserlist 解决兼容问题.browserslistrc */
-      /* flex-grow: 1; 解决方案：flex-grow */
-      width: 100%;
-      background: lightpink;
-    }
-    .child2 {
-      width: 100%;
-      height: 50px;
-      background: lightblue;
-    }
-  </style>
-</head>
-<body>
-  <div class="parent">
-    parent
-    <div class="child1">
-      child1
-      <div class="child11">child11</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chrome 60下，height： 100；无法继承外部flex-grow: 1的容器</title>
+    <style>
+      .parent {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+        background: gray;
+      }
+      .child1 {
+        width: 100%;
+        flex-grow: 1;
+        /* display: flex;
+      flex-direction: column; 解决方案 */
+        background: lightgreen;
+      }
+      .child11 {
+        height: 100%;
+        /* webpack 环境中，能否直接用 browserlist 解决兼容问题.browserslistrc */
+        /* flex-grow: 1; 解决方案：flex-grow */
+        width: 100%;
+        background: lightpink;
+      }
+      .child2 {
+        width: 100%;
+        height: 50px;
+        background: lightblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent">
+      parent
+      <div class="child1">
+        child1
+        <div class="child11">child11</div>
+      </div>
+      <div class="child2">child2</div>
     </div>
-    <div class="child2">child2</div>
-  </div>
-</body>
+  </body>
 </html>
 ```
 
@@ -64,14 +148,13 @@ window 版本
 
 mac 版本
 
-
 ```bash
 $ "/Applications/Google Chrome 60.app/Contents/MacOS/Google Chrome" --user-data-dir="/Users/linjy/Library/Application Support/Google/Chrome60" > /dev/null 2>&1 &
 [2] 2119
-[1]   Done                  
+[1]   Done
 ```
 
-#### 如何禁用Chrome版本自动更新
+#### 如何禁用 Chrome 版本自动更新
 
 #### 参考资料
 

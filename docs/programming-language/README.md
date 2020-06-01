@@ -134,8 +134,8 @@ CLI（Common Language Infrastructure，公共语言基础结构），它把所�
 - 公共语言规范（CLS）
 - 基类库（BCL）
 - 元数据定义及语义
-- 公共类型系统（CTS）
 - 公共中间语言（CIL）指令组
+- 公共类型系统（CTS）
 
 CLI 是一组阐述了系统的架构、规则和约定的规范。
 

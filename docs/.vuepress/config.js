@@ -84,7 +84,6 @@ module.exports = {
         ]
       }
     ],
-    // sidebar: "auto",
     sidebar: {
       "/dailyRecord/": [
         {

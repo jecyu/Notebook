@@ -17,6 +17,7 @@
 ## 命名规范
 
 常用命名规范有四种：
+
 - camelCase 驼峰式
 - PascalCase 帕斯卡命名式
 - kabab-case 短横线连接式
@@ -195,6 +196,66 @@ const templates = {
     [this.enumModuleOptionField.filedValueFillWay]: []
   };
 ``` -->
+
+### Modal 框的控制
+
+Before
+
+html
+
+```html
+<Modal v-model="ysjCatalogModalStatus.add"></Modal>
+```
+
+```js
+  let add =  false;
+  let edit = false;
+  let delete =  false;
+  let showTemplate = false;
+```
+
+After 1，进行适当的层级处理，更具可读性
+
+```js
+private ysjCatalogModalStatus = {
+  add: false,
+  edit: false,
+  delete: false,
+  showTemplate: false
+};
+```
+
+控制显示
+```js
+// hide
+this.ysjCatalogModalStatus.add = true;
+// show
+this.ysjCatalogModalStatus.add = false;
+```
+
+After2，使用一个 modelType 变量以及 map 组合，更加容易管理，而不用设置 true 或 false。<u>适用于默认只显示一个弹框的情况下。</u>
+
+```html
+<Modal v-model="modelType === modelTypeMap.add"></Modal>
+```
+
+```js
+let modelTypeMap = {
+  add: "add",
+  edit: "edit",
+  delete: "delete",
+  showTemplate: "showTemplate",
+};
+let modelType = "";
+```
+
+控制显示
+```js
+// hide
+this.modelType = "";
+// show
+this.modelType = this.modelTypeMap.add;
+```
 
 ### 推荐使用字面量
 
@@ -377,7 +438,7 @@ void printDetails(double amount) {
 
 ### 推荐函数式编程
 
-过程式的编程是把过程具体的流程描述出来，而函数式编程更多是描述性，并且不依赖外部状态的纯函数，举个例子，使用 map 是函数式编程（传入一个回调函数），而使用 for 循环则是过程式编程，需要把具体的流程编写出来。 
+过程式的编程是把过程具体的流程描述出来，而函数式编程更多是描述性，并且不依赖外部状态的纯函数，举个例子，使用 map 是函数式编程（传入一个回调函数），而使用 for 循环则是过程式编程，需要把具体的流程编写出来。
 
 函数式编程使用的一些技术：
 
@@ -398,20 +459,20 @@ void printDetails(double amount) {
 const programmerOutput = [
   {
     name: "Uncle Bobby",
-    linesOfCode: 500
+    linesOfCode: 500,
   },
   {
     name: "Suzie Q",
-    linesOfCode: 1500
+    linesOfCode: 1500,
   },
   {
     name: "Gracie Hopper",
-    linesOfCode: 1000
-  }
-]
+    linesOfCode: 1000,
+  },
+];
 
 let totalOutput = programmerOutput
-  .map(output => output.lineOfCode)
+  .map((output) => output.lineOfCode)
   .reduce((totalLines, lines) => totalLines + lines, 0);
 ```
 
@@ -421,21 +482,21 @@ let totalOutput = programmerOutput
 const programmerOutput = [
   {
     name: "Uncle Bobby",
-    linesOfCode: 500
+    linesOfCode: 500,
   },
   {
     name: "Suzie Q",
-    linesOfCode: 1500
+    linesOfCode: 1500,
   },
   {
     name: "Gracie Hopper",
-    linesOfCode: 1000
-  }
-]
+    linesOfCode: 1000,
+  },
+];
 let totalOutput = 0;
 for (let i = 0; i < programmerOutput.length; i++) {
   totalOutput += programmerOutput[i].linesOfCode;
-};
+}
 ```
 
 应用：
@@ -589,6 +650,11 @@ get currentTabComponent() {
 - 《代码大全》
 - 《重构，改善现有的代码》
 - [CSS 样式书写规范最佳实践](https://juejin.im/entry/5967040451882568af7f426f)
-- [CSS学习笔记(十六) CSS最佳实践之可维护性篇](https://segmentfault.com/a/1190000003999308#item-8)
-- [Web前端开发最佳实践](https://book.douban.com/subject/26305106/)
+- [CSS 学习笔记(十六) CSS 最佳实践之可维护性篇](https://segmentfault.com/a/1190000003999308#item-8)
+- [Web 前端开发最佳实践](https://book.douban.com/subject/26305106/)
 - TS 最佳实践
+- [TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427#heading-5)
+- [ts 规范 Do's and Don'ts
+  ](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
+- [VSCode常用插件之EditorConfig for vs code 使用
+](https://www.cnblogs.com/jiaoshou/p/11252055.html)
