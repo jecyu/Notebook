@@ -2,7 +2,7 @@
  * @Description: 翻转整数
  * @Author: Jecyu
  * @Date: 2020-05-29 12:28:41
- * @LastEditTime: 2020-06-01 13:18:26
+ * @LastEditTime: 2020-06-02 12:33:55
  * @LastEditors: Jecyu
  */
 
@@ -62,7 +62,7 @@ const reverse2 = (x) => {
     const MAX = 2147483647;
     const MIN = -2147483648;
     let num = 0;
-
+    
     // 循环遍历生成每一位数字
 }
 

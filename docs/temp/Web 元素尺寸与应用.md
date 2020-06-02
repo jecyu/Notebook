@@ -89,7 +89,7 @@ document.addEventListener(
 
 ### JS
 
-#### Element（元素大小）
+#### Element 对象（元素大小）
 
 - offset（偏移量）
   ![](../.vuepress/public/images/2020-06-01-17-19-18-web-coodinate-06.png)
@@ -99,7 +99,7 @@ document.addEventListener(
   - offsetWidth
     - 元素在水平方向上占用的空间大小，以`像素`计。包括元素的宽度、（可见的）垂直滚动条的宽度、左边框宽度和右边框宽度。
   - offsetTop
-    - - 元素偏移父元素的上边边距离
+    - 元素偏移父元素的上边边距离
   - offsetLeft
     - 元素偏移父元素的左边距离
 
@@ -126,25 +126,135 @@ document.addEventListener(
     - 元素竖直滚动距离
 
 
+![](../.vuepress/public/images/2020-06-02-10-28-18-web-coordinate-size-02.png)
 ```js
 function isOnBottom(el) {
-  if (el.scrollHeight === el.offsetHeight + scrollTop) {
+  if (el.scrollHeight === el.clientHeight + el.scrollTop) {
+    return true;
+  }
+  return false;
+}
+/**
+ * @description: 解决底部一定距离，如提前加载数据
+ * @param {type}
+ * @return:
+ */
+function isCloseToBottom(el, distance) {
+  if (el.scrollHeight < el.clientHeight + el.scrollTop + distance) {
     return true;
   }
   return false;
 }
 ```
 
-- screen 对象
-  - height
-  - width
-  - availHeight
-- window 对象
-  - pageYOffset
-  - innerWidth
-  - innerHeight
-  - outerWidth
-  - outerHeight
+可以写为更语义化的写法。
+```js
+function isOnBottom(el) {
+  const maxScrollTop = el.scrollHeight - el.clientHeight;
+  const currentScrollTop = el.scrollTop;
+  if (maxScrollTop ===currentScrollTop) {
+    return true;
+  }
+  return false;
+}
+function isCloseToBottom(el, distance) {
+  const maxScrollTop = el.scrollHeight - el.clientHeight;
+  const currentScrollTop = el.scrollTop + distance;
+  if (maxScrollTop <= currentScrollTop) {
+    return true;
+  }
+  return false;
+}
+```
+
+如果是位于 window 上的可滚动区域，要区分 body（标准模式） 和 documentElement（混杂模式）。
+
+```js
+const maxScrollTop = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
+const currentScrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop);
+​
+if (maxScrollTop - currentScrollTop < 20) {
+  //...
+}
+```
+
+
+使用
+```js
+function updated(e) {
+  const target = e.target || e.srcElement;
+  if (isCloseToBottom(target, 400)) {
+    console.log("isCloseToBottom 400px=>", target);
+  }
+  if (isOnBottom(target)) {
+    // console.log("isOnBottom =>", target);
+  } else {
+    // console.log("isNotOnBottom =>", target);
+  }
+}
+let outerDom = document.querySelector(".outer");
+// 注意这里要给 outerDOM 设置 overflow: scroll-y; 否则则是 window 的滚动条件触发了
+outerDom.addEventListener("scroll", updated, false);
+```
+
+#### inifite-scroll 的实现
+
+#### screen 对象
+
+screen 对象基本上只用来表明客户端的能力，其中包括浏览器窗口外部的显示器的信息，如像素宽度和高度等。
+
+- height
+- width
+- availHeight
+
+#### window 对象
+
+<u>ECMAScript 是 JavaScript 的核心，但如果要在 Web 中使用 JavaScript，那么 BOM（浏览器对象模型）则无疑才是真正的核心。</u>多年来，缺少事实上的规范导致 BOM 既有意思又有问题，因为浏览器提供商会按照各自的想法随意去扩展它。于是，浏览器之间共有的对象就称为了事实上的标准。这些对象在浏览器中得以存在，很大程度上是由于它们提供了与浏览器的互操作性。W3C 为了把浏览器中 JavaScript 最基本的部分标准化，已经将 BOM 的主要方面纳入了 HTML5 的规范中。
+
+BOM 的核心对象是 window，它表示浏览器的一个实例。在浏览器中，window 对象有双重角色，它既是通过 JavaScript 访问浏览器窗口的一个接口，又是 ECMAScript 规定的 Global 对象。这意味着在网页中定义的任何一个对象、变量和函数，都以 window 作为其 Global 对象，因此有权访问 parseInt() 等方法。
+
+![](../.vuepress/public/images/2020-06-02-09-22-12-web-coordinate-08.png)
+
+![](../.vuepress/public/images/2020-06-02-09-27-58-web-coordinate-09.png)
+
+- innerWidth
+  - 以 CSS pixels 单位表示的浏览器框 viewport 宽度，包括垂直滚动条（如果渲染了的话）
+- innerHeight
+  - 以 CSS pixels 单位表示的浏览器框 viewport 高度，包括水平滚动条（如果渲染了的话）
+- outerWidth：包括了浏览器外边框的窗口宽度
+- outerHeight：viewport 高度 + 浏览器的标签栏、搜索栏等
+- pageYOffset
+- pageXOffset
+- scrollX
+- scrollY
+
+取得页面视口的大小，可以把代码在控制台执行，并打开设备模式，不断搜索窗口进行检查。
+
+```js
+window.addEventListener(
+  "resize",
+  function(e) {
+    const pageWidth = window.innerWidth;
+    const pageHeight = window.innerHeight;
+    if (typeof pageWidth != "number") {
+      if (document.compatMode === "CSS1Compat") {
+        pageWidth = document.documentElement.clientWidth;
+        pageHeight = document.documentElement.clientHeight;
+      } else {
+        pageWidth = document.body.clientWidth;
+        pageHeight = document.body.clientHeight;
+      }
+    }
+    console.log("pageWidth" + pageWidth, "pageHeight" + pageHeight);
+  },
+  false
+);
+```
+
+![](../.vuepress/public/images/2020-06-02-09-57-21-web-coordinate-size-01.png)
+
+应用场景：在 window 对象下滚动。
+
 - 方法
   - 确定元素大小：getBoundingClientRect()
   - getClientRects()
@@ -155,16 +265,38 @@ function isOnBottom(el) {
 
 ### CSS
 
-- height
+#### 大小
+
+<!-- - height
 - width
 - max-\*
 - min-\*
+- vw、vh
+- overflow：auto -->
+
+#### 定位
+
 - left/top/bottom/right
 - position
-- vw、vh
-- overflow：auto
+
+absolute：相对于（position为 relative/absolute 的父元素的左上角）
+relative：相对自身的中心
+
+为了使用 position 定位一个元素，要知道两点：
+- left、top、bottom、right 等的坐标原点是哪里。
+- 参照物是哪个，也就是说相对于哪个父元素定位。
+
+成为参照物的条件：
+
+默认不设置 positon: unset，仅仅设置 position: absolute; 的话，目标元素只是停留到 parent 元素的左上角。
+
+#### transform
+
+空间转换
 
 ### 元素的实际大小
+
+getBoundingClientRect()
 
 ## 应用场景
 
@@ -172,9 +304,17 @@ function isOnBottom(el) {
 
 点击导航滚动到固定位置
 
+### 滚动进度条
+
+### 滚动图片到底部懒加载/视频自动播放
+
 ### 导航栏贴顶
 
-### 等高
+### 获取滚动条的宽度 
+
+### 创建自定义滚动指令
+
+<!-- ### 等高
 
 ### 一个随着屏幕大小自适应高度的弹框
 
@@ -182,23 +322,23 @@ function isOnBottom(el) {
 
 ### 如何保持一定的长宽比
 
-### 滚动图片到底部懒加载/视频自动播放
-
-### 二维图转三维用
-
-### 创建自定义滚动指令
-
-### 获取滚动条的宽度
+### 二维图转三维用 -->
 
 ## 参考资料
 
-- [Coordinate systems](https://developer.mozilla.org/en-US/docs/Web/CSS/CSSOM_View/Coordinate_systems)
-- [w3c 规范]
-- [How to get the real scroll height of div (say, inner text size)](https://stackoverflow.com/questions/20246443/how-to-get-the-real-scroll-height-of-div-say-inner-text-size)
-- [Using CSS transforms](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transforms/Using_CSS_transforms): how to alter a coordinate system
-- [Coordinates](https://javascript.info/coordinates)
-- [What is the difference between screenX/Y, clientX/Y and pageX/Y?](https://stackoverflow.com/questions/6073505/what-is-the-difference-between-screenx-y-clientx-y-and-pagex-y)
-- [JS 视口坐标，屏幕坐标，页面坐标分析](https://blog.csdn.net/zshsats/article/details/79942126)
-- [浅谈响应式Web设计与实现思路](https://juejin.im/post/5a5093bd6fb9a01c9b65c3c2#heading-28)
-- 《JavaScript3 高级程序设计3》
-- [JS获取各种高度宽度、浏览器窗口滚动条的位置、元素的几何尺寸](https://blog.csdn.net/swallowliyan/article/details/44598115)
+- 位置大小
+  - [CSS Position: Relative vs Position Absolute](https://dzone.com/articles/css-position-relative-vs-position-absolute)
+  - [Using CSS transforms](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transforms/Using_CSS_transforms): how to alter a coordinate system
+  - [How to understand CSS Position Absolute once and for all](https://www.freecodecamp.org/news/how-to-understand-css-position-absolute-once-and-for-all-b71ca10cd3fd/)
+  - [How to get the real scroll height of div (say, inner text size)](https://stackoverflow.com/questions/20246443/how-to-get-the-real-scroll-height-of-div-say-inner-text-size)
+- 坐标系
+  - [Coordinate systems](https://developer.mozilla.org/en-US/docs/Web/CSS/CSSOM_View/Coordinate_systems)
+  - [w3c 规范]
+  - [Coordinates](https://javascript.info/coordinates)
+  - [What is the difference between screenX/Y, clientX/Y and pageX/Y?](https://stackoverflow.com/questions/6073505/what-is-the-difference-between-screenx-y-clientx-y-and-pagex-y)
+  - [JS 视口坐标，屏幕坐标，页面坐标分析](https://blog.csdn.net/zshsats/article/details/79942126)
+  - [浅谈响应式 Web 设计与实现思路](https://juejin.im/post/5a5093bd6fb9a01c9b65c3c2#heading-28)
+  - 《JavaScript3 高级程序设计 3》
+  - [JS 获取各种高度宽度、浏览器窗口滚动条的位置、元素的几何尺寸](https://blog.csdn.net/swallowliyan/article/details/44598115)
+  - 第三方库
+    - [infinite-scroll](https://www.npmjs.com/package/infinite-scroll)
