@@ -2,7 +2,7 @@
  * @Description: 有效的字母异位词
  * @Author: Jecyu
  * @Date: 2020-06-02 12:34:19
- * @LastEditTime: 2020-06-02 12:44:12
+ * @LastEditTime: 2020-06-03 07:19:24
  * @LastEditors: Jecyu
  */ 
 const assert = require("assert");
@@ -28,7 +28,11 @@ const isAnagram = (s, t) => {
   return sArr.join("") === tArr.join("");
 }
 
+
 assert.strictEqual(isAnagram("anagram", "nagaram"), true, "'anagram' and 'nagaram'")
 assert.strictEqual(isAnagram("rat", "cat"), false, "'rat' and 'cat'")
 
-const isAnagram2 = (s, t) => {}
+const isAnagram2 = (s, t) => {
+
+  
+}

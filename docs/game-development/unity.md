@@ -152,8 +152,8 @@ Apple Pcker Prototyp
 - 房间中的对象和灯光构成场景。
 - 第一人称场景中的玩家本质上是一个摄像机。
 - 移动代码不停在每帧应用小的变换。
-
 - FPS 控件由鼠标旋转和键盘移动构成。
+  
 ## 入门
 
 ### 灯光
@@ -173,6 +173,76 @@ Apple Pcker Prototyp
 ### 摄像机
 
 为了让玩家看到场景，还需要另一种对象，称之为摄像机（camera），但“空”场景早已有了一个主摄像机（main camera），所以你将使用这个主摄像机。如果需要创建一个新摄像机（例如在多人游戏中采用分屏视图），摄像机同 Cube 和 Lights 一样是 GameObject 菜单的另一个选择。<u>Camera 将大致定位在玩家顶部以便进入玩家的视野。</u>
+
+### 射线
+
+定义：射线是虚拟的或者说场景中看不见的线，它从一些原点开始并往指定方向延伸出去。
+
+当创建一条射线，并判断它和什么对象相交，这就是射线发射。射线发射就是发射一个射线到场景中。考虑一下从枪发射子弹的情景：子弹从枪口开始并直线向前飞行，直到它撞到一些东西。射线类似子弹的路径，射线发射则模拟发射子弹并看它碰撞到何处。
+
+![](../.vuepress/public/images/2020-06-02-21-56-36-unity-ray-01.png)
+
+如你所想，射线发射背后的数学通常和复杂。不只是线和 3D 平面相交的计算ci手，你还需要对场景中所有网格对象的所有多边形进行计算（记住，网格对象就是由一些连接的线和形状构成的 3D 可视化结构）。幸运的是，Unity 处理了射线发射背后复杂的数学，但你依然需要在高级功能<u>关心发射从哪里开始和为什么发射。</u>
+
+对于FPS 游戏，为什么发射是模拟子弹射向场景。射线通常开始于摄像机位置并沿着摄像机视图中心往外延伸。
+
+#### 使用命令 ScreenPointToRay 来发射
+
+#### 为准心和击中点添加可视化提示
+
+定义：
+
+渲染是计算机绘制 3D 场景的像素的行为。虽然场景使用 XYZ 坐标定义，但真正显示在显示器上的是 2D 颜色像素格子。因此为了显示 3D 场景，计算机需要在 2D 格子中计算所有像素的`颜色`，运行的这种算法称为渲染（rendering）
+
+```cs
+public class RayShooter : MonoBehaviour
+{
+  private Camera _camera;
+
+  // Start is called before the first frame update
+  void Start()
+  {
+    _camera = GetComponent<Camera>();
+    Cursor.lockState = CursorLockMode.Locked; // 隐藏平面中心的光标
+    Cursor.visible = false;
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    if (Input.GetMouseButtonDown(0))
+    {
+      Vector3 point = new Vector3(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0); // 摄像机视口
+      Ray ray = _camera.ScreenPointToRay(point);
+      RaycastHit hit;
+      if (Physics.Raycast(ray, out hit))
+      {
+        //Debug.Log("Hit" + hit.point);
+        StartCoroutine(SphereIndicator(hit.point)); // 击中点 
+      }
+    }
+  }
+
+
+  private IEnumerator SphereIndicator(Vector3 pos)
+  {
+    GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+    sphere.transform.position = pos;
+    yield return new WaitForSeconds(1); // yiele 关键字告诉协程在何处暂停
+    Destroy(sphere); // 移除 GameObject 并清除它占用的内存
+  }
+
+  void OnGUI() // MonoBehaviour 自动响应 onGUI 方法
+  {
+    int size = 12;
+    float posX = _camera.pixelWidth / 2 - size / 4;
+    float posY = _camera.pixelHeight / 2 - size / 2;
+    GUI.Label(new Rect(posX, posY, size, size), "*");
+  }
+}
+```
+
+### 基本漫游 AI
 
 ### 坐标系和坐标系转换
 

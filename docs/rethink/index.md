@@ -226,3 +226,4 @@
 - [如何阅读一份源代码？](https://www.codedump.info/post/20190324-how-to-read-code/#%E5%88%A9%E7%94%A8%E5%A5%BD%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B)
 - [Vue 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/v3/guide/#%E6%88%91%E5%BA%94%E8%AF%A5%E5%AD%A6%E4%B9%A0%E6%BA%90%E7%A0%81%E5%90%97)
 - [优秀的前端团队是如何炼成的](https://juejin.im/book/5cb56b7be51d456e3267e400/section/5cb56d89e51d456e6f45c6e5) 掘金小册
+- [怎样成为大家口中的「好前端」？](https://zhuanlan.zhihu.com/p/28275428)
