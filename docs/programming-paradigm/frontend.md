@@ -1,23 +1,6 @@
-# 状态管理
+# 前端系统架构
 
-## 分布式系统
-
-## MVC
-
-- Model（除了数据，里面也有 controller，用于控制数据变化的业务逻辑。）
-- View（渲染视图的逻辑，数据依赖于 Model）
-- Controller（用于控制视图变化的交互逻辑）
-
-通常 controller 通常分为两部分，很少把 controller 单独抽离出来的。
-- 一部分是位于 Model 里
-- 一部分位于 view 里
-像一个业务 vue 组件，操作业务数据与视图交互的逻辑明显是混合在一起了。
-
-- model 改变，触发 view 里的 controller 进行视图更新。
-- view 交互，触发 model 里的 controller 进行数据改变。
-- view 的显示依赖于 model。
-
-## Web 前端状态管理
+## 状态管理
 
 - 某一状态能够被有效记录
   - dom attribute
@@ -77,14 +60,35 @@ jquery 中只针对 DOM 的事件系统，而 backbone 可以脱离DOM，对数�
 - backbone
 - 事件派发与更新
 
+## 分布式系统
+
+## MVC
+
+- Model（除了数据，里面也有 controller，用于控制数据变化的业务逻辑。）
+- View（渲染视图的逻辑，数据依赖于 Model）
+- Controller（用于控制视图变化的交互逻辑）
+
+通常 controller 通常分为两部分，很少把 controller 单独抽离出来的。
+- 一部分是位于 Model 里
+- 一部分位于 view 里
+像一个业务 vue 组件，操作业务数据与视图交互的逻辑明显是混合在一起了。
+
+- model 改变，触发 view 里的 controller 进行视图更新。
+- view 交互，触发 model 里的 controller 进行数据改变。
+- view 的显示依赖于 model。
+
 ### 事件系统
 
 ### virtual dom
 
 ## 参考资料
 
-- [前端状态管理](https://cdc.tencent.com/2020/05/22/frontend-state-management-research/) 挺有深度的文章，值得精读。
+- [前端架构 101（一）：在谈论它们之前我们需要达成的共识](https://zhuanlan.zhihu.com/p/145441907)
+- [前端架构 101（三）：MVC 启示录：模块的职责，作用域和通信](https://zhuanlan.zhihu.com/p/145443596)
+- 《前端框架设计》
+- 状态管理
+  - [前端状态管理](https://cdc.tencent.com/2020/05/22/frontend-state-management-research/) 挺有深度的文章，值得精读。
+  - [浅谈前端状态管理（上）](https://zhuanlan.zhihu.com/p/25800767)
+  - [浅谈前端状态管理（下）](https://zhuanlan.zhihu.com/p/25908872)
+  - [vue 状态管理的一点思考](https://zhuanlan.zhihu.com/p/29237682)
 - [Trie 树与不可变数据结构](https://zhuanlan.zhihu.com/p/63207283)
-- [浅谈前端状态管理（上）](https://zhuanlan.zhihu.com/p/25800767)
-- [浅谈前端状态管理（下）](https://zhuanlan.zhihu.com/p/25908872)
-- [vue 状态管理的一点思考](https://zhuanlan.zhihu.com/p/29237682)

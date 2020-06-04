@@ -19,8 +19,8 @@
 - js 构建类与其他面向对象语言的区别如 C#、java
 - 如何判断类型 typeof 与 instanceof
 - in 操作符的使用
-- vue 的原型链，给 vue 原型添加方法
 - 应用场景：一些库、旧项目？
+  - vue 的原型链，给 vue 原型添加方法
 
 
 ### ajax
