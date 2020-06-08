@@ -290,9 +290,13 @@ relative：相对自身的中心
 
 默认不设置 positon: unset，仅仅设置 position: absolute; 的话，目标元素只是停留到 parent 元素的左上角。
 
+设置了 position: absoulte 后，只要父元素数字额了 relative ，只要父元素设置了 overflow: auto。这个子元素的的高度超出父元素，是会产生滚动的。
+
 #### transform
 
-空间转换
+transform 与 position 的区别。
+
+空间转换。
 
 ### 元素的实际大小
 

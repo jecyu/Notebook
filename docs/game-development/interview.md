@@ -1,57 +1,129 @@
 # 面试
 
-## C#
+Unity 初级客户端面试题
 
-### 基础知识
+## C
 
 <!-- 体现：实现的算法、数据结构、工具类 -->
-#### 值类型与引用类型
+
+### 值类型与引用类型
+
+#### 值类型
+
+##### 整型类型
+
+- sbyte
+- byte
+- short
+- ushort
+- int
+- uint
+- long
+- ulong
+
+```cs
+// 整型数值类型
+private sbyte _Jsbyte = -128; // -128 -> 127 => 8 位带符号整数
+private byte _Jbyte = 255; // 0 -> 255 无符号的 => 8 位整数
+private short _Jshort = -32768; // -32768 -> 32767 => 有符号的 16 位整数
+private ushort _Jushort = 65535; // 0 -> 65535 => 无符号的 16 位整数
+private int _Jint = -2147483648; // -2147483648 -> 2147483647 : 带符号的 32 位整数
+private uint _Juint = 4294967295; // 0 -> 4,294,967,295 => 无符号的 32 位整数
+private long _Jlong = -9223372036854775808; /* -9223372036854775808 - 9,223,372,036,854,775,807 => 64 位带符号整数 */
+private ulong _Julong = 18446744073709551615; /* 0 到 18,446,744,073,709,551,615 => 无符号 64 位整数*/
+```
+
+整数文本可以是：
+
+- 十进制
+- 十六进制：使用 `0x` 或 `0X` 前缀
+- 二进制：使用 `0b` 或 `0B` 前缀（在 C# 7.0 和更高版本可用）
+
+##### 浮点型
+
+- float
+- double
+- decimal
+
+```cs
+// 浮点型数值类型
+private float _Jfloat = 0.2f; // 大致范围：+1.5 x 10⁻⁴⁵ 至 ± 3.4 x 10⁻³⁸，精度大约 6-9 位数字，4个字节
+private double _Jdobule = 0.55; // ±5.0 × 10⁻³²⁴ 到 ±1.7 × 10³⁰⁸，精度大约 15-17 位，8个 字节
+private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸，精度 28-29 位，16 个字节
+```
+与 decimal 和 float 相比，double 类型具有更高的精度和更小的范围，因此它适合于财务和货币计算。
+
+##### 其他
+
+- struct
+- enum
+- char
+- bool
+- 可以为 null 的值类型
+
+#### 引用类型
+
+class，delegate，interface，array，object，string
+
+### 类型转换
+
+- 隐式转换
+- 显式转换（强制转换）
+
+- 可以将任何`整型数值`类型转换为其他`整数数值类型`。 如果目标类型可以存储源类型的所有值，则转换是隐式的。 否则，需要使用强制转换表达式来执行显式转换。
 
 #### 装箱与拆箱
 
-#### 堆和栈
+- 装箱：把值类型转换成引用类型
+- 拆箱：把引用类型转换成值类型
 
-#### GC（Garbage Collection）
+### 堆和栈
 
-#### CLR（Common Language Runtime）
+### GC（Garbage Collection）
 
-#### 静态构造函数
+### CLR（Common Language Runtime）
 
-#### 文件 I/O
+### 静态构造函数
 
-#### 序列化与反序列化
+### 文件 I/O
 
-#### 线程同步
+### 序列化与反序列化
 
-#### 抽象类 abstract class 与接口 interface 的异同
+### 线程同步
 
-#### 类 class 和结构体 struct 的异同
+### 抽象类 abstract class 与接口 interface 的异同
 
-#### using 关键字的使用场景
+### 类 class 和结构体 struct 的异同
 
-#### 委托与事件
+### using 关键字的使用场景
 
-#### 重载（reload）与重写（override）的区别
+### 委托与事件
 
-#### return 执行顺序
+### 重载（reload）与重写（override）的区别
 
-#### switch（expression）
+### return 执行顺序
 
-#### 反射 Reflection
+### switch（expression）
 
-#### property 与 attribute 的区别
+### 反射 Reflection
 
-#### 访问修饰符
+### property 与 attribute 的区别
 
-#### static 关键字的应用
+### 访问修饰符
 
-#### 文件编码格式
+### static 关键字的应用
 
-#### 值传递与引用传递
+### 文件编码格式
 
-#### 参数传递 ref 与 out 的区别
+### 值传递与引用传递
 
-#### 浅拷贝与深拷贝
+### 参数传递 ref 与 out 的区别
+
+### 浅拷贝与深拷贝
+
+### 容器
+
+### 迭代器
 
 ### 数据库
 
@@ -65,21 +137,58 @@
 
 #### 存储过程
 
+## Unity
+
+### 渲染流程
+
+1. 你觉得为什么 UI 摄像机和场景摄像机能协同工作，而且工作的这么尽如人意呢？
+   答案：UI 摄像机和场景摄像机分别属于两个渲染层（Layer），所以它们之间的渲染互不干扰。它们工作得尽如人意（没有发生先后错乱，UI 永远位于场景之上层）的原因就是因为摄像机深度（depth）控制的好。
+
+### UGUI（优先）
+
+1. 你觉得怎么防止 UI 控件被点穿（如何过滤掉点击事件）。
+2. 你对 UI 功能模块之间相互通信有什么好看法。（或者问成 Broadcast 和 sendMes 的看法）
+3. 关于 UIGrid 问题
+4. 众里寻他千百度，你怎么样能迅速找到某一个 UI 控件
+5. 你对遮挡关系有什么好的策略
+6. 你对屏幕适配有什么好主意。
+
 ## Lua
 
 <!-- 体现：实现的算法、数据结构、工具类、游戏脚本 -->
 
-## UGUI
+### 元表
+
+### 面向对象
 
 ## 算法和数据结构
+
+数据逻辑层
+
+1. 请简述一下你对数据结构的选取有什么看法
+2. 请把这份配置文件解析成你想要的数据结构，给我看看
+3. 请简述一下 C#中，结构体和 class 的用法
+4. 接受到网络发来的数据，你会怎么办
+
+游戏控制流程：
+
+<!-- 1. 你对资源加载有什么看法。 -->
+
+2. 请给我设计一个状态机，完成一个简单的 xxxx 情景。
+   <!-- 3. 角色换装，技能释放你会怎么做。 -->
+3. 动态更新有什么看法。
 
 ### 冒泡排序
 
 ### 快速排序
 
+### 选择排序
+
 ## 设计模式
 
 ### 单例模式
+
+### 工厂模式
 
 ## 架构
 
@@ -97,6 +206,13 @@
 
 使用 GUI，实现一棵树
 
+参考资料：
+
+- [前端架构 101： MVC 初探](https://mp.weixin.qq.com/s/8ILlKiZIGCqqVoKhH4VDtA)
+- [Unity with MVC: How to Level Up Your Game Development](https://www.toptal.com/unity-unity3d/unity-with-mvc-how-to-level-up-your-game-development)
+- [MVC in Unity](https://www.gamasutra.com/blogs/TabeaIseli/20160926/282062/MVC_in_Unity.php)
+- [Model View Controller (MVC) Design Pattern](https://riptutorial.com/unity3d/example/32513/model-view-controller--mvc--design-pattern)
+
 ## 其他
 
 ### 游戏与其他软件的区别
@@ -111,7 +227,7 @@
 
 游戏行业公司大体可以分为四类：`研发商`、`发行商`、`游戏平台`或渠道、其他`辅助相关公司`。
 
-一般一款游戏在`研发`出来（也可能在demo阶段）时，`发行商`获得发行授权（发行商需要付出版权金加流水分成），然后发行商将游戏在各家`渠道`发布，并通过广告和市场活动来推广该产品，最终收益按照一定的比例三方分成，在其中会有一些其他辅助公司从中牟利。
+一般一款游戏在`研发`出来（也可能在 demo 阶段）时，`发行商`获得发行授权（发行商需要付出版权金加流水分成），然后发行商将游戏在各家`渠道`发布，并通过广告和市场活动来推广该产品，最终收益按照一定的比例三方分成，在其中会有一些其他辅助公司从中牟利。
 
 - 研发商做游戏
 - 发行商经销游戏
@@ -121,14 +237,30 @@
 - 游戏平台/渠道：苹果商店
 - 辅助公司：游戏直播公司
 
-如果是纯研发公司，自己不做发行，一般能拿到流水的20%-30%（如果研发拥有IP，那么比例会更高），如果发行很强势，那研发可能只能拿到10%-15%。
+如果是纯研发公司，自己不做发行，一般能拿到流水的 20%-30%（如果研发拥有 IP，那么比例会更高），如果发行很强势，那研发可能只能拿到 10%-15%。
 
 ### 软件开发流程
 
 ### .NET Core 与 .NET Framework 的区别
 
+.NET Core 是.NET Framework 的新一代版本，是微軟開發的第一個跨平台 (Windows、Mac OSX、Linux) 的應用程式開發框架（Application Framework），未來也將會支援 FreeBSD 與 Alpine 平台。.Net Core 也是微軟在一開始發展時就開源的軟體平台[1]，它經常也會拿來和現有的開源 .NET 平台 Mono 比較。
+
+.NET Core 是现代的
+
+- 与一些较旧的框架不同，.NET Core 旨在解决当今的现代需求，包括移动友好、构建一次在任何地方运行、可伸缩和高性能。.NET Core 旨在构建针对各种设备的应用程序，包括物联网和游戏机。
+
+.NET 在 C# 8 的帮助下支持现代语言结构，如面向对象和模块化编程、泛型、集合、lambdas、语言集成查询(LINQ)和异步编程，这使开发人员更加高效。
+
+在这里了解更多关于 C#7 和 C#8 特性的信息，
+
+C#7.1、7.2 和 7.3 新特性
+
+C#8 特性
+
 ## 参考资料
 
 - [十分钟，看懂研发、发行和渠道的那些事儿](https://zhuanlan.zhihu.com/p/34964309)
-- [UGUI系列导航帖](https://blog.csdn.net/zcaixzy5211314/article/details/86515168)
+- [UGUI 系列导航帖](https://blog.csdn.net/zcaixzy5211314/article/details/86515168)
 - [C# 面试题归纳](https://zhuanlan.zhihu.com/p/56522099)
+- [.NET Core](https://zh.wikipedia.org/zh/.NET_Core)
+- [通俗易懂，什么是.NET Core 以及.NET Core 能做什么](https://www.cnblogs.com/yilezhu/p/10880884.html#:~:text=%E4%B8%8E%E5%85%B6%E4%BB%96%E8%BD%AF%E4%BB%B6%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C,%E4%B8%8E%E5%85%B6%E4%BB%96%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C%EF%BC%8C.&text=NET%20Core%E6%8F%90%E4%BE%9B%E4%BA%86%E6%9C%80,%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81%E5%92%8C%E5%B7%A5%E5%85%B7%E3%80%82)
