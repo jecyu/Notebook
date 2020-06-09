@@ -55,3 +55,4 @@ https://blog.csdn.net/zhydream77/article/details/81909706
 
 - 《Docker——从入门到实践》
 - [Docker的持久化存储和数据共享（四）](https://juejin.im/post/5b6d4439f265da0f800e0d5a#heading-2)
+- [从零搭建docker+jenkins+node.js自动化部署环境](https://juejin.im/post/5b8ddb70e51d45389153f288#heading-7)

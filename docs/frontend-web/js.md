@@ -22,7 +22,6 @@
 - 应用场景：一些库、旧项目？
   - vue 的原型链，给 vue 原型添加方法
 
-
 ### ajax
 
 ![ajax](../.vuepress/public/images/ajax.png)
@@ -2173,6 +2172,10 @@ require(["./vendor/multi"], function(multi) {
 
 ## 最佳实践
 
+## 文件上传与下载
+
+- [纯前端JS zip打包文件并下载](https://www.zhangxinxu.com/wordpress/2019/08/js-zip-download/)
+
 ## 代码规范
 
 ## 工具函数大全
@@ -2309,6 +2312,9 @@ function Random(min, max) {
 
 ## 参考资料
 
+- 操作运算符
+  - [可选链操作符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE)
+  - [JavaScript中圆括号()和方括号`[]`的特殊用法疑问解答](http://www.gimoo.net/t/1405/541b9f4d57767.html)
 - 浏览器原理
   - [从多线程到 Event Loop 全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15) —— 少有的从计算机方面讲解逐步引申到浏览器的线程文章。
 - 临时

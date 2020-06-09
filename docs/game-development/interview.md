@@ -12,14 +12,16 @@ Unity 初级客户端面试题
 
 ##### 整型类型
 
-- sbyte
-- byte
-- short
-- ushort
-- int
-- uint
-- long
-- ulong
+- 有符号
+  - sbyte
+  - short
+  - int 
+  - long
+- 无符号
+  - byte
+  - ushort
+  - uint
+  - ulong
 
 ```cs
 // 整型数值类型
@@ -41,9 +43,11 @@ private ulong _Julong = 18446744073709551615; /* 0 到 18,446,744,073,709,551,61
 
 ##### 浮点型
 
-- float
-- double
-- decimal
+- IEEE 二进制浮点数
+  - float
+  - double
+- 高精度十进制浮点数
+  - decimal
 
 ```cs
 // 浮点型数值类型
@@ -55,15 +59,31 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ##### 其他
 
-- struct
-- enum
-- char
-- bool
+- Unicode 字符：char
+- 布尔：bool
+- 结构类型：
+  - 格式为 `struct S {...}`
+- 枚举类型：enum
 - 可以为 null 的值类型
+- 元组值类型
+  - 格式为 (T1, T2, ...) 的用户定义类型
+
+###### 结构类型
 
 #### 引用类型
 
-class，delegate，interface，array，object，string
+- 类类型
+  - 其他所有类型的基类：object
+  - class：class C{...} 的用户定义类型
+  - Unicode 字符串： string
+- 接口类型
+  - 格式为 interface I {...}
+- 数组类型
+  - 一维和多维，格式为 int[] 和 int[,]
+- 委托类型
+  - delegate int D(...)
+
+用户可以定义以下物种类型：类类型、结构类型、接口类型、枚举类型和委托类型。
 
 ### 类型转换
 
@@ -88,6 +108,8 @@ class，delegate，interface，array，object，string
 ### 文件 I/O
 
 ### 序列化与反序列化
+
+### （协程）
 
 ### 线程同步
 
@@ -204,7 +226,7 @@ class，delegate，interface，array，object，string
 
 ### MVC
 
-使用 GUI，实现一棵树
+再探
 
 参考资料：
 
@@ -220,6 +242,8 @@ class，delegate，interface，array，object，string
 - 视频游戏比大多数网站与编写其他类型的软件本质上没有什么区别（都是跟用户交互），但是会有更多的交互，而且会包含很多不同类型的代码，但制作所用的技术和方法很相似。
 
 拿网站来说，游戏中的场景相当于不同的页面 URL，而游戏对象则像页面中一个个模块，游戏对象的组件也像是页面中的组件。对于交互来说，一样是各种输入设备（鼠标、键盘）等，只不过游戏比网站多了游戏世界观，更多地与用户互动，让用户一步步解密，得到快乐。而网站则是辅助用户完成工作、生活中的事情。
+
+游戏跟真实的世界很像，如著名电影《楚门的世界》，只不过它可以通过人为模拟出来。
 
 游戏开发中的开发者指的是为游戏开发工作的任何人，除了编程人员，还有艺术家和设计师。
 
@@ -264,3 +288,4 @@ C#8 特性
 - [C# 面试题归纳](https://zhuanlan.zhihu.com/p/56522099)
 - [.NET Core](https://zh.wikipedia.org/zh/.NET_Core)
 - [通俗易懂，什么是.NET Core 以及.NET Core 能做什么](https://www.cnblogs.com/yilezhu/p/10880884.html#:~:text=%E4%B8%8E%E5%85%B6%E4%BB%96%E8%BD%AF%E4%BB%B6%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C,%E4%B8%8E%E5%85%B6%E4%BB%96%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C%EF%BC%8C.&text=NET%20Core%E6%8F%90%E4%BE%9B%E4%BA%86%E6%9C%80,%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81%E5%92%8C%E5%B7%A5%E5%85%B7%E3%80%82)
+- [类型和变量](https://docs.microsoft.com/zh-cn/dotnet/csharp/tour-of-csharp/types-and-variables)

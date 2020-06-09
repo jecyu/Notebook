@@ -153,6 +153,26 @@ const result = string.match(regex);
 ^（脱字符）匹配开头，在多行匹配中匹配行开头。
 \$（美元符号）匹配结尾，在多行匹配中匹配行结尾。
 
+## RegExp 实例上的属性
+
+|属性|描述|
+|--|--|
+|global|是否全文搜索，默认 false，对应修饰符 g，只读|
+|ignoreCase|是否大小写敏感，默认 false，对应修饰符 i，只读|
+|multiline|是否多行搜索，默认 false，对应修饰符 m，只读|
+|flags|返回修饰符，只读|
+|lastIndex|当前表达式匹配内容的最后一个字符的下一个位置|
+|source|正则表达式的文本字符串|
+
+## 常用方法
+
+- RegExp.prototype.test(str)
+- RegExp.prototype.exec(str)
+- RegExp.prototype.search(reg)
+- String.prototype.split(reg)
+- String.prototype.match(reg)
+- String.prototype.replace(reg, str|num|function)
+
 ### i 和 g
 
 i 代表忽略大小写
@@ -373,3 +393,4 @@ export const FormateDate = (date: Date, fmt: string) => {
 - 《JavaScript 正则迷你书》
 - [vscode-regex](https://github.com/chrmarti/vscode-regex/) vscode 插件 Regex Previewer -这是一个用于实时测试正则表达式的实用工具。它可以将正则表达式模式应用在任何打开的文件上，并高亮所有的匹配项。
 - [正则的三个应用场景](http://ppt.baomitu.com/d/6f04cd7c#/)
+- [JS 正则表达式必知必会](https://juejin.im/post/5b61b0f86fb9a04fd343af8f#heading-25)

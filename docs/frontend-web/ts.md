@@ -53,8 +53,9 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
   "compilerOptions": {
     "target": "esnext", // 编译的js，后续 babel 进行处理？
     "module": "esnext", // 生成的模块
-    "strict": true,
+    "strict": true, // 严格模式
     "jsx": "preserve", // 支持 tsx 写法
+    // 是否引入npm包tslib中的辅助函数,__extends等
     "importHelpers": true,
     "moduleResolution": "node", // 模块的解析规则
     "experimentalDecorators": true,
@@ -63,12 +64,16 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
     // 把 ts 文件编译成 js 文件的时候，同时生成对应的 map 文件
     "sourceMap": true,
     "baseUrl": ".", // 指定基础目录
+    // typeRoots 用来指定默认的类型声明文件查找路径，默认为 node_modules/@types 。针对 npm
+    // 如果不希望自动引入 typeRoots 指定路径下的所有声明模块，那可以使用 types 指定自动引入哪些模块。
+    // types用来指定需要包含的模块，只有在这里列出的模块的声明文件才会被加载进来，只对通过 npm 安装的声明模块有效
     "types": ["webpack-env", "jest"],
     // 是相对于 “baseUrl” 进行解析
     "paths": {
       "@/*": ["src/*"]
     },
-    // /添加需要的解析的语法，否则TS会检测出错
+    // 添加需要的解析的语法，否则TS会检测出错
+    // 编译时引入的 ES 功能库，对 babel 的按环境引入则需要提前锁定一组特定的 JavaScript 功能
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
@@ -82,6 +87,14 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
   "exclude": ["node_modules"]
 }
 ```
+
+指定待编译文件有两种方式：
+
+- 使用 files 属性
+- 使用 include 和 exclude 属性
+  开发者可以按照自己的喜好使用其中任意一种。但它们不是互斥的，在某些情况下两者搭配起来使用效果更佳。
+
+虽然 allowJS 没开启，但是只要 include 进来，一样会进行编译。
 
 ## 基础入门
 
@@ -1276,6 +1289,18 @@ export declare function Prop(
 
 ## 进阶活用
 
+### TypeScript 给 window 对象添加全局变量
+
+```ts
+// typings/declare.globar.ts
+// eslint-disable-next-line no-unused-vars
+interface Window {
+  // 声明全局全局接口
+  __NETWORK__: string;
+}
+
+```
+
 ## 项目实战
 
 ### ts + vue 2.0 项目开发指南
@@ -1301,7 +1326,11 @@ vue 更适合小项目用.   配合模板的优势.
 
 ##### 快速创建
 
-新项目通过 vuecli3
+新项目通过 vuecli3 https://github.com/vuejs/vue-cli/tree/dev/packages/@vue/cli-plugin-typescript#readme
+
+```bash
+vue add typescript
+```
 
 <!-- ##### 快速创建
 
@@ -1314,11 +1343,11 @@ vue add @vue/typescript
 
 ##### 手动创建
 
-手动一步步搭建 vue + ts 的开发环境，
+手动一步步搭建 vue + ts 的开发环境
 
 1. 安装 `yarn add typescript —dev`，这个是用来编译 ts 代码为 js 代码，可以在项目根目录下添加更详细的配置 `tsconfig.json`。
 
-2. 使 webpack 支持 ts，要安装 `awesome-typescript-loader`，编写 loader 规则。
+2. 使 webpack 支持 ts，要安装 `ts-loader`，编写 loader 规则。
 
 ```js
 // vue.config.js
@@ -1327,8 +1356,8 @@ module.exports = {
     config.module
       .rule("ts")
       .test(/\.ts$/)
-      .use("awesome-typescript-loader")
-      .loader("awesome-typescript-loader");
+      .use("ts-loader")
+      .loader("ts-loader");
   },
 };
 ```
@@ -1390,7 +1419,8 @@ new Vue({
 
 ```ts
 // shims-vue.d.ts
-declare module "*.vue" { // 声明一个模块，应用于所有的 vue 组件的 import 语句中
+declare module "*.vue" {
+  // 声明一个模块，应用于所有的 vue 组件的 import 语句中
   import Vue from "vue";
   export default Vue; // 模块内声明
 }
@@ -1399,7 +1429,11 @@ declare module "*.vue" { // 声明一个模块，应用于所有的 vue 组件�
 这里的声明文件可能会出现 eslint 报错，
 Parsing error: Only declares and type imports are allowed inside declare module，因此需要把 `/**/*.d.ts` 添加进 .eslintignore 文件。
 
-6. 代码检查
+6. 前面都是在编译的时候，进行了代码提醒。我们还要在写代码的时候进行实时类型检查提醒，这时候需要设置 vscode 设置类型检查。
+
+另外，对于代码检查，因此还要安装 typescript-eslint 插件，写好配置文件，让 eslint 扩展能够对 ts 代码也进行代码检查。
+
+<!-- @typescript-eslint -->
 
 <!-- `"@vue/typescript/recommended",`
     `"@vue/prettier/@typescript-eslint"`
@@ -1407,8 +1441,140 @@ Parsing error: Only declares and type imports are allowed inside declare module�
 
 后续可以考虑用一个编译器 babel 来处理，见：https://iamturns.com/typescript-babel/？
 
+有一些特殊情况，我们需要禁用检查
 
-### 处理 .vue 文件
+```js
+// @ts-ignore
+```
+
+##### 采用 babel 7 编译 typescript
+
+- 避免维护两个 `js 编译文件，Webpack 经常用于解决这个问题，调整 Webpack 的配置。将 \*.ts 提供给 TypeScript，然后将运行的结果提供给 Babel。
+
+- 它还精简了整个 JavaScript 生态系统。取代了 ESLint、测试 runner、build 系统，以及开发模板提供的不同的编译器，它们只需要支持 Babel 即可。然后配置 Babel 来处理具体的需求。向 ts-loader、ts-jest、ts-karma、create-react-app-typescript 等等说再见就好啦，使用 Babel 代替它们。
+- 编译速度更快。babel 7 完全移除了 typeScript。不再需要 ts-loader 包，但是仍需 typescript 进行类型检查。
+
+- `@babel/preset-typescript`的作用是把 `typescript` 干掉，在这里不做 ts 检查，只是进行编译。继续用 `babel` 的其他转换设置。
+- 而 `tsconfig.json` 中的配置其实是给 `npm run check-types` 也就是 `tsc` 去做类型检查使用的。
+
+这种事情发生的频率并不高，等到功能开发完，再跑 `npm run check-types` 只会让你更想干掉 ts。对于实时的类型检查，可以开启 vscode 编辑器进行提醒（它也会读取 tsconfig.json ）
+
+- 如果真要`打包`的时候，也进行类型检查，可以安装这个插件： `fork-ts-checker-webpack-plugin`，这个 webpack 插件会在一个单独的进程并行的进行 TypeScript 的类型检查。可以不需要这样处理了，如果是为了保证 ts 质量，可以把 `check-types`添加进去提交代码的检测。
+
+设置：
+
+1. 安装
+
+```bash
+yarn --dev @babel/preset-typescript @babel/plugin-proposal-class-properties @babel/plugin-proposal-object-rest-spread
+```
+
+babel 配置文件（`.babelrc` 或 `babel.config.js`）
+
+```js
+{
+	"presets": [
+		"@babel/typescript"
+	],
+	"plugins": [
+		"@babel/proposal-class-properties",
+		"@babel/proposal-object-rest-spread"
+	]
+}
+```
+
+2. Babel 默认查找 `.js` 文件，遗憾的是，你还没办法在 Babel 的 config 文件中进行配置。
+
+- 如果使用 Babel CLI，添加 --extensions '.ts'。
+- 如果使用 Webpack，向 `resolve.extensions` 数组中添加 'ts'。
+
+在 vuecli.config.js 配置中：
+
+```js
+const module = {
+  chainWebpack: (config) => {
+    config.module
+      .rule("ts")
+      .test(/\.ts$/)
+      .use("babel-loader")
+      .loader("babel-loader");
+    // config.resolve.extensions[".ts"] // 上面已经⬆️进行引入了
+  },
+};
+```
+
+3. 给 package.json 添加 check-types 命令，并且安装好 typescript 和添加 `tsconfig.json` 文件：
+
+```json
+{
+  "scripts": {
+    "check-types": "tsc"
+  }
+}
+```
+
+添加 tsconfig.json 文件。
+
+4. 选择性是否安装 `ForkTsCheckerWebpackPlugin` 进行打包检查，配置：
+
+```js
+new ForkTsCheckerWebpackPlugin({
+  memoryLimit: 1024 * 2,
+  tsconfig: "./tsconfig.json",
+});
+```
+
+总结整个流程：typescript + babel + fork-ts-checker-webpack-plugin。
+
+这个时候，可以同时使用 js 和 ts 无缝开发了。
+
+![](../.vuepress/public/images/2020-06-09-17-47-50-ts-jest.png) 
+
+#### jest 单元测试
+
+安装两个包 `ts-jest` 和 `@types/jest`
+```bash
+yarn add ts-jest @types/jest --dev
+```
+
+然后更高 jest.config.js 配置，使支持 ts
+
+```js
+module.exports = {
+   // 这里添加 ts
+  moduleFileExtensions: ["ts", "js", "jsx", "json", "vue"],
+  transform: {
+    "^.+\\.vue$": "vue-jest",
+    ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$":
+      "jest-transform-stub",
+    "^.+\\.jsx?$": "babel-jest",
+    `"^.+\\.ts?$": "ts-jest",` // 添加这行
+  },
+  transformIgnorePatterns: ["/node_modules/"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1"
+  },
+  snapshotSerializers: ["jest-serializer-vue"],
+  testMatch: [
+    "**src/components/**/*.spec.(js|jsx]ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)",
+    "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+  ],
+  testURL: "http://localhost/",
+  watchPlugins: [
+    "jest-watch-typeahead/filename",
+    "jest-watch-typeahead/testname"
+  ],
+  verbose: true
+};
+
+```
+
+最终可以同时支持 ts 和 js 的编译以及测试。
+
+![](../.vuepress/public/images/2020-06-09-17-48-17-ts-jest-01.png)
+
+
+#### 处理 .vue 文件
 
 我们知道一个 `.vue` 组件文件，通常包括三部分：`template`、`script`和 `style` 部分，`.vue` 支持 ts 文件只需要在 script 标签上添加属性 `lang="ts"`：
 
@@ -1427,6 +1593,7 @@ yarn add vue-class-component vue-property-decorator —dev
 `vue-class-component` 支持类风格形式，`vue-property-decorator`则是针对 vue 的 `prop`、`watch` 等我们习惯的声明风格添加装饰器模式支持。
 
 <!-- （由于之前对装饰器不太理解，还特地去学习了这个设计模式，具体可以看看笔者写的文章总结《JS 实现装饰器模式》以及 [TypeScript 的装饰器篇章](https://www.tslang.cn/docs/handbook/decorators.html)） -->
+
 
 #### 修饰器
 
@@ -1931,15 +2098,18 @@ import ReactDOM from "react-dom";
 - 类型
   - [TypeScript 实战-04-TS 枚举类型](https://blog.csdn.net/ABAP_Brave/article/details/100737210)
 - 编译
+  - [从零开始配置 react + typescript（三）：webpack](https://juejin.im/post/5e4cef8d518825497467efcc#heading-17)
+  - [[译] TypeScript 牵手 Babel：一场美丽的婚姻](https://juejin.im/post/5c822e426fb9a04a0a5ffb49)
+  - [ts 官网完整的配置](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
   - [tsconfig.json 入门指南](https://juejin.im/post/5e34d967f265da3dfa49bdc3#heading-22)
-- [TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427?utm_source=gold_browser_extension#heading-44)
+  - [TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427?utm_source=gold_browser_extension#heading-44)
 - [TS in JS 实践指北](https://juejin.im/post/5e0176b4f265da33a159d9e0#heading-16)
 - [TypeScript - 一种思维方式](https://zhuanlan.zhihu.com/p/63346965) 本文介绍了 TS 能强化了「面向接口编程」这一理念。我们知道稍微复杂一点的程序都离不开不同模块间的配合，不同模块的功能理应是更为清晰的，TS 能帮我们梳理清不同的接口。
 - [Typescript 编译过程](https://zhuanlan.zhihu.com/p/45898674)
 - 开发环境
   - [vue-docs-zh-cn](https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-typescript/README.md) vuecli
   - [ts 在线编译工具](https://www.typescriptlang.org/play)
-  - [现有vue 项目中使用typeScript](https://blog.csdn.net/zyx1303031629/article/details/87856915)
+  - [现有 vue 项目中使用 typeScript](https://blog.csdn.net/zyx1303031629/article/details/87856915)
 - 模块声明
   - [声明文件](https://ts.xcatliu.com/basics/declaration-files.html)
   - [Can't import CSS/SCSS modules. TypeScript says “Cannot Find Module”
