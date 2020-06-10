@@ -1,5 +1,9 @@
 # JS 原型概念与应用
 
+头脑风暴：
+
+核心问题：传统的面向对象语言是如何新建对象以及继承类的。JS 又是如何通过原型这个概念来实现这两个概念的，原则上是基于类继承与基于原型继承的两种区别。https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Details_of_the_Object_Model
+
 ## 前言
 
 如果向你请教“原型”这两个字是什么意思，你会怎么解释呢？不同领域的人可能有不同的见解。在文学电影作品领域，主线剧情便是一个原型，例如罗密欧与茱丽叶是是遭遇家人反对为爱殉情男女的原型，跟中国故事的梁山伯与祝英台很像。另外，故事中的人物也可以是原型，例如英雄的原型。在互联网领域更是细分不少，在游戏开发中，一个原型是可以快速试玩的 demo。对于网站开发，原型可以起始于产品经理手中的线框图。
@@ -33,7 +37,7 @@
 
 最早视觉上可以交互的原型，便是纸面原型（也就是在纸上画画，以及使用一些玩具类的东西构建）。
 
-原型的规模大小是相对成品而言的，而在每个阶段都可以成为下一个阶段的原型，从纸面原型到真正可以进行交互的原型。
+原型的规模大小是相对成品而言的，而在每个阶段都可以成为下一个阶段的原型，也就是说原型之间可以进行`继承`，从纸面原型到真正可以进行交互的原型。
 
 [一个机器人或虐杀原型，从纸面到真正可以动的模型 gif]()
 
@@ -57,33 +61,51 @@
 这里的基类就是我们上面所说的原型，举个例子。
 
 <!-- 2K NBA online，已经具备基本的篮球能力的原型，开始只有基本的人物外表，然后你可以进行自定义外表，塑造出你喜欢的形象。（这个例子不太适合，更适合组合系统（也就是装饰器）） -->
-
 <!-- 动物，人 -->
 
 另外，而基于这个人物类进行实例化出男人 man 和女人 woman，这个人物类也可以说是 man 和 woman 的原型。
 
 除了这种直观的原型外，还有数据原型（数据的迁移、集成）等。
 
-### 构造器（构造函数）与原型的区别
+### 构造器（构造函数）与原型的关系
 
-在面向对象编程中，除了原型（`prototype`） 这个词外，构造器（`contructor`）也是我们接触比较多的术语。两者有什么区别呢，有哪些应用场景。
+构造器（构造函数）是可以根据原型构造实例对象的机器，在编程中就是 contructor，提供消费者（用户）可以基于这个原型（在传统面向对象中就是当前整个类）进行初始化状态所用。
 
-构造器是可以构造出原型的机器，在编程中就是 contructor，指的是整个类（原型）。而构造函数则是提供消费者（用户）可以基于这个原型进行初始化状态所用。
-
-```js
+```java
 // 这是整个类型
-// 构造函数
+// java 中的 constructor 就是构造函数。
+// 构造函数：
 ```
 
-C#、Java 都没有 （原型）prototype 这个属性，JS 中却有这个属性，让我们来看看 JS 中的原型。
+new bar() 这个 bar 是原型，而 bar 继承的类也是原型。通常我们 `a = new bar()` 也是调用 bar 类的构造函数，然后基于以整个类为原型进行创建新的对象。bar 为 a 的构造函数，则 a 为 bar 的一个实例。而 bar 作为原型还可以继承其他的原型例如 foo。
+
+面向对象的基本概念：
+- 类（JS 没有类的概念来创建新的对象）
+- 实例
+- 方法
+
+在传统的基于 Class 语言如 Java、C++、C# 中，继承的本质是扩展一个已有的 Class，并生成新的 Subclass。这类语言严格区分类和实例，继承实际上是类型的扩展。但是，JavaScript 无法直接扩展一个 Class。
+
+因为在 js 语言中没有类的概念（为什么没有？），因此使用原型来实现新对象实例的创建和继承。
+
+js 没有 extend 以及 构造函数这两个东西，因此使用 prototype 和 constructor 来间接实现面向对象编程。
+
+C#、Java 都没有（不需要）（原型）prototype 这个属性，JS 中却有这个属性，让我们来看看 JS 中的原型。
 
 ## JS 中的原型
 
+### JS 中的构造器与原型
+
+在 js 面向对象编程中，除了原型（`prototype`） 这个词外，构造器（`contructor`）也是我们接触比较多的术语。两者有什么区别呢，有哪些应用场景。
+
 ### 什么是原型链
+
+- 层层访问
 
 ### 为什么需要原型链
 
-### 回顾传统面向对象语言的继承
+- 使用原型链进行继承
+<!-- ### 回顾传统面向对象语言的继承，这里可以在上面提及了 -->
 
 ### JS 是如何使用原型链进行类的继承的
 
@@ -93,9 +115,15 @@ C#、Java 都没有 （原型）prototype 这个属性，JS 中却有这个属�
 
 ### 使用 ES6 的 class 实现继承
 
-## __proto__ 与 prototype 的区别
+## __proto、prototype、constructor 区别
 
-### 在 debugger 中查看属性
+js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
+
+### __proto__ 与 prototype 的区别
+
+### constructor 与 prototype 的区别
+
+### 在 调试器（debugger）中查看属性
 
 ## 应用场景
 
@@ -108,9 +136,17 @@ C#、Java 都没有 （原型）prototype 这个属性，JS 中却有这个属�
 
 ## 参考资料
 
+- [Details of the object model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Details_of_the_Object_Model) 值得精读的 MDN 文档，说清楚了基于类继承与基于原型继承的区别。
+- [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
 - [【进阶 5-2 期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)
 - [【进阶 5-1 期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)
 - [wiki 原型](https://zh.wikipedia.org/wiki/%E5%8E%9F%E5%9E%8B)
 - [Prototype](https://en.wikipedia.org/wiki/Prototype#cite_note-:0-1)
 - [所谓原型，是个什么东西？](http://www.woshipm.com/pd/144880.html)
+- [廖雪峰 JavaScript 教程](https://www.liaoxuefeng.com/wiki/1022910821149312/1023021997355072)
+- [再谈JavaScript面向对象思想及继承](https://segmentfault.com/a/1190000011770117)
+- [JS和其他面向对象语言的区别](https://www.jianshu.com/p/387677d13f99?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+- [Trying to understand the difference between prototype and constructor in JavaScript](https://stackoverflow.com/questions/28600238/trying-to-understand-the-difference-between-prototype-and-constructor-in-javascr)
+- [java 继承](https://www.liaoxuefeng.com/wiki/1252599548343744/1260454548196032)
+- [简单粗暴地理解js原型链–js面向对象编程](https://mp.weixin.qq.com/s/93CQRYj8TraDIKeJxNGPAQ)

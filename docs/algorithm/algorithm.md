@@ -365,7 +365,7 @@ const traverseTree = (node, callback, parentNode) => {
   - 归并排序
   - 堆排序
 - 时间复杂度为线性的排序算法
-  - 计算排序
+  - 计数排序
   - 桶排序
   - 基数排序
 
