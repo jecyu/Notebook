@@ -135,14 +135,14 @@ module.exports = {
         {
           title: "运维",
           collapsable: false,
-          children: ["linux", "window", "mac", "docker"]
+          children: ["linux", "window", "mac"]
         }
       ],
       "/tools/": [
         {
           title: "工具",
           collapsable: false,
-          children: ["excel", "ps", "webpack", "curl", "vscode"]
+          children: ["excel", "ps", "webpack", "curl", "vscode", "docker"]
         }
       ],
       "/frontend-web/": [
@@ -158,6 +158,7 @@ module.exports = {
             "react",
             "vue",
             "regex",
+            "file",
             "",
             "architecture",
             "authentication",
@@ -180,7 +181,7 @@ module.exports = {
         {
           title: "🚶不止前端",
           collapsable: false,
-          children: ["", "node", "java", "c"]
+          children: ["", "node", "java", "c", "ruby"]
         }
       ],
       "/rethink/": [

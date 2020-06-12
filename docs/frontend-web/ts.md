@@ -1016,7 +1016,7 @@ import App from "./App.vue";
 因此需要声明模块，这样引入 `.vue` 后缀的文件就不会报编译错误了。
 
 ```ts
-// shims-vue.d.ts
+// shims-vue.d.ts // 这里是声明模块，对 "*.vue" 模块的，一个文件就是一个模块
 declare module "*.vue" {
   import Vue from "vue";
   export default Vue;
@@ -1024,6 +1024,18 @@ declare module "*.vue" {
 ```
 
 上面的代码告诉 TypeScript `*.vue` 后缀的文件可以交给 vue 模块来处理。
+
+`declare module "*.vue"` 针对 .vue 后缀的文件（ts 中一个文件就是一个模块）进行声明，也就是对模块进行声明。除此之外，还有 `declare module "xxx"` 进行对模块的扩展。
+
+```ts
+// 扩展 node_modules/vue/types/vue 模块
+import vue from "vue/types/vue";
+declare module "vue/types/vue" {
+  interface Vue {
+    $lodash: any;
+  }
+}
+```
 
 同理，在 ts 文件中，使用了其他模块如 `*.scss` 文件，也需要声 scss 模块的类型定义，否则 tsc 找不到，会报编译错误。
 
@@ -1034,8 +1046,6 @@ declare module "*.scss" {
   export default content;
 }
 ```
-
-`declare var` 并没有真的定义一个变量，只是定义了全局变量 jQuery 的类型，仅仅会用于`编译时`的检查，在编译结果中会被删除。
 
 - 全局声明
   - `declare var` 声明全局变量
@@ -1123,6 +1133,16 @@ declare module "buffer" {} // with quotes，表示导出的 es6 外部模块
 declare module buffer {} // without quotes => 表示为declare namespace buffer {}
 ```
 
+##### 声明接口
+
+```ts
+// eslint-disable-next-line no-unused-vars
+interface Window {
+  // 声明全局全局接口
+  __NETWORK__: string;
+}
+```
+
 ##### npm 包
 
 一般我们通过 `import foo from 'foo'` 导入一个 npm 包，这是符合 ES6 模块规范。
@@ -1184,7 +1204,7 @@ declare module buffer {} // without quotes => 表示为declare namespace buffer 
 
 paths、和 baseUrl 可以在 ts 引入模块时省略根路径，`include` 则是需要编译的文件
 
-###### 模块插件
+##### 模块插件
 
 如果是需要扩展原有模块的话，需要在类型声明文件中先引用原有模块，再使用 `declare module` 扩展原有模块：
 
@@ -1203,8 +1223,9 @@ declare module "moment" {
 方式 2:
 
 ```ts
+import vue from "vue/types/vue";
+// 扩展 node_modules/vue/types/vue 模块
 declare module "vue/types/vue" {
-  // 扩展 node_modules/vue/types/vue 模块
   interface Vue {
     $lodash: any;
   }
@@ -1226,6 +1247,8 @@ let tom: Person = {
   age: 25,
 };
 ```
+
+
 
 1. 接口是用来声明对象的区别？接口与抽象类的区别？
 2. 修饰符 private 这些声明只是警告作用吗？编译后，还是可以使用的？相当于更清楚的编码？

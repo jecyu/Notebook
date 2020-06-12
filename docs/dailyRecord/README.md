@@ -4,6 +4,15 @@
 
 <!-- 横向和纵向排版统一使用 flex 布局。 -->
 
+## 六月
+
+### string.slice(start, end) vs string.substr(start, length) vs string.substring(start, end) vs string.splice
+
+- https://stackoverflow.com/questions/2243824/what-is-the-difference-between-string-slice-and-string-substring
+- https://www.tothenew.com/blog/javascript-slice-vs-substring-vs-substr/
+- https://masteringjs.io/tutorials/fundamentals/substring
+- https://www.freecodecamp.org/news/javascript-substring-examples-slice-substr-and-substring-methods-in-js/
+
 ## 五月
 
 ### 生成任意数量的树数据

@@ -5,7 +5,7 @@
  * 思路：关键是分治法，每次获取一个基准元素，进行基准两边元素的分割，重新排位，直到分割完成，核心就是把两边的元素与基准元素比较然后重新排位。
  * 分治法思路详解：
  * 1. 使用 privot 记录开始位置为基准元素，使用 left 和 right 两个指针进行元素的移动和位置交换。
- * 2. 首先比较 right 指针的值与基准元素比较，假设是从小到大排序。那么如果 arr[right] 比 pivot 大，因为这个位置的值不需要移动到左边。所以right 指针继续向左移动，直到遇到比 pivot 小的元素的位置，这个时候停止移动，以便后面跟 left 指针的位置进行交换。
+ * 2. 首先比较 right 指针的值与基准元素比较，假设是从小到大排序。那么如果 arr[right] 比 pivot 大，因为这个位置的值不需要移动到左边。所以 right 指针继续向左移动，直到遇到比 pivot 小的元素的位置，这个时候停止移动，以便后面跟 left 指针的位置进行交换。
  * 3. 然后比较 left 指针的值与基准元素比较，假设是从小到大排序。那么如果 arr[left] pivot 小，则这个位置的值不需要移动到右边边。所以 left 指针继续向左移动，直到遇到比 pivot 大或等于的元素的位置，这个时候停止移动，以便后面跟 right 指针的位置进行交换。
  * 4. 最后，交换 left 和 right 的位置，然后继续 2 和 3 的步骤，直到 left 和 right 的位置重合，至此完成了第一轮的基准元素分割。
  * 快速排序：快速排序函数根据分治法函数获得的基准引用，递归传递 startIndex 和 endIndex 把每轮的数组，分割成两部分，进行下一个分治法的处理。
@@ -14,7 +14,7 @@
  * Output: -3 -6 1 2 3  5 6 8 9
  * @Author: Jecyu
  * @Date: 2020-06-08 20:46:09
- * @LastEditTime: 2020-06-09 23:08:44
+ * @LastEditTime: 2020-06-10 22:12:31
  * @LastEditors: Jecyu
  */
 
@@ -59,7 +59,7 @@ const quickSort = (arr, startIndex, endIndex) => {
   // 每次递归刷新基准元素位置
   const pivotIndex = partition(arr, startIndex, endIndex);
   // 根据基准元素，分成两部分进行递归排序
-  quickSort(arr, startIndex, pivotIndex - 1);
+  quickSort(arr, startIndex, pivotIndex - 1); 
   quickSort(arr, pivotIndex + 1, endIndex);
 };
 
@@ -70,6 +70,10 @@ assert.deepStrictEqual(
   expectedArr,
   "arr => expectedArr"
 );
+
+// 复杂度分析 TODO 具体分析
+// 时间复杂度：最好情况：每一轮遍历的对半切分，移动相当于 2*2 2*2*2   2^x = n  => x = log2n，最坏情况是 O(n2)
+// 空间复杂度： nlog2N
 
 // 版本2：单边循环法
 

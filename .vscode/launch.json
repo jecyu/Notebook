@@ -9,9 +9,10 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      // "program": "${workspaceFolder}/examples/algorithm/sorting/demo02.js"
-      // "program": "${workspaceFolder}/examples/algorithm/string/demo07.js"
-      "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
+      // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
+      "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
+      // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
+      // "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
       // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
     }
   ]
