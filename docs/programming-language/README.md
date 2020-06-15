@@ -1,4 +1,4 @@
-# C#
+# C
 
 [[toc]]
 
@@ -8410,14 +8410,92 @@ namespace classdemo.JecyuOther
 
 ## 基础（中级）
 
-### override 和 overload 以及 new 修饰符
+### 协程
 
+- https://blog.csdn.net/a_little_a_day/article/details/78519265
+- [C#之Coroutine](https://gameinstitute.qq.com/community/detail/117921)
+
+
+协程：协同程序，在主程序运行的同时，开启另外一段逻辑处理，来协同当前程序的执行。
+
+开启协程的两种方式
+
+1、StartCoroutine(string methodName)
+
+注意：
+
+(1)、参数是方法名(字符串类型)，此方法可以包含一个参数
+
+(2)、形参方法可以有返回值
+
+2、StartCoroutine（IEnumerator method)
+
+(1)、参数是方法名(TestMethod()),方法中可以包含多个参数
+
+(2)、IEnumrator 类型的方法不能含有 `ref` 或者 `out` 类型的参数，但可以含有被传递的引用
+
+(3)、必须有有返回值，且返回值类型为IEnumrator,返回值使用（yield retuen +表达式或者值，或者 yield break）语句
+
+终止协程的两种方式：
+
+StopCoroutine (string methodName),只能终止指定的协程
+
+使用时注意：
+
+在程序中调用 StopCoroutine() 方法只能终止以字符串形式启动的协程
+- yield：挂起，程序遇到yield关键字时会被挂起，暂停执行，等待条件满足时从当前位置继续执行
+- yield return 0 or yield return null:程序在下一帧中从当前位置继续执行
+- yield return 1,2,3,......: 程序等待1，2，3...帧之后从当前位置继续执行
+- yield return new WaitForSeconds(n): 程序等待n秒后从当前位置继续执行。
+- yield new WaitForEndOfFrame():在所有的渲染以及GUI程序执行完成后从当前位置继续执行
+- yield new WaitForFixedUpdate():所有脚本中的FixedUpdate()函数都被执行后从当前位置继续执行
+- yield return WWW:等待一个网络请求完成后从当前位置继续执行
+- yield return StartCoroutine():等待一个协程执行完成后从当前位置继续执行
+- yield break
+  如果使用yield break语句，将会导致协程的执行条件不被满足，不会从当前的位置继续执行程序，而是直接从当前位置跳出函数体，回到函数的根部
+
+```cs
+ public void CardRevealed(MemoryCard card)
+  {
+    // 将卡片对象存储在两个卡片变量的一个中，这取决于第一个变量是否已经被占用。
+    if (_firstRevealed == null)
+    {
+      _firstRevealed = card;
+    }
+    else
+    {
+      _secondRevealed = card;
+      // 比较两个翻开卡片的 ID
+      Debug.Log("Match ?" + (_firstRevealed.id == _secondRevealed.id));
+      StartCoroutine(CheckMatch());// 当两张卡片都显示时调用协程
+    }
+  }
+  private IEnumerator CheckMatch()
+  {
+    if (_firstRevealed.id == _secondRevealed.id)
+    {
+      _score++;
+      Debug.Log("Score：" + _score);
+    }
+    else
+    {
+      yield return new WaitForSeconds(0.5f); // 如果卡片不匹配则不翻开
+      _firstRevealed.Unreveal();
+      _secondRevealed.Unreveal();
+    }
+    // 不管是否匹配，都清除变量
+    _firstRevealed = null;
+    _secondRevealed = null;
+  }
+```
+
+### override 和 overload 以及 new 修饰符
 
 C# 支持重写实例方法和属性，但不支持重写字段或任何静态成员。为了进行重写，要求在基类和派生类中都显式地执行一个操作，在基类中，必须将允许重写的每个成员标记为 virtual。假如一个 virtual 或 protected 成员没有包括 virtual 修饰符，就不允许子类重写该方法。
 
-与 Java 相比，默认情况下 Java中 的方法都是虚方法，如果希望方法具有非虚的行为，就必须显示密封它。相反，C#的方法都默认为非虚方法，想要子类重写它就必须用 virtual 修饰符修饰。
+与 Java 相比，默认情况下 Java 中 的方法都是虚方法，如果希望方法具有非虚的行为，就必须显示密封它。相反，C#的方法都默认为非虚方法，想要子类重写它就必须用 virtual 修饰符修饰。
 
-另外，override 修饰符在这时候必须要和virtual配套使用。与Java 和 C++ 不同，C#应用于派生类的 verride 关键字是必须的。C# 不允许隐式重写。为了重写方法，基类和派生类成员必须匹配，而且要有对
+另外，override 修饰符在这时候必须要和 virtual 配套使用。与 Java 和 C++ 不同，C#应用于派生类的 verride 关键字是必须的。C# 不允许隐式重写。为了重写方法，基类和派生类成员必须匹配，而且要有对
 
 接下来说说 override 和 overload 的区别。
 
@@ -8451,8 +8529,6 @@ public string ToString(int id){return id.ToString();}
 - 覆写则有可能是完全不同的事情。
 
 一句话：覆写（Override）的两个函数的函数特征相同，重载（Overload）的两个函数的函数名虽然相同，但函数特征不同。
-
-
 
 ```cs
 // override vs overload vs new 重写
@@ -8529,13 +8605,18 @@ namespace classdemo.JecyuClass
 ```
 
 总结：
+
 1. 重写(override)
-------------------
+
+---
+
 使用 override 修饰符来修改方法、属性、索引器或事件。重写方法提供从基类继承的成员的新实现。由重写声明重写的方法称为重写基方法。重写基方法必须与重写方法具有相同的签名。
-不能重写非虚方法或静态方法。重写基方法必须是虚拟的、抽象的或重写的。也就是说，用 `override` 修饰符重写的基类中的方法必须是  `virtual`, `abstract` 或 `override` 方法。
+不能重写非虚方法或静态方法。重写基方法必须是虚拟的、抽象的或重写的。也就是说，用 `override` 修饰符重写的基类中的方法必须是 `virtual`, `abstract` 或 `override` 方法。
 
 2. 重载(overload)
-------------------
+
+---
+
 当类包含两个名称相同但签名不同的方法时发生方法重载。
 
 #### new 修饰符
@@ -8558,7 +8639,6 @@ class Derived: Base {
 这里一个明显的解决方案是为子类方法添加 override 修饰符（假如它的父类成员是 virtual 的），但是第二种方法是使用 new 修饰符，这种情况称为脆弱的基类。
 
 至于它与 override 的比较效果待后续研究。- [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。
-
 
 ## 进阶活用（高级）
 

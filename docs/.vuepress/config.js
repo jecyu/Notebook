@@ -49,7 +49,8 @@ module.exports = {
           { text: "️️🖱️工具", link: "/tools/" },
           { text: "️️🐛网络工程", link: "/network/" },
           { text: "️️🎮游戏开发", link: "/game-development/" },
-          { text: "🚶编程语言", link: "/programming-language/" }
+          { text: "🚶编程语言", link: "/programming-language/" },
+          { text: "编程范式", link: "/programming-paradigm/" }
         ]
       },
       { text: "✔️编码规范&协同开发", link: "/lint/" },

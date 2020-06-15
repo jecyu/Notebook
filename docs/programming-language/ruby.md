@@ -78,7 +78,7 @@ irb(main):194:0> ages.include?(25)
 => true
 irb(main):195:0> ages.include?(44)
 => false
-irb(main):196:0> 
+irb(main):196:0>
 ```
 
 ##### 散列表
@@ -110,7 +110,7 @@ irb(main):017:0> multiply.call(6, 9)
 
 每个值都是一个对象，而且独享彼此之间靠`发送信息`进行通信。每个对象都有自己的方法集合，这些方法决定了它`如何响应`特定的消息。
 
-一个`消息`有一个名字，并且根据需要可以有一些参数。一个对象收到一个消息的时候，`它对应的方法`就会使用`消息中的参数`作为自己的参数执行。
+一个`消息`有一个名字，并且根据需要可以有一些`参数`。一个对象收到一个消息的时候，`它对应的方法`就会使用`消息中的参数`作为自己的参数执行。
 
 通过向一个特殊内建对象 object 发送 new 信息来新建一个对象；
 
@@ -288,6 +288,7 @@ irb(main):109:0> join_with_commas("one", "two", "three")
 ```
 
 一个方法只有一个可变参数，而常规参数放到可变参数的前后都可以：
+
 ```ruby
 irb(main):115:0> def join_with_commas(before, *words, after)
 irb(main):116:1> before + words.join(',') + after
@@ -299,24 +300,26 @@ irb(main):119:0> join_with_commas("Tesing: ", "one", "two", "three", ".")
 ```
 
 在发送消息的时候，`*` 运算符还可以把每一个数组元素当作单个参数处理：
+
 ```ruby
 irb(main):120:0> arguments = ['Testing: ', 'one', 'two', 'three', '.']
 => ["Testing: ", "one", "two", "three", "."]
 irb(main):121:0> join_with_commas(*arguments)
 => "Testing: one,two,three."
-irb(main):122:0> 
+irb(main):122:0>
 ```
 
 `*` 也可以使用并行赋值方式：
+
 ```ruby
 irb(main):122:0> before, *words, after = ['Testing: ', 'one', 'two', 'three', '.']
 => ["Testing: ", "one", "two", "three", "."]
 irb(main):123:0> before
 => "Testing: "
-irb(main):124:0> 
+irb(main):124:0>
 irb(main):125:0* words
 => ["one", "two", "three"]
-irb(main):126:0> 
+irb(main):126:0>
 irb(main):127:0* after
 => "."
 
@@ -324,7 +327,7 @@ irb(main):127:0* after
 
 #### 代码块
 
-代码块 （block）是由 `do/end` 或者大括号围住的一段 Ruby 代码。方法可以带一个隐式代码块参数，并使用 `yield` 关键字表示对代码块中那段代码的调用：
+代码块 （block）是由 `do/end` 或者大括号围住的一段 Ruby 代码。方法可以带一个`隐式代码`块参数，并使用 `yield` 关键字表示对代码块中那段代码的调用：
 
 ```ruby
 irb(main):157:0> def do_three_times
@@ -352,11 +355,20 @@ third: hello
 ```
 
 `yield` 返回执行代码块的结果：
-<!-- 
+
 ```ruby
-``` -->
+irb(main):001:0> def number_names
+irb(main):002:1> [yield('one'), yield('two'), yield('three')].join(', ')
+irb(main):003:1> end
+=> :number_names
+irb(main):004:0> number_names { |name| name.upcase.reverse}
+=> "ENO, OWT, EERHT"
+irb(main):005:0>
+```
 
 #### 枚举类型
+
+Ruby 有一个
 
 #### 结构体
 

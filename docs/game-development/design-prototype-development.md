@@ -3656,3 +3656,7 @@ export default animate;
 ## 术语
 
 - MMORPG：大型多人在线角色扮演游戏(Massively Multiplayer Online Role Playing Game)；
+
+## 参考资料
+
+- [Epic Games 研究：Fortnite 和游戏行业的未来](https://mp.weixin.qq.com/s/dJ-KKyEjAVVG3ZgH4g1gfg)

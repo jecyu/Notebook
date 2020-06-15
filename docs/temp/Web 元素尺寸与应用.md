@@ -330,6 +330,28 @@ getBoundingClientRect()
 ### 如何保持一定的长宽比
 
 ### 二维图转三维用 -->
+		(1) 原生JS控制多个滚动条同步跟随滚动
+		https://juejin.im/post/5a3bb40e5188252b145b38e3
+		(2) 用Javascript获取页面元素的位置
+		http://www.ruanyifeng.com/blog/2009/09/find_element_s_position_using_javascript.html
+		(3) 原生JS控制多个滚动条同步跟随滚动
+		https://juejin.im/post/5a3bb40e5188252b145b38e3
+		(4) 打造自己的JavaScript武器库
+		https://juejin.im/post/5a091afe6fb9a044ff30f402#heading-18
+		(5) 拖动内容实现滚动条的拖动
+		https://blog.csdn.net/qq_36371276/article/details/80227762
+		(6) JQuery获取浏览器窗口的可视区域高度和宽度,滚动条高度  
+		https://www.cnblogs.com/wennice/p/6840804.html
+		(7) js中的各种宽高以及位置总结
+		(8) js获取鼠标位置和滚动条位置
+		https://blog.csdn.net/lnn2007/article/details/7890188
+		(9) 用Javascript获取页面元素的位置
+		http://www.ruanyifeng.com/blog/2009/09/find_element_s_position_using_javascript.html
+		(10) 7分钟理解JS的节流、防抖及使用场景
+		https://juejin.im/post/5b8de829f265da43623c4261#heading-5
+		(11) Vue开发——实现吸顶效果
+		https://juejin.im/post/5b7a9deff265da43635d8067#comment
+
 
 ## 参考资料
 

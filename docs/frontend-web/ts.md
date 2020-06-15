@@ -1475,7 +1475,7 @@ Parsing error: Only declares and type imports are allowed inside declare module�
 - 避免维护两个 `js 编译文件，Webpack 经常用于解决这个问题，调整 Webpack 的配置。将 \*.ts 提供给 TypeScript，然后将运行的结果提供给 Babel。
 
 - 它还精简了整个 JavaScript 生态系统。取代了 ESLint、测试 runner、build 系统，以及开发模板提供的不同的编译器，它们只需要支持 Babel 即可。然后配置 Babel 来处理具体的需求。向 ts-loader、ts-jest、ts-karma、create-react-app-typescript 等等说再见就好啦，使用 Babel 代替它们。
-- 编译速度更快。babel 7 完全移除了 typeScript。不再需要 ts-loader 包，但是仍需 typescript 进行类型检查。
+- j查。
 
 - `@babel/preset-typescript`的作用是把 `typescript` 干掉，在这里不做 ts 检查，只是进行编译。继续用 `babel` 的其他转换设置。
 - 而 `tsconfig.json` 中的配置其实是给 `npm run check-types` 也就是 `tsc` 去做类型检查使用的。
