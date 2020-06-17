@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas 渲染大量数据</title>
+  <style>
+    #myCanvas {
+      border: 1px solid #666;
+    }
+  </style>
+</head>
+<body>
+  <button>添加图形</button>
+  <canvas id="myCanvas" width="500" height="500"></canvas>
+  <script>
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    var centerX = canvas.width / 2;
+    var centerY = canvas.height/2;
+    var radius = 5;
+
+    function circle(context, centerX, centerY) {
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = "green";
+      context.fill();
+    }
+    function repaint() {
+      ctx.clearRect(0, 0, width, height);
+      drawAll()
+    }
+    function drawAll() { // 网格
+      let number = 10;
+      for (let i = 0; i < canvas.width/(radius* 2); i++) {
+        // for (let j = 0; j < canvas.height / (radius* 2); j++) {
+          circle(context, i * radius, 0)
+        // }
+      }
+    }
+    drawAll()
+  </script>
+</body>
+</html>

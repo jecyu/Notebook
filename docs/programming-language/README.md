@@ -1,4 +1,4 @@
-# C
+# CSharp
 
 [[toc]]
 
@@ -8408,6 +8408,94 @@ namespace classdemo.JecyuOther
 
 #### 和 COM 的互操作
 
+## 单元测试
+
+版本：8.6.3
+
+1. 创建 MSTest 项目。
+使用 .NET-Core 创建的项目，只能使用 .Net-Core 的单元测试项目。否则使用普通的测试项目。
+
+2. 在单元测试项目引用需要测试的项目程序集，右键项目-> 添加引用 -> 勾选程序集。
+
+![](../.vuepress/public/images/2020-06-17-14-20-38-visual-studio-unit-test.png)
+
+3. 编写单元测试类
+- 测试方法要求
+  - 使用 `[TestMethod]` 特性进行修饰。
+  - 它将返回 void。
+  - 它不能含有参数。
+  - 非静态方法
+
+被测试的类，必须带有 Main 静态方法作为入口（ C# 程序的 入口点。Main 方法说明当执行时 类将做什么动作），这个后续研究为什么被引用的类还需要 Main。
+
+```cs
+/*
+ * 单例模式
+ */
+using System;
+namespace Design.Patterns
+{
+  public class Singleton
+  {
+    private static Singleton uniqueInstance;
+
+    private Singleton()
+    {
+    }
+
+    public static Singleton GetSingleton()
+    {
+      if (uniqueInstance == null)
+      {
+        uniqueInstance = new Singleton();
+      }
+      return uniqueInstance;
+    }
+
+    public void Say()
+    {
+      Console.WriteLine("Hello, I am Singleton.");
+    }
+
+    public static void Main(string[] args)
+    {
+
+    }
+  }
+}
+
+```
+
+单元测试用例
+```cs
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Design.Patterns;
+namespace UnitTest.DegisnTests
+{
+  [TestClass]
+  public class SingletonDemo01Test
+  {
+    public SingletonDemo01Test()
+    {
+    }
+
+    [TestMethod] // 测试用例
+    public void TestMethod()
+    {
+      Singleton singleton1 = Singleton.GetSingleton();
+      Singleton singleton2 = Singleton.GetSingleton();
+      Assert.ReferenceEquals(singleton1, singleton2);
+    }
+  }
+}
+```
+
+4. 启动单元测试，打开查看 -> 测试，之后会打开侧边栏，点击运行所有测试或调试所有测试。
+
+可以运行全部的测试文件，也可以单个测试。
+
+![](../.vuepress/public/images/2020-06-17-15-30-14visual-studio-test-02.png)
+
 ## 基础（中级）
 
 ### 协程
@@ -8652,6 +8740,10 @@ class Derived: Base {
 
 ## 参考资料
 
+- 测试
+  - [.NET Core 和 .NET Standard 单元测试最佳做法](https://docs.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-best-practices)
+  - [教程：在 Visual Studio 中使用 .NET Core 测试 .NET Standard 库](https://docs.microsoft.com/zh-cn/dotnet/core/tutorials/testing-library-with-visual-studio)
+  - [C#-面向对象：争议TDD（测试驱动开发）](https://zhuanlan.zhihu.com/p/94854332)
 - [C#中 override 和 overload 的区别](https://www.cnblogs.com/netlyf/archive/2009/09/08/1562642.html) 讲解方法重写 override 和方法重载 overload 的区别。
 - [C#笔记（Virtual，Abstract，Override，new）](https://zhuanlan.zhihu.com/p/74225708)
 - [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。

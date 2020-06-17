@@ -182,7 +182,7 @@ module.exports = {
         {
           title: "🚶不止前端",
           collapsable: false,
-          children: ["", "node", "java", "c", "ruby"]
+          children: ["", "node", "java", "c", "ruby", "lua"]
         }
       ],
       "/rethink/": [

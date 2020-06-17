@@ -192,7 +192,60 @@ plane.fire();
 
 ## 单例模式
 
-如果游戏中可以确定特定的类只有一个单一的实例，那么可以为该类创建一个单例，作为该类类型的静态变量，可以在代码的任何地方引用。
+单例（件）模式（Singleton）：用来创建独一无二的，只能有一个实例的对象的入场券。
+
+### 原因
+
+- 线程池（threadpool）
+- 缓存（cache）
+- 对话框
+- 处理偏好设置和注册表（registry）的对象
+- 日志对象
+- 充当打印机
+- 显卡等设备的驱动程序的对象。
+
+### 实现
+
+#### 版本一
+
+```cs
+/*
+ * 单例模式
+ */
+using System;
+namespace Design.Patterns
+{
+  public class Singleton
+  {
+    private static Singleton uniqueInstance;
+
+    private Singleton()
+    {
+    }
+
+    public static Singleton GetSingleton()
+    {
+      if (uniqueInstance == null)
+      {
+        uniqueInstance = new Singleton();
+      }
+      return uniqueInstance;
+    }
+
+    public static void Main(string[] args)
+    {
+
+    }
+  }
+}
+
+```
+
+### 应用场景
+
+Unity MonoBehaviour 使用
+
+如果游戏中可以确定特定的类只有一个单一的实例，那么可以为该类创建一个单例，作为该类类型的静态变量，可以在代码的任何地方引用。下面通过静态变量的访问约定：
 
 ```cs
 public class Hero: MonoBehaviour {
@@ -478,3 +531,4 @@ render( treeAdapter(getArchiveTypeTree) );
 ## 参考资料
 
 - 《JavaScript 设计模式与开发实践》
+- 《HeadFirst 设计模式》

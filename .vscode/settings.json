@@ -12,5 +12,6 @@
       "replace": "[]($1)"
     }
   ],
-  "MarkdownPaste.path": "${workspaceRoot}/docs/.vuepress/public/images/"
+  "MarkdownPaste.path": "${workspaceRoot}/docs/.vuepress/public/images/",
+  "editor.snippetSuggestions": "bottom"
 }

@@ -141,6 +141,7 @@ Apple Pcker Prototyp
 <u>GameObject 实际上只是一些组件的容器。由于 GameObject 主要的用途是作为容器，因此可以把拥有一些功能的 MonoBehaviour 附加到它上面。</u>GameObject 在场景中具体是上面，取决于它上面附加了什么组件。Cube 对象有 Cube 组件，Sphere 对象有 Sphere 组件，等等。
 
 gameObject.SendMessage 调用目标对象的方法。
+
 ```cs
 targetObject.SendMessage(targetMessage); // 当单击按钮时将消息发送到目标对象
 ```
@@ -159,13 +160,13 @@ targetObject.SendMessage(targetMessage); // 当单击按钮时将消息发送到
 
 #### GameObject 与脚本的关系
 
-举个连连看例子，比如有一个脚本是专门管理 UI 的，另外有一个脚本是gamelogic，这两个脚本都挂在一个名字为 runtime 的gameobject下。因为连连看是需要点击UI，然后相应去改变gamelogic 脚本里面一些变量。应该怎么实现两个脚本的交互，虽然知道可以用`事件`去实现，让 gamelogic 脚本去监听 UI 脚本的来实现，但是不知道如何在一个脚本里面怎么去访问另外一个脚本的变量或者函数，因为脚本是一个类，如果是访问类非静态成员或者函数的话，是要通过`对象`来访问的，那么问题就来了，这两个脚本挂在 gameobject 下面后，这两个脚本对应的对象是谁呢？
+举个连连看例子，比如有一个脚本是专门管理 UI 的，另外有一个脚本是 gamelogic，这两个脚本都挂在一个名字为 runtime 的 gameobject 下。因为连连看是需要点击 UI，然后相应去改变 gamelogic 脚本里面一些变量。应该怎么实现两个脚本的交互，虽然知道可以用`事件`去实现，让 gamelogic 脚本去监听 UI 脚本的来实现，但是不知道如何在一个脚本里面怎么去访问另外一个脚本的变量或者函数，因为脚本是一个类，如果是访问类非静态成员或者函数的话，是要通过`对象`来访问的，那么问题就来了，这两个脚本挂在 gameobject 下面后，这两个脚本对应的对象是谁呢？
 
-面向组件编程，如果是同一个 gameobject下 脚本互相访问，只要通过 `getcomponent<脚本名字>()` 就可以访问到这个脚本组件的所有 public 东西了！再啰嗦一句，因为脚本复用性高，所以做成一个组件，所以采用`面向组件编程`。
+面向组件编程，如果是同一个 gameobject 下 脚本互相访问，只要通过 `getcomponent<脚本名字>()` 就可以访问到这个脚本组件的所有 public 东西了！再啰嗦一句，因为脚本复用性高，所以做成一个组件，所以采用`面向组件编程`。
 
-举个例子，现在我想动态生成玩家和怪物，而玩家和怪物都共用一个脚本 actorcomponent 控制，那么我只要先用代码 new出gameobject，然后相应地给这些 gameobject 挂上不同的模型，挂上相同的脚本 actorcomponent 即可，这样就是复用性和面向组件的体现。还有对自己啰嗦一下，脚本是需要解释的，是在unity里，它采用了c#，一个脚本写好了就进行编译，我也可以不采用c#，他们可以采用一套自己搞得语言来写，只要能解释好就可以了。解释之后的脚本其实就是去调用一些dll里面的类啊函数啊静态变量啊之类的，而dll估计就是事先写好的程序集。为毛unity不提供.h.cpp而是给dll呢？反正都是c++底层实现，非要弄dll让我们去调。因为unity不开源啊～(￣▽￣～)~
+举个例子，现在我想动态生成玩家和怪物，而玩家和怪物都共用一个脚本 actorcomponent 控制，那么我只要先用代码 new 出 gameobject，然后相应地给这些 gameobject 挂上不同的模型，挂上相同的脚本 actorcomponent 即可，这样就是复用性和面向组件的体现。还有对自己啰嗦一下，脚本是需要解释的，是在 unity 里，它采用了 c#，一个脚本写好了就进行编译，我也可以不采用 c#，他们可以采用一套自己搞得语言来写，只要能解释好就可以了。解释之后的脚本其实就是去调用一些 dll 里面的类啊函数啊静态变量啊之类的，而 dll 估计就是事先写好的程序集。为毛 unity 不提供.h.cpp 而是给 dll 呢？反正都是 c++底层实现，非要弄 dll 让我们去调。因为 unity 不开源啊～(￣ ▽ ￣～)~
 
-被显式添加到 Hierarchy 中的 `GameObject` 会被最先实例化，GameObject 被实例化的顺序是`从下往上`。GameObject 被实例化的同时，加载其组件 component 并实例化，如果挂载了脚本组件，将调用脚本的 Awake 
+被显式添加到 Hierarchy 中的 `GameObject` 会被最先实例化，GameObject 被实例化的顺序是`从下往上`。GameObject 被实例化的同时，加载其组件 component 并实例化，如果挂载了脚本组件，将调用脚本的 Awake（`假如只是访问当前脚本的静态类属性，则不需要挂载实例化` ）
 方法，组件的实例化顺序也是从下往上。在所有显式的 GameObject 及其组件被实例化完成之前，游戏不会开始播放帧。（所以这里是进度条？）
 
 当 GameObject 实例化工作完成之后，将开始播放游戏帧。每个脚本的第一帧都是调用 Start 方法，其后每一帧调用 Update，而且每个脚本的在每一帧中的调用顺序是从下往上。
@@ -178,8 +179,13 @@ targetObject.SendMessage(targetMessage); // 当单击按钮时将消息发送到
 
 ![](../.vuepress/public/images/2020-06-14-23-07-40-gameobject-01.png)
 
+```cs
+public class ClassA : MonoBehaviour {
+  [SerializeField] private ClassB classb;
+}
+```
 
-可以直接克隆 classB 对象，间接生成 GameObject。
+另外直接克隆 classB 对象，间接生成 GameObject。
 
 ```cs
 b = Instantiate(classB) as ClassB;
@@ -316,7 +322,7 @@ SpriteRenderer 组件让对象成为一个精灵对象并决定显示哪个精�
 
 #### 问题
 
-2D游戏可以通过 Sprite 图集来显示动画集合，那 3D 游戏呢？直接是模型自带的动画，然后播放动画？
+2D 游戏可以通过 Sprite 图集来显示动画集合，那 3D 游戏呢？直接是模型自带的动画，然后播放动画？
 
 #### 小结
 
@@ -325,11 +331,15 @@ SpriteRenderer 组件让对象成为一个精灵对象并决定显示哪个精�
 - 单击精灵前首先需要你为精灵添加 2D `碰撞器`。
 - 可以通过编程为精灵`加载新图像`。
 - `UI` 文本可以使用 `3D 文本`对象。
-- `加载关卡`可以重置场景。 
+- `加载关卡`可以重置场景。
 
 ## 入门
 
 ### 程序目录组织
+
+- scripts
+  - SceneController （3D 场景）
+  - UIController （UI）
 
 ### 关卡
 
@@ -341,33 +351,28 @@ LoadLevel() 方法能加载不同关卡。但加载关卡时究竟发生了什�
 
 ### Unity 常用脚本类
 
-Unity中的常用脚本类就可以简单的分成如下四大类：
+Unity 中的常用脚本类就可以简单的分成如下四大类：
 
 一、宏观控制类
 
-主要作用是真对Unity程序中的某一方面进行宏观控制。
+主要作用是真对 Unity 程序中的某一方面进行宏观控制。
 
 包括：
 
-Application —— 应用程序类
-
-Input —— 输入类
-
-GUI —— 图形输出类
-
-Physics —— 物理引擎类
-
-Resources —— 资源类
-
-Time —— 时间类
+- Application —— 应用程序类
+- Input —— 输入类
+- GUI —— 图形输出类
+- Physics —— 物理引擎类
+- Resources —— 资源类
+- Time —— 时间类
 
 等等
 
 二、游戏对象（GameObject）类
 
-由于Unity是面向组件的开发模式（而非面向对象），所以从类的继承关系中也能看出：
+由于 Unity 是`面向组件`的开发模式（而`非面向对象`），所以从类的继承关系中也能看出：
 
-对于GameObject类没有下太多的笔墨，而是将更多的内容交给下面的组件类。
+对于 GameObject 类没有下太多的笔墨，而是将更多的内容交给下面的组件类。
 
 三、组件（Component）类
 
@@ -379,7 +384,7 @@ Time —— 时间类
 
 （1）角色控制器（CharacterController）类继承于碰撞器（Collider）类
 
-（2）有一组类并不直接继承于组件类，而是通过继承Behavior类间接的继承，包括我们熟知的MonoBehavior类
+（2）有一组类并不直接继承于组件类，而是通过继承 Behavior 类间接的继承，包括我们熟知的 MonoBehavior 类
 
 至于为什么会这样设计类，在入门篇就不深入讨论了。但是我们可以根据对这些组件类的已有认知先形成一个感性认识。
 
@@ -388,6 +393,8 @@ Time —— 时间类
 对于刚入门的初学者来说，资源一般都是在图形界面导入进来之后直接使用。
 
 通过脚本创建资源或者修改资源本身的情况不是很多。
+
+unity如何查找某个脚本挂在了哪些物体上，在脚本上右击 -> find Reference in Scene
 
 ### 内存管理
 
@@ -401,10 +408,19 @@ Time —— 时间类
 
 注意，Unity 开发者正在考虑将这种行为变成更标准的内存管理。如果他们这样做了，那么产生怪物的代码也需要修改，可以通过将 `_enemy == null` 检查换为一个新参数，例如 (\_enemy.isDestroyed) 来实现。
 
+### 保存游戏进度
+
+#### 使用 PlayerPrefs 保存游戏过程的设置
+
+Unity 中有些不同的方法用于保持持久化的数据，最简单的方法称为 `PlayerPrefs`。Unity 提供了一种抽象（也就是说不必关系细节）的可以工作在所有平台（使用它们不同的文件系统）的保存小量信息的方式。<u>PlayerPrefs 不适合保存大量数据，但它们用于保存游戏设置还是非常有用的。</u>
+
+PlayerPrefs 提供了一些简单的命令用于获取和设置值（它的原理类似`哈希表`或`字典`）。
+
+例如，将滑动条初始化为所保存的值，也可以在 UI 控件触发回调函数的🈴️保存值。
+
 ### 克隆对象
 
 除了使用 prefab 预设进行实例化对象外，还可以通过直接克隆实例化网格对象的类组件对象，这个时候引用的便是实例化的组件对象。
-
 
 ```cs
  [SerializeField] private MemoryCard originalCard; // 用于引用场景中的卡片
@@ -449,7 +465,7 @@ Time —— 时间类
 
 像素完美（Pixel-perfect）意味着屏幕上的一个像素对应图像中的一个像素（否则，视频卡将会让图像在缩放到适应屏幕时变得模糊）。
 
-例如，假设你想要在 1026 x 768 屏幕上实现完美像素。这意味着摄像机的高度应该是 384 像素。除以 100（因为相随对应单位的缩放，unity 的 1个单位为 100 个像素）并得到摄像机大小为 3.84。
+例如，假设你想要在 1026 x 768 屏幕上实现完美像素。这意味着摄像机的高度应该是 384 像素。除以 100（因为相随对应单位的缩放，unity 的 1 个单位为 100 个像素）并得到摄像机大小为 3.84。
 
 ![](../.vuepress/public/images/2020-06-13-16-38-25-camera-unity-orthographic-size.png)
 
@@ -917,161 +933,6 @@ Bounds Bnd = new Bounds(new Vector3(3, 4, 0), new Vector3(16, 16, 0));
 
 #### 测试两个边界框是否交叠并作出响应
 
-### 用户输入
-
-#### 键盘输入组件
-
-提示：
-
-键盘和鼠标控件被分离到单独的脚本中。你可以不用这种方式组织代码，可以将所有东西打包到一个单独的 “player controls” 脚本中，但组件系统（诸如 Unity 的组件系统）在你将功能切分到每个小组件时最灵活且最有用。
-
-```cs
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class FPSInput : MonoBehaviour
-{
-  public float speed = 6.0f;
-  public bool _____________________; // 配置
-  // Update is called once per frame
-  void Update()
-  {
-    float deltaX = Input.GetAxis("Horizontal") * speed;
-    float deltaZ = Input.GetAxis("Vertical") * speed;
-    transform.Translate(deltaX, 0, deltaZ);
-  }
-}
-
-
-```
-
-`左/右箭头`按键和字母 `A/D` 都映射到 `Horizontal`，而所有的 `up/down` 箭头按键和字母键 `W/S` 都映射到 `Vertical`。
-
-#### InputManager 输入管理器
-
-Unity 的输入管理器中可以设置多个输入轴，`Input.GetAxis()` 可用于读取这些轴，要查看默认的输入轴列表。请在菜单栏中执行编辑（Edit）> 项目设置（Project Setting）> 输入（Input）命令。
-
-![InputManager](../.vuepress/public/images/2020-05-11-20-54-06-unity-input.png)
-
-在如图所示的设置中，需要注意有些轴出现了两次（例如 Horizontal、Vertical、Jump）。从图中展开的 `Horizontal` 轴可以看到，这样既可以通过键盘按钮控制 `Horizontal` 轴，也可以通过游戏手柄的摇杆控制。可以通过多种不同的输入设置控制同一个输入轴，这是使用输入轴的最大优势之一。因此，你的游戏只需要一行代码读取输入轴的内容，而不必分别使用一行代码处理游戏手柄、键盘上的各个方向键和 A、D 按键。
-
-![](../.vuepress/public/images/2020-05-11-21-01-55-unity-input-2.png)
-
-每次调用 `Input.GetAxis()` 都会返回一个 <u>-1 到 1 之间的浮点数值（默认值为 0）</u>。输入管理器中的每个轴还包括了灵敏度（`Sensitivity`）和重力（`Gravity`）的数值，但这两个值只适用于`键盘`和`鼠标输入`。灵敏度和重力可以在按下或松开按键时平滑插值（即在每次使用键盘或鼠标操作时，轴的数值不是立即跳到最终数值，而是从当前数值平滑过渡到最终数值）。在图中所示的 Horizontal 轴`灵敏度`为 3，表示当按下右方向键时，数值从 0 平滑过渡到 1 要经过 1/3 秒的时间。<u>灵敏度或重力数值越高，平滑过渡所需的时间越短。</u>
-
-与 Unity 中其他很多功能一样，你可以单击帮助按钮按钮（外观像一本带有问号的书，位于检视面板上 InputManager 字样和齿轮图标之间），查看关于输入管理器的更多内容。
-
-```cs
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Hero : MonoBehaviour
-{
-  static public Hero S; // 单例对象
-  public float gameRestartDelay = 2f;
-
-  // 以下字段用来控制飞船的运动
-  public float speed = 30;
-  public float rollMult = -45;
-  public float pitchMult = 30;
-
-  public bool ______________________;
-
-  private void Awake()
-  {
-    S = this; // 设置单例对象
-  }
-
-  // Update is called once per frame
-  void Update()
-  {
-    // 从 Input（用户输入）类中获取信息，读取水平和竖直轴
-    float xAxis = Input.GetAxis("Horizontal");
-    float yAxis = Input.GetAxis("Vertical");
-    // 基于获取的水平轴和竖直轴信息修改 transform.position
-    Vector3 pos = transform.position;
-    pos.x += xAxis * speed * Time.deltaTime;
-    pos.y += yAxis * speed * Time.deltaTime;
-    transform.position = pos;
-
-    // 让飞船旋转一个角度，使它更具动感
-    transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
-  }
-}
-
-```
-
-\_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 \_Hero 的运动和可操作性。
-
-例子 2：mouseLook 随着鼠标旋转
-
-#### 鼠标
-
-如果对象有一个`碰撞器`，这些方法 OnMouseSomething 就会响应鼠标交互。
-- MouseEnter 和 MouseExit 是一对用于处理鼠标悬停在对象上和离开对象的事件。
-- MouseEnter 是鼠标光标首次悬停在你对象上的时刻。
-- MouseExit 是鼠标光标移开的时刻。
-- MouseDown 是当鼠标按钮在物理上被按下的时刻
-- MouseUp 是鼠标按钮被释放的时刻。
-
-```cs
-// 获取鼠标光标在二维窗口中的坐标
-Vector3 mousePos2D = Input.mousePosition;
-// 将鼠标光标位置转换为三维世界坐标
-mousePos2D.z = -Camera.main.transform.position.z;
-Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(mousePos2D);
-```
-
-鼠标移入移出
-
-```cs
-  //  OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false
-  private void OnMouseEnter()
-  {
-    //print("Slingshot: OnMouseEnter()");
-    launchPoint.SetActive(true);
-  }
-
-  private void OnMouseExit()
-  {
-    //print("Slingshot: OnMouseExit()");
-    launchPoint.SetActive(false);
-  }
-```
-
-按下鼠标
-
-```cs
-  private void OnMouseDown()
-  {
-    // 玩家在鼠标光标悬停在弹弓上方时按下了鼠标左键
-    aimingMode = true;
-    // 实例化一个弹丸
-    projectile = Instantiate(prefabProjectile) as GameObject;
-    // 该实例的初始位置位于 launchPoint 处
-    projectile.transform.position = launchPos;
-    // 设置当前的 Kinematic 属性
-    projectile.GetComponent<Rigidbody>().isKinematic = true;
-  }
-```
-
-松开鼠标
-
-```cs
-if (Input.GetMouseButtonUp(0))
-    {
-      // 如果已经公开鼠标
-      aimingMode = false;
-      projectile.GetComponent<Rigidbody>().isKinematic = false;
-      projectile.GetComponent<Rigidbody>().velocity = -mouseDelta * velocityMult;
-      FollowCam.S.poi = projectile; // 同步摄像机兴趣点
-      projectile = null;
-      MissionDemolition.ShotFired(); // 增加发射次数
-    }
-```
-
 ### 碰撞检测
 
 在 Unity 中参与碰撞的物体分 2 大块：**1.发起碰撞的物体。2.接收碰撞的物体。**
@@ -1393,7 +1254,164 @@ https://zhuanlan.zhihu.com/p/37726559
 
 #### 根据平面图布局几何体
 
-### GUI & UGUI
+### 用户输入
+
+#### 键盘输入组件
+
+提示：
+
+键盘和鼠标控件被分离到单独的脚本中。你可以不用这种方式组织代码，可以将所有东西打包到一个单独的 “player controls” 脚本中，但组件系统（诸如 Unity 的组件系统）在你将功能切分到每个小组件时最灵活且最有用。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FPSInput : MonoBehaviour
+{
+  public float speed = 6.0f;
+  public bool _____________________; // 配置
+  // Update is called once per frame
+  void Update()
+  {
+    float deltaX = Input.GetAxis("Horizontal") * speed;
+    float deltaZ = Input.GetAxis("Vertical") * speed;
+    transform.Translate(deltaX, 0, deltaZ);
+  }
+}
+
+
+```
+
+`左/右箭头`按键和字母 `A/D` 都映射到 `Horizontal`，而所有的 `up/down` 箭头按键和字母键 `W/S` 都映射到 `Vertical`。
+
+#### InputManager 输入管理器
+
+Unity 的输入管理器中可以设置多个输入轴，`Input.GetAxis()` 可用于读取这些轴，要查看默认的输入轴列表。请在菜单栏中执行编辑（Edit）> 项目设置（Project Setting）> 输入（Input）命令。
+
+![InputManager](../.vuepress/public/images/2020-05-11-20-54-06-unity-input.png)
+
+在如图所示的设置中，需要注意有些轴出现了两次（例如 Horizontal、Vertical、Jump）。从图中展开的 `Horizontal` 轴可以看到，这样既可以通过键盘按钮控制 `Horizontal` 轴，也可以通过游戏手柄的摇杆控制。可以通过多种不同的输入设置控制同一个输入轴，这是使用输入轴的最大优势之一。因此，你的游戏只需要一行代码读取输入轴的内容，而不必分别使用一行代码处理游戏手柄、键盘上的各个方向键和 A、D 按键。
+
+![](../.vuepress/public/images/2020-05-11-21-01-55-unity-input-2.png)
+
+每次调用 `Input.GetAxis()` 都会返回一个 <u>-1 到 1 之间的浮点数值（默认值为 0）</u>。输入管理器中的每个轴还包括了灵敏度（`Sensitivity`）和重力（`Gravity`）的数值，但这两个值只适用于`键盘`和`鼠标输入`。灵敏度和重力可以在按下或松开按键时平滑插值（即在每次使用键盘或鼠标操作时，轴的数值不是立即跳到最终数值，而是从当前数值平滑过渡到最终数值）。在图中所示的 Horizontal 轴`灵敏度`为 3，表示当按下右方向键时，数值从 0 平滑过渡到 1 要经过 1/3 秒的时间。<u>灵敏度或重力数值越高，平滑过渡所需的时间越短。</u>
+
+与 Unity 中其他很多功能一样，你可以单击帮助按钮按钮（外观像一本带有问号的书，位于检视面板上 InputManager 字样和齿轮图标之间），查看关于输入管理器的更多内容。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Hero : MonoBehaviour
+{
+  static public Hero S; // 单例对象
+  public float gameRestartDelay = 2f;
+
+  // 以下字段用来控制飞船的运动
+  public float speed = 30;
+  public float rollMult = -45;
+  public float pitchMult = 30;
+
+  public bool ______________________;
+
+  private void Awake()
+  {
+    S = this; // 设置单例对象
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+    // 从 Input（用户输入）类中获取信息，读取水平和竖直轴
+    float xAxis = Input.GetAxis("Horizontal");
+    float yAxis = Input.GetAxis("Vertical");
+    // 基于获取的水平轴和竖直轴信息修改 transform.position
+    Vector3 pos = transform.position;
+    pos.x += xAxis * speed * Time.deltaTime;
+    pos.y += yAxis * speed * Time.deltaTime;
+    transform.position = pos;
+
+    // 让飞船旋转一个角度，使它更具动感
+    transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+  }
+}
+
+```
+
+\_Hero 飞船让人感觉输入的原因是飞船具有惯性。当松开控制键时，飞船会隔一小段时间才会减速停止；与之类似，当按下控制键时，飞船需要隔小一小段时间才会提升速度。这种明显的运动惯性是由上述专栏中所说的灵敏度和重力设置产生的。在输入管理器中修改这些设置将影响 \_Hero 的运动和可操作性。
+
+例子 2：mouseLook 随着鼠标旋转
+
+#### 鼠标
+
+如果对象有一个`碰撞器`，这些方法 OnMouseSomething 就会响应鼠标交互。
+
+- MouseEnter 和 MouseExit 是一对用于处理鼠标悬停在对象上和离开对象的事件。
+- MouseEnter 是鼠标光标首次悬停在你对象上的时刻。
+- MouseExit 是鼠标光标移开的时刻。
+- MouseDown 是当鼠标按钮在物理上被按下的时刻
+- MouseUp 是鼠标按钮被释放的时刻。
+
+```cs
+// 获取鼠标光标在二维窗口中的坐标
+Vector3 mousePos2D = Input.mousePosition;
+// 将鼠标光标位置转换为三维世界坐标
+mousePos2D.z = -Camera.main.transform.position.z;
+Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(mousePos2D);
+```
+
+鼠标移入移出
+
+```cs
+  //  OnMouseEnter 和 OnMouseExit 需要添加 collider 组件，并且 isTrigger = false
+  private void OnMouseEnter()
+  {
+    //print("Slingshot: OnMouseEnter()");
+    launchPoint.SetActive(true);
+  }
+
+  private void OnMouseExit()
+  {
+    //print("Slingshot: OnMouseExit()");
+    launchPoint.SetActive(false);
+  }
+```
+
+按下鼠标
+
+```cs
+  private void OnMouseDown()
+  {
+    // 玩家在鼠标光标悬停在弹弓上方时按下了鼠标左键
+    aimingMode = true;
+    // 实例化一个弹丸
+    projectile = Instantiate(prefabProjectile) as GameObject;
+    // 该实例的初始位置位于 launchPoint 处
+    projectile.transform.position = launchPos;
+    // 设置当前的 Kinematic 属性
+    projectile.GetComponent<Rigidbody>().isKinematic = true;
+  }
+```
+
+松开鼠标
+
+```cs
+if (Input.GetMouseButtonUp(0))
+    {
+      // 如果已经公开鼠标
+      aimingMode = false;
+      projectile.GetComponent<Rigidbody>().isKinematic = false;
+      projectile.GetComponent<Rigidbody>().velocity = -mouseDelta * velocityMult;
+      FollowCam.S.poi = projectile; // 同步摄像机兴趣点
+      projectile = null;
+      MissionDemolition.ShotFired(); // 增加发射次数
+    }
+```
+
+
+### UI：GUI & UGUI
 
 将信息显示给玩家是 UI 在游戏中存在的一半原因（另一半原因是接收玩家的输入）
 
@@ -1401,12 +1419,33 @@ https://zhuanlan.zhihu.com/p/37726559
 
 UI 是 User Interface（用户界面）的缩写，另一个紧密相关的术语是 GUI（graphical user interface，图形用户界面），指的是界面中的可视化部分，例如文本、按钮，而这些大部分人都称为 UI。
 
+从技术上说，UI 包括非图形控件，例如键盘或手柄，但人们说的“UI” 经常指的是图形部分。
+
+尽管任何软件都需要一些 UI 用于让用户控制软件，但游戏通常以与其他软件稍微不同的方式使用自己的 GUI。以网站为例，GUI 基本就是网站（就视觉表现而言）。<u>然而在一个游戏中，文本和按钮通常覆盖在游戏视图上，这是一种称为 HUD 的显示。</u>
+
+![](../.vuepress/public/images/2020-06-15-19-03-02-unity-ui-01.png)
+
+定义：
+
+平视显示（HUD，heads-up display）<u>使得图形叠加在世界视图上。</u>这个概念源于军用飞机，目的是为了让飞行员不低头就能看到重要信息。类似的，GUI 像 HUD 一样叠加在游戏视图上。
+
+就像钢铁侠的眼镜。
+
+- 规划界面
+- 放置显示的 UI 元素
+- 对 UI 元素编写交互
+- 让 GUI 响应场景中的事件
+- 让场景响应 GUI 的动作
+
 #### Unity 创建 UI 的几种方式
 
-- 使用标准的显示对象来构建（直接构建 3D对象、或拖动 Sprite 精灵图对象）+ 正交摄像机。
-  - 鼠标点击交互等跟其他的带有碰撞器的 3D 对象一样。
+#### 传统 2D 游戏：摄像机模式
 
-#### 创建文本
+使用标准的显示对象来构建（直接构建 3D 对象、或拖动 Sprite 精灵图对象）+ 正交摄像机。
+
+- 鼠标点击交互等跟其他的带有碰撞器的 3D 对象一样。
+
+##### 创建文本
 
 Unity 中有多种创建文本显示的方式。<u>一种方式是在场景中创建 3D 文本对象。</u>这是一个特殊的网格组件，因此先创建一个空对象并将这个组件附加到空对象上。从 GameObject 菜单选择 Create Empty。接着单击 Add Component 按钮并选择 `Mesh | Text Mesh`，也可以直接新建 3D Text，它也是带有这个网格文本组件，成为了 3D 文本对象。
 
@@ -1416,12 +1455,199 @@ Unity 中有多种创建文本显示的方式。<u>一种方式是在场景中�
 
 需要做一些调整才能让默认文本看起来更锐利和清晰。增加 Font Size 为文本显示增加了很多像素，缩放对象把那些像素压缩到一个更小的空间。
 
-<!-- 2D 图形可以通过摄像机处理外，也可以使用 canvas？ -->
+<!-- 2D 图形可以通过摄像机处理外，也可以使用 canvas -->
 
+#### GUI 直接模式
 
-#### GUI
+Unity 的第一个 GUI 系统是直接模式（immediate mode）GUI 系统，该系统可以使在屏幕上放置按钮很简单。
 
-#### UGUI：在 3D 游戏中放置 2D 图形用户界面
+定义：
+
+直接模式在每帧显式发出绘制命令。而对于另一种系统，只需要定义所有的视觉效果，之后系统就知道每帧需要绘制什么，而不必再重新声明。后一种方法称为保留模式。（retained mode）。
+
+```cs
+
+using UnityEngine;
+using System.Collections;
+public class BasicUI: MonoBehaviour {
+  void GUI() {
+    if (GUI.Button(new Rect(10, 20, 40, 20), "Test"))
+    {
+      Debug.Log("Test Button");
+    }
+  }
+}
+```
+
+每个 MonoBehaviour 自动响应 OnGUI() 方法。这个方法会在每帧渲染完 3D 场景后执行，它提供了一个放置 GUI 绘制命令的入口。
+
+#### UGUI
+
+新的 UI 系统基于保留模式工作，因此图形只需要布局一次就能在每帧被绘制而不需要重新定义。在这个系统中，用于 UI 的图形放置在编辑器中。相比于直接模式 UI，这提供了两个优势：
+
+1. 可以在放置 UI 元素时看到当前 UI 的外观；
+2. 这个系统可以让使用图像来定制 UI 变得更直接。为了使用这个系统，需要导入图像并将对象拖动到场景中。
+
+##### 设置 GUI 显示
+
+Unity 提供了一些特殊的工具，使图像成为 HUD 并显示在 3D 场景上，而不是显示作为场景一部分的图像。UI 元素的定位通常有一些特殊的技巧，因为显示可能需要根据不同的屏幕上进行变化。
+
+###### 为界面场景画布
+
+UI 系统工作原理中最基础且最特殊的一面是<u>所有图像必须附加到画布对象上。</u>
+
+提示：
+
+画布（Canvas）是 Unity 用于为游戏渲染 UI 的一类特殊对象。
+
+GameObject -> UI -> Canvas。该对象代表整个屏幕的范围，而且它的大小相对于 3D 场景，因为它将屏幕上的一个像素缩放为场景中的一个单位。
+
+警告：
+
+当创建 canvas 对象时，也会自动创建 EventSystem 对象。对于 UI 交互，该对象是必须的，但你可以忽略它。
+
+![](../.vuepress/public/images/2020-06-15-20-08-22-unity-canvas-02.png)
+
+画布有一些可以调整的设置。首先是 `Render Mode` 选项，让它保持默认设置，但你应该知道如下三种设置的含义：
+
+- Screen Space-Overlay：将 UI 渲染为摄像机视图顶部的 2D 图形（这是默认设置）。
+- Screen Space——Camera：也将 UI 渲染在摄像机视图顶部，但 UI 元素可以进行透视效果的旋转。
+- World Space：将画布对象放置在场景中，就好像 UI 是 3D 场景的一部分。
+
+另外一个重要的设置是 `Pixel Perfect`，这个设置导致渲染轻微调整图像的位置，以使图像完全清晰和锐利（相反，在像素之间定位时会模糊它们）。
+
+###### 按钮、图像和文本标签
+
+画布对象定义了一个用于显示 UI 的区域，但它依然需要精灵来显示（按钮、图像、文本标签对象这些类似于 HTML5 的标签，然后链接图片）。在 GameObject 菜单的 UI 部分只要为每个元素创建图像、文本或按钮即可。
+
+![](../.vuepress/public/images/2020-06-15-21-59-06-unity-canvas-image.png)
+
+![](../.vuepress/public/images/2020-06-15-21-59-26-unity-canvas-03.png)
+
+###### 控制 UI 元素的位置
+
+所有 UI 对象都有锚点（anchor），在编辑器中显示为 target X。锚点是一种在 UI 中灵活定位对象的方式。
+
+![](../.vuepress/public/images/2020-06-15-22-23-23-unity-ui-anchor-01.png)
+
+定义：
+
+对象的锚点是对象附加到画布或屏幕的点。它决定了计算对象的位置所依赖的点。
+
+锚点的作用是当对象相对于锚点放置时，锚点相对画布移动。锚点定义为类似“屏幕中心”，那么当屏幕改变大小时锚点依然会在中心。类似的，设置锚点为屏幕的右边会让对象不管屏幕是否改变大小都保留在右边（例如，假设游戏在不同显示器上运行时）
+
+下图中，无论屏幕如何缩放，立方体的图标一直位于屏幕的左上角。
+
+![](../.vuepress/public/images/2020-06-15-22-19-55-unity-ui-anchor.png)
+
+##### 编写 UI 的交互
+
+提示：
+
+有时，UI 默认的交互控件会影响游戏。记住 EventSystem 对象会随着画布被自动创建。EventSystem 对象控制 UI 交互控件，默认情况下，它使用方向按键来与 GUI 进行交互。你可能需要关闭 EventSystem 中的方向按键：在 EventSystem 设置中，不要选中 Send Navigation Event 复选框。
+
+通常，所有 UI 元素的 UI 交互都一样，都以一系列标准步骤进行编写：
+
+1. 在场景中创建 UI 对象。
+2. 编写当操作 UI 时调用的代码。
+3. 将脚本附加到场景的对象上。（把脚本挂载到场景对象进行实例化）
+4. 通过脚本将 UI 元素（如按钮）关联到对象上。（脚本提供序列化引用）
+
+给按钮添加事件监听函数：
+
+![](../.vuepress/public/images/2020-06-15-23-05-40-unity-ui-button.png)
+
+将一个 OnClick 条目添加到按钮上并将控制器对象拖动到它上面。可以单击 + 按钮在面板上添加一个条目，每个条目都定义了一个函数，当单击按钮时就会调用这个函数。这个列表包含了一个对象槽和一个用于调用函数的菜单。将控制器对象拖动到对象槽上，并在菜单中年查找 UIController，选择其中的 OnOpenSetting
+s()。
+
+**响应其他鼠标事件**
+
+OnClick 是按钮组件暴露给外部的唯一事件，但 UI 元素能响应各种不同的交互。为了使用默认交互以外的交互，可以使用 `EventTrigger` 组件。
+
+将一个新组件添加给按钮对象，在组件的菜单查找 Event 部分，选择 EventTrigger。
+
+然后单击 Add New Event Type，给 EventTrigger 组件添加一个新类型。选择 Pointer Down z
+作为事件，这个操作将创建空的事件面板，就像 OnClick 面板一样。单击 + 按钮，添加事件列表，将控制器对象拖动到这个新增事件上，并选择 OnPointerDown()。
+
+![](../.vuepress/public/images/2020-06-15-23-11-52-unity-ui-button-event.png)
+
+###### 创建弹出窗口
+
+弹出窗口是一个新的图像对象，在这个对象上附加有几个控件（例如，按钮和滑动条）。
+
+通常，精灵在整个图像对象上被缩放，一般的方式是单击 `Set Native Size` 按钮，重新设置`图像对象`的大小。这个行为是图像对象的默认设置，但弹出窗口将做一些不同的处理。
+
+图像组件有 `Image Type` 设置。这个设置默认为 Simple，这正是之前使用的正确图像类型。对于弹出窗口，将 Image Type 设置为 `Sliced`。
+
+定义：
+
+切割图像（sliced image）是把图像切割为九份，以便能缩放为不同的图像。通过从中间缩放图像边缘，可以确保图像在保留边缘大小和形状时被缩放为任何你期望的尺寸。简单来说，就是可以让你保持边框大小不变，只缩放内容区域。在其他开发工具中，此类图像在其名称中有个“九”字（例如，九切割、九片、缩放九），表示图像有九部分。
+
+在切换到切割图像之前，需要把精灵图设置为九部分，否则会出现表明图像没有边框的错误。首先选择 Project 视图中的精灵，然后在 Inpector 中应该会看到 Spriter Editor 按钮。
+
+在 Spriter Editor 中可以看到，绿色的线指示了图像是如何被切割的。初始时图像不会有任何边框（所有 Border 被设置为 0）。增加 4 条边的边框宽度（左、右、底部、顶部），边框线同时叠加为九部分。关闭编辑器窗口并应用修改。
+
+之后确保 Image 组件设置 `Fill Center`，由于边框部分保留它们的大小，因此切割图像可以被缩放为任何大小并且保持清晰的边缘。
+
+提示：
+
+UI 图像如何彼此堆放取决于它们在 Hierarchy 视图中的顺序。在 Hierarchy 列表中，将弹出对象拖动到其他 UI 对象上（当然，还是保持附加到画布上）。现在在 Scene 视图中移动弹出窗口；将看到图像和弹出窗口重叠。最后将弹出窗口拖动到画布底部，以便它显示在其他任何 UI 元素之上。
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SettingPopup : MonoBehaviour
+{
+  /* 
+   * 开启对象，打开窗口
+   */
+  public void Open()
+  {
+    gameObject.SetActive(true);
+  }
+  /* 
+   * 使对象无效，关闭窗口
+   */
+  public void Close()
+  {
+    gameObject.SetActive(false);
+  }
+}
+
+```
+
+##### 使用滑动条和输入域设置
+
+![](../.vuepress/public/images/2020-06-16-20-29-21-unity-ui.png)
+
+绑定事件监听回调函数：
+- 对于滑动条查找组件设置底部的事件面板（OnValueChanged），单击 + 按钮添加一个条目，将弹出窗口拖动到对象槽上，选择要通知的回调函数。
+
+之后通过 `[SerializeField] private Slider speedSlider;` 在其他脚本上获取控件的值。
+
+#### 通过响应事件更新游戏
+
+HUD 和主游戏之间互不相干，但它们之间应该是相互通信的。为此，可以通过我们为<u>其他类型的对象通信所创建的脚本引用来完成，</u>但这样做存在一些缺陷。特别是，这样做<u>将场景和 HUD 紧密耦合在一起，但你可能想要让它们相对独立，这样可以在编辑游戏时不必担心是否破坏 HUD。</u>
+
+为了通知场景中 UI 的行为，接下去将使用消息广播系统。这个事件消息系统的工作原理：脚本可以注册为侦听事件，其他代码可以广播事件，接着侦听器将被通知有关广播的信息。
+
+![](../.vuepress/public/images/2020-06-16-21-05-32-event-broadcast-system.png)
+
+提示：
+
+C# 有一个内置的系统用于处理事件，所以你可能好奇为什么我们不使用内置的系统。内置的事件系统强制要求消息的目标，而我们需要的是广播消息系统。<u>目标系统需要代码精确知道消息的来源而广播的来源可以是任意的。</u>
+
+##### 集成事件系统
+
+- http://wiki.unity3d.com/index.php/CSharpMessenger
+
+<!-- 跟 Vue 的 EventBus 很像。 -->
+
+##### 从场景中广播和侦听事件
+
+##### 从 HUD 广播和侦听事件
 
 ### 时间
 
@@ -1495,6 +1721,8 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 
 - 素材资源
   - 在 Unity 资源商店下载（Window -> assets store）
+- 脚本资源：
+  - http://wiki.unity3d.com/index.php/CSharpMessenger 这是一个由其他开发者贡献的免费代码库
 - [坐标系和坐标系转换](https://zhuanlan.zhihu.com/p/43348414)、
 - [贴图、纹理、材质的区别是什么？](https://www.zhihu.com/question/25745472)
 - [游戏开发入门指南——Unity+](https://zhuanlan.zhihu.com/p/50876776)
@@ -1502,7 +1730,11 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 - [Unity3D 碰撞检测和 OnTriggerEnter 用法](https://blog.csdn.net/qq_30454411/article/details/79810922) 详细介绍了碰撞以及 OnTriggerEnter 的使用]
 - [Unity3D 入门：如何制作天空效果？天空盒的使用](https://blog.walterlv.com/post/unity-starter-unity3d-skybox.html)
 - 架构
-  - [保持Unity项目结构清晰的7种方法](https://zhuanlan.zhihu.com/p/64856900)
-  - [Unity项目如何架构（一）目录组织](https://gameinstitute.qq.com/community/detail/105229)
-  - Unity3D/项目：Unity工程目录规范](https://blog.csdn.net/BeUniqueToYou/article/details/75578591)
+  - [保持 Unity 项目结构清晰的 7 种方法](https://zhuanlan.zhihu.com/p/64856900)
+  - [Unity 项目如何架构（一）目录组织](https://gameinstitute.qq.com/community/detail/105229)
+  - Unity3D/项目：Unity 工程目录规范](https://blog.csdn.net/BeUniqueToYou/article/details/75578591)
 - [Unity 脚本基类 MonoBehaviour 与 GameObject 的关系](https://blog.csdn.net/hihozoo/article/details/66970467#%E5%9B%9B%E8%84%9A%E6%9C%AC%E4%B8%8Egameobject%E7%9A%84%E5%85%B3%E7%B3%BB)
+- 屏幕适配
+  - [屏幕适配实用技巧](https://zhuanlan.zhihu.com/p/42779882)
+  - [unity 屏幕分辨率设置]([)](https://blog.csdn.net/qq_37579133/article/details/70308013)
+- [unity如何查找某个脚本挂在了哪些物体上](https://blog.csdn.net/alayeshi/article/details/52039314?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1)

@@ -6,7 +6,7 @@
 
 在终端输入 `irb`，就可以运行 IRB 了。IRB 显示提示符 >> 时，表明当前可以输入一个 Ruby 表达式。输入一个表达式并敲回车键后，代码执行，结果会显示提示符 `=>` 之后：
 
-多行代码，使用 end 结束
+多行代码，使用 end 结束，end 之间可以进行嵌套。
 
 ```ruby
 irb(main):012:0> class Calculator
@@ -16,6 +16,8 @@ irb(main):015:2> end
 ```
 
 ### 值
+
+Ruby 是一种`面向表达式`的语言：每一段有效的代码执行之后都要产生一个值。
 
 #### 基本数据
 
@@ -106,6 +108,8 @@ irb(main):017:0> multiply.call(6, 9)
 
 ### 控制流
 
+Ruby 有 if、case 和 while 表达式，它们都以通常的方式工作：
+
 ### 对象和方法
 
 每个值都是一个对象，而且独享彼此之间靠`发送信息`进行通信。每个对象都有自己的方法集合，这些方法决定了它`如何响应`特定的消息。
@@ -162,7 +166,7 @@ irb(main):020:0> divide(10, 2)
 NoMethodError: undefined method `divide' for main:Object
 ```
 
-另一种共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括。
+另一种共享方法定义的方式是在`模块（module）`中声明它们，这样它们就能被任意类包括。
 
 声明模块：
 
@@ -196,7 +200,7 @@ irb(main):063:0> ac.add(10, 2)
 
 #### 局部变量和赋值
 
-Ruby 仅允许通过赋值声明局部变量：
+Ruby 仅允许**通过赋值声明局部变量**：
 
 ```ruby
 irb(main):064:0> greet = "hello"
@@ -368,12 +372,124 @@ irb(main):005:0>
 
 #### 枚举类型
 
-Ruby 有一个
+Ruby 有一个 Enumerable 的内置模块，被数组（Array）、散列表（Hash）、范围（Range）以及其他表示值的集合的类包含。Enumerable 提供的方法可以帮助我们对集合进行遍历、搜索和排序，其中的很多方法都可以在调用时都可以带上一个代码块。通常，代码块中的代码会根据集合中的一些值或全部值来运行，以此承担方法的一部分工作。
 
 #### 结构体
 
+结构体（Struct）是 Ruby 中一个特殊的类，它的工作是<u>生成其他类。</u>根据传进 Struct.new 的每个属性名，Struct 产生的类会包含相应的获取方法和设置方法。要使用结构体生成的类，常见方式是对其进行子类化；我们可以给子类起个名字，然后在里边定义其他任意的方法。
+
+Ruby 中的 Struct 类还为它包含的每个属性提供了一对 `getter/setter` 方法。
+
+```ruby
+irb(main):001:0> class Point < Struct.new(:x, :y) 
+irb(main):002:1> def +(other_point)
+irb(main):003:2> Point.new(x + other_point.x, y + other_point.y)
+irb(main):004:2> end
+irb(main):005:1> def inspect
+irb(main):006:2> "#<Point (#{x}, #{y})>"
+irb(main):007:2> end
+irb(main):008:1> end
+=> :inspect
+```
+
+
+创建 Point 的一些实例，然后在 IRB 中进行检查， 并给它们发送信息：
+
+```ruby
+irb(main):009:0> a = Point.new(2, 3)
+=> #<Point (2, 3)>
+irb(main):010:0> b = Point.new(10, 20)
+=> #<Point (10, 20)>
+irb(main):011:0> a + b
+=> #<Point (12, 23)>
+```
+
+和我们定义的方法一样，Point 实例会响应消息 x 和 x=，以便获取和设置属性 x 的值。
+
+```ruby	
+irb(main):012:0> a.x
+=> 2
+irb(main):013:0> a.x = 35
+=> 35
+
+```
+
+由 Struct.new 生成的类还有其他实用功能，像判断是否相等的方法 #== 的实现，就可以比较两个结构体的属性是否相等：
+
+```ruby
+irb(main):018:0> Point.new(4, 5) == Point.new(4, 5)
+=> true
+irb(main):019:0> Point.new(4, 5) == Point.new(6, 7)
+=> false
+```
+
 #### 给内置对象扩展方法
+
+我们随时都可以给类或模块增加方法。这是一个强大的特性，通常叫做 Monkey Patching，可以让我们扩展已有类的行为。
+
+```ruby
+irb(main):024:0> class Point
+irb(main):025:1> def -(other_point)
+irb(main):026:2> Point.new(x - other_point.x, y - other_point.y)
+irb(main):027:2> end
+irb(main):028:1> end
+
+```
+
+我们甚至可以扩展 Ruby 内置的类：
+
+```ruby
+irb(main):035:0> class String
+irb(main):036:1> def shout
+irb(main):037:2> upcase + "!!!"
+irb(main):038:2> end
+
+irb(main):043:0> "hello world".shout
+=> "HELLO WORLD!!!"
+```
 
 #### 定义常量
 
+Ruby 支持一种叫做常量的特殊变量。一般而言，常量一旦创建，就不能再被重新赋值。（Ruby 并不会阻止一个常量被重新赋值，但它会产生警告，以便我们知道自己做错了事。）任何以大写字母开头的变量都是常量。可以在顶层或者在一个类或模块中定义新的常量：
+
+```ruby
+irb(main):044:0> NUMBERS = [4, 8, 15, 16, 23, 42]
+=> [4, 8, 15, 16, 23, 42]
+irb(main):045:0> class Greetings
+irb(main):046:1> ENGLISH = "hello"
+irb(main):047:1> FRENCH = "bonjour"
+irb(main):048:1> 
+irb(main):049:1* GERMAN = "guten Tag"
+irb(main):050:1> end
+=> "guten Tag"
+irb(main):051:0> NUMBERS.last
+=> 42
+irb(main):052:0> Greetings::FRENCH
+=> "bonjour"
+irb(main):053:0> NUMBERS = [1]
+(irb):53: warning: already initialized constant NUMBERS
+(irb):44: warning: previous definition of NUMBERS was here
+=> [1]
+```
+
+类和模块的名字总是以`大写字母开头`，所以类和模块的名字也是常量。
+
 #### 删除常量
+
+在使用 IRB 进行探索时，如果我们想重新定义某个类或模块，而不是要扩展它们，实用的做法是让 Ruby 完全忽略该常量。一个顶层常量可以通过给 Object 发送信息 remove_const 来删除，同时还要把常量名作为`符号（symbol）`对象传进去：
+
+```ruby
+irb(main):057:0> NUMBERS.last
+=> 1
+irb(main):058:0> Object.send(:remove_const, :NUMBERS)
+=> [1]
+irb(main):059:0> NUMBERS.last
+NameError: uninitialized constant NUMBERS
+Did you mean?  Numeric
+	from (irb):59
+	from /usr/bin/irb:11:in `<main>'
+irb(main):060:0> 
+```
+
+只能使用 `Object.send(:remove_const, :常量名)` 而非 Object.remove_const(:常量名)，这是因为 remove_const 是一个私有（private）方法，只能通过从 Object 类的自身内部发送消息来调用；使用 Object.send 时，我们可以暂时跳过这个限制。
+ 

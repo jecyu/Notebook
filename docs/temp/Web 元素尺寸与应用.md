@@ -296,18 +296,21 @@ relative：相对自身的中心
 
 transform 与 position 的区别。
 
+![](../.vuepress/public/images/2020-06-15-16-52-40-css-transform.png)
+
 空间转换。
 
 ### 元素的实际大小
 
 getBoundingClientRect()
 
+## 绘图坐标：Canvas、SVG 和 Webgl
+
 ## 应用场景
 
 懒渲染、可视区渲染、虚拟化列表都需要尺寸
 
 点击导航滚动到固定位置
-
 
 ### rem 响应式
 

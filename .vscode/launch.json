@@ -4,16 +4,36 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    // {
+    //   "name": "launch lua process",
+    //   "type": "lua",
+    //   "request": "launch",
+    //   "stopOnEntry": true,
+    //   "runtimeExecutable": "${workspaceFolder}/lua.exe",
+    //   "runtimeArgs": "${workspaceFolder}/examples/lua/LuaDebug.lua",
+    //   "consoleCoding": "utf8"
+    // },
     {
-      "type": "node",
+      "name": "launch lua process",
+      "type": "lua",
       "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": ["<node_internals>/**"],
-      // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
-      "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
-      // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
-      // "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
-      // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+      "stopOnEntry": true,
+      "program": "${workspaceFolder}/examples/lua/demo01.lua",
+      "path": "${workspaceFolder}/?.lua",
+      "cpath": "${workspaceFolder}/?.dll",
+      "arg": [],
     }
+    // {
+    //   "type": "node",
+    //   "request": "launch",
+    //   "name": "Launch Program",
+    // "stopOnEntry": true,
+    //   "skipFiles": ["<node_internals>/**"],
+    //   // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
+    //   "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
+    //   // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
+    //   // "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
+    //   // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+    // }
   ]
 }
