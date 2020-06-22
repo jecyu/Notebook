@@ -517,3 +517,5 @@ https://www.zhihu.com/question/22525237/answer/109142177
   - 《深入理解计算机系统》
   - 《计算机科学概论》
   - 《程序是怎么跑起来的》
+- 文章
+  - [苹果电脑为什么要换 CPU：Intel 与 ARM 的战争](https://mp.weixin.qq.com/s/_KlhqBFunU9AT96KASORUA)

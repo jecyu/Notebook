@@ -27,7 +27,7 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
-      // { text: "技术分享", link: "/dailyRecord/" },
+      { text: "📖文章合集", link: "/blogs/" },
       {
         text: "开发者",
         items: [
@@ -143,7 +143,7 @@ module.exports = {
         {
           title: "工具",
           collapsable: false,
-          children: ["excel", "ps", "webpack", "curl", "vscode", "docker"]
+          children: ["excel", "ps", "webpack", "curl", "vscode", "docker", "uml"]
         }
       ],
       "/frontend-web/": [

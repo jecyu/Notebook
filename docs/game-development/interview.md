@@ -97,6 +97,16 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 - 装箱：把值类型转换成引用类型
 - 拆箱：把引用类型转换成值类型
 
+装箱和拆箱主要用在 ArrayList 这种强制 Object 类型的 list 上，它会自动装箱（简单类型转为引用类型），这个时候读取时，可以拆箱转为值类型。而 List 类型的元素都是同一种类型，List 只不过把数组的扩容也封装起来了。
+
+#### 请简述 ArrayList 和 List 的主要区别？
+
+#### 数组和排序
+
+关于数组的排序，如果对象的对象类型的，可以实现 ICompare 接口，相当于传递了元素的比较函数。
+
+对于对象类型，可以集成 ICompare 接口。
+
 ### GC（Garbage Collection）
 
 ### CLR（Common Language Runtime）
@@ -106,6 +116,12 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 ### 文件 I/O
 
 ### 序列化与反序列化
+
+序列化是<u>指把一个 C# 对象变成二进制内容，</u>本质上就是一个 `byte[]` 数组。
+
+为什么要把 C# 对象序列化呢？因为序列化后可以把 `byte[]` 保存到文件中，或者把 `byte[]` 通过网络传输到远程，这样，就相当于把 Java 对象存储到文件或者通过网络传输出去了。
+
+有序列化，就有反序列化，即把一个二进制内容（也就是 `byte[]` 数组）变回 Java 对象。有了反序列化，保存到文件中的 `byte[]` 数组又可以“变回” Java 对象，或者从网络上读取 `byte[]` “变回” Java 对象。
 
 ### （协程）
 
@@ -142,7 +158,11 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ### property 与 attribute 的区别
 
-### 访问修饰符
+### 请简述 sealed 关键字用在类声明时与函数声明时的作用
+
+### 访问修饰符，请简述 private，public，protected，internal 的区别
+
+Unity 3D、2D 手机游戏《面向对象编程部分》
 
 ### static 关键字的应用
 
@@ -151,6 +171,8 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 ### 值传递与引用传递
 
 ### 参数传递 ref 与 out 的区别
+
+ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类型也可以通过方法进行修改。
 
 ### 浅拷贝与深拷贝
 
@@ -172,6 +194,26 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ## Unity
 
+### 使用 Unity3d 实现 2d 游戏，有几种方式？
+
+### 在物体发生碰撞的整个过程中，有几个阶段，分别列出对应的函数
+
+### 如何安全的在不同工程间安全地迁移 asset 数据？三种方法
+
+### 什么叫做链条关节？
+
+### OnEnable、Awake、Start 运行时的发生顺序？哪些可能在同一个对象周期中反复的发生
+
+### MeshRender 中 material 和 sharedmaterial 的区别？
+
+### Unity 提供了几种光源，分别是什么
+
+### 简述一下对象池，你觉得在FPS里哪些东西适合使用对象池
+
+### 简述 prefab 的用处
+
+### CharacterController 和 Rigidbody的区别
+
 ### 渲染流程
 
 1. 你觉得为什么 UI 摄像机和场景摄像机能协同工作，而且工作的这么尽如人意呢？
@@ -179,13 +221,23 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ### UGUI（优先）
 
-1. 你觉得怎么防止 UI 控件被点穿（如何过滤掉点击事件）。
-   - 例如，卡背与卡面两个图形对象
-2. 你对 UI 功能模块之间相互通信有什么好看法。（或者问成 Broadcast 和 sendMes 的看法）
-3. 关于 UIGrid 问题
-4. 众里寻他千百度，你怎么样能迅速找到某一个 UI 控件
-5. 你对遮挡关系有什么好的策略
-6. 你对屏幕适配有什么好主意。
+#### 你觉得怎么防止 UI 控件被点穿（如何过滤掉点击事件）
+
+例如，卡背与卡面两个图形对象
+
+#### 你对 UI 功能模块之间相互通信有什么好看法。（或者问成 Broadcast 和 sendMessage 的看法）
+
+#### 关于 UIGrid 问题
+
+#### 众里寻他千百度，你怎么样能迅速找到某一个 UI 控件
+
+通过 GameObject.Find("/xxx/xxx") 路径。
+
+#### 你对遮挡关系有什么好的策略
+
+#### 你对屏幕适配有什么好主意
+
+- ![屏幕适配实用技巧](https://zhuanlan.zhihu.com/p/42779882)
 
 ## Lua
 
@@ -201,7 +253,7 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 1. 请简述一下你对数据结构的选取有什么看法
 2. 请把这份配置文件解析成你想要的数据结构，给我看看
-3. 请简述一下 C#中，结构体和 class 的用法
+3. 请简述一下 C# 中，结构体和 class 的用法
 4. 接受到网络发来的数据，你会怎么办
 
 游戏控制流程：
@@ -319,3 +371,5 @@ C#8 特性
 - [.NET Core](https://zh.wikipedia.org/zh/.NET_Core)
 - [通俗易懂，什么是.NET Core 以及.NET Core 能做什么](https://www.cnblogs.com/yilezhu/p/10880884.html#:~:text=%E4%B8%8E%E5%85%B6%E4%BB%96%E8%BD%AF%E4%BB%B6%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C,%E4%B8%8E%E5%85%B6%E4%BB%96%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C%EF%BC%8C.&text=NET%20Core%E6%8F%90%E4%BE%9B%E4%BA%86%E6%9C%80,%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81%E5%92%8C%E5%B7%A5%E5%85%B7%E3%80%82)
 - [类型和变量](https://docs.microsoft.com/zh-cn/dotnet/csharp/tour-of-csharp/types-and-variables)
+- [Unity面试题（包含答案）](https://zhuanlan.zhihu.com/p/61925255?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&utm_content=sec)
+- [lua 面试题](https://www.jianshu.com/p/d4c535791b5e)

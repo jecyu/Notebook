@@ -340,6 +340,9 @@ SpriteRenderer 组件让对象成为一个精灵对象并决定显示哪个精�
 - scripts
   - SceneController （3D 场景）
   - UIController （UI）
+- Editor
+- Plugins
+- Resources
 
 ### 关卡
 
@@ -394,7 +397,7 @@ Unity 中的常用脚本类就可以简单的分成如下四大类：
 
 通过脚本创建资源或者修改资源本身的情况不是很多。
 
-unity如何查找某个脚本挂在了哪些物体上，在脚本上右击 -> find Reference in Scene
+unity 如何查找某个脚本挂在了哪些物体上，在脚本上右击 -> find Reference in Scene
 
 ### 内存管理
 
@@ -416,7 +419,169 @@ Unity 中有些不同的方法用于保持持久化的数据，最简单的方�
 
 PlayerPrefs 提供了一些简单的命令用于获取和设置值（它的原理类似`哈希表`或`字典`）。
 
-例如，将滑动条初始化为所保存的值，也可以在 UI 控件触发回调函数的🈴️保存值。
+例如，将滑动条初始化为所保存的值，也可以在 UI 控件触发回调函数的 🈴️ 保存值。
+
+### 动画
+
+定义：
+
+`动画`是关联对象运动信息的打包。因为这些运动能独立于对象自身定义，因此它们可以`混合-匹配`的方式用于多个对象上。
+
+思考一下角色移动，角色所有的位置都通过游戏代码来处理。<u>但脚踏地板，摆动手臂，扭动臀部这些具体的运动便是回放的动画序列，动画序列就是美术资源。</u>
+
+为了帮助你理解动画和 3D 模型是如何关联在一起的，接下来类比操纵木偶：3D 模型是木偶，`动画器（Animator）`是让木偶移动的操纵者，而`动画`则是傀儡运动的`记录`。以这种方式定义的运动是提前创建好的，它通常进行小量运动并且不改变对象的位置。
+
+#### DOTween
+
+DOTween 是个动画插件，举个例子，相当于把之前飞机游戏里的正弦运动代码封装起来，提供方法给开发者调用，DOTween 一样可以可视化编程，下载 DOTween 插件后，通过 Add Component 搜索添加。
+
+对比 Unity 自带的 Animation 动画，需要引入 Animation 进行设置播放，动画的生成可以自己的 K 帧，也可以引入动画，这样来说每一个需要移动的对象都要挂上一个动画组件，对于 UI 来说，使用 DOTween 更方便。（而对于人物的动画，则使用 Animators 效果更好）
+
+##### 步骤
+
+1. 下载 DOTween，解压整个文件，并拖拽到 Assets 文件夹下。
+
+2. 打开 DOTween 面板，进行初始的配置
+
+![](../.vuepress/public/images/2020-06-21-15-58-14-doTween-01.png)
+
+![](../.vuepress/public/images/2020-06-21-15-57-28-doTween.png)
+
+3. 在脚本中引入
+
+```cs
+using DG.Tweening;
+```
+
+4. 初始化自定义配置，设置一些全局值（这个跟 axios 很像），也可以不设置，让它接收默认配置。
+
+```cs
+Tween.Init(autoKillMode, useSafeMode, logBehaviour);
+```
+
+5. 使用
+
+```cs
+using using DG.Tweening;
+public class DOTWeenTest : MonoBehaviour {
+  private Tweener twe; //声明一个Tweener对象
+  void Start()
+  {
+    twe = transform.DOMove(new Vector3(3, 4, 0), 2); //将动画保存在Tweener对象中
+    twe.Pause();//暂停,防止自动播放
+    twe.SetAutoKill(false); //关闭动画自动销毁
+  }
+}
+
+```
+
+6. 设置动画曲线
+  
+```cs
+twe.SetEase(Ease.InCubic); //由慢到快
+```
+
+##### 基本用法
+
+- **Tweener**：补间动画
+- **Sequence**：相当于一个 Tweener 的`链表`，可以通过执行一个 Sequence 来执行一串 Tweener
+- **Tween**：Tweener + Sequence
+- **Nested** Tween：Sequence 中的一个 Tweener 称为 Nested tween。
+
+常用的方法：
+
+1. 以 DO 开头的方法：就是补间动画的方法。例如：transform.DOMoveX(100, 1)
+2. 以 Set 开头的方法：设置补间动画的一些属性。例如：myTween.SetLoop(4, LoopType.Yoyo)
+3. 以 On 开头的方法：补间动画的回调方法。例如：myTween.OnStart(myStartFunction)
+
+4. DOMove 相关方法：
+
+- 世界坐标上移动：transform.DOMove
+- 本地坐标上移动：transform.DOLocalMove
+- 世界坐标的 X 轴上移动：transform.DOMoveX
+- 本地坐标的 X 轴上移动：transform.DOLocalMoveX
+
+```cs
+//5秒移动到(10,10,10).第三个参数为true时,数值渐变过程皆为整数
+transform.DOMove(new Vector3(10, 10, 10), 5,true);//给物体添加动画
+```
+
+5. DoTween 缩放
+
+```cs
+Tweener tweer = transform.DOScale(new Vector(2, 2, 2), 4)
+```
+
+6. DOTween 序列动作
+
+```cs
+Sequence mySequence = DOTween.Sequence();
+mySequence.AppendInterval(5);
+mySequence.Append(transform.DORotate(new Vector(0, 180, 0), 1));
+mySequence.AppendInterval(5);
+mySequence.PrependInterval(5);
+print(mySequence.Duration());
+mySequence.AppendCallback(TweenCall);
+
+// Insert a scale tween for the whole duration of the Sequence
+mySequence.Insert(1, transform.DOScale(new Vector(3, 3, 3), 3));
+mySequence.Append(transform.DOScale(new Vector(3, 3, 3), 3));
+print(mySequence.Duration());
+mySequence.onComplete = delegate() {
+  Debug.Log("移动完毕事件");
+}
+```
+
+Sequence 是 Tween 的子类，就是序列动作，里面的动作按照先后顺序执行，其中几个函数的含义如下：
+- `Append`：追加动作
+- `AppendInterval`：追加时间，什么也不做。
+- `Insert`：在指定的下标追加动作
+- `AppendCallback`：追加回调函数
+- `PrependInterval`：在序列动作的开头追加时间
+
+7. 常见 Set 函数
+8. 常见回调函数
+
+
+
+9.  From() 方法的使用
+
+```cs
+// 2 秒时间从世界坐标（2，2，0）处回到自身当前位置
+transform.DOMove(new Vector3(2, 2, 0), 1).From();
+```
+
+5. 操作 Tweener
+
+```cs
+// DoTween 静态方法
+//停止所有的并且返回停止的数量
+DOTween.Pause();
+//Pauses all tweens that have "badoom" as an id
+DOTween.Pause("badoom");
+```
+
+6. Tween 的 Life（生命周期）
+- 当你创建 Tween 时，它会自动播放（除非你设置了全局的 defalutAutoPlay）直到完成循环。
+- 当 tween 完成后它会自动终止（除非你设置了全局的 defaultAutoKill 行为），这意味着你不能再使用它。
+- 如果你们需要重复使用同一个 tween，仅仅需要设置它的 autoKill 为 false（可以通过 global autoKill 设置所有的 tweens 或为你自己的 tween 设置 `SetAutoKill(false)`）
+
+7. 动画相关的事件
+- OnStart：动画第一次播放时用
+- OnPlay：动画每次从暂停状态解除时调用（包括初次播放）
+- Pause：动画暂停时调用一次
+- OnUpdate：动画播放过程中每帧调用
+- OnStepComplete：每次动画播放结束时调用（受循环次数影响）
+- OnComplete：每次动画播放结束时调用（不受循环次数影响，且到倒放时不适用）
+
+##### 应用场景
+
+1. 文本动画
+2. 屏幕抖动动画
+
+##### 可视化编辑
+
+除了使用脚本来播放 DoTween
 
 ### 克隆对象
 
@@ -1410,244 +1575,9 @@ if (Input.GetMouseButtonUp(0))
     }
 ```
 
-
 ### UI：GUI & UGUI
 
-将信息显示给玩家是 UI 在游戏中存在的一半原因（另一半原因是接收玩家的输入）
-
-定义：
-
-UI 是 User Interface（用户界面）的缩写，另一个紧密相关的术语是 GUI（graphical user interface，图形用户界面），指的是界面中的可视化部分，例如文本、按钮，而这些大部分人都称为 UI。
-
-从技术上说，UI 包括非图形控件，例如键盘或手柄，但人们说的“UI” 经常指的是图形部分。
-
-尽管任何软件都需要一些 UI 用于让用户控制软件，但游戏通常以与其他软件稍微不同的方式使用自己的 GUI。以网站为例，GUI 基本就是网站（就视觉表现而言）。<u>然而在一个游戏中，文本和按钮通常覆盖在游戏视图上，这是一种称为 HUD 的显示。</u>
-
-![](../.vuepress/public/images/2020-06-15-19-03-02-unity-ui-01.png)
-
-定义：
-
-平视显示（HUD，heads-up display）<u>使得图形叠加在世界视图上。</u>这个概念源于军用飞机，目的是为了让飞行员不低头就能看到重要信息。类似的，GUI 像 HUD 一样叠加在游戏视图上。
-
-就像钢铁侠的眼镜。
-
-- 规划界面
-- 放置显示的 UI 元素
-- 对 UI 元素编写交互
-- 让 GUI 响应场景中的事件
-- 让场景响应 GUI 的动作
-
-#### Unity 创建 UI 的几种方式
-
-#### 传统 2D 游戏：摄像机模式
-
-使用标准的显示对象来构建（直接构建 3D 对象、或拖动 Sprite 精灵图对象）+ 正交摄像机。
-
-- 鼠标点击交互等跟其他的带有碰撞器的 3D 对象一样。
-
-##### 创建文本
-
-Unity 中有多种创建文本显示的方式。<u>一种方式是在场景中创建 3D 文本对象。</u>这是一个特殊的网格组件，因此先创建一个空对象并将这个组件附加到空对象上。从 GameObject 菜单选择 Create Empty。接着单击 Add Component 按钮并选择 `Mesh | Text Mesh`，也可以直接新建 3D Text，它也是带有这个网格文本组件，成为了 3D 文本对象。
-
-注意：
-
-3D 文本，可能听起来和 2D 游戏不兼容，但是不要王姐这只是技术上的 3D 场景，它看起来是平坦的，因为观察这个场景的是一个`正交摄像机。<u>这意味着我们可以在需要时将任何 3D 对象放置到 2D 游戏中——它们只是以平面透视显示。</u>
-
-需要做一些调整才能让默认文本看起来更锐利和清晰。增加 Font Size 为文本显示增加了很多像素，缩放对象把那些像素压缩到一个更小的空间。
-
-<!-- 2D 图形可以通过摄像机处理外，也可以使用 canvas -->
-
-#### GUI 直接模式
-
-Unity 的第一个 GUI 系统是直接模式（immediate mode）GUI 系统，该系统可以使在屏幕上放置按钮很简单。
-
-定义：
-
-直接模式在每帧显式发出绘制命令。而对于另一种系统，只需要定义所有的视觉效果，之后系统就知道每帧需要绘制什么，而不必再重新声明。后一种方法称为保留模式。（retained mode）。
-
-```cs
-
-using UnityEngine;
-using System.Collections;
-public class BasicUI: MonoBehaviour {
-  void GUI() {
-    if (GUI.Button(new Rect(10, 20, 40, 20), "Test"))
-    {
-      Debug.Log("Test Button");
-    }
-  }
-}
-```
-
-每个 MonoBehaviour 自动响应 OnGUI() 方法。这个方法会在每帧渲染完 3D 场景后执行，它提供了一个放置 GUI 绘制命令的入口。
-
-#### UGUI
-
-新的 UI 系统基于保留模式工作，因此图形只需要布局一次就能在每帧被绘制而不需要重新定义。在这个系统中，用于 UI 的图形放置在编辑器中。相比于直接模式 UI，这提供了两个优势：
-
-1. 可以在放置 UI 元素时看到当前 UI 的外观；
-2. 这个系统可以让使用图像来定制 UI 变得更直接。为了使用这个系统，需要导入图像并将对象拖动到场景中。
-
-##### 设置 GUI 显示
-
-Unity 提供了一些特殊的工具，使图像成为 HUD 并显示在 3D 场景上，而不是显示作为场景一部分的图像。UI 元素的定位通常有一些特殊的技巧，因为显示可能需要根据不同的屏幕上进行变化。
-
-###### 为界面场景画布
-
-UI 系统工作原理中最基础且最特殊的一面是<u>所有图像必须附加到画布对象上。</u>
-
-提示：
-
-画布（Canvas）是 Unity 用于为游戏渲染 UI 的一类特殊对象。
-
-GameObject -> UI -> Canvas。该对象代表整个屏幕的范围，而且它的大小相对于 3D 场景，因为它将屏幕上的一个像素缩放为场景中的一个单位。
-
-警告：
-
-当创建 canvas 对象时，也会自动创建 EventSystem 对象。对于 UI 交互，该对象是必须的，但你可以忽略它。
-
-![](../.vuepress/public/images/2020-06-15-20-08-22-unity-canvas-02.png)
-
-画布有一些可以调整的设置。首先是 `Render Mode` 选项，让它保持默认设置，但你应该知道如下三种设置的含义：
-
-- Screen Space-Overlay：将 UI 渲染为摄像机视图顶部的 2D 图形（这是默认设置）。
-- Screen Space——Camera：也将 UI 渲染在摄像机视图顶部，但 UI 元素可以进行透视效果的旋转。
-- World Space：将画布对象放置在场景中，就好像 UI 是 3D 场景的一部分。
-
-另外一个重要的设置是 `Pixel Perfect`，这个设置导致渲染轻微调整图像的位置，以使图像完全清晰和锐利（相反，在像素之间定位时会模糊它们）。
-
-###### 按钮、图像和文本标签
-
-画布对象定义了一个用于显示 UI 的区域，但它依然需要精灵来显示（按钮、图像、文本标签对象这些类似于 HTML5 的标签，然后链接图片）。在 GameObject 菜单的 UI 部分只要为每个元素创建图像、文本或按钮即可。
-
-![](../.vuepress/public/images/2020-06-15-21-59-06-unity-canvas-image.png)
-
-![](../.vuepress/public/images/2020-06-15-21-59-26-unity-canvas-03.png)
-
-###### 控制 UI 元素的位置
-
-所有 UI 对象都有锚点（anchor），在编辑器中显示为 target X。锚点是一种在 UI 中灵活定位对象的方式。
-
-![](../.vuepress/public/images/2020-06-15-22-23-23-unity-ui-anchor-01.png)
-
-定义：
-
-对象的锚点是对象附加到画布或屏幕的点。它决定了计算对象的位置所依赖的点。
-
-锚点的作用是当对象相对于锚点放置时，锚点相对画布移动。锚点定义为类似“屏幕中心”，那么当屏幕改变大小时锚点依然会在中心。类似的，设置锚点为屏幕的右边会让对象不管屏幕是否改变大小都保留在右边（例如，假设游戏在不同显示器上运行时）
-
-下图中，无论屏幕如何缩放，立方体的图标一直位于屏幕的左上角。
-
-![](../.vuepress/public/images/2020-06-15-22-19-55-unity-ui-anchor.png)
-
-##### 编写 UI 的交互
-
-提示：
-
-有时，UI 默认的交互控件会影响游戏。记住 EventSystem 对象会随着画布被自动创建。EventSystem 对象控制 UI 交互控件，默认情况下，它使用方向按键来与 GUI 进行交互。你可能需要关闭 EventSystem 中的方向按键：在 EventSystem 设置中，不要选中 Send Navigation Event 复选框。
-
-通常，所有 UI 元素的 UI 交互都一样，都以一系列标准步骤进行编写：
-
-1. 在场景中创建 UI 对象。
-2. 编写当操作 UI 时调用的代码。
-3. 将脚本附加到场景的对象上。（把脚本挂载到场景对象进行实例化）
-4. 通过脚本将 UI 元素（如按钮）关联到对象上。（脚本提供序列化引用）
-
-给按钮添加事件监听函数：
-
-![](../.vuepress/public/images/2020-06-15-23-05-40-unity-ui-button.png)
-
-将一个 OnClick 条目添加到按钮上并将控制器对象拖动到它上面。可以单击 + 按钮在面板上添加一个条目，每个条目都定义了一个函数，当单击按钮时就会调用这个函数。这个列表包含了一个对象槽和一个用于调用函数的菜单。将控制器对象拖动到对象槽上，并在菜单中年查找 UIController，选择其中的 OnOpenSetting
-s()。
-
-**响应其他鼠标事件**
-
-OnClick 是按钮组件暴露给外部的唯一事件，但 UI 元素能响应各种不同的交互。为了使用默认交互以外的交互，可以使用 `EventTrigger` 组件。
-
-将一个新组件添加给按钮对象，在组件的菜单查找 Event 部分，选择 EventTrigger。
-
-然后单击 Add New Event Type，给 EventTrigger 组件添加一个新类型。选择 Pointer Down z
-作为事件，这个操作将创建空的事件面板，就像 OnClick 面板一样。单击 + 按钮，添加事件列表，将控制器对象拖动到这个新增事件上，并选择 OnPointerDown()。
-
-![](../.vuepress/public/images/2020-06-15-23-11-52-unity-ui-button-event.png)
-
-###### 创建弹出窗口
-
-弹出窗口是一个新的图像对象，在这个对象上附加有几个控件（例如，按钮和滑动条）。
-
-通常，精灵在整个图像对象上被缩放，一般的方式是单击 `Set Native Size` 按钮，重新设置`图像对象`的大小。这个行为是图像对象的默认设置，但弹出窗口将做一些不同的处理。
-
-图像组件有 `Image Type` 设置。这个设置默认为 Simple，这正是之前使用的正确图像类型。对于弹出窗口，将 Image Type 设置为 `Sliced`。
-
-定义：
-
-切割图像（sliced image）是把图像切割为九份，以便能缩放为不同的图像。通过从中间缩放图像边缘，可以确保图像在保留边缘大小和形状时被缩放为任何你期望的尺寸。简单来说，就是可以让你保持边框大小不变，只缩放内容区域。在其他开发工具中，此类图像在其名称中有个“九”字（例如，九切割、九片、缩放九），表示图像有九部分。
-
-在切换到切割图像之前，需要把精灵图设置为九部分，否则会出现表明图像没有边框的错误。首先选择 Project 视图中的精灵，然后在 Inpector 中应该会看到 Spriter Editor 按钮。
-
-在 Spriter Editor 中可以看到，绿色的线指示了图像是如何被切割的。初始时图像不会有任何边框（所有 Border 被设置为 0）。增加 4 条边的边框宽度（左、右、底部、顶部），边框线同时叠加为九部分。关闭编辑器窗口并应用修改。
-
-之后确保 Image 组件设置 `Fill Center`，由于边框部分保留它们的大小，因此切割图像可以被缩放为任何大小并且保持清晰的边缘。
-
-提示：
-
-UI 图像如何彼此堆放取决于它们在 Hierarchy 视图中的顺序。在 Hierarchy 列表中，将弹出对象拖动到其他 UI 对象上（当然，还是保持附加到画布上）。现在在 Scene 视图中移动弹出窗口；将看到图像和弹出窗口重叠。最后将弹出窗口拖动到画布底部，以便它显示在其他任何 UI 元素之上。
-
-```cs
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SettingPopup : MonoBehaviour
-{
-  /* 
-   * 开启对象，打开窗口
-   */
-  public void Open()
-  {
-    gameObject.SetActive(true);
-  }
-  /* 
-   * 使对象无效，关闭窗口
-   */
-  public void Close()
-  {
-    gameObject.SetActive(false);
-  }
-}
-
-```
-
-##### 使用滑动条和输入域设置
-
-![](../.vuepress/public/images/2020-06-16-20-29-21-unity-ui.png)
-
-绑定事件监听回调函数：
-- 对于滑动条查找组件设置底部的事件面板（OnValueChanged），单击 + 按钮添加一个条目，将弹出窗口拖动到对象槽上，选择要通知的回调函数。
-
-之后通过 `[SerializeField] private Slider speedSlider;` 在其他脚本上获取控件的值。
-
-#### 通过响应事件更新游戏
-
-HUD 和主游戏之间互不相干，但它们之间应该是相互通信的。为此，可以通过我们为<u>其他类型的对象通信所创建的脚本引用来完成，</u>但这样做存在一些缺陷。特别是，这样做<u>将场景和 HUD 紧密耦合在一起，但你可能想要让它们相对独立，这样可以在编辑游戏时不必担心是否破坏 HUD。</u>
-
-为了通知场景中 UI 的行为，接下去将使用消息广播系统。这个事件消息系统的工作原理：脚本可以注册为侦听事件，其他代码可以广播事件，接着侦听器将被通知有关广播的信息。
-
-![](../.vuepress/public/images/2020-06-16-21-05-32-event-broadcast-system.png)
-
-提示：
-
-C# 有一个内置的系统用于处理事件，所以你可能好奇为什么我们不使用内置的系统。内置的事件系统强制要求消息的目标，而我们需要的是广播消息系统。<u>目标系统需要代码精确知道消息的来源而广播的来源可以是任意的。</u>
-
-##### 集成事件系统
-
-- http://wiki.unity3d.com/index.php/CSharpMessenger
-
-<!-- 跟 Vue 的 EventBus 很像。 -->
-
-##### 从场景中广播和侦听事件
-
-##### 从 HUD 广播和侦听事件
+- [ugui](./ugui.md)
 
 ### 时间
 
@@ -1737,4 +1667,12 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 - 屏幕适配
   - [屏幕适配实用技巧](https://zhuanlan.zhihu.com/p/42779882)
   - [unity 屏幕分辨率设置]([)](https://blog.csdn.net/qq_37579133/article/details/70308013)
-- [unity如何查找某个脚本挂在了哪些物体上](https://blog.csdn.net/alayeshi/article/details/52039314?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1)
+- [unity 如何查找某个脚本挂在了哪些物体上](https://blog.csdn.net/alayeshi/article/details/52039314?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1)
+- 《Unity 3D/2D 手机游戏开发》
+- 动画
+  - [DoTween 官网](http://dotween.demigiant.com/documentation.php)
+  - [DOTWeen 插件使用技巧](https://zhuanlan.zhihu.com/p/43888860)
+  - [动画插件 Tween 的使用](https://zhuanlan.zhihu.com/p/37957554)
+- 案例
+  - [Unity快速上手系列之番外篇：《2D横版跑酷》](https://zhuanlan.zhihu.com/p/38476477)
+  - [炫酷跑酷教程（1）——简单的动态地图生成与人物动作](https://zhuanlan.zhihu.com/p/34247063)

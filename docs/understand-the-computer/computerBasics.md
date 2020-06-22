@@ -730,7 +730,7 @@ NIO技术属于同步非阻塞。即使当执行“serverSocketChannel.configure
 	|--生产者/消费者的问题。并多生产和多消费的问题。  while判断标记。用notifyAll唤醒对方。 ★★★★★
 	|--JDK1.5以后出现了更好的方案，★★★
 		Lock接口替代了synchronized  
-		Condition接口替代了Object中的监视方法，并将监视器方法封装成了Condition
+		Condition接口替代了Object中的监视方法，**并将监视器方法封装成了Condition**
 		和以前不同的是，以前一个锁上只能有一组监视器方法。现在，一个Lock锁上可以多组监视器方法对象。
 		可以实现一组负责生产者，一组负责消费者。 
 	|--wait和sleep的区别。★★★★★
@@ -754,4 +754,6 @@ NIO技术属于同步非阻塞。即使当执行“serverSocketChannel.configure
 
 - [深入理解计算机系统](https://zhuanlan.zhihu.com/p/37479652)—— 作者针对《深入理解计算机系统》书籍写的总结
 - [南京大学的计算机基础课程](https://www.coursera.org/lecture/jisuanji-xitong/w1-1-cyu-yan-cheng-xu-ju-li-jMDYB) —— 阅读《深入理解计算机系统》配合这个课程，相信能够更快地理解计算机的原理。
-
+- 进程与线程
+  - [什么是多线程？如何实现多线程？](https://zhuanlan.zhihu.com/p/94980360?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&utm_content=sec)
+  - [单线程多线程区别何在。各自的优点缺点？](https://www.zhihu.com/question/301618679/answer/527051591?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&utm_content=sec)

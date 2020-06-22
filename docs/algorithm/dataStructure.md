@@ -1,5 +1,30 @@
 # 数据结构
 
+## 前置知识
+
+### 抽象数据类型（ADT）
+
+抽象数据类型（abstract data type，ADT）是带有一组操作的一些对象的集合。诸如表、集合、图以及它们各自的操作一起形成的这些对象都可以被看做是抽象数据类型。
+
+### 什么是表 ADT
+
+ADT （abstract data type）表：A0，A1，A2，... An-1 的一般的表，这个表的大小是 N。我们将大小为 0 的特殊的表称为空表（empty list）。表中第一个元素是 A1，最后一个元素是 An。不定义 A1 的前驱元和 An 的后继元。元素Ai在表中的`位置`为 i。
+
+表 ADT 上进行的操作的集合
+
+- PrintList
+- MakeEmpty
+- Find 返回关键字首次出现的位置
+- FindKth 返回某个位置上的元素
+- Insert/Delete 从表的某个位置插入和删除某个关键字
+- union
+- contains
+
+对象是表，通过 key 查找，数组也是表，通过数字索引。表可以通过数组、集合、图等实现，这里的表是一般意义上的抽象数据类型的集合。
+
+- 普通的表：数组、栈、队列、链表（在 lua 中就一个数据结构 table 来进行对数组、哈希的实现）
+- 数据库表：二维表格。
+
 ## 数组
 
 数组就像军队一样整整齐齐，有序。
@@ -89,6 +114,10 @@ console.log('在数组开头删除一个元素', numbers)
 
 ## 链表
 
+
+
+### 简单链表
+
 ### 什么是双向链表
 
 双向链表比单向链表稍微复杂一些，它的每一个节点除了拥有 `data` 和 `next` 指针，还拥有指向前置节点的 `prev` 指针。
@@ -140,6 +169,187 @@ console.log('在数组开头删除一个元素', numbers)
 #### 删除元素
 
 链表的掸
+
+### 实现
+
+#### 版本一
+
+![](../.vuepress/public/images/2020-06-18-11-11-11-linked-list-uml.png)
+
+```cs
+using System;
+namespace DataStructures.Lists
+{
+  /*
+   * 思路：位置
+   */
+  public class Node
+  {
+    public Node next;
+    public int data;
+    public Node(int data)
+    {
+      this.data = data;
+    }
+  }
+
+  public class SingleLinkedList
+  {
+
+    private Node head; // 头指针
+    private Node last;  // 尾指针，为了尾部插入的方便所用
+    private int size; // 链表实际长度
+
+    public SingleLinkedList()
+    {
+    }
+
+    /*
+     * 链表插入节点
+     */
+    public Node Insert(int data, int index)
+    {
+      if (index < 0 || index > size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      // 新节点
+      Node insertedNode = new Node(data);
+
+      // 空链表
+      if (size == 0)
+      {
+        head = insertedNode;
+        last = insertedNode;
+      }
+      // 插入头部
+      else if (index == 0)
+      {
+        insertedNode.next = head; // 移动旧的头部节点 next 指向新节点
+        head = insertedNode; // 改变头部指针指向为新节点
+      }
+      // 插入尾部
+      else if (size == index)
+      {
+        last.next = insertedNode; // 移动旧的尾部节点 next 指向新节点
+        last = insertedNode; // 改变尾部指针指向为新节点
+      }
+      // 插入中间
+      else
+      {
+        // 寻找 index 上一个节点
+        Node prevNode = Get(index - 1);
+        // 插入
+        insertedNode.next = prevNode.next; // 链接新节点到原来的节点
+        prevNode.next = insertedNode; // 改变上一个节点的 next 指向
+
+      }
+      size++;
+      return insertedNode;
+    }
+
+    /*
+     * 删除节点
+     * @param {int} index
+     * @return 返回删除的节点 {Node} s
+     */
+    public Node Remove(int index)
+    {
+      if (index < 0 || index > size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      Node removeNode;
+
+      // 删除头部节点
+      if (index == 0)
+      {
+        removeNode = head;
+        head = head.next;
+      }
+      // 删除尾部节点
+      else if (index == size)
+      {
+        Node prevNode = Get(index - 1);
+        removeNode = prevNode.next;
+        prevNode.next = removeNode.next;
+        last = prevNode; // 移动 last 指针
+      }
+      // 删除中间节点
+      else
+      {
+        Node prevNode = Get(index - 1);
+        Node nextNode = prevNode.next.next;
+        removeNode = prevNode.next;
+        prevNode.next = nextNode;
+      }
+      size--;
+      return removeNode;
+    }
+
+    /*
+     * 查找节点
+     */
+    public Node Get(int index)
+    {
+      if (index < 0 || index >= size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      Node temp = head;
+      for (int i = 0; i < index; i++)
+      {
+        temp = temp.next;
+      }
+      return temp;
+    }
+
+    public void Print()
+    {
+      Node temp = head;
+      while (temp != null)
+      {
+        Console.Write(temp.data);
+        temp = temp.next;
+      }
+    }
+    public static void Main() { }
+  }
+}
+
+
+```
+
+使用
+```cs
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using DataStructures.Lists;
+namespace UnitTest.DataStructuresTests
+{
+  [TestClass]
+  public class SingleLinkedListDemoTest
+  {
+    public SingleLinkedListDemoTest()
+    {
+    }
+    [TestMethod]
+    public void TestMethod()
+    {
+      SingleLinkedList singleLinkedList = new SingleLinkedList();
+      singleLinkedList.Insert(3, 0);
+      singleLinkedList.Insert(7, 1);
+      singleLinkedList.Insert(9, 2);
+      singleLinkedList.Insert(5, 3);
+      singleLinkedList.Insert(6, 1);
+      singleLinkedList.Remove(0);
+      singleLinkedList.Print();
+      Assert.AreEqual(singleLinkedList.Get(0).data, 6);
+    }
+  }
+}
+
+```
 
 ### 数组 vs 链表
 
