@@ -208,11 +208,11 @@ ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类
 
 ### Unity 提供了几种光源，分别是什么
 
-### 简述一下对象池，你觉得在FPS里哪些东西适合使用对象池
+### 简述一下对象池，你觉得在 FPS 里哪些东西适合使用对象池
 
 ### 简述 prefab 的用处
 
-### CharacterController 和 Rigidbody的区别
+### CharacterController 和 Rigidbody 的区别
 
 ### 渲染流程
 
@@ -234,6 +234,16 @@ ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类
 通过 GameObject.Find("/xxx/xxx") 路径。
 
 #### 你对遮挡关系有什么好的策略
+
+在同一个镜头中，Cavans 中所有的物体在进行渲染时，会按照先后顺序，即后渲染的会遮住先渲染的。因此在设定一些比如按钮的遮挡关系的时候，可以将想要在最上层的 UI 放到最后去渲染，修改 Hierarchy 层级面板从上往下的顺序。
+
+而对于在游戏中动态产生的物体，可以使用代码来调整子物体的顺序。
+
+
+```cs
+rectTran.SetAsLastSibling();
+```
+
 
 #### 你对屏幕适配有什么好主意
 

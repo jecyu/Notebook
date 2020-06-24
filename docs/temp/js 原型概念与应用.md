@@ -182,54 +182,146 @@ personB.walk()
 - 类实例（personA 和 personB）
 
 基本概念：
-- 封装（公有、私有等）
-- 继承（类、接口之间的继承）
+- 封装（对于访问者来说，访问的权限如何）
+- 继承（类、接口之间的继承，把共同的程序代码放在父类中）
 - 多态（同一个方法，不同的对象表现出不同的行为，例如 rotate）
+- 抽象（把子类的共同属性和行为抽象到父类中）
 
-接下来我们要另外设计一个程序，简单的给动物界分类，以便加深面向对象的理解。下面是一个简单的分类结构：
+接下来我们要另外设计一个程序，可以让用户设定将一群动物丢到某种环境中以观察会发生什么事情，我们现在只关注设计，以便加深面向对象的理解。
 
-- animal（动物列）
-  - canine（）
-    - dog（狗）
-    - wolf（狼）
-  - feline（猫科）
-    - lion（狮子）
-    - tiger（老虎）
-    - cat（猫）
+假设现在程序只有一部分的动物，后续会加入其他的动物。每个动物都用一个对象来表示，且动物会在环境中活动，执行任何被设计出的行为，分析步骤如下：
+
+1. 分析找出具有共同属性和行为的对象（picture、food、hunger、boundaries、makeNodes、eat、roam）。
+2. 设计代表共同状态与行为的类（Animal）。
+3. 决定子类是否需要让某项行为有特定不同的运作方式。（覆盖 eat、makeNoise）
+4. 通过寻找使用共同行为的子类找出更多抽象化的机会（Canine 犬科、Feline 猫科）。
+
+![](../.vuepress/public/images/2020-06-23-07-56-58-inhert-Animal.png)
+
+最终得出一个简单的分类结构。
+
+- Animal（动物类）
+  - Canine（犬科）
+    - Dog（狗）
+    - Wolf（狼）
+  - Feline（猫科）
+    - Lion（狮子）
+    - Tiger（老虎）
+    - Cat（猫）
 
 实现面向对象思想有两种方法，基于类实现和基于原型实现，下面将使用 Java 和 JS 来实现。
 
 ### 传统面向对象语言
 
-要理解面向对象编程，最重要的特点就是根据`类封装创建对象`与`类之间继承`的概念（除此还有多态、抽象等）。在很多面向对象语言中如 java
-中，我们可以通过声明一个类作为基类，然后通过继承这个基类定义一个新类。
+要理解面向对象编程，最重要的特点就是根据`类封装创建对象`与`类之间继承`的概念了。在 Java 中，我们可以通过声明一个类作为基类，然后通过继承这个基类定义一个新类。
+
+根据之前的树状结构，我们首先定义 Animal 类：
 
 ```java
-public class Person {
-  public void Person(String name) {
-    this.name = name;
-  }
-  eat()
-  roam()
+public class Animal {
+	public String picture; // 动物 JPEG 图像的名称
+	public String food; // 此动物所吃的食物
+	public int hunger; // 代表饥饿程度。它会根据动物吃了多少东西而改变
+	public Boundaries boundaries; // 代表动物活动范围区域的长宽
+
+	public Animal(String picture, String food, int hunger, Boundaries boundaries) {
+		this.picture = picture;
+		this.food = food;
+		this.hunger = hunger;
+		this.boundaries = boundaries;
+	}
+
+	public void makeNoise() { // 动物发出声音的行为
+		System.out.println("Animal makeNoise!");
+	}
+
+	public void eat() { // 动物遇到食物时的行为程序
+		System.out.println("Animal eat!");
+	}
+
+	public void sleep() { // 睡眠的行为程序
+		System.out.println("Animal sleep!");
+	}
+
+	public void roam() { // 不在进食或睡眠时的行为程序
+		System.out.println("Animal roam!");
+	}
 }
 ```
 
-然后，基于 Person 继续扩展出一个 Hero 类
+然后，基于 Animal 继续扩展出一个 Canine 和 Feline 类，它们都覆盖了 Animal 的 makeNoise 和 eat 方法。
 
 ```java
-public class Hero extends Person {
-  private void shoot() {}
-  useSpecialPower()
+public class Canine extends Animal {
+
+	public Canine(String picture, String food, int hunger, Boundaries boundaries) {
+		super(picture, food, hunger, boundaries);
+	}
+
+	public void makeNoise() {
+		System.out.println("Canine makeNoise!");
+	}
+
+	public void eat() {
+		System.out.println("Canine eat!");
+	}
 }
 ```
 
-而基于这个 Hero 类进行实例化出男人 man 和女人 woman，这个人物类是 man 和 woman 的原型。
-使用超级英雄类来说明面向对象有点牵强，直接使用动物类说明更适合原型的概念说明。《HeadFirst Java》
-举个例子
+```java
+public class Feline extends Animal {
 
-<!-- 或者漫威英雄，person，superHero ，动物和超级英雄哪一个更容易编写或更容易让读者熟悉呢？哪一个更容易对比呢？
-绝地求生，已经具备基本的野外求生能力的原型，开始只有基本的人物外表，然后你可以进行自定义外表，塑造出你喜欢的形象。（这个例子不太适合，更适合组合系统（也就是装饰器）） -->
-<!-- 动物，人 -->
+	public Feline(String picture, String food, int hunger, Boundaries boundaries) {
+		super(picture, food, hunger, boundaries);
+	}
+
+	public void makeNoise() {
+		System.out.println("Feline makeNoise!");
+	}
+
+	public void eat() {
+		System.out.println("Feline makeNoise!");
+	}
+}
+
+```
+
+然后，再构建继承于 Feline 和 Canine 类的 Dog 类 和 Cat 类：
+
+```java
+public class Cat extends Feline {
+	public Cat(String picture, String food, int hunger, Boundaries boundaries) {
+		super(picture, food, hunger, boundaries);
+	}
+}
+```
+
+```java
+public class Dog extends Canine {
+
+	public Dog(String picture, String food, int hunger, Boundaries boundaries) {
+		super(picture, food, hunger, boundaries);
+	}
+}
+```
+
+最后，我们可以根据 Dog 类和 Cat 类进行实例化并进行调用：
+
+```java
+public class Main {
+
+	public static void main(String[] args) {
+		Boundaries boundariesDog = new Boundaries();
+		Boundaries boundariesCat = new Boundaries();
+		Dog keji = new Dog("柯基", "骨头", 100, boundariesDog);
+		Cat meiduan = new Cat("美短", "鱼", 100, boundariesCat);
+		keji.makeNoise(); // Canine makeNoise!
+		meiduan.makeNoise(); // Feline makeNoise!
+	}
+}
+```
+
+可以看出男人 man 和女人 woman，这个人物类是 man 和 woman 的原型。
 
 这里的基类和人物类都是原型，男人和女人对象的原型是人物类，而人物类的原型又是。
 
@@ -271,7 +363,7 @@ C#、Java 都通过 class 进行原型的定义，JS 通过 prototype 属性，�
 
 - 层层访问
 
-<!-- 同样使用上面的传统面向对象的继承 -->
+<!-- 同样使用上面的传统面向对象的继承例子 -->
 
 ### 为什么需要原型链
 
@@ -317,7 +409,7 @@ js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
 
 ## 参考资料
 
-- [Details of the object model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Details_of_the_Object_Model) 值得精读的 MDN 文档，说清楚了基于类继承与基于原型继承的区别。
+- [Details of the object model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Details_of_the_Object_Model) 值得精读的 MDN 文档，关于基于类继承与基于原型继承的区别说得挺清楚的。
 - [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
 - [【进阶 5-2 期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)

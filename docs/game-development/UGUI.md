@@ -347,10 +347,18 @@ Image 组件的参数说明
 
 ##### Anchors
 
+Anchors 是在子类锚在父类上的点，因此如果没有父类（RectTransform），那么 RectTransform 属性面板上的Anchor Presets 将不可设置，但 Anchors 仍可设置。
+
+
+所谓，锚在父类上，意思就是<u>子类的 Pivot（中心点）到（父类上）Anchors（锚点）的相对位置不变，</u>而这个位置就是RectTransform面板上显示的——PosX，PosY，PosZ——对应了anchoredPosition3D（PosX，PosY，PosZ），或anchoredPosition（PosX，PosY）。
+
+
 锚点(Anchor) 可以理解为定义了物体的所在区域，在 Unity Editor 中不同的锚点方式也会影响怎样去布局该物体。
 比如当我选择了全部铺满之后，控制 UI 位置的属性是 Left, Top, Right 和 Bottom。
 
 ![](../.vuepress/public/images/2020-06-20-00-01-44-unity-anchor.png)
+
+Anchors 的重要作用，就是无论父类如何变化，子类相对于父类上Anchors 的相对位置都不变。
 
 而当我选择了横向铺满之后，控制 UI 位置的属性则是 Left, Right PosY 和 Height。因为此时 Width 是铺满的，不需要控制。
 
@@ -360,6 +368,20 @@ Image 组件的参数说明
 的大小，此时的 PosX 和 PosY 和 Width、Height 就会被 Left、Right、Top、Bottom 替代，只要用来设置缩放的值。
 
 ![](../.vuepress/public/images/2020-06-20-00-30-53-anchors.png)
+
+设置锚点后，移动物体的本地坐标即以锚点为起点。
+
+![](../.vuepress/public/images/2020-06-22-22-30-57-anchor.png)
+
+##### Anchor Presets
+
+Anchor Presets 是对 Anchors的快捷设置选项，提供了最常用的几种Anchors设置模式，如：上中下，左中右，拉伸。如果不使用这里的预设，通过代码（anchorMax，anchorMin），或是面板属性，也是可以自定义设置的
+
+四角（拉伸）
+
+![](../.vuepress/public/images/2020-06-23-22-23-11-anchor.png)
+
+在这种情况下，面板上的 PosX，PosY，Width，Height 会被Left，Right，Top，Bottom 取代。这代表着，RectTransform 的区域到 Anchors 在 xy 方向上的四周距离（类似CSS布局中的 padding）
 
 ##### Pivot
 
@@ -391,6 +413,21 @@ UI 图形的 posX、posY 等的大小的计算是以锚点为坐标原点，UI �
 
 **RaycastTarget**： 勾选该选项后，该UI将会响应射线点击，鼠标点击到这个UI物体的时候事件管理器知道我们点击了什么物体，这个参数会和Button组件配合，完成我们的点击操作。
 
+#### 渲染顺序
+
+Unity UGUI
+1. Unity3d中的渲染顺序如下：
+  不同的Camera的Depth
+  相同Camera下的不同SortingLayer
+  相同SortingLayer下的不同Z轴/Order in Layer
+2. 改变控件之间的层级关系
+ (1)同一canvas下：
+     改变控件transform的SiblingIndex,
+     transform.GetSiblingIndex();
+     transform.SetSiblingIndex(int index); //index值越大，越后渲染，层级越大，越显示在前面
+ (2)不同Canvas下：
+    设置Canvas下的Sort Order //Sort Order值越大，越后渲染，层级越大，越显示在前面
+
 #### 遮罩
 
 Mark 组件
@@ -419,6 +456,12 @@ Mark 组件
 
 ## 案例篇
 
+### 菜单实现
+
+#### 跳转
+
+可以通过不同场景的切换，如果 UI 简单，也可以在同一个场景进行切换。
+
 ### 血条
 
 参考资料：《Unity 2D 3D 手机游戏》
@@ -446,7 +489,7 @@ Mark 组件
 
 ### UI 遮挡 3D 物体响应
 
-#### 解决 UI 和 3D 物体层叠时，只响应 UI 的问题
+#### 解决 UI 和 3D 物体层叠时，只响应 UI 的问题（击穿）
 
 ```cs
     if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) // 检查 GUI 未被使用
@@ -468,3 +511,4 @@ Mark 组件
 - [NGUI 和 UGUI 和 GUI 的学习感想](https://blog.csdn.net/weixin_43151516/article/details/82670164)
 - Unity 编辑器自带手册
 - [UGUI 整体解决方案-基础篇（Unity 2019.1.0f2）](http://www.sikiedu.com/my/course/468)
+- [Unity3D RectTransform使用详解：布局、属性、方法](https://zhuanlan.zhihu.com/p/139252379)

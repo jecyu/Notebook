@@ -150,7 +150,9 @@ targetObject.SendMessage(targetMessage); // 当单击按钮时将消息发送到
 
 警告：
 
-对于 CPU 而言，使用 SendMessage() 的效率会比调用已知类型的公有方法的效率低（也就是使用 object.SendMessage("Method") 与 component.Method() 相比），因此只有当使用 SendMessage() 能够让代码更易于理解和工作时，才能获得其优势。通常根据经验，仅当有很多不同类型的对象接收信息时，才需要使用 SendMessage()，在这种情况下，`继承或是接口的不灵活性`甚至会阻碍游戏开发开发进程并让你放弃尝试。
+对于 CPU 而言，使用 `SendMessage()` 的效率会比调用已知类型的公有方法的效率低（也就是使用 object.SendMessage("Method") 与 component.Method() 相比），因此只有当使用 SendMessage() 能够让代码更易于理解和工作时，才能获得其优势。通常根据经验，`仅当有很多不同类型的对象接收信息时，才需要使用 SendMessage()`，在这种情况下，`继承或是接口的不灵活性`甚至会阻碍游戏开发开发进程并让你放弃尝试。
+
+名为 empty 的 GameObject 其实跟 HTML 的 div 元素的作用一样。
 
 #### Unity 中游戏物体和组件的关系
 
@@ -197,7 +199,7 @@ GameObject.getComponent()
 
 ##### 父子关系的 GameObject 引用
 
-通过 transform
+通过 transform 
 
 ##### 为什么可以直接通过脚本类成员进行实例化？
 
@@ -342,7 +344,10 @@ SpriteRenderer 组件让对象成为一个精灵对象并决定显示哪个精�
   - UIController （UI）
 - Editor
 - Plugins
-- Resources
+
+#### Resources
+
+这个和 Editor 一样，可以在 Assets 下的任何目录下，并且可以有任意多份。所有 Resources 目录下的文件都会直接打进一个特殊的 Boundles 中，并且在游戏启动时，会生成一个序列化映射表，并加载进内存里。
 
 ### 关卡
 
@@ -435,7 +440,7 @@ PlayerPrefs 提供了一些简单的命令用于获取和设置值（它的原�
 
 DOTween 是个动画插件，举个例子，相当于把之前飞机游戏里的正弦运动代码封装起来，提供方法给开发者调用，DOTween 一样可以可视化编程，下载 DOTween 插件后，通过 Add Component 搜索添加。
 
-对比 Unity 自带的 Animation 动画，需要引入 Animation 进行设置播放，动画的生成可以自己的 K 帧，也可以引入动画，这样来说每一个需要移动的对象都要挂上一个动画组件，对于 UI 来说，使用 DOTween 更方便。（而对于人物的动画，则使用 Animators 效果更好）
+对比 Unity 自带的 Animation 动画，需要引入 Animation 进行设置播放，动画的生成可以自己的 K 帧，也可以引入动画，这样来说每一个需要移动的对象都要挂上一个动画组件，<u>对于 UI 来说，使用 DOTween 更方便。（而对于人物的动画，则使用 Animators 效果更好）</u>
 
 ##### 步骤
 
@@ -540,11 +545,8 @@ Sequence 是 Tween 的子类，就是序列动作，里面的动作按照先后�
 - `PrependInterval`：在序列动作的开头追加时间
 
 7. 常见 Set 函数
-8. 常见回调函数
 
-
-
-9.  From() 方法的使用
+8.  From() 方法的使用
 
 ```cs
 // 2 秒时间从世界坐标（2，2，0）处回到自身当前位置
@@ -577,11 +579,15 @@ DOTween.Pause("badoom");
 ##### 应用场景
 
 1. 文本动画
+
+
 2. 屏幕抖动动画
 
 ##### 可视化编辑
 
 除了使用脚本来播放 DoTween
+
+#### Animation
 
 ### 克隆对象
 
@@ -1642,6 +1648,16 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 
 ## 进阶
 
+### Assets 资源映射
+
+哪些情况可以使用 Resources
+
+Resources 有它的致命性缺点，但是存在即合理。它还是有它的一些使用场景的，比如：
+- 某些资源是项目整个生命周期都必须要用的。
+- 有些很重要，但是却不怎么占内存。
+- 不怎么需要变化，并且不需要进行平台差异化处理的。
+- 用于系统启动时候最小引导的。
+
 ## 底层原理
 
 ## 参考资料
@@ -1649,6 +1665,9 @@ Is Kinematic 是否为 Kinematic 刚体，如果启用该参数，则<u>对象�
 <!-- - 《游戏引擎架构》深入某个方向（如渲染、动画） -->
 <!-- - [Unity 工作一年能力应该达到什么水平？]() -->
 
+- 架构
+  - [浅谈 —— Assets Unity 资源映射](https://blog.uwa4d.com/archives/USparkle_Addressable1.html)
+- [Unity中影响渲染顺序的因素总结](https://zhuanlan.zhihu.com/p/55762351)
 - 素材资源
   - 在 Unity 资源商店下载（Window -> assets store）
 - 脚本资源：
