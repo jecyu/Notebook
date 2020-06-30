@@ -726,6 +726,10 @@ Vue 1.0 api，Vue 2.0 已经废弃。
 
 ## 框架原理
 
+### 虚拟 DOM
+
+[Virtual-DOM的概念与应用](../temp/Virtual-DOM的概念与应用.md)
+
 ### 响应式对象
 
 #### proxy
@@ -1558,20 +1562,7 @@ function add (
 
 动画性能
 
-### vue 的 diff 算法
 
-#### 虚拟 dom
-
-所谓的 `vitural dom`，也就是虚拟节点。它通过 JS 的 Object 对象模拟 DOM 中的节点，然后再通过特定的 `render` 方法将其渲染成真实的 DOM 节点。`dom diff` 是 通过 JS 层面的计算，返回一个 `patch` 对象，即补丁对象，再通过特定的操作解析 `patch` 对象，完成页面的重新渲染。
-
-![](../.vuepress/public/images/dom-diff.png)
-
-- 实现步骤
-  - 用 JavaScript 对象模拟 DOM
-  - 把此虚拟 DOM 转成真实 DOM 并插入页面中
-  - 如果有事件发生修改了虚拟 DOM
-  - 比较两棵虚拟 DOM 树的差异，得到差异对象
-  - 把差异对象应用到真正的 DOM 树上。
 
 #### 应用：为什么 Vue 中不要用 index 作为 key
 
@@ -1888,5 +1879,7 @@ handleClick(name) {
   - [为什么 Vue 中不要用 index 作为 key？（diff 算法详解）](https://juejin.im/post/5e8694b75188257372503722?utm_source=gold_browser_extension#heading-14)
   - [面试官：你了解 vue 的 diff 算法吗？](https://juejin.im/post/5ad6182df265da23906c8627#heading-1) -- 从虚拟 DOM 到 diff 代码的基本实现，可以大概看看实现。
   - [Vue.js 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/prepare/)
+  - [深度剖析：如何实现一个 Virtual DOM 算法 #13](https://github.com/livoras/blog/issues/13)
+  - [从一个日常 bug 看 Vue 的列表 key 及 vnode 更新策略](https://juejin.im/post/5d5561ebe51d456210163b86#heading-2)
 - 最佳实践
   - [Vue 使用中的小技巧](https://juejin.im/post/5ae02f39518825672f198ac2#heading-26)

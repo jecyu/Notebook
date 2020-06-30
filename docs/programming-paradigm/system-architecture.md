@@ -1,5 +1,24 @@
 # 系统架构
 
+- 前端技术
+  - 性能优化
+    - 首先是如何发现问题
+    - 发现问题之后，是如何分析其中原因
+    - 找到原因之后，采用的解决方法
+    - 解决之后，是否真实的对用户体验有所提升
+  - 对框架的理解
+  - 深入 Node.js 领域（编写一些 Webpack 插件）
+  - Canvas 与 WebGL（）
+- 通往架构师之路
+  - 跨界
+  - 尝鲜（微服务、微前端）
+  - 工具和平台化建设
+  - 流程和规范化
+  - 方法论
+  - 安全意识
+  - 团队合作
+
+
 ## MVC
 
 - Model（除了数据，里面也有 controller，用于控制数据变化的业务逻辑。）
@@ -42,6 +61,7 @@
 - todos 发生了修改稿，广播 update 事件，但事件信息中并不包含最新数据。
 - view 监听 update 事件的发生，但是需要手动调用接口获取最新的数据。
 
+
 ### MVC 带来的问题
 
 
@@ -49,3 +69,4 @@
 
 - [实现领域驱动设计](https://book.douban.com/subject/25844633/)
 - [IDDD_Samples](https://github.com/VaughnVernon/IDDD_Samples)
+- [前端开发与架构师](https://mp.weixin.qq.com/s/LSOtald-laf29su_qN4luA)

@@ -345,6 +345,8 @@ Image 组件的参数说明
 
 **Width 和 Height**：一般UI里面放大和缩小图片的宽度和高度都是通过这里来控制的，而不是直接调整缩放值
 
+`btnDog.GetComponent<RectTransform>().anchoredPosition` 这个 anchoredPosition 是此RectTransform枢轴相对于锚参考点的位置。
+
 ##### Anchors
 
 Anchors 是在子类锚在父类上的点，因此如果没有父类（RectTransform），那么 RectTransform 属性面板上的Anchor Presets 将不可设置，但 Anchors 仍可设置。
@@ -476,7 +478,14 @@ Mark 组件
 - boss 血条
 - 多条命
 
-可以通过 Slider UI，然后改变它的样式即可。
+#### 实现
+
+其实跟 HTML 的套路差不多，有以下几种方案：
+- 可以通过 Slider UI，然后改变它的样式即可。
+- 可以通过两个层叠的 GameObject，改变内部元素的 transform （配合遮罩实现）或者宽度变大缩小。
+- 利用 Image 的 FillMount 进行填充模拟效果
+
+![](../.vuepress/public/images/2020-06-24-21-48-29-fill-image.png)
 
 ### 加载进度条
 

@@ -125,6 +125,10 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ### （协程）
 
+#### 枚举器与迭代器
+
+- [对Unity中Coroutines的理解](https://wuzhiwei.net/unity_coroutines/)
+
 ### 线程同步
 
 ### 抽象类 abstract class 与接口 interface 的异同
@@ -302,6 +306,40 @@ rectTran.SetAsLastSibling();
 
 ### 单例模式
 
+```cs
+using System;
+namespace Design.Patterns
+{
+  public class Singleton
+  {
+    private static Singleton uniqueInstance;
+
+    private Singleton()
+    {
+    }
+
+    public static Singleton GetSingleton()
+    {
+      if (uniqueInstance == null)
+      {
+        uniqueInstance = new Singleton();
+      }
+      return uniqueInstance;
+    }
+
+    public void Say()
+    {
+      Console.WriteLine("Hello, I am Singleton.");
+    }
+
+    public static void Main(string[] args)
+    {
+
+    }
+  }
+
+```
+
 ### 工厂模式
 
 ## 架构
@@ -331,7 +369,7 @@ rectTran.SetAsLastSibling();
 
 ### 游戏与其他软件的区别
 
-- 视频游戏比大多数网站与编写其他类型的软件本质上没有什么区别（都是跟用户交互），但是会有更多的交互，而且会包含很多不同类型的代码，但制作所用的技术和方法很相似。
+- 游戏比大多数网站与编写其他类型的软件本质上没有什么区别（都是跟用户交互），但是会有更多的交互，而且会包含很多不同类型的代码，但制作所用的技术和方法很相似。
 
 拿网站来说，游戏中的场景相当于不同的页面 URL，而游戏对象则像页面中一个个模块，游戏对象的组件也像是页面中的组件。对于交互来说，一样是各种输入设备（鼠标、键盘）等，只不过游戏比网站多了游戏世界观，更多地与用户互动，让用户一步步解密，得到快乐。而网站则是辅助用户完成工作、生活中的事情。
 

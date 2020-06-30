@@ -873,3 +873,4 @@ export class MinHeap {
 ## 参考资料
 
 - 《小灰的算法之旅》
+- [给数组扩容的几种方式](https://www.cnblogs.com/darrenji/p/3978150.html)

@@ -13,27 +13,28 @@
     //   "runtimeArgs": "${workspaceFolder}/examples/lua/LuaDebug.lua",
     //   "consoleCoding": "utf8"
     // },
-    {
-      "name": "launch lua process",
-      "type": "lua",
-      "request": "launch",
-      "stopOnEntry": true,
-      "program": "${workspaceFolder}/examples/lua/demo01.lua",
-      "path": "${workspaceFolder}/?.lua",
-      "cpath": "${workspaceFolder}/?.dll",
-      "arg": [],
-    }
     // {
-    //   "type": "node",
+    //   "name": "launch lua process",
+    //   "type": "lua",
     //   "request": "launch",
-    //   "name": "Launch Program",
-    // "stopOnEntry": true,
-    //   "skipFiles": ["<node_internals>/**"],
-    //   // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
-    //   "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
-    //   // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
-    //   // "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
-    //   // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+    //   "stopOnEntry": true,
+    //   "program": "${workspaceFolder}/examples/lua/demo01.lua",
+    //   "path": "${workspaceFolder}/?.lua",
+    //   "cpath": "${workspaceFolder}/?.dll",
+    //   "arg": [],
     // }
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+    "stopOnEntry": true,
+      "skipFiles": ["<node_internals>/**"],
+      // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
+      // "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
+      // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
+      // "program": "${workspaceFolder}/examples/js/object/prototype/demo03.js"
+      "program": "${workspaceFolder}/examples/js/object/oop/main.js"
+      // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+    }
   ]
 }

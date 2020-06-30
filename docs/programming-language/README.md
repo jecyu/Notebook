@@ -8522,23 +8522,23 @@ namespace UnitTest.DegisnTests
 
 (2)、IEnumrator 类型的方法不能含有 `ref` 或者 `out` 类型的参数，但可以含有被传递的引用
 
-(3)、必须有有返回值，且返回值类型为IEnumrator,返回值使用（yield retuen +表达式或者值，或者 yield break）语句
+(3)、必须有有返回值，且返回值类型为 IEnumrator,返回值使用（yield retuen + 表达式或者值，或者 yield break）语句
 
 终止协程的两种方式：
 
-StopCoroutine (string methodName),只能终止指定的协程
+StopCoroutine (string methodName)，只能终止指定的协程
 
 使用时注意：
 
 在程序中调用 StopCoroutine() 方法只能终止以字符串形式启动的协程
-- yield：挂起，程序遇到yield关键字时会被挂起，暂停执行，等待条件满足时从当前位置继续执行
-- yield return 0 or yield return null:程序在下一帧中从当前位置继续执行
-- yield return 1,2,3,......: 程序等待1，2，3...帧之后从当前位置继续执行
-- yield return new WaitForSeconds(n): 程序等待n秒后从当前位置继续执行。
-- yield new WaitForEndOfFrame():在所有的渲染以及GUI程序执行完成后从当前位置继续执行
-- yield new WaitForFixedUpdate():所有脚本中的FixedUpdate()函数都被执行后从当前位置继续执行
+- yield：挂起，程序遇到 yield 关键字时会被挂起，暂停执行，等待条件满足时从当前位置继续执行
+- `yield return 0 or yield return null`：程序在下一帧中从当前位置继续执行`
+- `yield return 1，2，3`,......: 程序等待1，2，3...帧之后从当前位置继续执行
+- `yield return new WaitForSeconds(n)`: 程序等待 n 秒后从当前位置继续执行。
+- `yield new WaitForEndOfFrame()`：在所有的渲染以及GUI程序执行完成后从当前位置继续执行
+- `yield new WaitForFixedUpdate()`：所有脚本中的FixedUpdate()函数都被执行后从当前位置继续执行
 - yield return WWW:等待一个网络请求完成后从当前位置继续执行
-- yield return StartCoroutine():等待一个协程执行完成后从当前位置继续执行
+- `yield return StartCoroutine()`:等待一个协程执行完成后从当前位置继续执行
 - yield break
   如果使用yield break语句，将会导致协程的执行条件不被满足，不会从当前的位置继续执行程序，而是直接从当前位置跳出函数体，回到函数的根部
 
@@ -8576,6 +8576,8 @@ StopCoroutine (string methodName),只能终止指定的协程
     _secondRevealed = null;
   }
 ```
+
+在处理长时间异步操作（例如等待 HTTP 传输、资源加载或文件 I/O 完成）时，最适合使用协程。
 
 ### override 和 overload 以及 new 修饰符
 
@@ -8747,3 +8749,4 @@ class Derived: Base {
 - [C#中 override 和 overload 的区别](https://www.cnblogs.com/netlyf/archive/2009/09/08/1562642.html) 讲解方法重写 override 和方法重载 overload 的区别。
 - [C#笔记（Virtual，Abstract，Override，new）](https://zhuanlan.zhihu.com/p/74225708)
 - [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。
+- [自学总结 C#中数组Array，ArrayList，List的区别](http://www.manew.com/thread-95023-1-1.html)

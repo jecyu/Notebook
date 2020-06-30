@@ -207,7 +207,7 @@ GameObject.getComponent()
 
 #### 应用变换
 
-### 预设
+### 预设（Prefabs）
 
 产生敌人预设，我们让游戏产生敌人，这样无论某个敌人什么时候死亡，一个新的敌人将会出现。在 Unity 中使用称为预设（prefab）的概念很容易实现这一点。
 
@@ -224,6 +224,18 @@ GameObject.getComponent()
 #### 实例化预设
 
 默认情况下，`Instantiate()` 返回的新对象是通用 `Object 类型，但 Object 几乎没什么用，而我们想把它处理为`GameObject`。在 C# 中，使用`as` 关键字可以将一种类型的代码对象转换为另一种类型（使用语法 original-object as new-type 书写）。
+
+方法一：GameObject objPrefab = (MonoBehaviour.Instantiate(mPrefab, Vector3.zero, Quaternion.identity) as GameObject);
+
+方法二：GameObject objPrefab = (GameObject)Resources.Load("Prefabs/myPrefab");
+
+
+
+其中，方法一的 mPrefab 是具体的一个 MonoBehaviour 的变量，该变量是把 Resources/Prefabs/myPrefab 拖动过来赋值的；
+
+方法二的 myPrefab 就很清楚了，是 Resources/Prefabs 下的预制文件.
+
+#### Unpack Prefab
 
 ## 游戏类型
 
@@ -266,7 +278,7 @@ Unity 中的 2D 工作流或多或少和开发 3D 游戏的工作流一样：导
 
 精灵图（sprite）本质上只是标准的纹理图（texture），只不过在开发过程中有特殊的技术来组合和管理精灵图。如 Sprite Editor、Sprite Creator、Sprite Renderer 和 Sprite Packer。
 
-从技术上讲，这些精灵是 3D 空间的对象，但它们是平面对象且面向 Z 轴。因为它们面对同个方向，因此可以让摄像机直接面对精灵而玩家只能沿着 X 和 Y 轴移动（这就是二维）。
+从技术上讲，`这些精灵是 3D 空间的对象，但它们是平面对象且面向 Z 轴`。因为它们面对同个方向，因此可以让摄像机直接面对精灵而玩家只能沿着 X 和 Y 轴移动（这就是二维）。
 
 #### 2D 编辑器模式和 2D Scene 视图
 
@@ -349,6 +361,14 @@ SpriteRenderer 组件让对象成为一个精灵对象并决定显示哪个精�
 
 这个和 Editor 一样，可以在 Assets 下的任何目录下，并且可以有任意多份。所有 Resources 目录下的文件都会直接打进一个特殊的 Boundles 中，并且在游戏启动时，会生成一个序列化映射表，并加载进内存里。
 
+可以异步加载资源？
+
+```cs
+ ResourceRequest r = Resources.LoadAsync("Scenes/Loading", typeof(GameObject));
+```
+
+#### Animators
+
 ### 关卡
 
 LoadLevel() 方法能加载不同关卡。但加载关卡时究竟发生了什么呢？为什么这样做能重置游戏呢？实际上，当加载不同关卡时，当前关卡中所有的对象（场景中所有对象以及对象上所有附加的脚本）都从内存中被清除，接着从新场景中加载所有对象。
@@ -356,6 +376,49 @@ LoadLevel() 方法能加载不同关卡。但加载关卡时究竟发生了什�
 提示：
 
 可以对指定的对象进行标记，使它在加载场景时不会从内存中被清除。Unity 提供了 DontDestroyOnLoad() 方法来保证对象在多个场景中存在。
+
+### 加载场景 
+
+通常游戏的主场景包含的资源较多，这会导致加载场景的时间过长。为了避免这个问题，可以首先加载 Loading 场景，然后再通过 Loading 场景来加载主场景。因为 Loading 场景包含的资源较少，所以加载速度快。在加载主场景的时候一般会在 Loading 界面中显示一个进度条来告知玩家当前加载的进度。在 Unity 中可以通过调用 `Applicaiton.LoadLevelAsync`（5.3 后为 SceneManager）函数来加载游戏场景，通过查询 AsyncOperation.progress 的值来得到场景加载的进度。
+
+Application.LoadLevelAsync 并不是真正的后台加载，它在每一帧加载一些游戏资源，并给出一个 progress 值，<u>所以在加载的时候还是会造成游戏卡顿，AsyncOperation.progress 的值也不够精确。</u>
+
+
+1. 首先 File -> Building Settings，将需要打包的场景添加
+2. 场景切换的时候，可以根据场景名字或者场景 ID 进行切换
+3. 使用 SceneManager 进行切换，导入命名空间
+
+```cs
+  /*
+   * 加载场景
+   */
+  private IEnumerator LoadScene(int sceneNum)
+  {
+    asyncOperation = SceneManager.LoadSceneAsync(sceneNum);// 异步加载场景
+    // 不允许加载完毕自动切换场景，因为有时候加载太快了就看不到加载进度条 UI 效果
+    asyncOperation.allowSceneActivation = false;
+
+    // 等待协程完全加载完毕
+    //  asyncOperation.progress测试只有 0 和 0.9
+    //  所以大概大于0.8就当是加载完成了，每一帧更新一下 progress
+    while (!asyncOperation.isDone && asyncOperation.progress < 0.8f)
+    {
+      // 执行到此语句时，程序会挂起，等待下一帧才会继续执行这里的代码
+      yield return asyncOperation;
+    }
+  }
+}
+```
+
+#### 同步加载场景
+
+#### 异步加载场景
+
+因为需要有一个过渡场景
+
+#### 进度显示
+
+#### 异步加载对象
 
 ### Unity 常用脚本类
 
@@ -436,11 +499,33 @@ PlayerPrefs 提供了一些简单的命令用于获取和设置值（它的原�
 
 为了帮助你理解动画和 3D 模型是如何关联在一起的，接下来类比操纵木偶：3D 模型是木偶，`动画器（Animator）`是让木偶移动的操纵者，而`动画`则是傀儡运动的`记录`。以这种方式定义的运动是提前创建好的，它通常进行小量运动并且不改变对象的位置。
 
+- 动画分类
+  - 普通的
+  - UGUI 的按钮动画（四个状态）
+  - 2D 游戏的精灵动画
+  - 人物角色
+    - 人形
+    - 非人形
+- 普通动画创建
+- 什么是 Animator
+- UGUI 的按钮动画
+- 2D 游戏的精灵动画
+- 人物角色的动画导入 
+  - 模型的两种模型存储方式
+  - 三种动画导入方式
+- Avatar Mask
+- Match Target
+- IK 动画
+- Timeline
+  - 过场动画
+
+#### 给游戏创建
+
 #### DOTween
 
 DOTween 是个动画插件，举个例子，相当于把之前飞机游戏里的正弦运动代码封装起来，提供方法给开发者调用，DOTween 一样可以可视化编程，下载 DOTween 插件后，通过 Add Component 搜索添加。
 
-对比 Unity 自带的 Animation 动画，需要引入 Animation 进行设置播放，动画的生成可以自己的 K 帧，也可以引入动画，这样来说每一个需要移动的对象都要挂上一个动画组件，<u>对于 UI 来说，使用 DOTween 更方便。（而对于人物的动画，则使用 Animators 效果更好）</u>
+对比 Unity 自带的 Animation 动画，需要引入 Animation 进行设置播放，动画的生成可以自己的 K 帧，也可以引入动画剪辑，这样来说每一个需要移动的对象都要挂上一个动画组件，<u>对于 UI 来说，使用 DOTween 编写代码效率更快更方便。而对于人物之类的动画，则使用 Animators 效果更好）</u>当然，如果本来的资源就是 Clip 之类的，则要使用 Animator 了。
 
 ##### 步骤
 
@@ -580,16 +665,89 @@ DOTween.Pause("badoom");
 
 1. 文本动画
 
-
 2. 屏幕抖动动画
 
 ##### 可视化编辑
 
 除了使用脚本来播放 DoTween
 
-#### Animation
+### Animation
 
-### 克隆对象
+通过 DOTween 作为 UI 使用，而 Animation 更适合可以播放不同的动画状态的复杂剪辑。当然，使用它来播放 UI 的动画状态也是可以的。
+
+#### 给游戏创建动画
+
+选择目标 TargetGameObject，选择 window -> Animation -> Animation，即可打开 Animation 编辑框，为当前物体创建 Clip，新建保存后，可以看到在 Assets 生成了 TargetAnimator 和 TargetAnimation 前者是动画控制器，后者是某个动画。
+
+![](../.vuepress/public/images/2020-06-24-22-59-28-animation.png)
+
+然后在 GameObject 可以看到已经挂上了 Animator 组件，这里填的值就是前面生成的 TargetAnimator。
+
+#### 编辑动画，通过动画控制位置变化
+
+![](../.vuepress/public/images/2020-06-24-23-33-02-edit-animator.png)
+
+- Samples 设置一秒多少帧
+- 可以移动时间线，分别为每个关键帧来设置变换的动作。
+- 按住 Option + 鼠标可以拖动时间轴。
+
+创建关键帧
+- 手动 Add Key。
+- 也可以移动时间线，在某一个帧下修改属性，会自动产生关键帧。
+- 点击录制，然后在 Inspector 改变物体的属性，更加 方便
+
+备注：这些都是 GUI 界面的操作，实际上都可以使用公式（如之前做过的飞机游戏，使用插值和正弦运动、愤怒的小鸟摄像机动画，通过 GUI 方式更加直观）
+
+#### 动画的录制和动画曲线的编辑
+
+- 点击录制
+
+#### UGUI 的按钮动画（四个状态）
+
+1. 选择 Button 组件的 Transitoin 为 Animation。
+2. 点击 Auto Generate Animator
+3. 四种状态
+   1. Normal
+   2. Highlighted
+   3. Pressed
+   4. Disabled
+
+![](../.vuepress/public/images/2020-06-25-12-05-55-button-animation.png)
+
+可以给 Button 的 Normal 状态，添加上精灵帧动画：
+- 给 Button 的 Image 组件的 Sprite 属性添加帧动画
+- 可以把它们拖拽进 Animation 编辑器即可，这样也可以为 UI 组件上间接添加上帧动画了。
+
+![](../.vuepress/public/images/2020-06-25-22-56-28-btn-sprite.png)
+
+#### 创建 2D 游戏中的精灵动画
+
+##### 方式一
+
+把 Sprite 帧图片拖进 Assets，然后选中连续的帧拖进 Hierarchy 视图，它会自动生成 GameObject 并且生成了对应 Animator 和 Animation
+
+##### 方式二：手动创建
+
+新建 Animator，添加 Clip，把 Sprite 整个拖拽进去。
+
+### 游戏对象
+
+检视面板的首要目的是使用户可以查看和编辑游戏对象的各个组件。Cube 游戏对象具有 Transform （变换）、Mesh Filter（网格过滤器）、Box Collider（盒碰撞器）和 Mesh Renderer （网格渲染器）组件。
+
+- **变换**（Transform）：变换组件设置游戏对象的位置、旋转和缩放。这是唯一一个所有游戏对象都必有的组件。
+- **Cube（Mesh Filter）**：<u>Mesh Filter 组件为游戏对象提供三维外形，以三角形构成的网络建立模型。游戏中的三维模型通常是中空的，仅具有表面。</u>例如，鸡蛋的三维模型将只有模拟蛋壳形状的三角形网格，而不像真正的鸡蛋那样还包含蛋清和蛋黄。<u>网格过滤器在游戏对象上绑定一个三维模型。在立方体中，网格过滤器使用 Unity 中内置的简单三维立方体模型。但你也可以在项目面板中导入复杂的三维模型，在你的游戏中添加更加复杂的网格。</u>
+- **盒碰撞器（Box Collider）**：碰撞器组件允许游戏对象在 Unity 的物理模拟系统中与其他对象发生交互。软件中有几种不同类型的碰撞器，最常用的有：球状、胶囊状、盒状和网格状（按运算复杂度从低到高排序）。<u>具有碰撞器组件的游戏对象（以及非刚体组件）会被当作空间中不可移动的物体，可与其他物体发生碰撞。</u>
+- **网格渲染器（Mesh Render）**：虽然网格过滤器可以提供游戏对象的实际几何形状，但要游戏对象显示在屏幕上，要通过网格渲染器。没有渲染器，Unity 中任何物体都无法显示在屏幕上。<u>渲染器与主摄像机一起把网格过滤器的三维几何形状转化为屏幕上显示的像素。</u>
+- **刚体（Rigidbody）**：刚体组件可以通知 Unity 对这个游戏对象进行<u>物理模拟。</u>其中包括重力、碰撞和拉拽等机械力。刚体可允许具有碰撞器的游戏对象在空间中移动。<u>如果没有刚体组件，即使游戏对象通过组件移动了位置，它的碰撞器组件仍然会停在原地。你如果希望一个游戏对象可以移动并且可以和其他碰撞器发生碰撞，就必须为它添加刚体组件。</u>
+
+Unity 中的所有物理模拟都基于公制单位。也就是说：
+
+- 1 个距离单位 = 1 米（例如，变换中的位置单位）。
+- 1 个质量单位 = 1 千克（例如，刚体的质量单位）
+- 默认重力为 -9.8 = 9.8m/s2，方向向下（y 轴负方向）。
+- 普通人类角色的身高约为 2 个长度单位（2 米）。
+
+#### 克隆对象
 
 除了使用 prefab 预设进行实例化对象外，还可以通过直接克隆实例化网格对象的类组件对象，这个时候引用的便是实例化的组件对象。
 
@@ -599,6 +757,8 @@ DOTween.Pause("badoom");
 ```
 
 这里的 MemoryCard 为绑定到网格对象的脚本。
+
+#### 预设
 
 ### 灯光
 
@@ -1665,8 +1825,12 @@ Resources 有它的致命性缺点，但是存在即合理。它还是有它的�
 <!-- - 《游戏引擎架构》深入某个方向（如渲染、动画） -->
 <!-- - [Unity 工作一年能力应该达到什么水平？]() -->
 
-- 架构
+- -架构
+  - [保持 Unity 项目结构清晰的 7 种方法](https://zhuanlan.zhihu.com/p/64856900)
+  - [Unity 项目如何架构（一）目录组织](https://gameinstitute.qq.com/community/detail/105229)
+  - Unity3D/项目：Unity 工程目录规范](https://blog.csdn.net/BeUniqueToYou/article/details/75578591)
   - [浅谈 —— Assets Unity 资源映射](https://blog.uwa4d.com/archives/USparkle_Addressable1.html)
+  - [Unity项目架构设计与开发管理](https://zhuanlan.zhihu.com/p/64858713)
 - [Unity中影响渲染顺序的因素总结](https://zhuanlan.zhihu.com/p/55762351)
 - 素材资源
   - 在 Unity 资源商店下载（Window -> assets store）
@@ -1678,10 +1842,7 @@ Resources 有它的致命性缺点，但是存在即合理。它还是有它的�
 - 《Unity 5 实战》
 - [Unity3D 碰撞检测和 OnTriggerEnter 用法](https://blog.csdn.net/qq_30454411/article/details/79810922) 详细介绍了碰撞以及 OnTriggerEnter 的使用]
 - [Unity3D 入门：如何制作天空效果？天空盒的使用](https://blog.walterlv.com/post/unity-starter-unity3d-skybox.html)
-- 架构
-  - [保持 Unity 项目结构清晰的 7 种方法](https://zhuanlan.zhihu.com/p/64856900)
-  - [Unity 项目如何架构（一）目录组织](https://gameinstitute.qq.com/community/detail/105229)
-  - Unity3D/项目：Unity 工程目录规范](https://blog.csdn.net/BeUniqueToYou/article/details/75578591)
+
 - [Unity 脚本基类 MonoBehaviour 与 GameObject 的关系](https://blog.csdn.net/hihozoo/article/details/66970467#%E5%9B%9B%E8%84%9A%E6%9C%AC%E4%B8%8Egameobject%E7%9A%84%E5%85%B3%E7%B3%BB)
 - 屏幕适配
   - [屏幕适配实用技巧](https://zhuanlan.zhihu.com/p/42779882)
@@ -1689,9 +1850,15 @@ Resources 有它的致命性缺点，但是存在即合理。它还是有它的�
 - [unity 如何查找某个脚本挂在了哪些物体上](https://blog.csdn.net/alayeshi/article/details/52039314?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-1)
 - 《Unity 3D/2D 手机游戏开发》
 - 动画
+  - [Unity中的动画系统和Timeline（Unity2017）](http://www.sikiedu.com/my/course/82)
+  - [动画集成](https://docs.unity3d.com/cn/current/Manual/UIAnimationIntegration.html)
   - [DoTween 官网](http://dotween.demigiant.com/documentation.php)
   - [DOTWeen 插件使用技巧](https://zhuanlan.zhihu.com/p/43888860)
   - [动画插件 Tween 的使用](https://zhuanlan.zhihu.com/p/37957554)
 - 案例
   - [Unity快速上手系列之番外篇：《2D横版跑酷》](https://zhuanlan.zhihu.com/p/38476477)
   - [炫酷跑酷教程（1）——简单的动态地图生成与人物动作](https://zhuanlan.zhihu.com/p/34247063)
+  - [Unity实战问题--Loading更好的实现方式（场景进度条问题） 转+原](https://blog.csdn.net/qq_27489007/article/details/83654442)
+  - [Unity 场景加载](https://zhuanlan.zhihu.com/p/38033374)
+  - [对Unity中Coroutines的理解](https://wuzhiwei.net/unity_coroutines/)
+  - [第四章 Prefab-基础知识](https://www.jianshu.com/p/261c62c26e99)
