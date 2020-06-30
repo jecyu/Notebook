@@ -11,4 +11,10 @@
 
 ## vue
 
-- []
+- [解决 vue 开发中 scoped 样式问题](https://juejin.im/post/5e6ed2ee51882549537218b0)
+- [Vue CLI 本地开发设置个区分明显的 favicon](https://juejin.im/post/5d61566c5188251e69336f3b)
+- [Vuex 缓存实战应用](https://juejin.im/post/5d541335e51d4561ff6667f9#heading-6)
+
+## 安全
+
+- [CSP 内容安全策略入门](https://juejin.im/post/5cfb27ef6fb9a07eaa226e44)

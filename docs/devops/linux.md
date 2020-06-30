@@ -1,16 +1,40 @@
 # Linux
 
-## 目录分布
+- find
+- grep
+- hg
+- less
+- perl
+- sh
+- sort
+- uniq
+- xargs
 
-## 服务器初始化
+## 基础
 
-## 连接远程主机
+### Linux 的规划与安装
 
-### 密钥文件
+### Linxu 档案、目录与磁碟格式
+
+### 学习 Shell 与 Shell Scripts
+
+### Linux 使用者管理
+
+### Linux 系统管理员
+
+## 附录 Linux 命令
+
+### 目录分布
+
+### 服务器初始化
+
+### 连接远程主机
+
+#### 密钥文件
 
 [PuTTY的ppk密钥与OpenSSH密钥之间的相互转换](https://www.jianshu.com/p/7818b3ad1d72)
 
-### 连接登录
+#### 连接登录
 
 通过密钥文件 `.pem`，否则可能会出现格式不正确的问题。https://hostingwiki.cn/%E8%AE%BE%E7%BD%AE%E5%85%8D%E5%AF%86%E7%A0%81ssh%E5%90%8E%E5%87%BA%E7%8E%B0key_load_public-invalid-format/
     
@@ -107,9 +131,9 @@ vi ~/.ssh/known_hosts
 rm known_hosts
 ```
 
-## **账户与安全**
+### 账户与安全
 
-### 文件及目录权限
+#### 文件及目录权限
 
 修改文档属性
 
@@ -121,9 +145,7 @@ chmod 命令参数中，u 代表文档所有者，g 代表所属组，o 代表�
 chmod g+w,o+rw xxxx
 ```
 
-### 本地上传文件到远程服务器
-
-## 命令工具
+#### 本地上传文件到远程服务器
 
 ### 目录及文件的基本操作
 
@@ -203,7 +225,7 @@ cp: target `/home/server/test/' is not a directory
 mkdir /home/server/test
 ```
 
-copy命令的功能是将给出的文件或目录拷贝到另一文件或目录中，同MSDOS下的copy命令一样，功能十分强大。
+copy 命令的功能是将给出的文件或目录拷贝到另一文件或目录中，同MSDOS下的copy命令一样，功能十分强大。
 
 语法： `cp [选项] 源文件或目录 目标文件或目录`
 
@@ -223,3 +245,5 @@ copy命令的功能是将给出的文件或目录拷贝到另一文件或目录�
 ## 参考资料
 
 - [Linux下如何查看tomcat是否启动/系统日志等](https://blog.csdn.net/colin_yu/article/details/77853506)
+- [鸟哥的私房菜](http://linux.vbird.org/linux_basic/#part6)
+- spell 库：https://github.com/jsoref/spelling
