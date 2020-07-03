@@ -2,6 +2,178 @@
 
 [[toc]]
 
+## C# 的进化史
+
+### 简单的数据类型开始
+
+```cs
+public class Product
+  {
+    readonly string name;
+    public string Name
+    {
+      get
+      {
+        return name;
+      }
+    }
+    public static List<Product> GetSampleProducts()
+    {
+      return new List<Product> {
+        new Product(name: "West Side Story", price: 9.99m),
+        new Product(name: "Assassins", price: 14.99m),
+        new Product(name: "Frogs", price: 13.99m),
+        new Product(name: "Sweenty Todd", price: 10.99m),
+      };
+    }
+}
+```
+
+- C# 1
+  - 只读属性、弱类型集合
+  - 弱类型的比较功能、不支持委托排序
+- C# 2
+  - 私有属性赋值方法强类型集合
+- C# 3
+  - 自动实现的属性、增强的集合和对象初始化
+- C# 4
+
+  - 用命名实参更清晰地调用构造函数和方法
+
+### 排序和过滤
+
+```cs
+    public static void SortTest()
+    {
+      List<Product> products = Product.GetSampleProducts();
+      products.Sort(new ProductNameComparer());
+      //products.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+      foreach (Product product in products)
+      {
+        Console.WriteLine(product);
+      }
+    }
+```
+
+```cs
+ public static void FindTest()
+    {
+      List<Product> products = Product.GetSampleProducts();
+      Predicate<Product> test = delegate (Product p) { return p.Price > 10m; };
+      List<Product> matches = products.FindAll(test);
+
+      Action<Product> print = Console.WriteLine;
+
+      matches.ForEach(print);
+
+      foreach (Product product in products)
+      {
+        Console.WriteLine(product);
+      }
+    }
+
+```
+
+- C# 1
+  - 表达式
+  - 允许列表保持未排序状态
+  - 条件和操作紧密耦合
+  - 两者都是硬编码
+- C# 2
+  - 委托比较
+  - 匿名方法
+  - 条件和操作分开
+  - 匿名方法使委托变得简单
+- C# 3
+  - 扩展方法
+  - 允许列表保持未排序状态
+  - Lambda 表达式使条件变得更容易阅读
+- C# 4 用命名实参更清晰地调用构造函数和方法
+
+### 处理未知数据
+
+#### 表示未知的价格
+
+可以将 null 值传递
+
+```cs
+readonly decimal? price;
+    public decimal? Price
+    {
+      get
+      {
+        return price;
+      }
+    }
+```
+
+#### 可选参数和默认值
+
+有时你并不想给出方法所需的所有东西，比如对于某个特定参数，你可能总是会使用同样的值。传统的解决方案是对该方法进行重载，现在 C# 4 引入的可选参数`（optional parameter）`可以简化这一操作。
+
+在 Product 类型的 C# 4 版本中，构造函数接收产品的名称和价格。在 C# 2 和 C# 3 中，我们可以将价格设置为可空的 decimal 类型，<u>但现在我们假设大多数产品都不包含价格。</u>如果能够像下面这样初始化产品就再好不过了：
+
+```cs
+Product p = new Product("Unreleased product");
+```
+
+在 C#4 之前，我们只能添加一个 Product `构造函数的重载`来实现这一目的。而使用 C#4 可以为价格参数声明一个默认值。（如果函数内部的逻辑是一样的，则可以用默认参数替代部分的重载，如果根据参数不同实现不同的逻辑，还是使用重载方便）
+
+```cs
+public Product(string name, decimal? price = null) {
+  this.name = name;
+  this.price = price;
+}
+```
+
+- C# 1
+  - 要么维护一个标志（像 || 这样），要么更改引用类型的语义，要么利用一个魔数。
+- C# 2
+  - 可控类型(给属性添加 `?` 修饰符，即可传入 null)避免了采用 C# 1 的各种繁琐的方案。语法糖进一步简化了编程。
+- C# 3
+  - 可选参数简化了默认设置
+
+### LINQ 简介
+
+LINQ （Language Integrated Query，语言集成查询），是 C# 3 的核心。顾名思义，LINQ 是关于查询的，其目的是使用一致的语法和特性，以一种易阅读、可组合的方式，使对多`数据源`的查询变得简单，它是声明式风格（即告诉想要的结构 what）
+
+```cs
+public static void LINQTest()
+    {
+      List<Product> products = Product.GetSampleProducts();
+      IEnumerable<Product> filtered = from Product p in products
+                                      where p.Price > 10
+                                      select p;
+      foreach (Product product in filtered)
+      {
+        Console.WriteLine(product);
+      }
+    }
+```
+
+连接（joining）、过滤（filtering）、排序（ordering）和投影（projecting）
+```cs
+    public static void LINQTest2()
+    {
+      List<Product> products = Product.GetSampleProducts();
+      List<Supplier> suppliers = Supplier.GetSampleSuppliers();
+      var filtered = from p in products
+                     join s in suppliers
+                     on p.supplierID equals s.SupplierID // 选择有配置的供应商
+                     where p.Price > 10
+                     orderby s.Name, p.Name // 先按供货商排序，再按产品名排序
+                     select new { SupplierName = s.Name, ProductName = p.Name }; // 嵌套对象
+      foreach (var v in filtered)
+      {
+        Console.WriteLine("Supplier={0}; Product={1}", v.SupplierName, v.ProductName);
+      }
+    }
+
+```
+
+#### 查询 XML  
+
 ## 入门（初级）
 
 ### 第一章 简介
@@ -166,6 +338,15 @@ c# 最新版是 8.0，每个新版本在新添加的特性中都有一个焦点�
 - 1.0 C#
 
 学习 C# 不仅是学习简单的编程，更是学习编程的方法。JavaScript 对使用者在编程时的严谨性要求不高，这实际上会减慢开发的速度。C#在这方面则要严格得多（通过强类型变量等内容），这不仅有助于使用者成为更出色的程序员，同时也会提升编程速度（比如强类型提供代码自动完成的提示，让使用者更快速、更准确地编程。）
+
+| 目标框架       | version | C# 语言版本的默认值 |
+| -------------- | ------- | ------------------- |
+| .NET Core      | 3.x     | C# 8.0              |
+| .NET Core      | 2.x     | C# 7.3              |
+| .NET Standard  | 2.1     | C# 8.0              |
+| .NET Standard  | 2.0     | C# 7.3              |
+| .NET Standard  | 1.x     | C# 7.3              |
+| .NET Framework | 全部    | C# 7.3              |
 
 ### C# 编程概述
 
@@ -8413,13 +8594,14 @@ namespace classdemo.JecyuOther
 版本：8.6.3
 
 1. 创建 MSTest 项目。
-使用 .NET-Core 创建的项目，只能使用 .Net-Core 的单元测试项目。否则使用普通的测试项目。
+   使用 .NET-Core 创建的项目，只能使用 .Net-Core 的单元测试项目。否则使用普通的测试项目。
 
 2. 在单元测试项目引用需要测试的项目程序集，右键项目-> 添加引用 -> 勾选程序集。
 
 ![](../.vuepress/public/images/2020-06-17-14-20-38-visual-studio-unit-test.png)
 
 3. 编写单元测试类
+
 - 测试方法要求
   - 使用 `[TestMethod]` 特性进行修饰。
   - 它将返回 void。
@@ -8467,6 +8649,7 @@ namespace Design.Patterns
 ```
 
 单元测试用例
+
 ```cs
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Design.Patterns;
@@ -8501,8 +8684,7 @@ namespace UnitTest.DegisnTests
 ### 协程
 
 - https://blog.csdn.net/a_little_a_day/article/details/78519265
-- [C#之Coroutine](https://gameinstitute.qq.com/community/detail/117921)
-
+- [C#之 Coroutine](https://gameinstitute.qq.com/community/detail/117921)
 
 协程：协同程序，在主程序运行的同时，开启另外一段逻辑处理，来协同当前程序的执行。
 
@@ -8531,16 +8713,17 @@ StopCoroutine (string methodName)，只能终止指定的协程
 使用时注意：
 
 在程序中调用 StopCoroutine() 方法只能终止以字符串形式启动的协程
+
 - yield：挂起，程序遇到 yield 关键字时会被挂起，暂停执行，等待条件满足时从当前位置继续执行
 - `yield return 0 or yield return null`：程序在下一帧中从当前位置继续执行`
-- `yield return 1，2，3`,......: 程序等待1，2，3...帧之后从当前位置继续执行
+- `yield return 1，2，3`,......: 程序等待 1，2，3...帧之后从当前位置继续执行
 - `yield return new WaitForSeconds(n)`: 程序等待 n 秒后从当前位置继续执行。
-- `yield new WaitForEndOfFrame()`：在所有的渲染以及GUI程序执行完成后从当前位置继续执行
-- `yield new WaitForFixedUpdate()`：所有脚本中的FixedUpdate()函数都被执行后从当前位置继续执行
+- `yield new WaitForEndOfFrame()`：在所有的渲染以及 GUI 程序执行完成后从当前位置继续执行
+- `yield new WaitForFixedUpdate()`：所有脚本中的 FixedUpdate()函数都被执行后从当前位置继续执行
 - yield return WWW:等待一个网络请求完成后从当前位置继续执行
 - `yield return StartCoroutine()`:等待一个协程执行完成后从当前位置继续执行
 - yield break
-  如果使用yield break语句，将会导致协程的执行条件不被满足，不会从当前的位置继续执行程序，而是直接从当前位置跳出函数体，回到函数的根部
+  如果使用 yield break 语句，将会导致协程的执行条件不被满足，不会从当前的位置继续执行程序，而是直接从当前位置跳出函数体，回到函数的根部
 
 ```cs
  public void CardRevealed(MemoryCard card)
@@ -8745,8 +8928,8 @@ class Derived: Base {
 - 测试
   - [.NET Core 和 .NET Standard 单元测试最佳做法](https://docs.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-best-practices)
   - [教程：在 Visual Studio 中使用 .NET Core 测试 .NET Standard 库](https://docs.microsoft.com/zh-cn/dotnet/core/tutorials/testing-library-with-visual-studio)
-  - [C#-面向对象：争议TDD（测试驱动开发）](https://zhuanlan.zhihu.com/p/94854332)
+  - [C#-面向对象：争议 TDD（测试驱动开发）](https://zhuanlan.zhihu.com/p/94854332)
 - [C#中 override 和 overload 的区别](https://www.cnblogs.com/netlyf/archive/2009/09/08/1562642.html) 讲解方法重写 override 和方法重载 overload 的区别。
 - [C#笔记（Virtual，Abstract，Override，new）](https://zhuanlan.zhihu.com/p/74225708)
 - [了解何时使用 Override 和 New 关键字（C# 编程指南）](https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) 微软 c# 文档。
-- [自学总结 C#中数组Array，ArrayList，List的区别](http://www.manew.com/thread-95023-1-1.html)
+- [自学总结 C#中数组 Array，ArrayList，List 的区别](http://www.manew.com/thread-95023-1-1.html)

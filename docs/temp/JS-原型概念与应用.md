@@ -6,6 +6,7 @@
 核心问题：传统的面向对象语言是如何新建对象以及继承类的，而使用类是为了共享一些公共的方法和属性。
 
 JS 又是如何通过原型这个概念来实现这两个概念的，原则上是基于类继承与基于原型继承的两种区别。
+- override 覆写
 
 <!-- 再稿后，发布到 blogs 文件夹，之后同步掘金、个人博客-->
 
@@ -332,16 +333,87 @@ public class Main {
 
 对于如何定义类和继承，JS 有自己的想法。它使用`构造函数（constructor）`与`原型（prototype）`间接实现面向对象的思想。
 
-<!-- 因为在 js 语言中没有类的概念（为什么没有？），因此使用原型来实现新对象实例的创建和继承。 -->
-
-首先定义一个构造函数，通过构造函数创建对象，任何的 javaScript 函数都可以是构造函数。使用 prototype 定义公共的属性和方法以此替代没有类的定义。
-
 #### 定义类
 
+<!-- 因为在 js 语言中没有类的概念（为什么没有？），因此使用原型来实现新对象实例的创建和继承。 -->
+
+1. 首先定义一个构造函数，通过构造函数创建对象，任何的 javaScript 函数都可以是构造函数
+2. 然后使用 prototype 定义公共的属性和方法以此替代没有类的定义。
+
 ```js
+function Animal(picture, food, hunger, boundaries) {
+  this.picture = picture;
+  this.food = food;
+  this.hunger = hunger;
+  this.boundaries = boundaries;
+}
+
+Animal.prototype.makeNoise = function() {
+  console.log("Animal makeNoise!");
+};
+
+Animal.prototype.eat = function() {
+  console.log("Animal eat!");
+}
+
+Animal.prototype.sleep = function() {
+  console.log("Animal sleep!");
+}
+
+Animal.prototype.roam = function() {
+  console.log("Animal roam!");
+}
+
+exports.Animal = Animal;
 ```
 
 #### 子类和继承
+
+我们通过设置子类的 protype 的值为父类的值，并在 子类的构造函数调用超类的构造函数实现继承。
+
+```js
+function inheri(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype); // 实现继承
+  subClass.__proto__ = superClass;  // 子类的原型指向父类
+  // 这里的继承比直接 subClass.prototype =  new superClass，灵活，不用实例化传递参数
+  // 补回丢失的属性
+  Object.defineProperty(subClass, "constructor", {
+    enumerable: false,
+    value: subClass,
+    writable: true
+  })
+}
+
+function Canine(picture, food, hunger, boundaries) {
+  return Animal.call(this, picture, food, hunger, boundaries);
+}
+inheri(Canine, Animal);
+// Canine.prototype = new Animal(picture, food, hunger, boundaries);
+// 对方法进行覆盖
+Canine.prototype.makeNoise = function() {
+  console.log("Canine makeNoise!");
+  return "Canine makeNoise!"
+};
+
+Canine.prototype.eat = function() {
+  console.log("Canine eat!");
+}
+
+function Dog(picture, food, hunger, boundaries) {
+  Canine.call(this, picture, food, hunger, boundaries);
+}
+inheri(Dog, Canine);
+```
+
+最后实例化 Dog
+```js
+const boundariesDog = new Boundaries(0, 0, 5, 5);
+const keji = new Dog("柯基", "骨头", 100, boundariesDog);
+keji.makeNoise();
+```
+
+注：这里的代码都是简单的继承，少了很多运行上的判断，更加严谨的处理可以试下在 [Babel 中 用 ES6 Class 编写，看看输出的 ES5 代码](https://babeljs.io/repl#?browsers=defaults%2C%20not%20ie%2011%2C%20not%20ie_mob%2011&build=&builtIns=false&spec=false&loose=false&code_lz=MYGwhgzhAECCB2BLAtmE0DeAoAkMA9vBAC4BOArsMfqQBQAOiV5pApgDTQBm--AJpwAW5eAHNWpTgCN8IvmFKJWEAJSZcOYoMQQAdI2ZtoAXmgHiLVgG4NWnbp78T3Xnxs5N2vcLETnP8VJ3T3sZOQUlGFMw-HlFZXcAXyxcVABrVgA5fB1WWjUMaAB6IuhACqVASydAReVAL8VAB41AZ_TAELdAGQjALjlcZNxWMGJ8zGLSysBxBMAGJUB9jIrAN9NWtsBoL0B4vU6U6FXoCBBWVnp-wpLoQEN3QAJ3WcXlrDXoUnwwZF3B6EBYOUAKdUBt-PHANCNjmfaznGSuqBIDAAMJgJDwVjQVgAD2IrFiMAQKDQ6lwBCIZEo1FI0FoZiYFjYnBc_BJAQkJJicUiBQ0EHI9AkDEJlk4jgE0Apkmg1IiyhUSRSOGg6SyOQgeTpHnOIp6fWlAKAA&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Ces2015%2Ces2016%2Creact%2Cstage-2%2Ces2015-loose%2Cenv&prettier=false&targets=&version=7.10.4&externalPlugins=)。
+
 
 ### 一张图对比
 
@@ -356,8 +428,6 @@ public class Main {
 例如 `new bar()` 这个 `bar` 是原型，而 `bar` 继承的类也是原型。通常我们 `a = new bar()` 也是调用 `bar` 类的构造函数，然后基于以整个类为原型进行创建新的对象。`bar` 为 `a` 的构造函数，则 `a` 为 `bar` 的一个实例。而 bar 作为原型还可以继承其他的原型例如 `foo`。
 
 C#、Java 都通过 class 进行原型的定义，JS 通过 prototype 属性，让我们来具体看看 JS 中基于原型的实现过程。
-
-<!-- 在 js 面向对象编程中，除了原型（`prototype`） 这个词外，构造器（`contructor`）也是我们接触比较多的术语。两者有什么区别呢，有哪些应用场景。 -->
 
 ## 细说 JS 中的原型
 
@@ -381,6 +451,43 @@ C#、Java 都通过 class 进行原型的定义，JS 通过 prototype 属性，�
 
 ### 使用 ES6 的 class 实现继承
 
+
+```js
+class Animal {
+	constructor(picture, food, hunger, boundaries) {
+		this.picture = picture;
+		this.food = food;
+		this.hunger = hunger;
+		this.boundaries = boundaries;
+	}
+
+	makeNoise() { // 动物发出声音的行为
+	}
+
+	eat() { // 动物遇到食物时的行为程序
+	}
+
+    sleep() { // 睡眠的行为程序
+	}
+
+    roam() { // 不在进食或睡眠时的行为程序
+	}
+}
+
+class Canine extends Animal {
+
+	constructor(picture, food, hunger, boundaries) {
+		super(picture, food, hunger, boundaries);
+	}
+
+	makeNoise() {
+	}
+
+	eat() {
+	}
+}
+```
+
 ## 属性 __proto、prototype、constructor 区别
 
 js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
@@ -388,6 +495,8 @@ js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
 ### **proto** 与 prototype 的区别
 
 ### constructor 与 prototype 的区别
+
+<!-- 在 js 面向对象编程中，除了原型（`prototype`） 这个词外，构造器（`contructor`）也是我们接触比较多的术语。两者有什么区别呢，有哪些应用场景。 -->
 
 ### 在 调试器（debugger）中查看属性
 
@@ -428,3 +537,4 @@ js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
 - [java 继承](https://www.liaoxuefeng.com/wiki/1252599548343744/1260454548196032)
 - [简单粗暴地理解 js 原型链–js 面向对象编程](https://mp.weixin.qq.com/s/93CQRYj8TraDIKeJxNGPAQ)
 - 《Head First Java》
+- [Babel —— 编译 JS 工具](https://babeljs.io/) 可以在线编译

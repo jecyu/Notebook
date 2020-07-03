@@ -2,7 +2,7 @@
 
 Unity 初级客户端面试题
 
-## C#
+## C
 
 <!-- 掌握：实现的算法、数据结构、工具类 -->
 
@@ -15,7 +15,7 @@ Unity 初级客户端面试题
 - 有符号
   - sbyte
   - short
-  - int 
+  - int
   - long
 - 无符号
   - byte
@@ -55,6 +55,7 @@ private float _Jfloat = 0.2f; // 大致范围：+1.5 x 10⁻⁴⁵ 至 ± 3.4 x 
 private double _Jdobule = 0.55; // ±5.0 × 10⁻³²⁴ 到 ±1.7 × 10³⁰⁸，精度大约 15-17 位，8个 字节
 private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸，精度 28-29 位，16 个字节
 ```
+
 与 decimal 和 float 相比，double 类型具有更高的精度和更小的范围，因此它适合于财务和货币计算。
 
 ##### 其他
@@ -101,6 +102,96 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 #### 请简述 ArrayList 和 List 的主要区别？
 
+ArrayList 存在不安全类型（ArrayList 会把所有插入其中的数据都当作 Object 来处理），装箱拆箱的操作（费时），List 是泛型类，功能跟 ArrayList 相似，但不存在 ArrayList 所说的问题。
+
+ArrayList 是 C# 1 的特性，List 的出现便是解决 ArrayList 的不安全类型问题，List 可以让编译器提前知道类型检查。
+
+在进行对 ArrayList 排序的时候，ArrayList.Sort 排序方法需要传入的类实现 IComparer 接口：
+
+```cs
+class ProductNameComparer: IComparer
+{
+  public int Compare(object x, object y) {
+    Product first = (Product)x;
+    Product second = (Product)y;
+    return first.Name.CompareTo(second.Name);
+  }
+}
+...
+ArrayList products = Product.GetSampleProducts();
+product.Sort(new ProductNameComparer());
+foreach(Product product in products) {
+  Console.WriteLine(product);
+}
+```
+
+这个时候会在 Compare 需要强制类型转换，并且在使用的时候 foreach 中也出现了隐式类型转换，还有 ArrayList 的类型有可能是字符串类型。
+
+通过 `List<T>` 泛型来解决上面的问题。
+
+```cs
+class ProductNameComparer : IComparer<Product>
+  {
+    public int Compare(Product x, Product y)
+    {
+      return x.Name.CompareTo(y.Name);
+    }
+  }
+class MainClass
+{
+  public static void Main(string[] args)
+  {
+    List<Product> products = Product.GetSampleProducts();
+    products.Sort(new ProductNameComparer());
+    foreach (Product product in products)
+    {
+      Console.WriteLine(product);
+    }
+  }
+}
+//
+```
+
+处理实现 IComparer 外，也可以直接通过委托来实现排序，可以很容易扩展到其他的值，例如通过价格排序。
+
+```cs
+// Lambda，简写的委托
+products.Sort((x, y) => x.Name.CompareTo(y.Name));
+```
+
+更加简单且没有副作用的写法：OrderBy 扩展方法
+
+```cs
+
+```
+
+##### 查询集合
+
+ArrayList 耦合三个任务
+
+```cs
+ArrayList products = Product.GetSampleProducts();
+foreach(Product product in products) {
+  if (product.Price > 10m) {
+    Console.WriteLine(product)
+  }
+}
+```
+
+List
+
+```cs
+List<Product> products = Product.GetSampleProducts();
+      Predicate<Product> test = delegate (Product p) { return p.Price > 10m; };
+      List<Product> matches = products.FindAll(test);
+
+      Action<Product> print = Console.WriteLine;
+
+      matches.ForEach(print);
+```
+
+使用 Lambda 表达式
+
 #### 数组和排序
 
 关于数组的排序，如果对象的对象类型的，可以实现 ICompare 接口，相当于传递了元素的比较函数。
@@ -127,7 +218,7 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 #### 枚举器与迭代器
 
-- [对Unity中Coroutines的理解](https://wuzhiwei.net/unity_coroutines/)
+- [对 Unity 中 Coroutines 的理解](https://wuzhiwei.net/unity_coroutines/)
 
 ### 线程同步
 
@@ -135,7 +226,7 @@ private decimal _Jdecimal = 2.1m; // ±1.0 x 10⁻²⁸ 至 ±7.9228 x 10²⁸�
 
 ### 类 class 和结构体 struct 的异同
 
-- 结构体 struct 和 类Class 区别 
+结构体是一种值类型，而类是引用类型。（值类型、引用类型就是根据数据存储的角度来分的）就是值类型用于存储数据的值，引用类型用于存储对实际数据的引用。那么结构体就是当成值来使用的，类则通过引用来度实际数据操作。
 
 ### using 关键字的使用场景 https://blog.csdn.net/Iqingshuifurong/article/details/53129536
 
@@ -178,6 +269,25 @@ Unity 3D、2D 手机游戏《面向对象编程部分》
 
 ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类型也可以通过方法进行修改。
 
+ref 和 out 参数的效果一样，都是通过关键字找到定义在主函数里面的变量的内存地址，并通过方法体内改变它的值。区别在于：
+
+#### ref
+
+- 使用 ref 引用参数时，必须在方法的声明和调用中都是用 ref 修饰符。
+- 实参必须是变量，在用作实参前必须被赋值。如果是引用类型，可以赋值为一个引用或 null。
+
+对于值参数，系统在栈上为形参分配内存。相反，引用参数具有以下特征：
+
+- 不会为形参在栈上分配内存
+- 实际情况是，`形参的参数名将作为实参变量的别名`，指向相同的位置。
+
+#### out
+
+- 必须在声明和调用中都使用修饰符。
+- 和引用参数相似，实参必须是变量，而不是其他类型的表达式。这是有道理的，因为方法需要内存位置保存返回值。
+
+对于输出参数，形参就好像是实参的别名一样，但是还有一个需求，那就是它必须在方法内进行赋值。
+
 ### 浅拷贝与深拷贝
 
 ### 容器
@@ -198,25 +308,53 @@ ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类
 
 ## Unity
 
+### 动态加载资源的方式？它们之间的区别
+
+#### Resource.Load()
+
+#### AssetBoundle
+
+### .Net 与 Mono 的关系
+
+mono 是 .net 的一个开源跨平台工具，就类似 java 虚拟机，java 本身不是跨平台语言，但运行在虚拟机上就能够实现了跨平台。.net 只能在 windows 下运行，mono 可以实现跨平台跑，可以运行于 linux，Unix，Mac OS 等。
+
+### 简述 Unity 3D 支持的作为脚本的语言的名称
+
+Unity 的脚本语言基于 Mono 的 .Net 平台上运行，可以使用 .Net 库，这也为 XML、数据库、正则表达式等问题提供了很好的解决方案。Unity 里的脚本都会经过变异，他们的运行速度也很快。这三种语言实际上的功能和运行速度是一样的，区别主要在于语言特性上。JavaScript、C#、Boo。
+
+### 简述一下对象池，你觉得在 FPS 里哪些东西适合使用对象池
+
+对象池就存放需要被反复调用资源的一个空间，当一个对象会大量生成的时候如果每次都销毁创建会很费时间，通过对象池把暂时不同的对象放到一个池中（也就是一个`集合`），当下次要重新生成这个对象的时候先去池中查找一下是否有可用的对象，如果有的话就直接拿出来使用，不需要再创建，如果池中没有可用的对象，才需要重新创建，利用空间换时间来达到游戏的高速运行效果，在 FPS 游戏中要常被大量的复制的对象包括子弹、敌人、粒子等。
+
+### 简述 prefab 的用处
+
+在游戏运行时实例化，prefab 相当于一个模版，对你已有的素材、脚本、参数做一个默认的配置，以便于以后的修改，同时 prefab 打包的内容简化了导出的操作，便于团队的交流。
+
+### CharacterController 和 Rigidbody 的区别
+
+Rigidbody 具有完全真实物理的特性，Unity 中物理系统最基本的一个组件，包含了常用的物理特性，而 CharacterController 可以说是受限的 Rigidbody，具有一定的物理效果但不是完全真实的，是 Unity 为了使开发者能方便的开发第一人称视角而封装的一个组件。
+
 ### 使用 Unity3d 实现 2d 游戏，有几种方式？
 
 ### 在物体发生碰撞的整个过程中，有几个阶段，分别列出对应的函数
 
+三个阶段：
+
+1. OnCollisonEnter
+2. OnCollisionStay
+3. OnCollisionExit
+
 ### 如何安全的在不同工程间安全地迁移 asset 数据？三种方法
 
 ### 什么叫做链条关节？
+
+Hinge Joint，可以模拟两个物体间用一根链条连接在一起的情况，能保持两个物体在一个固定内部相互移动而不产生作用力，但是达到固定距离后就会产生拉力。
 
 ### OnEnable、Awake、Start 运行时的发生顺序？哪些可能在同一个对象周期中反复的发生
 
 ### MeshRender 中 material 和 sharedmaterial 的区别？
 
 ### Unity 提供了几种光源，分别是什么
-
-### 简述一下对象池，你觉得在 FPS 里哪些东西适合使用对象池
-
-### 简述 prefab 的用处
-
-### CharacterController 和 Rigidbody 的区别
 
 ### 渲染流程
 
@@ -243,15 +381,15 @@ ref 和 out 只要是为了解决 return 多个值的问题，并且对于值类
 
 而对于在游戏中动态产生的物体，可以使用代码来调整子物体的顺序。
 
-
 ```cs
 rectTran.SetAsLastSibling();
 ```
 
-
 #### 你对屏幕适配有什么好主意
 
 - ![屏幕适配实用技巧](https://zhuanlan.zhihu.com/p/42779882)
+
+NGUI 很好的解决了这一点，屏幕分辨率的自适应性，原理就是计算出屏幕的宽高比跟原来的预设的屏幕分辨率求出一个比值，然后修改摄像机的 size。UGUI 通过锚点和中心点、分辨率也解决了这个问题。
 
 ## Lua
 
@@ -282,13 +420,249 @@ rectTran.SetAsLastSibling();
 
 ### 链表
 
+#### 单链表
+
+```cs
+using System;
+namespace DataStructures.Lists
+{
+  /*
+   * 思路：位置
+   */
+  public class Node
+  {
+    public Node next;
+    public int data;
+    public Node(int data)
+    {
+      this.data = data;
+    }
+  }
+
+  public class SingleLinkedList
+  {
+
+    private Node head; // 头指针
+    private Node last;  // 尾指针，为了尾部插入的方便所用
+    private int size; // 链表实际长度
+
+    public SingleLinkedList()
+    {
+    }
+
+    /*
+     * 链表插入节点
+     */
+    public Node Insert(int data, int index)
+    {
+      if (index < 0 || index > size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      // 新节点
+      Node insertedNode = new Node(data);
+
+      // 空链表
+      if (size == 0)
+      {
+        head = insertedNode;
+        last = insertedNode;
+      }
+      // 插入头部
+      else if (index == 0)
+      {
+        insertedNode.next = head; // 移动旧的头部节点 next 指向新节点
+        head = insertedNode; // 改变头部指针指向为新节点
+      }
+      // 插入尾部
+      else if (size == index)
+      {
+        last.next = insertedNode; // 移动旧的尾部节点 next 指向新节点
+        last = insertedNode; // 改变尾部指针指向为新节点
+      }
+      // 插入中间
+      else
+      {
+        // 寻找 index 上一个节点
+        Node prevNode = Get(index - 1);
+        // 插入
+        insertedNode.next = prevNode.next; // 链接新节点到原来的节点
+        prevNode.next = insertedNode; // 改变上一个节点的 next 指向
+
+      }
+      size++;
+      return insertedNode;
+    }
+
+    /*
+     * 删除节点
+     * @param {int} index
+     * @return 返回删除的节点 {Node} s
+     */
+    public Node Remove(int index)
+    {
+      if (index < 0 || index > size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      Node removeNode;
+
+      // 删除头部节点
+      if (index == 0)
+      {
+        removeNode = head;
+        head = head.next;
+      }
+      // 删除尾部节点
+      else if (index == size)
+      {
+        Node prevNode = Get(index - 1);
+        removeNode = prevNode.next;
+        prevNode.next = removeNode.next;
+        last = prevNode; // 移动 last 指针
+      }
+      // 删除中间节点
+      else
+      {
+        Node prevNode = Get(index - 1);
+        Node nextNode = prevNode.next.next;
+        removeNode = prevNode.next;
+        prevNode.next = nextNode;
+      }
+      size--;
+      return removeNode;
+    }
+
+    /*
+     * 查找节点
+     */
+    public Node Get(int index)
+    {
+      if (index < 0 || index >= size)
+      {
+        throw new IndexOutOfRangeException("超出链表节点范围");
+      }
+      Node temp = head;
+      for (int i = 0; i < index; i++)
+      {
+        temp = temp.next;
+      }
+      return temp;
+    }
+
+    public void Print()
+    {
+      Node temp = head;
+      while (temp != null)
+      {
+        Console.Write(temp.data);
+        temp = temp.next;
+      }
+    }
+    public static void Main() { }
+  }
+}
+
+```
+
 ### 散列表
 
 ### 栈
 
 通过栈可以把绝大数的递归，改成非递归写法。
 
+```cs
+using System;
+using System.Collections.Generic;
+namespace DataStructures.Lists
+{
+  public class StackByList<T>
+  {
+    private int topOfStack = -1; // 栈顶的位置
+    private List<T> collections = new List<T>();
+    public StackByList()
+    {
+
+    }
+
+    // 是否为空
+    bool IsStackEmpty
+    {
+      get
+      {
+        return topOfStack < 0;
+      }
+    }
+
+    // 添加元素
+    public void Push(T element)
+    {
+      collections.Add(element);
+      topOfStack++;
+    }
+
+    public T Pop()
+    {
+      if (!IsStackEmpty)
+      {
+        T removedItem = collections[collections.Count - 1];
+        collections.RemoveAt(topOfStack);
+        topOfStack--;
+        return removedItem;
+      }
+      return collections[0];
+    }
+  }
+}
+
+```
+
 ### 队列
+
+```cs
+using System;
+using System.Collections.Generic;
+
+namespace DataStructures.Lists
+{
+  public class Queue<T>
+  {
+    private int headOfQueue = -1;
+    private List<T> collections = new List<T>();
+    public Queue()
+    {
+
+    }
+
+    bool IsQueueEmpty
+    {
+      get
+      {
+        return headOfQueue < 0;
+      }
+    }
+
+    public void Insert(T element)
+    {
+      collections.Add(element);
+      headOfQueue = 0;
+    }
+
+    public T Remove()
+    {
+      if (!IsQueueEmpty)
+      {
+        T removedItem = collections[headOfQueue];
+        collections.RemoveAt(headOfQueue);
+        return removedItem;
+      }
+      return collections[0];
+    }
+    public static void Main() { }
+  }
+}
+
+```
 
 ### 堆
 
@@ -419,5 +793,5 @@ C#8 特性
 - [.NET Core](https://zh.wikipedia.org/zh/.NET_Core)
 - [通俗易懂，什么是.NET Core 以及.NET Core 能做什么](https://www.cnblogs.com/yilezhu/p/10880884.html#:~:text=%E4%B8%8E%E5%85%B6%E4%BB%96%E8%BD%AF%E4%BB%B6%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C,%E4%B8%8E%E5%85%B6%E4%BB%96%E6%A1%86%E6%9E%B6%E4%B8%8D%E5%90%8C%EF%BC%8C.&text=NET%20Core%E6%8F%90%E4%BE%9B%E4%BA%86%E6%9C%80,%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81%E5%92%8C%E5%B7%A5%E5%85%B7%E3%80%82)
 - [类型和变量](https://docs.microsoft.com/zh-cn/dotnet/csharp/tour-of-csharp/types-and-variables)
-- [Unity面试题（包含答案）](https://zhuanlan.zhihu.com/p/61925255?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&utm_content=sec)
+- [Unity 面试题（包含答案）](https://zhuanlan.zhihu.com/p/61925255?utm_source=wechat_session&utm_medium=social&utm_oi=710800537397764096&utm_content=sec)
 - [lua 面试题](https://www.jianshu.com/p/d4c535791b5e)

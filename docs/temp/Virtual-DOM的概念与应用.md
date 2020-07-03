@@ -54,7 +54,7 @@ patches 对象的结构记录，
 
 #### Diff 算法
 
-比较两棵 DOM 树的差异是 Virtual DOM 算法最核心的部分，这也是所谓的 Virtual DOM 的 diff 算法。两个树完全的 diff 算法是一个时间复杂度为 O(n^3) 的问题。但是在前端当中，你很少会跨越层级地移动 DOM 元素（对于跨越层级去移动 DOM 元素的场景，应该如何处理？）。所以 Virtual DOM 只会对同一层级的元素进行对比：
+比较两棵 DOM 树的差异是 Virtual DOM 算法最核心的部分，这也是所谓的 Virtual DOM 的 diff 算法。两个树完全的 diff 算法是一个时间复杂度为 O(n^3) 的问题。但是在前端当中，你很少会跨越层级地移动 DOM 元素（对于跨越层级去移动 DOM 元素的场景，应该如何处理复用呢，没有做处理）。所以 Virtual DOM 只会对同一层级的元素进行对比：
 
 
 ![](../.vuepress/public/images/2020-06-27-12-22-51-diff.png)

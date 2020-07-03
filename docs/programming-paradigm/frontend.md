@@ -83,8 +83,9 @@ jquery 中只针对 DOM 的事件系统，而 backbone 可以脱离DOM，对数�
 
 ## 参考资料
 
-- [前端架构 101（一）：在谈论它们之前我们需要达成的共识](https://zhuanlan.zhihu.com/p/145441907)
-- [前端架构 101（三）：MVC 启示录：模块的职责，作用域和通信](https://zhuanlan.zhihu.com/p/145443596)
+- 前端架构 101系列
+  - [前端架构 101（一）：在谈论它们之前我们需要达成的共识](https://zhuanlan.zhihu.com/p/145441907)
+  - [前端架构 101（三）：MVC 启示录：模块的职责，作用域和通信](https://zhuanlan.zhihu.com/p/145443596)
 - 《前端框架设计》
 - 状态管理
   - [前端状态管理](https://cdc.tencent.com/2020/05/22/frontend-state-management-research/) 挺有深度的文章，值得精读。

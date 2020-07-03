@@ -14,6 +14,14 @@
 
 ### Linux 的规划与安装
 
+#### Linux 是什么
+
+#### 主机规划与磁碟分割
+
+#### 安装 CentOS 7.x 与多重开机技巧
+
+#### 首次登入与线上求助
+
 ### Linxu 档案、目录与磁碟格式
 
 ### 学习 Shell 与 Shell Scripts
@@ -246,4 +254,4 @@ copy 命令的功能是将给出的文件或目录拷贝到另一文件或目录
 
 - [Linux下如何查看tomcat是否启动/系统日志等](https://blog.csdn.net/colin_yu/article/details/77853506)
 - [鸟哥的私房菜](http://linux.vbird.org/linux_basic/#part6)
-- spell 库：https://github.com/jsoref/spelling
+- [spell 库](https://github.com/jsoref/spelling)

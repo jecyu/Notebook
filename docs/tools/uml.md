@@ -56,6 +56,8 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 
 ## 结构化图类型（Structural UML diagrams）
 
+静态图
+
 ### Class diagram
 
 ![](../.vuepress/public/images/2020-06-18-10-02-47-class-diagram.png)
@@ -68,6 +70,8 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 - Profile diagram
 
 ## 行为图类型（Behavioral UML diagrams）
+
+动态图
 
 - Activity diagram
 - Communication diagram

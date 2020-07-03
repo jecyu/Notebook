@@ -2,6 +2,8 @@
 
 前端工程化的实现很大基础上是依赖了 node 和 npm 包，因此很有必要理解 node 的内部机制。
 
+![](../.vuepress/public/images/2020-07-02-14-01-24-node-architecture.png)
+
 ## 基础知识
 
 ### 模块机制
@@ -9,6 +11,8 @@
 #### CommonJS 规范
 
 #### Node 的模块实现
+
+exports 是一个对象，引入需要解构 const { } = require(xxx)，而不是 const target = require(xxx)
 
 ## 进阶活用
 

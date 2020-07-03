@@ -256,6 +256,13 @@ module.exports = {
           collapsable: false,
           children: [""]
         }
+      ],
+      "/blogs/": [
+        {
+          title: "文章合集",
+          collapsable: false,
+          children: [""]
+        }
       ]
     },
     lastUpdated: "Last Updated",
