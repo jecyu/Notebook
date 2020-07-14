@@ -16,6 +16,16 @@ exports 是一个对象，引入需要解构 const { } = require(xxx)，而不�
 
 ## 进阶活用
 
+### IO
+
+nodejs如何判断一个文件、文件夹是否存在
+
+```js
+fs.exists("dirName", function(exists) {
+	console.log(exists ? "创建成功" : "创建失败");
+});
+```
+
 ## 项目实战
 
 应用：

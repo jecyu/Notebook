@@ -1,5 +1,10 @@
 # chrome 调试技巧
 
+## 打包扩展程序
+
+- [Mac系统中如何导出chrome插件](https://www.jianshu.com/p/3b2b0a20d597)
+- [chrome浏览器安装插件，提示程序包无效怎么办？](https://jingyan.baidu.com/article/4d58d541482f289dd4e9c0d5.html)
+
 ## 使用$选择器快速选择 dom
 
 <img :src="$withBase('/images/chrome1.png')">

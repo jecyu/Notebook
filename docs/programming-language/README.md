@@ -30,24 +30,55 @@ public class Product
 ```
 
 - C# 1
-  - 只读属性、弱类型集合
+  - 只读属性、弱类型集合（ArrayList）
   - 弱类型的比较功能、不支持委托排序
 - C# 2
-  - 私有属性赋值方法强类型集合
+  - 私有属性赋值方法强类型集合（泛型如 List）
 - C# 3
   - 自动实现的属性、增强的集合和对象初始化
 - C# 4
-
-  - 用命名实参更清晰地调用构造函数和方法
+  - 用命名实参更清晰地调用构造函数和方法（`new Product(name: "Sweenty Todd", price: 10.99m),`）
 
 ### 排序和过滤
 
 ```cs
+class ProductNameComparer : IComparer
+  {
+    public int Compare(object x, object y)
+    {
+      Product first = (Product)x;
+      Product second = (Product)y;
+      return first.Name.CompareTo(second.Name);
+    }
+  }
+class MainClass {
+  public static void SortTest()
+    {
+      ArrayList products = Product.GetSampleProducts();
+      products.Sort(new ProductNameComparer());
+
+      foreach (Product product in products)
+      {
+        Console.WriteLine(product);
+      }
+    }
+}
+```
+C# 1 必须引入一个额外的类型来帮助排序，并且出现需要强制转换类型的情况（有可能 ArrayList 出现字符串的类型）。在 foreach 也出现隐式转换类型。
+
+```cs
+class ProductNameComparer : IComparer<Product>
+  {
+    public int Compare(Product x, Product y)
+    {
+      return x.Name.CompareTo(y.Name);
+    }
+  }
     public static void SortTest()
     {
       List<Product> products = Product.GetSampleProducts();
       products.Sort(new ProductNameComparer());
-      //products.Sort((x, y) => x.Name.CompareTo(y.Name));
+      //products.Sort((x, y) => x.Name.CompareTo(y.Name)); // Lambda 表达式
 
       foreach (Product product in products)
       {
@@ -55,6 +86,7 @@ public class Product
       }
     }
 ```
+
 
 ```cs
  public static void FindTest()
@@ -153,6 +185,7 @@ public static void LINQTest()
 ```
 
 连接（joining）、过滤（filtering）、排序（ordering）和投影（projecting）
+
 ```cs
     public static void LINQTest2()
     {
@@ -172,7 +205,433 @@ public static void LINQTest()
 
 ```
 
-#### 查询 XML  
+#### 查询 XML
+
+#### 剖析 .NET 平台
+
+C# 语言是由它的规范定义的。C# 规范描述了 C# 源代码的格式，其中包括语法和行为。平台需要同时支持值类型和引用类型，另外还要支持垃圾回收。
+
+任何平台只要支持要求的特性，C# 编译器就可以以它为目标平台。
+
+##### 运行时
+
+##### 框架库
+
+## C#1 所搭建的核心基础
+
+### 委托
+
+> [委托](https://baike.baidu.com/item/%E5%A7%94%E6%89%98/7900553)是一个类，它定义了方法的类型，`使得可以将方法当作另一个方法的参数来进行传递，这种将方法动态地赋给参数的做法`，可以避免在程序中大量使用 If-Else(Switch) 语句，同时使得程序具有更好的可扩展性。——百度百科
+
+这里的委托其实是 C# 静态类型面向对象的一个声明，有点类似在 JS 中每个函数都是对象，自然也是可以当作另外一个方法的参数进行传递。只不过这里的委托可以是一个装有调用方法列表的容器。
+
+.NET 中的委托是类型安全的，委托会检测它所保存的函数引用是否和声明的委托匹配。
+
+当我们用 `delegate` 关键字声明委托时，`编译器自动为我们生成类`。类的名字即为委托变量名，访问类型为定义的委托访问类型。如上例中，public delegate void CallBack(string name, int number); 定义的委托对应的类为 CallBack，访问类型为public，该类继承自`[mscorlib]System.MulticastDelegate`。如果我们定义委托的访问类型为 private 或者 protected，则对应的委托类的访问类型为private 或者 protected。但是任何委托都继承自[mscorlib]System.MulticastDelegate。
+
+你可以把 `delegate` 看做一个包含有序方法列表的对象，这些方法具有相同的签名和返回类型。
+
+- 方法的列表称为调用列表。
+- 委托保存的方法可以来自任何类或结构，只要它们在下面两点匹配：
+  - 委托的返回类型；
+  - 委托的签名（包括 ref 和 out 修饰符）。
+- 调用列表中的方法可以是实例方法也可以是静态方法。
+- 在调用委托的时候，会执行其调用列表中的所有方法。
+
+![](../.vuepress/public/images/delegate-as-methods.png)
+
+
+在使用委托的时候，你可以像对待一个类一样对待它。即先声明，再实例化。只是有点不同，类在实例化之后叫对象或实例，`但委托在实例化后仍叫委托。`
+
+```cs
+delegate void StringProcessor(string input); // 1. 声明委托类型
+  class Person
+  {
+    string name;
+    public Person(string name) { this.name = name; }
+    public void Say(string message) // 2. 声明兼容的实例方法
+    {
+      Console.WriteLine("{0} says：{1}", name, message);
+    }
+  }
+
+  class Background
+  {
+    public static void Note(string note)
+    {
+      Console.WriteLine("({0})", note);
+    }
+  }
+  class MainClass {
+     public static void Main(string[] args)
+    {
+      SimpleDelegateUse();
+    }
+    public static void SimpleDelegateUse()
+    {
+      Person jon = new Person("Jon");
+      Person tom = new Person("Tom");
+      StringProcessor jonsVoice, tomsVoice, background; // 4. 创建 3 个委托实例
+      jonsVoice = new StringProcessor(jon.Say);
+      tomsVoice = new StringProcessor(tom.Say);
+      background = new StringProcessor(Background.Note);
+      jonsVoice("Hello, son."); // 5. 调用委托实例
+      tomsVoice.Invoke("Hello, Daddy");
+      background("An airplane flies past.");
+    }
+  }
+```
+
+#### 合并和删除委托
+
+- 可以为委托实例增加和移除方法（通过 `+-` 运算符）
+- 也可以组合多个委托生成新的委托实例
+
+说明：委托是不易变的，创建了委托实例后，`有关它的一切就不能改变`。这样一来，就可以安全地传递委托实例的引用，并把它们与其他委托实例合并，同时不必担心`一致性`、`线程安全性`或者是否有其他人视图更改。在这一点上，委托实例和 string 是一样的。string 的实例也是不易变的。之所以提到 string，是因为 Delegate.Combine 和 String.Concat 很像——都是合并现有的实例来形成一个新实例，同时根本不更改原始对象。对于委托实例，原始调用列表被你连接到一起。注意，如果视图将 null 和委托实例合并到一起，null 将被视为带有空调用列表的一个委托。
+
+![](../.vuepress/public/images/combing-delegate.png)
+
+
+- Delegate.Combine 
+- Delegate.Remove(sourece, value) 将创建一个新的委托实例，其调用列表来自 source，value 中的列表则被删除。
+
+调用委托实例时，它的所有操作（方法列表）都顺序执行。如果委托的签名具有一个非 void 的返回类型，则 Invoke 的返回值似乎是最后一个操作的返回值。
+
+可以使用委托实现发布-订阅消息中心
+
+```cs
+public delegate void Callback();
+public delegate void Callback<T>(T arg1);
+public delegate void Callback<T, U>(T arg1, U arg2);
+
+/**
+ * A messenger for events that have no parameters.
+ */
+static public class Messenger
+{
+  private static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+
+  static public void AddListener(string eventType, Callback handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Create an entry for this event type if it doesn't already exist.
+      if (!eventTable.ContainsKey(eventType))
+      {
+        eventTable.Add(eventType, null);
+      }
+      // Add the handler to the event.
+      eventTable[eventType] = (Callback)eventTable[eventType] + handler;
+    }
+  }
+  ...
+```
+
+#### 对事件的简单讨论
+
+事件不是委托实例，“事件”存在的首要理由和“属性”差不多——它们添加了一个封装层，实现发布/订阅模式（publish/subscribe）。
+
+表面上似乎能调用一个事件，但为了调用事件处理程序，实际做的事情是调用存储在字段中的委托实例。
+
+```cs
+// Messenger.cs v0.1 (20090925) by Rod Hyde (badlydrawnrod).
+//
+// This is a C# messenger (notification center) for Unity. It uses delegates
+// and generics to provide type-checked messaging between event producers and
+// event consumers, without the need for producers or consumers to be aware of
+// each other.
+
+using System;
+using System.Collections.Generic;
+
+
+// Callback.cs v0.1 (20090925) by Rod Hyde (badlydrawnrod).
+//
+// These are callbacks (delegates) that can be used by the messengers defined
+// in Messenger.cs.
+
+public delegate void Callback();
+public delegate void Callback<T>(T arg1);
+public delegate void Callback<T, U>(T arg1, U arg2);
+
+/**
+ * A messenger for events that have no parameters.
+ */
+static public class Messenger
+{
+  private static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+
+  static public void AddListener(string eventType, Callback handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Create an entry for this event type if it doesn't already exist.
+      if (!eventTable.ContainsKey(eventType))
+      {
+        eventTable.Add(eventType, null);
+      }
+      // Add the handler to the event.
+      eventTable[eventType] = (Callback)eventTable[eventType] + handler;
+    }
+  }
+
+  static public void RemoveListener(string eventType, Callback handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Only take action if this event type exists.
+      if (eventTable.ContainsKey(eventType))
+      {
+        // Remove the event handler from this event.
+        eventTable[eventType] = (Callback)eventTable[eventType] - handler;
+
+        // If there's nothing left then remove the event type from the event table.
+        if (eventTable[eventType] == null)
+        {
+          eventTable.Remove(eventType);
+        }
+      }
+    }
+  }
+
+  static public void Invoke(string eventType)
+  {
+    Delegate d;
+    // Invoke the delegate only if the event type is in the dictionary.
+    if (eventTable.TryGetValue(eventType, out d))
+    {
+      // Take a local copy to prevent a race condition if another thread
+      // were to unsubscribe from this event.
+      Callback callback = (Callback)d;
+
+      // Invoke the delegate if it's not null.
+      if (callback != null)
+      {
+        callback();
+      }
+    }
+  }
+}
+
+
+/**
+ * A messenger for events that have one parameter of type T.
+ */
+static public class Messenger<T>
+{
+  private static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+
+  static public void AddListener(string eventType, Callback<T> handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Create an entry for this event type if it doesn't already exist.
+      if (!eventTable.ContainsKey(eventType))
+      {
+        eventTable.Add(eventType, null);
+      }
+      // Add the handler to the event.
+      eventTable[eventType] = (Callback<T>)eventTable[eventType] + handler;
+    }
+  }
+
+  static public void RemoveListener(string eventType, Callback<T> handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Only take action if this event type exists.
+      if (eventTable.ContainsKey(eventType))
+      {
+        // Remove the event handler from this event.
+        eventTable[eventType] = (Callback<T>)eventTable[eventType] - handler;
+
+        // If there's nothing left then remove the event type from the event table.
+        if (eventTable[eventType] == null)
+        {
+          eventTable.Remove(eventType);
+        }
+      }
+    }
+  }
+
+  static public void Invoke(string eventType, T arg1)
+  {
+    Delegate d;
+    // Invoke the delegate only if the event type is in the dictionary.
+    if (eventTable.TryGetValue(eventType, out d))
+    {
+      // Take a local copy to prevent a race condition if another thread
+      // were to unsubscribe from this event.
+      Callback<T> callback = (Callback<T>)d;
+
+      // Invoke the delegate if it's not null.
+      if (callback != null)
+      {
+        callback(arg1);
+      }
+    }
+  }
+}
+
+
+/**
+ * A messenger for events that have two parameters of types T and U.
+ */
+static public class Messenger<T, U>
+{
+  private static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+
+  static public void AddListener(string eventType, Callback<T, U> handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Create an entry for this event type if it doesn't already exist.
+      if (!eventTable.ContainsKey(eventType))
+      {
+        eventTable.Add(eventType, null);
+      }
+      // Add the handler to the event.
+      eventTable[eventType] = (Callback<T, U>)eventTable[eventType] + handler;
+    }
+  }
+
+  static public void RemoveListener(string eventType, Callback<T, U> handler)
+  {
+    // Obtain a lock on the event table to keep this thread-safe.
+    lock (eventTable)
+    {
+      // Only take action if this event type exists.
+      if (eventTable.ContainsKey(eventType))
+      {
+        // Remove the event handler from this event.
+        eventTable[eventType] = (Callback<T, U>)eventTable[eventType] - handler;
+
+        // If there's nothing left then remove the event type from the event table.
+        if (eventTable[eventType] == null)
+        {
+          eventTable.Remove(eventType);
+        }
+      }
+    }
+  }
+
+  static public void Invoke(string eventType, T arg1, U arg2)
+  {
+    Delegate d;
+    // Invoke the delegate only if the event type is in the dictionary.
+    if (eventTable.TryGetValue(eventType, out d))
+    {
+      // Take a local copy to prevent a race condition if another thread
+      // were to unsubscribe from this event.
+      Callback<T, U> callback = (Callback<T, U>)d;
+
+      // Invoke the delegate if it's not null.
+      if (callback != null)
+      {
+        callback(arg1, arg2);
+      }
+    }
+  }
+}
+```
+
+
+#### 委托总结
+
+- 委托封装了包含特殊返回类型和一组参数的行为，类似包含单一方法的接口
+- 委托类型声明中所描述的类型签名决定了哪个方法可用于委托实例，同时决定了调用的签名。
+- 为了创建委托实例
+- 事件不是委托实例——只是成对的 add/remove 方法（类似于属性的取值方法/赋值方法）
+
+### 类型系统的特征
+
+#### C# 在类型系统世界中的位置
+
+C#1 的类型系统是`静态的、显式的和安全`的。
+
+你可能很期望`强` 这个形容词出现在列表中。但是，虽然大多数人都很容易就一种语言是否具有上面列出的特征取得共识，<u>但在判断语言是不是一种“强类型” 定义中，要求禁止任何形式的转换（不管是显式还是隐式转换）</u>，这明显会使 C# 失去资源。但在另一些定义中，却相当接近（甚至等同于）静态类型，这会使 C# 获得资格。虽然大多数文章和书籍都将 C# 描述成强类型的语言，<u>但最终的意义实际都是指它是一种静态类型的语言。</u>
+
+##### 1. 静态类型和动态类型
+
+C# 是静态类型的：每个变量都有一个特定的类型，而且该类型在编译时是已知的。只有该类型已知的操作才是允许，这一点由编译器强制生效。
+
+```cs
+object o = "hello";
+Console.WriteLine(o.Lenght);
+```
+
+从开发者的角度看上述代码，我们知道 o 的值是一个字符串。同时 string 类型有一个 Length 属性。<u>但是，编译器只把 o 看做 object 类型。如果想访问 Length 属性，必须让编译器知道 o 的值实际是一个字符串。</u>
+
+与静态类型对应的是动态类型，后者可能具有多种形式。动态类型的实质是变量中含有值，<u>但那些值并不限于特定的类型，所以编译器不能执行相同形式的检查。</u>相反，执行环境试图采取一种合适的方式来理解引用值的给定表达式。例如，假定 C# 1 是动态类型的，就可以做下面的事情：
+
+```cs
+o = "hello";
+Console.WriteLine(o.Length);
+o = new string[] {"hi", "there};
+Console.WriteLine(o.Length);
+```
+
+通过执行时动态检查类型，最终会调用两个完全无关的 Length 属性—— String.Length 和 Array.Length。
+
+##### 2. 显式类型和隐式类型
+
+显式类型和隐式类型只有在即ing天类型的语言中才有意义。对于显式类型来说，每个变量的类型都必须在声明中显式指明。隐式类型则允许编译器根据变量的用途来推断变量的类型。
+
+|无效的 C#1——隐式类型|有效的 C#1——显式类型|
+|--|--|
+|var s = "hello";<br> var x = s.Length; <br> var twiceX = x * 2;| string s = "hello";<br> int x = s.Length; <br> int twiceX = x * 2;|
+
+无论隐式类型还是显式类型，变量的类型在编译时都是已知的——即使在代码中没有显式地声明。在动态类型的情况下，变量根本没有一个类型可供声明或推断。
+
+##### 3. 类型安全和类型不安全
+
+强制类型转换，可能会出现转换错误，比如把 char 类型强制转换为 int 类型。
+
+#### C#1 的类型系统何时不够用
+
+##### 1. 集合，强和弱
+
+集合
+- 数组——强类型——内建到语言和运行时中；
+- System.Collections 命名空间中的弱类型集合
+- System.Collections.Specialized 命名空间中的强类型集合。
+
+弱类型
+- ArrayList
+- Hashtable
+
+##### 2. 缺乏协变的返回类型
+
+#### 类型系统特征总结
+
+- C#1 是静态类型的——编译器知道你能使用哪些成员。
+- C#1 是显式的——必须告诉编译器变量具有什么类型。
+- C#1 是安全的——除非存在真实的转换关系，否则不能一种类型当作另一种类型。
+- 方法覆盖和接口实现不允许协变性/逆变性。
+
+### 值类型和引用类型
+
+除了以下总结的特殊情况，类（使用 class 来声明）是引用类悉尼港，而`结构（使用 struct 来声明）是值类型`。特殊情况包括以下方面：
+
+- 数组类型是引用类型，即使元素类型是值类型（所以你即便 int 是值类型，int[] 仍是引用类型）；
+- 枚举（使用 enum 来声明）是值类型；
+- 委托类型（使用 delegate 来声明）是引用类型；
+- 接口类型（使用 interface 来声明）是引用类型，但可由值类型实现。
+
+#### 值类型和引用类型
+
+变量的值在它声明时的位置存储。局部变量的值总是存储在栈（stack）中，实例变量的值总是存储在实例本身存储的地方。引用类型实例（对象）总是存储在堆（heap）中，静态变量也是。
+
+两种类型的另一个差异在于，值类型不可以派生出其他类洗ing。
+
+### C#1 之外：构建于坚实基础之上的新特性
+
 
 ## 入门（初级）
 

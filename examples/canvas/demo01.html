@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas 验证 iframe 的加载问题</title>
+    <style>
+      .content {
+        height: 50px;
+        width: 50px;
+        background:red;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn">截屏</button>
+    <div class="content">
+    </div>
+    <iframe
+      height="200px"
+      width="200px"
+      src="https://192.18.9.1"
+      frameborder="0"
+    ></iframe>
+    <script src="./html2canvas.js"></script>
+    <script src="./demo01.js"></script>
+  </body>
+</html>

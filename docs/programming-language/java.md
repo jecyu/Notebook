@@ -581,7 +581,7 @@ Java 定义的这些基本数据类型有什么区别呢？要了解这些区别
 └───┴───┴───┴───┴───┴───┴───┘
 ```
 
-一个字节是 1 byte，1024 字节是 1k，1024K 是 1M，1024M 是 1G，1024G 是 1T。一个拥有 4T 内存的计算机的字节数量就是：
+<u>一个字节是 1 `byte`，1024 字节是 1k，1024K 是 1M，1024M 是 1G，1024G 是 1T</u>。一个拥有 4T 内存的计算机的字节数量就是：
 
 ```bash
 4T = 4 x 1024G
@@ -691,6 +691,7 @@ Double 的计算与此类似，double 的符号位为 63 位，指数为 62 ～ 
 ### 基础
 
 IO 是指 Input/Output，即输入和输出。以内存为中心：
+
 - Input 指从`外部`读入数据`到内存`，例如，把文件从磁盘读取到内存，从网络读取数据到内存等等。
 - Output 指从`内存`输出`到外部`，例如，把数据从内存写入到文件，把数据从内存输出到网络等。
 
@@ -749,12 +750,13 @@ IO 流以 `byte（字节）`为最小单位，因此也称为`字节流`。例�
 在 Java 中，`InputStream` 代表输入字节流，`OutStream` 代表输出字节流，这是最基本的两种 IO 流。
 
 #### Reader/Writer
- 
+
 如果我们需要读写的是字符，并且字符不全是单字节表示 ASCII 字符，那么，按照 `char` 来读写显然更方便，这种流称为 `字符流`。
 
-例如，我们把 `char[]` 数组 `Hi你好`这4个字符用 `Writer` 字符流写入文件，并且使用 `UTF-8` 编码，得到最终文件内容是 8 （1+1+3+3）个字节，英文字符 `H` 和 `i` 各占一个字节，中文字符`你好`各占 3 各字节。
+例如，我们把 `char[]` 数组 `Hi你好`这 4 个字符用 `Writer` 字符流写入文件，并且使用 `UTF-8` 编码，得到最终文件内容是 8 （1+1+3+3）个字节，英文字符 `H` 和 `i` 各占一个字节，中文字符`你好`各占 3 各字节。
 
 下面是 16 进制的表示
+
 ```bash
 0x48
 0x69
@@ -779,42 +781,1448 @@ Java 标准库的包 `java.io` 提供了同步 IO，而 `java.nio` 则是异步 
 #### 小结
 
 IO 流是一种流式的数据输入/输出模型：
+
 - 二进制数据以 `byte` 为最小单位在 `InputStream`/`OutputStream` 中单向流动；
 - 字符数据以 `char` 为最小单位在 `Reader`/`Writer` 中单向流动。
- 
+
 Java 标准库的 `java.io` 提供了同步功能的 IO 功能：
+
 - 字节流接口：`InputStream`/`OutputStream`
 - 字符流接口：`Reader`/`Writer`
 
 ### File 对象
 
+在计算机系统中，文件是非常重要的存储方式。Java 的标准库 `java.io` 提供了 `File` 对象来操作文件和目录。
+
+要构造一个 `File` 对象，需要传入文件路径：
+
+注意 Windows 平台使用 `\` 作为路径分隔符，在 Java 字符串中需要用 `\\` 表示一个 `\`。Linux 平台使用 `/` 作为路径分隔符：
+
+可以用 `.` 表示当前目录，`..` 表示上级目录。
+
+#### 文件和目录
+
+#### 创建和删除文件
+
+#### 遍历文件和目录
+
 ### InputStream
 
-### OutStream
+InputStream 就是 Java 标准库提供的最基本的输入流。它位于 java.io 这个包里。java.io 包提供了所有同步 IO 的功能。
+
+要特别注意的一点是，InputStream 并不是一个接口，而是一个抽象类，它是所有输入流的超类。这个抽象类定义的一个最重要的方法就是 int read()，签名如下：
+
+```java
+public abstract int read() throws IOException;
+```
+
+`这个方法读取输入流的下一个字节，并返回字节表示的`int`值（0 ～ 255）。`如果已读到末尾，返回`-1` 表示不能继续读取了。
+
+`FileInputStream` 是 InputStream 的一个子类。顾名思义，FileInputStream 就是从文件流中读取数据。
+
+```java
+public void readFile() throws IOException {
+    // 创建一个FileInputStream对象:
+    InputStream input = new FileInputStream("src/readme.txt");
+    for (;;) {
+        int n = input.read(); // 反复调用read()方法，直到返回-1
+        if (n == -1) {
+            break;
+        }
+        System.out.println(n); // 打印byte的值
+    }
+    input.close(); // 关闭流
+}
+```
+
+在计算机中，类似文件、网络端口这些资源，都是由操作系统统一管理的。应用程序在运行的过程中，如果打开了一个文件进行读写，完成后要及时地关闭，以便让操作系统把资源释放掉，否则，应用程序占用的资源回越来越多，不但白白占用内存，还会影响其他应用程序的运行。
+
+`InputStream` 和 `OutputStream` 都是通过 `close()` 方法来关闭流。关闭流就会释放对应的底层资源。
+
+利用 Java 7 引入的新的 `try(resource)` 的语法，只需要写 `try` 语句，让编译器自动为我们关闭资源（无论读取过程中是否发生了 IO 错误）。
+
+```java
+	private static void InputStreamTest1() throws IOException {
+		try (InputStream input = new FileInputStream("../file.txt")) {
+			int n;
+			while ((n = input.read()) != -1) {
+				System.out.println(n);
+			}
+		}
+	}
+```
+
+#### 缓冲
+
+在读取流的时候，一次读取一个字节并不是最高效的方法。`很多流支持一次性读取多个字节到缓冲区，对于文件和网络流来说，利用缓冲区一次性读取多个字节流效率往往要高很多`。`InputStream` 提供了两个重载方法来支持读取多个字节：
+
+- `int read(byte[] b)` ：读取若干字节并填充到 `byte[]` 数组，返回读取的字节数
+
+```java
+public void readFile() throws IOException {
+    try (InputStream input = new FileInputStream("src/readme.txt")) {
+        // 定义1000个字节大小的缓冲区:
+        byte[] buffer = new byte[1000];
+        int n;
+        while ((n = input.read(buffer)) != -1) { // 读取到缓冲区
+            System.out.println("read " + n + " bytes.");
+        }
+    }
+}
+```
+
+#### 阻塞
+
+在调用 `InputStream` 的 `read()` 方法读取数据时，我们说 `read()` 方法时阻塞（Blocking）的。
+
+### OutputStream
+
+和 `InputStream` 相反，`OutputStream` 是 Java 标准库提供的最基本的输出流。
+
+和 `InputStream` 类似，`OutputStream` 也提供了 `close()` 方法关闭输出流，以便释放系统原理。要特别注意：`OutputStream` 还提供了一个 `flush` 方法，它的目的是将缓冲区的内容真正输出到目的地。
+
+为什么要有 `flush` ？因为向磁盘、网络写入数据的时候，出于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送到网络，而是把输出的字节先放到内存的一个`缓冲区`里（本质上就是一个 `byte[]` 数组），等到缓冲区写满了，再一次性写入文件或者网络。<u>对于很多 IO 设备来说，一次写一个字节和一次写 1000 个字节，花费的时间几句是一样的，所以 `OutputStream` 有个 `flush` 方法（这个方法也用到浏览器页面渲染），能强制把缓冲区内容输出。</u>
+
+通常情况下，我们不需要调用这个 `flush()` 方法，因为缓冲区写满了 `OutputStream` 会自动调用它，并且，在调用 `close()` 方法关闭 `OutputStream` 之前，也会自动调用 `flush` 方法。
+
+但是，在某些情况下，我们必须手动调用 `flush()` 方法。举个例子：
+
+小明正在开发一款在线聊天软件，当用户输入一句话后，就通过 `OutputStream` 的 `write()` 方法写入网络流。小明测试的时候发现，发送方输入后，接收方根本收不到任何信息，怎么回事？
+
+原因就在于写入网络流是先写入内存缓冲区，等缓冲区满了才会一次性发送到网络。如果缓冲区大小是 4K（4 \* 1024 个字节），则发送方要敲几千个自负后，操作系统才会把缓冲区的内容发送出去，这个时候，接收方会一次性收到大量信息。
+
+解决方法就是<u>每输入一句话后，立刻调用 `flush()` ，不管当前缓冲区是否已满，强迫操作系统把缓冲区的内容立刻发送出去。 </u>
+
+实际上，`InputStream` 也有缓冲区。例如，从 `FileInputStream` 读取一个字节时，操作系统往往会一次性读取若干字节到缓冲区，并维护一个指针指向未读的缓冲区。然后，每次我们调用 `int read()` 读取下一个字节时，可以直接返回缓冲区的下一个字节，避免每次读一个字节都导致 IO 操作。当缓冲区全部读完后继续调用 `read()`，则会触发操作系统的下一次读取并再次填满缓冲区。
+
+#### FileOutputStream
+
+```java
+	public static void writeFile() throws IOException {
+		OutputStream output = new FileOutputStream("./readme.txt");
+		output.write(72); // H
+		output.write(101); // e
+		output.write(108); // l
+		output.write(108); // l
+		output.write(111); // o
+		output.close();
+	}
+```
+
+```java
+public static void writeFile2() throws IOException {
+		OutputStream output = new FileOutputStream("./readme.txt");
+		output.write("Hello".getBytes("UTF-8")); // Hello
+		output.close();
+	}
+```
+
+和 `InputStream` 一样，上述代码没有考虑到在发生异常的情况下如何正确地关闭资源。写入过程也会经常发生 IO 错误。例如，磁盘已满，无权限写入等等。我们需要用 `try(resource)` 来保证 `OutputStream` 在无论是否发生 IO 错误的时候都能够正确地关闭：
+
+```java
+public static void writeFile3() throws IOException {
+		try (OutputStream output = new FileOutputStream("./readme.txt")) {
+			output.write("Hello".getBytes("UTF-8")); // Hello
+		} // 编译器会在此自动为我们写入 finally 并调用 close()
+	}
+```
+
+#### 阻塞
+
+和 `InputStream` 一样，`OutputStream` 的 `write()` 方法也是阻塞的。
+
+#### OutputStream 实现类
+
+#### 小结
+
+Java 标准库的 `java.io.OutputStream` 定义了所有输出流的超类：
+
+- `FileOutStream` 实现了文件流输出；
+  <!-- - `ByteArrayOutputStream` 在内存中模拟一个字节流输出。 -->
+
+某些情况下需要手动调用 `OutputStream` 的 `flush()` 方法来强制输出缓冲区。
+
+总是使用 `try(resource)` 来保证 `OutputStream` 正确关闭。
+
+### Filter 模式（装饰器模式 Decorator）
+
+Java 的 IO 标准库提供的 `InputStream` 根据来源可以包括：
+
+- `FileInputStream`：从文件读取数据，是最终数据源；
+- `ServletInputStream`：从 HTTP 请求读取数据，是最终数据源；
+- `Socket.getInputStream()`：从 TCP 连接读取数据，是最终数据源；
+
+为了解决依赖继承会导致子类数量失控的问题，JDK 首先将 `InputStream` 分为两大类：
+
+一类是直接提供数据的基础 `InputStream`，例如：
+
+- FileInputStream
+- ByteArrayInputStream
+- ServeletInputStream
+- ...
+
+一类是提供额外附加功能的 `InputStream`，例如：
+
+- BufferedInputStream
+- DigestInputStream
+- CipherInputStream
+- ...
+
+### 操作 Zip
+
+`ZipInputStream` 是一种 `FilterInputStream`，它可以直接读取 zip 包的内容：
+
+```bash
+┌───────────────────┐
+│    InputStream    │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│ FilterInputStream │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│InflaterInputStream│
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│  ZipInputStream   │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│  JarInputStream   │
+└───────────────────┘
+```
+
+#### 读取 zip 包
+
+我们要创建一个 `ZipInputStream`
+
+#### 写入 zip 包
+
+#### 小结
+
+`ZipInputStream` 可以读取 zip 格式的流，`ZipOutputStream` 可以把多份数据写入 zip 包；
+
+配合 `FileInputStream` 和 `FileOutputStream` 就可以读写 zip 文件。
+
+### 读取 classpath 资源
+
+我们知道，Java 存放 `.class` 的目录或 jar 包可以包含任意其他类型的文件，例如：
+
+- 配置文件，例如 `.properties`。
+- 图片文件，例如 `.jpg`。
+- 文本文件，例如 `.txt`，`.csv`。
+
+从 classpath 读取文件就可以避免不同环境下（window、linux）文件路径不一致的问题：如果我们把 `default.properties` 文件放到 classpath 中，就不用关心它的实际存放路径。
+
+在 classpath 中的资源文件，路径总是以 `/` 开头，我们先获取当前的 `Class` 对象，然后调用 `getResourceAsStream()` 就可以直接从 classpath 读取任意的资源文件：
+
+```java
+try (InputStream input = getClass().getResourceAsStream("/default.properties")) {
+  // TODO
+}
+```
+
+#### 小结
+
+把资源放在 classpath 可以避免文件路径依赖；
+
+Class 对象的 `getResourceAsStream()` 可以从 classpath 中读取指定资源。
+
+根据 classpath 读取资源时，需要检查返回的 `InputStream` 是否为 `null`。
 
 ### 序列化
 
-序列号是<u>指把一个 Java 对象变成二进制内容，</u>本质上就是一个 `byte[]` 数组。
+`序列化`是<u>指把一个 Java 对象变成二进制内容，</u>本质上就是一个 `byte[]` 数组。
 
-为什么要把 Java 对象序列化呢？因为序列化后可以把 `byte[]` 保存到文件中，或者把 `byte[]` 通过网络传输到远程，这样，就相当于把 Java 对象存储到文件或者通过网络传输出去了。
+为什么要把 Java 对象序列化呢？因为序列化后可以把 `byte[]` 保存到文件中，或者把 `byte[]` 通过网络传输到远程，这样，就相当于把 `Java 对象存储到文件或者通过网络传输出去`了。
 
-有序列化，就有反序列化，即把一个二进制内容（也就是 `byte[]` 数组）变回 Java 对象。有了反序列化，保存到文件中的 `byte[]` 数组又可以“变回” Java 对象，或者从网络上读取 `byte[]` “变回” Java 对象。
+一个 Java 对象要能序列化，必须实现一个特殊的 `java.io.Serializable` 接口，它的定义如下：
+
+```java
+public interface Serializable {}
+```
+
+`Serializable` 接口没有定义任何方法，它是一个空接口。我们把这样的空接口称为“标记接口”（Marker Interface），实现了标记接口的类仅仅是给自身贴了个 “标记”，并没有增加任何方法。
+
+有序列化，就有反序列化，即把一个二进制内容（也就是 `byte[]` 数组）变回 `Java 对象`。有了反序列化，保存到文件中的 `byte[]` 数组又可以“变回” Java 对象，或者从网络上读取 `byte[]` “变回” Java 对象。
+
+#### 序列化
+
+把一个 Java 对象变为 `byte[]` 数组，需要使用 `ObjectOutputStream`。它负责把一个 Java 对象写入一个字节流。
+
+```java
+	public static void serializableTest() throws IOException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		try (ObjectOutputStream output = new ObjectOutputStream(buffer)) {
+			// 写入 int
+			output.writeInt(12345);
+			// 写入 String
+			output.writeUTF("Hello");
+			// 写入 object
+			output.writeObject(Double.valueOf(123.456));
+		}
+		System.out.println(Arrays.toString(buffer.toByteArray()));
+	}
+```
+
+`ObjectOutputStream` 既可以写入基本类型，如 `int`、`boolean`，也可以写入 `String`（以 UTF-8 编码），还可以写入实现了 `Serializable` 接口的 `Object`。
+
+因为写入 `Object` 时需要大量的类型信息，所以写入的内容很大。
+
+#### 反序列化
+
+和 `objectOutputStream` 相反，`ObjectInputStream` 负责从一个字节流读取 Java 对象：
+
+```java
+try (ObjectInputStream input = new ObjectInputStream(...)) {
+  int n = input.readInt();
+  String s = input.readUTF();
+  Double d = (Double) input.readObject();
+}
+```
+
+除了能读取基本类型和 `String` 类型外，调用 `readObject()` 可以直接返回一个 `Object` 对象。要把它变成一个特定类型，必须强制转型。
+
+`readObject()` 可能抛出的异常有：
+
+- `ClassNotFoundException`：没有找到对应的 Class：
+- `InvalidClassException`：Class 不匹配。
+
+对于 `ClassNotFoundException` ，这种情况常见于一台电脑上的 Java 程序把一个 Java 对象，例如，`Person` 对象序列化以后，通过网络传输给另一台电脑上的另一个 Java 程序，但是这台电脑的 Java 程序并没有定义 `Person` 类，所以无法反序列化。
+
+对于 `InvalidClassException`，这种情况常见于序列化的 `Person` 对象定义了一个 `int` 类型的 `age` 字段，但是反序列化时，`Person` 类定义的 `age` 字段被改成了 `long` 类型，所以导致 class 不兼容。
+
+为了避免这种 class 定义变动导致的不兼容，Java 的序列化允许 class 定义一个特殊的 `serialVersionUID` 的静态变量，用于标识 Java 类的序列化 “版本”，通常可以由 IDE 自动生成。如果增加或修改了字段，可以改变 `serialVersionUID` 的值，这样就能自动阻止不匹配的 class 版本：
+
+```java
+public class Person implememts Serializable {
+  private static final long serialVersionUID = 2709425275741743919L;
+}
+```
+
+要特别注意反序列化的几个重要的特点：
+
+<u>反系列化时，由 JVM 直接构造出 Java 对象，`不调用构造方法`，构造方法内部的代码，在反序列化时根本不可能执行。</u>
 
 #### 安全性
 
 因为 Java 的序列化机制可以导致一个实例能直接从 `byte[]` 数组创建，而不经过构造方法，因此，它存在一定的安全隐患。一个精心构造 `byte[]` 数组被反序列化后可以执行特定的 Java 代码，从而导致严重的安全漏洞。
 
-实际上，Java 本身提供的基于对象的序列化和反序列化机制既存在`安全性`问题，也存在`兼容性`问题。更好的序列化方法是通过 `JSON` 这样的通用数据结构来实现，只输出基本类型（包括 String）的内容呢，而不存储任何与代码相关的信息。
+实际上，Java 本身提供的基于对象的序列化和反序列化机制既存在`安全性`问题，也存在`兼容性`问题。更好的`序列化方法`是通过 `JSON` 这样的通用数据结构来实现，只输出基本类型（包括 String）的内容呢，而不存储任何与代码相关的信息。
 
 #### 小结
 
 Java 的序列化机制仅适用于 Java，如果需要与其它语言交换数据，必须使用通用的序列化方法，例如 JSON。
+
+### Reader
+
+`Reader` 是 Java 的 IO 库提供的另一个输入流接口。和 `InputStream` 的区别是，`InputStream` 是一个字节流，即以 `byte` 为单位读取，而 `Reader` 是一个字符流，即以 `char` （java 中为 2 个字节）为单位读取：
+
+| InputStream                         | Reader                                    |
+| ----------------------------------- | ----------------------------------------- |
+| 字节流，以 `byte` 为单位            | 字符流，以 `char` 为单位                  |
+| 读取字节（-1，0~255）：`int read()` | 读取字符（-1，0 ～ 65535 ）：`int read()` |
+| 读到字节数组 `int read(byte[] b)`   | 读到字符数组：`int read(char[] c)`        |
+
+`java.io.Reader` 是所有字符输入流的超类，它最主要的方法是：
+
+```java
+public int read() throws IOException;
+```
+
+这个方法读取字符流的`下一个字符`，并返回字符表示的 `int`，范围是 `0`～`65535`。如果已读到末尾，返回 `-1`。
+
+#### FileReader
+
+`FileReader` 是 `Reader` 的一个子类，它可以打开文件并获取 `Reader`。下面的代码演示了如何完整地读取一个 `FileReader` 的所有字符：
+
+```java
+public static void readFileByFileReader() throws IOException {
+		// 创建一个 FileReader 对象
+		Reader reader = new FileReader("./readme.txt");// 字符编码是
+		for (;;) {
+			int n = reader.read(); // 反复调用 read() 方法，直到返回 -1
+			if (n == -1) {
+				break;
+			}
+			System.out.println((char) n); // 打印 char 字符
+		}
+		reader.close(); // 关闭流
+	}
+```
+
+如果我们读取一个纯 ASCII 编码的文本文件，上述代码工作是没有问题的。但如果文件中包含中文，就会出现乱码。因为 `FileReader` 默认的编码与系统相关，例如，Windows 系统的默认编码可能是 `GBX`，打开一个 `UTF-8` 编码的文本文件就会出现乱码。
+
+要避免乱码问题，我们需要在创建 `FileReader` 时指定编码：
+
+```java
+Reader reader = new FileReader("./readme.txt", StandardCharsets.UTF_8);// 字符编码是 UTF-8
+```
+
+和 `InputStream` 类似，`Reader` 也是一种资源，需要保证出错的时候也能正确关闭，所以我们需要用 `try (resource)` 来保证 `Reader` 在无论有没有 IO 错误的时候都能够正确地关闭：
+
+```java
+try (Reader reader = new FileReader("src/readme.txt", StandardCharsets.UTF_8))
+```
+
+`Reader` 还提供了`一次性读取若干字符`并填充到 `char[]` 数组的方法：
+
+```java
+public int read(char[] c) throws IOException
+```
+
+它`返回实际读入的字符个数`，最大不超过 `char[]` 数组的长度。返回 `-1` 表示流结束。
+
+利用这个方法，我们可以先设置一个缓冲区，然后，每次尽可能地填充缓冲区：
+
+```java
+	public static void readFileByFileReader2() throws IOException {
+		try (Reader reader = new FileReader("./readme.txt", StandardCharsets.UTF_8)) {
+			char[] buffer = new char[1000];
+			int n;
+			while ((n = reader.read(buffer)) != -1) {
+				System.out.println("read " + n + " chars.");
+			}
+		}
+	}
+```
+
+#### CharArrayReader
+
+#### StringReader
+
+#### InputStreamReader
+
+`Reader` 和 `InputStream` 有什么关系？
+
+除了特殊的 `CharArrayReader` 和 `StringReader`，普通的 `Reader` 实际上是基于 `InputStream` 中读入字节流（`byte`），然后，根据编码设置，再转换为 `char` 就可以实现字符流。如果我们查看 `FileReader` 的源码，它在内部实际上持有一个 `FileInputSream`。
+
+既然 `Reader` 本质上是一个基于 `InputStream` 的 `byte` 到 `char` 的转换器，那么，如果我们已经有一个 `InputStream`，想把它转换为 `Reader`，是完全可行的。`InputStreamReader` 就是这样一个转换器，它可以把任何 `InputStream` 转换为 `Reader`。示例代码如下：
+
+```java
+// 持有 InputStream
+InputStream input = new FileInputStream("./readme.txt");
+// 百脑汇为 Reader
+Reader reader = new InputStreamReader(input, "UTF-8");
+```
+
+构造 `InputStreamReader` 时，我们需要传入 `InputStream` ，还需要指定编码，就可以得到一个 `Reader` 对象。上述代码可以通过 `try (resource)` 更简洁地改写如下：
+
+```java
+
+```
+
+#### 小结
+
+`Reader` 定义了所有字符输入流的超类：
+
+- `FileReader` 实现了文件字符流输入，使用时需要指定编码；
+- `CharArrayReader` 和 `StringReader` 可以在内存中模拟一个字符流输入。
+
+`Reader` 是基于 `InputStream` 构造的：可以通过 `InputStreamReader` 在指定编码的同时将任何 `InputStream` 转换为 `Reader`。
+
+总是使用 `try (resource)` 保证 `Reader` 正确关闭。
+
+### Writer
+
+`Reader` 是带编码转换器的 `InputStream`，它把 `byte` 转换为 `char`，而 `Writer` 就是带编码转换器的 `OutputStream`，它把 `char` 转换为 `byte` 并输出。
+
+`Writer` 和 `OutputStream` 的区别如下：
+
+| OutputStream                            | Writer                                         |
+| --------------------------------------- | ---------------------------------------------- |
+| 字节流，以 `byte` 为单位                | 字符流，以 `char` 为单位                       |
+| 写入字节（0 ～ 255）：void write(int b) | 写入字符（0 ～ 65535）：`void write(char c)`   |
+| 写入字节数组：void write(byte[] b)      | 写入字符（0 ～ 65535）：`void write(char[] c)` |
+| 无对应方法                              | 写入 String[]：`void write(String s)`          |
+
+`Writer` 是所有字符输出流的超类，它提供的方法主要有：
+
+- 写入一个字符 （0 ～ 65535）：`void write(int c)`
+- 写入字符数组的所有字符：`void write(char[] c)`
+- 写入 String 表示的字符：`void write(String s)`
+
+#### FileWriter
+
+`FileWriter` 就是向文件中写入字符流的 `Writer`。它的使用方法和 `FileReader` 类似。
+
+```java
+	public static void writeFileByFileWriter() throws IOException {
+		try (Writer writer = new FileWriter("./readme.txt", StandardCharsets.UTF_8)) {
+			writer.write('H'); // 写入单个字符
+			writer.write("Hello".toCharArray()); // 写入 char[]
+			writer.write("Hello"); // 写入 String
+		}
+	}
+
+```
+
+#### 小结
+
+`Writer` 定义了所有字符输出流的超类：
+
+- `FileWriter` 实现了文件字符流输出。
+- `CharArrayWriter` 和 `StringWriter` 在内存中模拟一个字符流输出。
+
+使用 `try (resource)` 保证 `Writer` 正确关闭。
+
+`Writer` 是基于 `OutputStream` 构造的，可以通过 `OutputStreamWriter` 将 `OutputStream` 转为 `Writer`，转换时需要指定编码。
+
+### PrintStream 和 PrintWriter
+
+`PrintStream` 是一种 `FileOutputStream`，它在 `OutputStream` 的接口上，额外提供了一些写入各种数据类型的方法：
+
+- 写入 `int`：`print(int)`
+- 写入 `boolean`：`print(boolean)`
+- 写入 `String`：`print(String)`
+- 写入 `Object`：`print(Object)`，实际上相当于 `print(object.toString())`
+- ...
+
+以及对应的一组 `println()` 方法，它会自动加上换行符。
+
+我们经常使用的 `System.out.println()` 实际上就是使用 `PrintStream` 打印各种数据。其中，`System.out` 是系统默认提供的 `PrintStream`，表示标准输出：
+
+```java
+System.out.print(12345);// 输出 12345
+Sytem.out.print(new Object()); // 输出类似 java.lang.Object@3c7a835a
+Sytem.out.println("Hello"); // 输出 Hello 并换行
+```
+
+`System.err` 是系统默认提供的标准错误输出。
+
+`PrintStream` 和 `OutputStream` 相比，除了添加一组 `print()`/`println()` 方法，可以打印各种数据类型，比较方便外，它还有一个额外的优点，就是不会跑出 `IOException`，这样我们在编写代码的时候，就不必捕获 `IOException`。
+
+#### PrintWriter
+
+`PrintStream` 最终输出的总是 `byte` 数据（而在 print 后，在控制台会字节显示为对应的字符），而 `PrintWriter` 则是扩展了 `Writer` 接口，它的 `print()`/ `println()` 方法最终输出的是 `char` 数据。两者的使用方法几乎是一模一样的：
+
+#### 小结
+
+`PrintStream` 是一种能够接收各种数据类型的输出，打印数据时比较方便：
+
+- `System.out` 是标准输出；
+- `System.err` 是标准错误输出。
+
+`PrintWriter` 是基于 `Writer` 的输出。
 
 ## 日期与时间
 
 ## 单元测试
 
 ## 加密与安全
+
+在计算机系统中，什么是加密与安全呢？
+
+我们举个来自：假设 Bob 要给 Alice 发一封邮件，在邮件发送的过程中，黑客可能会窃取到邮件的内容，所以需要防`窃听`。黑客还可能会篡改邮件的内容，Alice 必须有能力识别邮件有没有`篡改`。最后，黑客可能假冒 Bob 给 Alice 发邮件，Alice 必须有能力识别出`伪造`的邮件。
+
+所以，应对潜在的安全威胁，需要做到三防：
+
+- 防窃听
+- 防篡改
+- 防伪造
+
+计算机加密技术就是为了实现上述目标，而现代计算机密码学理论是建立在严格的数学理论基础上的，密码学已经逐渐发展成一门科学。对于绝大多数开发者来说，设计一个安全的加密算法非常困难，验证一个加密算法是否安全更加困难，当前被认为安全的加密算法仅仅是迄今为止尚未被攻破。因此，要编写安全的计算机程序，我们要做到：
+
+- 不要自己设计山寨的加密算法；
+- 不要自己实现已有的加密算法；
+- 不要自己修改已有的加密算法。
+
+### 编码算法
+
+要学习编码算法，我们先来看一看什么是编码。
+
+ASCII 码就是一种编码，字母 `A` 的编码是十六进制的 `0x41`，字母 `B` 是 `0x42`，以此类推：
+
+| 字母 | ASCII 编码 |
+| ---- | ---------- |
+| A    | 0x41       |
+| B    | 0x42       |
+| C    | 0x43       |
+| D    | 0x44       |
+| ...  | ...        |
+
+因为 ASCII 编码最多只能有 127 个字符，要想对更多的文字进行编码，就需要用 Unicode。而中文的中使用 Unicode 编码就是 `0x4e2d`，使用 UTF-8 则需要 3 个字节编码：
+
+| 汉字 | Unicode 编码 | UTF-8 编码 |
+| ---- | ------------ | ---------- |
+| 中   | 0x4e2d       | 0xe4b8ad   |
+| 文   | 0x4e2d       | 0xe69687   |
+| 编   | 0x6587       | 0xe7bc96   |
+| 码   | 0x7f16       | 0xe7a081   |
+| ...  | ...          | ...        |
+
+因此，最简单的编码是直接给每个字符指定一个若干字节表示的整数，复杂一点的编码就需要根据一个已有的编码推算出来。
+
+比如 UTF-8 编码，它是一种不定长编码，但可以从给定字符的 Unicode 编码推算出来。
+
+#### URL 编码
+
+URL 编码是浏览器发送数据给服务器时使用的编码，它通常附加在 URL 的参数部分，例如：
+
+https://www.baidu.com/s?wd=%E4%B8%AD%E6%96%87
+
+<u>之所以需要 URL 编码，是因为处于兼容性考虑，很多服务器只识别 ASCII 字符。</u>但如果 URL 中包含中文、日文这些非 ASCII 字符怎么办？不要紧，URL 编码有一套规则：
+
+- 如果字符是 `A`~`Z`，`a`~`z`，`0`～`9`以及 `-`、`_`、`.`、`*`，则保持不变；
+- 如果是其他字符，先转换为 UTF-8 编码，然后对每个字节以 `%xx` 表示。
+
+例如：字符 `中` 的 UTF-8 编码是 `0xe4b8ad`，因此，它的 URL 编码是 `%E4%B8%AD`。URL 编码总是大写。
+
+Java 标准库提供了一个 `URLEncoder` 类来对任意字符进行 URL 编码：
+
+```java
+	public static void urlEncode() {
+		String encoded = URLEncoder.encode("中文!", StandardCharsets.UTF_8);
+		System.out.println(encoded);
+	}
+```
+
+上述代码运行的结果是 `%E4%B8%AD%E6%96%87%21`，`中`的 URL 编码 `%E4%B8%AD`，`文`的 URL 编码是 `%E6%96%87`，`!` 虽然是 ASCII 字符，也要对其编码为 `%21`。和标准的 URL 编码稍有不同，URL Encoder 把空格字符编码成 `+`，而现在的 URL 编码标准要求空格被编码为 `%20`，不过，服务器都可以处理这两种情况。
+
+如果服务器收到 URL 编码的字符串，就可以对其进行解码，还原成原始字符串。Java 标准库的 `URLDecoder` 就可以解码：
+
+```java
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+	public static void urlDecode() {
+		String decoded = URLDecoder.decode("%E4%B8%AD%E6%96%87%21", StandardCharsets.UTF_8);
+		System.out.println(decoded);
+	}
+```
+
+要特别注意：URL 编码是编码算法，不是加密算法。URL 编码的目的是把任意文本数据编码为 `%` 前缀表示的文本，编码后的文本仅包含 `A`~`Z`，`a`~`z`，`0`～`9`以及 `-`、`_`、`.`、`*`，便于`浏览器和服务器处理`。
+
+#### Base64 编码
+
+URL 编码是对字符进行编码，表示成 `%xx` 的形式，而 Base64 编码是`对二进制数据进行编码，表示成文本格式`。
+
+Base64 编码可以把任意长度的二进制数据变成文本，且只包含`A`~`Z`、`a`~`z`、`0`~`9`、`+`、`/`、`=` 这些字符。它的原理<u>是把 `3 字节`的二进制数据按 6 bit 一组，用 4 个 int 整数表示，然后查表，把 int 整数用索引对应到字符，得到编码后的字符串。</u>
+
+举个例子：3 个 byte 数据分别是 `e4`、`b8`、`ad`，按 6 bit 分组得到 `39`、`0b`、`22` 和 `2d`：
+
+```bash
+┌───────────────┬───────────────┬───────────────┐
+│      e4       │      b8       │      ad       │
+└───────────────┴───────────────┴───────────────┘
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│1│1│1│0│0│1│0│0│1│0│1│1│1│0│0│0│1│0│1│0│1│1│0│1│
+└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+┌───────────┬───────────┬───────────┬───────────┐
+│    39     │    0b     │    22     │    2d     │
+└───────────┴───────────┴───────────┴───────────┘
+```
+
+因为 6 位整数的范围总是 `0`~`63`，所以，能用 64 个字符表示：字符 `A`~`Z` 对应索引 `0`~`25`，字符 `a`~`z` 对应索引 `26`~`51`，字符 `0`~`9` 对应索引 `52`~`61`，最后两个索引 `62`、`63` 分别用字符 `+` 和 `/` 表示。
+
+<u>在 Java 中，二进制数据就是 `byte[]` 数组。</u>Java 标准库提供了 `Base64` 来对 `byte[]` 数组进行编解码：
+
+```java
+	public static void base64Encode() {
+		byte[] input = new byte[] { (byte) 0xe4, (byte) 0xb8, (byte) 0xad };
+		String b64encoded = Base64.getEncoder().encodeToString(input);
+		System.out.println(b64encoded);
+	}
+```
+
+编码后得到 `5Lit` 4 个字符。要对 `base64` 解码，仍然用 `Base64` 这个类：
+
+```java
+	public static void base64Decode() {
+		byte[] output = Base64.getDecoder().decode("5Lit");
+		System.out.println(Arrays.toString(output));
+	}
+```
+
+有的童鞋会问：如果输入的 `byte[]` 数组长度不是 3 的整数倍怎么办？这种情况下，需要对输入的末尾补一个或两个 `0x00`，编码后，在结尾加一个 `=` 表示补充了 1 个 `0x00`，加两个 `=` 表示补充了 2 个 `0x00`，解码的时候，去掉末尾补充的一个或两个 `0x00` 即可。
+
+实际上，因为编码后的长度加上 `=` 总是 4 的倍数，所以即使不加 `=` 也可以计算出原始输入的 `byte[]`。Base64 编码的时候可以用 `withoutPadding()` 去掉 `=`，解码出来的结果是一样的：
+
+```java
+import java.util.Base64;
+	// 如果输入的 `[byte]` 数组长度不是 3 的整数倍数
+	public static void base64Encode2() {
+		byte[] input = new byte[] { (byte) 0xe4, (byte) 0xb8, (byte) 0xad, 0x21 };
+		String b64encoded = Base64.getEncoder().encodeToString(input);
+		String b64encoded2 = Base64.getEncoder().withoutPadding().encodeToString(input);
+		System.out.println(b64encoded); // 5LitIQ==
+		System.out.println(b64encoded2); // 5LitIQ
+		byte[] output = Base64.getDecoder().decode(b64encoded2);
+		System.out.println(Arrays.toString(output)); // [-28, -72, -83, 33]
+	}
+
+```
+
+因为标准的 Base64 编码会出现 `+`、`/` 和 `=`，所以不适合把 Base64 编码后的字符串放到 URL 中。一种针对 URL 的 Base64 编码可以在 URL 中使用的 Base64 编码，它仅仅是把 `+` 变成 `-`，`/` 变成 `_`：
+
+```java
+	// 针对兼容 URL 的 base64 编码
+	public static void base64Encode3() {
+		byte[] input = new byte[] { 0x01, 0x02, 0x7f, 0x00 };
+		String b64encoded = Base64.getUrlEncoder().encodeToString(input);
+		System.out.println(b64encoded); // AQJ_AA==
+		byte[] output = Base64.getUrlDecoder().decode(b64encoded);
+		System.out.println(Arrays.toString(output));
+// [1, 2, 127, 0]
+	}
+```
+
+`Base64 编码的目的是把二进制数据变成文本格式，这样在很多文本中就可以处理二进制数据`。例如，电子邮件协议就是文本协议，如果要在电子邮件中添加一个二进制文件，就可以用 Base64 编码，然后以文本的形式传送。（图标可以使用 base64 嵌入 css、html 中，减少对图片对服务器的请求。）
+
+<u>Base64 编码的缺点是传输效率会较低，因为它把原始数据的长度增加了 `1/3`（补字节）</u>。
+
+和 URL 编码一样，Base64 编码是一种编码算法，不是加密算法。
+
+如果把 Base64 的 64 个字符编码表换成 32 个、48 个或者 58 个，就可以用 Base32 编码，Base 48 编码和 Base58 编码。<u>字符越少，编码的效率就会越低。</u>
+
+#### 小结
+
+URL 编码和 Base64 编码都是编码算法，它们不是加密算法；
+
+URL 编码的目的实际把任意文本数据编码为 % 前缀表示的文本，便于浏览器和服务器处理；
+
+Base64 编码的目的是把任意二进制数据编码为文本，但编码后数据量会增加 1/3。
+
+### 哈希算法
+
+`哈希算法（Hash）`又称`摘要算法（Digest）`，它的作用是：对任意一组输入数据进行计算，得到一个固定长度的输出摘要。
+
+[哈希算法与 MD5、SHA](https://zhuanlan.zhihu.com/p/37165658)——MD5、SHA 属于哈希的范畴。
+
+哈希算法最重要的特定就是：
+- 相同的输入一定得到相同的输出；
+- 不同的输入大概率得到不同的输出。
+
+哈希算法的目的就是为了验证原始数据是否被篡改。
+
+Java 字符串的 `hashCode()` 就是一个哈希算法，它的输入是任意字符串，输出是固定的 4 字节 `int` 整数：
+
+```java
+"hello".hashCode(); // 0x5e918d2 99162322
+、
+"hello, java".hashCode(); // 0x7a9d88e8  2057144552
+"hello, bob".hashCode(); // 0xa0dbae2f
+```
+
+两个相同的字符串永远会计算出相同的 `hashCode`，否则基于 `hashCode` 定位的 `HashMap` 就无法正常工作。这也是为什么当我们自定义一个 class 时，复写 `equals()` 方法时我们必须正确覆写 `hashCode()` 方法。
+
+#### 哈希碰撞
+
+哈希碰撞是指，两个不同的输入得到了相同的输出。
+
+```java
+"AaAaAa".hashCode(); // 0x7460e8c0
+"BBAaBB".hashCode(); // 0x7460e8c0
+```
+
+有童鞋会问：碰撞能不能避免？答案是不能。碰撞是一定会出现的，因为输出的字节长度是固定的，`String` 的 `hashCode()` 输出是 4 字节整数，最多只有（2^32） 4,294,967,296 种输出，但输入的数据长度是不固定的，有无数种输入。所以，哈希算法是`把一个无限的输入集合映射到一个有限的输出结合，必然会产生碰撞`。
+
+碰撞不可怕，我们担心的不是碰撞，而是碰撞的概率，因为碰撞概率的高低关系到哈希算法的安全性。一个安全的哈希算法必须满足：
+- 碰撞概率低；
+- 不能猜测输出。
+
+不能猜测输出是指，输入的任意一个 bit 的变化会造成输出完全不同，这样就很难从输出反推输入（只能依靠暴力穷举）。假设一种哈希算法有如下规律：
+
+```java
+hashA("java001") = "123456"
+hashA("java002") = "123457"
+hashA("java003") = "123458"
+```
+
+那么很容易从输出 `123456` 反推输入，这种哈希算法就不安全。安全的哈希算法从输出是看不出任何规律的：
+
+```java
+hashB("java001") = "123456"
+hashB("java002") = "580271"
+hashB("java003") = ???
+```
+
+常用的哈希算法有：
+
+|算法|输出长度（位）|输出长度（字节）|
+|--|--|--|
+| MD5 | 128 bits| 16 bytes|
+| SHA-1| 160 bits| 20 bytes|
+| RipeMD-160| 160 bits| 20 bytes|
+| SHA-256| 256 bits| 32 bytes|
+| SHA-512| 512 bits| 64 bytes|
+
+根据碰撞概率，`哈希算法的输出长度越长，就越难产生碰撞，也就越安全`。
+
+Java 标准库提供了常用的哈希算法，并且有一套统一的接口。我们以 MD5 算法为例，看看如何对输入计算哈希：
+
+```java
+	public static void md5Test() throws Exception {
+		// 创建一个 MessageDigest 实例：
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		// 返回调用 update 输入数据
+		md.update("Hello".getBytes("UTF-8"));
+		md.update("World".getBytes("UTF-8"));
+		byte[] result = md.digest(); // 16 bytes:
+		System.out.println(new BigInteger(1, result).toString(16)); // 68e109f0f40ca72a15e05cc22786f8e6
+	}
+```
+
+使用 `MessageDigest` 时，我们首先根据哈希算法获取一个 `MessageDigest` 实例，然后，反复调用 `update(byte[])` 输入数据。当输入结束后，调用 `digest()` 方法获得 `byte[]` 数组表示的摘要，最后，把它转换为十六机制的字符串。
+
+运行上述代码，可以得到输入 `HelloWorld` 的 MD5 是 `68e109f0f40ca72a15e05cc22786f8e6`。
+
+#### 哈希算法的用途
+
+因为相同的输入永远会得到相同的输出，因此，如果输入被修改了，得到的输出就会不同。
+
+我们在网站上下载软件的时候，经常看到下载页显示的哈希：
+
+![](../.vuepress/public/images/2020-07-12-21-35-43-MD5.png)
+
+如何判断下载到本地的软件是原始的、未经篡改的文件？我们只需要自己计算一下本地文件的哈希值，再与官网公开的哈希值对比，如果相同，说明文件下载正确，否则，说明文件已被篡改。
+
+哈希算法的另一个重要用途是`存储用户口令`。如果直接将用户的原始口令存放到数据库中，会产生极大的安全风险：
+- 数据库管理员能够看到用户明文口令。
+- 数据库数据一旦泄漏，黑客即可获取用户明文口令。
+
+不存储用户的`原始口令`，那么如何对用户进行认证？
+
+方法是`存储用户口令的哈希`，例如，MD5.
+
+在用户输入原始口令后，`系统计算用户输入的原始口令的 MD5 并与数据库存储的 MD5 对比`，如果一致，说明口令正确，否则，口令错误。（mac 中可以用 md5 命令工具进行测试）
+
+因此，数据库存储用户名和口令的表内容应该像下面这样：
+
+|username|password|
+|--|--|
+|bob	|f30aa7a662c728b7407c54ae6bfd27d1|
+|alice	|25d55ad283aa400af464c76d713c07ad|
+|tim	|bed128365216c019988915ed3add75fb|
+
+这样一来，数据库管理员看不到用户的原始口令。即使数据库泄漏，黑客也无法拿到用户的原始口令。想要拿到用户的原始口令，必须用暴力穷举的方法，一个口令一个口令地试，直到某个口令计算的 MD5 恰好等于指定值。
+
+`使用哈希口令时，还要注意防止彩虹表攻击`。
+
+什么是`彩虹表`呢？上面讲到了，如果只拿到 MD5，从 MD5 反推明文口令，只能使用`暴力穷举`的方法。
+
+然而黑客并不笨，暴力穷举会消耗大量的算力和时间。但是，如果有一个`预先计算好的常用口令和它们的 MD5对照表`：
+
+|常用口令| MD5|
+|--|--|
+|hello123	|f30aa7a662c728b7407c54ae6bfd27d1|
+|12345678	|25d55ad283aa400af464c76d713c07ad|
+|passw0rd	|bed128365216c019988915ed3add75fb|
+|19700101	|570da6d5277a646f6552b8832012f5dc|
+|…	|…|
+|20201231	|6879c0ae9117b50074ce0a0d4c843060|
+
+这个表就是彩虹表。如果用户使用了常用口令，黑客从 MD5 一下就能反查到原始口令：
+
+bob的MD5：`f30aa7a662c728b7407c54ae6bfd27d1`，原始口令：`hello123`；
+
+alice的MD5：`25d55ad283aa400af464c76d713c07ad`，原始口令：`12345678`；
+
+tim的MD5：`bed128365216c019988915ed3add75fb`，原始口令：`passw0rd`。
+
+这就是为什么不要使用常用密码，以及不要使用生日作为密码的原因。
+
+即使用户使用了常用口令，我们也可以采取措施来抵御彩虹表攻击，方法是`对每个口令额外添加随机数`，这个方法称之为加盐（salt）：
+
+```bash
+digest = md5(salt + inputPassword)
+```
+
+经过加盐处理的数据库表，内容如下：
+
+|username|salt|password|
+|--|--|--|
+|bob	|H1r0a	|a5022319ff4c56955e22a74abcc2c210|
+|alice	|7$p2w	|e5de688c99e961ed6e560b972dab8b6a|
+|tim	|z5Sk9	|1eee304b92dc0d105904e7ab58fd2f64|
+
+加盐的目的在于`使黑客的彩虹表失效，即使用户使用常用口令，也无法从 MD5 反推原始口令`。
+
+#### SHA-1
+
+SHA-1 也是一种哈希算法，它的输出是 160 bits，即 20 字节。SHA-1 是由美国国家安全局开发的，SHA 算法实际上是一个系列，包括 SHA-0（已废弃）、SHA-1、SHA-256、SHA-512 等。
+
+在 Java 中使用 SHA-1，和 MD5 完全一样，只需要把算法名称改为 “SHA-1”：
+
+```java
+import java.security.MessageDigest;
+	public static void sha1Test() throws Exception {
+		// 创建一个 MessageDigest 实例：
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		// 返回调用 update 输入数据
+		md.update("Hello".getBytes("UTF-8"));
+		md.update("World".getBytes("UTF-8"));
+		byte[] result = md.digest(); // 16 bytes:
+		System.out.println(new BigInteger(1, result).toString(16)); // 68e109f0f40ca72a15e05cc22786f8e6
+	}
+```
+
+类似的，计算 SHA-256，我们需要传入名称 `SHA-256`，计算 SHA-512，我们需要传入名称 `SHA-512`。Java 标准库支持的所有哈希算法可以在[这里](https://docs.oracle.com/en/java/javase/14/docs/specs/security/standard-names.html#messagedigest-algorithms)查到。
+
+> ⚠️注意：MD5 因为输出长度较短，短时间内破解是可能的，目前已经不推荐使用。
+
+#### 小结
+
+哈希算法可用于验证数据完整性，具有防篡改检测的功能；
+
+常用的哈希算法有 MD5、SHA-1 等；
+
+用哈希存储口令时要考虑彩虹表攻击。
+
+### BouncyCastle
+
+我们知道，Java 标准库提供了一系列常用的哈希算法。
+
+但如果我们要用的某种算法，Java 标准库没有提供怎么办？
+
+方法一：自己写一个，难度很大；
+
+方法二：找一个现成的第三方库，直接使用。
+
+[BouncyCastle](https://www.bouncycastle.org/) 就是一个提供了很多哈希算法和加密算法的第三方库。它提供了 Java 标准库没有的一些算法，例如，RipeMD160 哈希算法。
+
+#### 小结
+
+BouncyCastle 是一个开源的第三方算法提供商。
+
+BouncyCastle 提供了很多 Java 标准库没有提供的哈希算法和加密算法；
+
+使用第三方算法前需要通过 `Security.addProvider()`注册。
+
+### Hmac 算法
+
+在前面讲到哈希算法时，我们说，存储用户的`哈希口令`时，要`加盐`存储，目的就在于抵御`彩虹表`攻击。
+
+我们回顾一下哈希算法：
+
+```bash
+digest = hash(input)
+```
+
+正是因为相同的输入会产生相同的输出，我们加盐的目的就在于，使得输入有所变化：
+
+```bash
+digest = hash(salt + input)
+```
+
+这个 salt 可以看作是一个额外的“认证码”，同样的输入，不同的认证码，会产生不同的输出。因此，要验证输出的哈希，必须同时提供`“认证码”`。
+
+Hmac 算法就是`一种基于密钥的消息认证码算法`，它的全称是 Hash-based Message Authentication Code，是一种更安全的消息摘要算法。
+
+Hmac 算法总是和某种哈希算法配合起来用的。例如，我们使用 MD5 算法，对应的就是 HmacMD5 算法，它相当于 “加盐”的 MD5：
+
+```bash
+HmacMD5 = md5(secure_random_key, input)
+```
+
+隐翠，HmacMD5 可以看作带有一个安全的 key 的 MD5。使用 HmacMD5 而不是用 MD5 加 salt，有如下好处：
+- HmacMD5 使用的 key 长度是 64 字节，更安全；
+- Hmac 是比爱哦准算法，同样适用于 SHA-1 等其他哈希算法；
+- Hmac 输出和原有的哈希算法长度一致。
+
+可见，Hmac 本质上就是把 key 混入摘要的算法。验证此哈希时，除了原始的输入数据，还要提供 key。
+
+为了保证安全，我们不会自己指定 key，而是 通过 Java 标准库的 KeyGenerator 生成一个安全的随机的 key。下面是使用 HmacMD5 的代码：
+
+```java
+	public static void hmacTest() throws Exception {
+		KeyGenerator keyGen = KeyGenerator.getInstance("HmacMD5");
+		SecretKey key = keyGen.generateKey();
+		// 打印随机生成的 key:
+		byte[] skey = key.getEncoded();
+		System.out.println(new BigInteger(1, skey).toString(16));
+		Mac mac = Mac.getInstance("HmacMD5");
+		mac.init(key);
+		mac.update("HelloWorld".getBytes("UTF-8"));
+		byte[] result = mac.doFinal();
+		System.out.println(new BigInteger(1, result).toString(16));
+	}
+```
+
+和 MD5 相比，使用 HmacMD5 的步骤是：
+1. 通过名称 `HmacMD5` 获取 `KeyGenerator` 实例；
+2. 通过 `KeyGenerator` 创建一个 `SecretKey` 实例；
+3. 通过名称 `HmacMD5` 获取 `Mac` 实例；
+4. 用 `SecretKey` 初始化 `Mac` 实例；
+5. 对 `Mac` 实例反复调用 `update(byte[])` 输入数据；
+6. 调用 `Mac` 实例的 `doFinal()` 获取最终的哈希追。
+
+我们可以用 Hmac 算法取代原有的自定义的加盐算法，因此，存储用户名和口令的数据库结构如下：
+
+|username	|secret_key (64 bytes)	|password|
+|--|--|--|
+|bob	|a8c06e05f92e...5e16|	7e0387872a57c85ef6dddbaa12f376de|
+|alice|	e6a343693985...f4be|	c1f929ac2552642b302e739bc0cdbaac|
+|tim	|f27a973dfdc0...6003	|af57651c3a8a73303515804d4af43790|
+
+有了 Hmac 计算的哈希和 `SecretKey`，我们想要验证怎么办？这时，`SecretKey` 不能从 `KeyGenerator` 生成，而是从一个 `byte[]` 数组恢复：
+
+```java
+	public static void hmacTest2() throws Exception {
+		byte[] hkey = new byte[] { 106, 70, -110, 125, 39, -20, 52, 56, 85, 9, -19, -72, 52, -53, 52, -45, -6, 119, -63,
+				30, 20, -83, -28, 77, 98, 109, -32, -76, 121, -106, 0, -74, -107, -114, -45, 104, -104, -8, 2, 121, 6,
+				97, -18, -13, -63, -30, -125, -103, -80, -46, 113, -14, 68, 32, -46, 101, -116, -104, -81, -108, 122,
+				89, -106, -109 };
+
+		SecretKey key = new SecretKeySpec(hkey, "HmacMD5");
+		// 打印随机生成的 key:
+//		byte[] skey = key.getEncoded();
+//		System.out.println(new BigInteger(1, skey).toString(16));
+		Mac mac = Mac.getInstance("HmacMD5");
+		mac.init(key);
+		mac.update("HelloWorld".getBytes("UTF-8"));
+		byte[] result = mac.doFinal();
+		System.out.println(Arrays.toString(result));
+		// [126, 59, 37, 63, 73, 90, 111, -96, -77, 15, 82, -74, 122, -55, -67, 54]
+	}
+```
+
+恢复 `SecretKey` 的语句就是 `new SecretKeySpec(hkey, "HmacMD5")`
+
+#### 小结
+
+Hmac 算法是一种标准的基于密钥的哈希算法，可以配合 MD5、SHA-1 等哈希算法，计算的摘要长度和原摘要算法长度相同。
+
+### 对称加密算法
+
+对称加密算法就是`传统的用一个密码进行加密和解密`。例如，我们常用的 WinZIP 和 WinRAR 对你压缩包的加密和解密，就是使用对称加密算法。
+
+![](../.vuepress/public/images/2020-07-13-12-07-43-encrypt.png)
+
+从程序的角度看，所谓加密，就是这样一个函数，它接收密码和明文，然后输出密文：
+
+```bash
+secret = encrypt(key, message);
+```
+
+而解密则相反，它接收密码和密文，然后输出明文：
+
+```bash
+plain = decrypt(key, secret);
+``` 
+
+在软件开发中，常用的对称加密算法有：
+
+|算法|密钥长度|工作模式|填充模式|
+|--|--|--|--|
+|DES	|56/64	|ECB/CBC/PCBC/CTR/...	NoPadding/PKCS5Padding/...
+|AES	|128/192/256	|ECB/CBC/PCBC/CTR/...	NoPadding/PKCS5Padding/|PKCS7Padding/...
+|IDEA	|128	|ECB	PKCS5Padding/PKCS7Padding/...
+
+密钥长度直接决定加密强度，而工作模式和填充模式可以看成是对称加密算法的参数和格式选择。Java 标准库的算法实现并不包括所有的工作模式和所有填充模式，但是通常我们只需要挑选常用的使用就可以了。
+
+最后注意，DES 算法由于密钥过短，可以在短时间内被暴力破解，所以现在已经不安全了。
+
+#### 使用 AES 加密
+
+AES 算法是目前应用最广泛的加密算法。我们先用 ECB 模式加密并解密：
+
+```java
+public static void ecbTest() throws Exception {
+		// 原文：
+		String message = "Hello, world!";
+		System.out.println("Message：" + message);
+		// 128 位密钥
+		byte[] key = "1234567890abcdef".getBytes("UTF-8");
+
+		// 加密：
+		byte[] data = message.getBytes("UTF-8");
+		byte[] encrypted = encrypt(key, data);
+		System.out.println("Encrypted：" + Base64.getEncoder().encodeToString(encrypted));
+		// 解密：
+		byte[] decrypted = decrypt(key, encrypted);
+		System.out.println("Decrypted: " + new String(decrypted, "UTF-8"));
+	}
+
+	// 加密
+	public static byte[] encrypt(byte[] key, byte[] input) throws GeneralSecurityException {
+		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+		SecretKey keySpec = new SecretKeySpec(key, "AES");
+		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+		return cipher.doFinal(input);
+	}
+
+	// 解密：
+	public static byte[] decrypt(byte[] key, byte[] input) throws GeneralSecurityException {
+		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+		SecretKey keySpec = new SecretKeySpec(key, "AES");
+		cipher.init(Cipher.DECRYPT_MODE, keySpec);
+		return cipher.doFinal(input);
+	}
+```
+
+Java 标准库提供的对称加密接口非常简单，使用时按以下步骤编写代码：
+1. 根据算法名称/工作模式/填充模式获取 Cipher 实例；
+2. 根据算法名称初始化一个 SecretKey 实例，密钥必须是指定长度；
+3. 使用 SerectKey 初始化 Cipher 实例，并设置加密或解密模式；
+4. 传入明文或密文，获得密文或明文。
+
+ECB 模式是最简单的 AES 加密模式，它只需要一个固定长度的密钥，固定的明文会生成固定的密文，这种一对一的加密方式导致安全性降低，更好的方式是通过 CBC 模式，它需要一个随机数作为 IV 参数，这样对于同一份明文，每次生成的密文都不同。
+
+```java
+```
+
+#### 小结
+
+对称加密算法使用同一个密钥进行加密和解密，常用算法有 DES、AES 和 IDEA 等；
+
+密钥长度由算法设计决定，AES 的密钥长度是 128/192/256 位；
+
+使用对称加密算法需要指定算法名称、工作模式和填充模式。
+
+### 口令加密算法
+
+上一节我们讲的 AES 加密，细心的童鞋可能会发现，密钥长度是固定的 128/192/256 位，而不是我们 WinZip / WinRAR 那样，随便输入几位都可以。
+
+但是我们平时使用的加密软件，输入 6 位、8 位都可以，难道加密方式不一样？
+
+实际上用户输入的口令并不能直接作为 AES 的密钥进行加密（除非长度恰好是 128/192/256 位），并且用户输入的口令一般都有规律，安全性远远不如安全随机数产生的随机口令。因此，`用户输入的口令，通常还需要使用 PBE 算法，采用随机数杂凑计算出真正的密钥，再进行加密`。
+
+PBE 就是 Password Based Encryption 的缩写，它的作用如下：
+
+```bash
+key = generate(userPassword, secureRandomPassword);
+```
+
+PBE 的作用是`把用户输入的口令和一个安全随机的口令用杂凑后计算出真正的密钥。`以 AES 密钥为例，我们让用户输入一个口令，然后生成一个随机数，通过 PBE 算法计算出真正的 AES 口令，再进行加密，代码如下：
+
+#### 小结
+
+PBE 算法通过用户口令和安全的随机 salt 计算出 Key，然后再进行加密；
+
+Key 通过口令和安全的随机 salt 计算得出，大大提高了安全性；
+
+PBE 算法内部使用的仍然是标准对称加密算法（例如 AES）。
+
+### 密钥交换算法
+
+更确切地说，DH 算法是一个密钥协商算法，双方最终协商出一个共同的密钥，而这个密钥不会通过网络传输。
+
+如果我们把 `a` 看成甲的私钥，`A` 看成甲的公钥，`b` 看成乙的私钥，DH 算法的本质就是双方各自生成自己的私钥和公钥，私钥仅对你自己可见，然后交换公钥，并根据自己的私钥和对方的公钥，生成最终的 `secretKey` ，DH 算法通过数学定律保证了双方各自计算出的 `secretKey` 是相同。	
+
+```java
+	public static void main(String[] args) {
+		// Bob和Alice:
+		Person bob = new Person("Bob");
+		Person alice = new Person("Alice");
+
+		// 各自生成KeyPair:
+		bob.generateKeyPair();
+		alice.generateKeyPair();
+
+		// 双方交换各自的PublicKey:
+		// Bob根据Alice的PublicKey生成自己的本地密钥:
+		bob.generateSecretKey(alice.publicKey.getEncoded());
+		// Alice根据Bob的PublicKey生成自己的本地密钥:
+		alice.generateSecretKey(bob.publicKey.getEncoded());
+
+		// 检查双方的本地密钥是否相同:
+		bob.printKeys();
+		alice.printKeys();
+		// 双方的SecretKey相同，后续通信将使用SecretKey作为密钥进行AES加解密...
+	}
+
+
+class Person {
+
+	public final String name;
+
+	public PublicKey publicKey;
+	private PrivateKey privateKey;
+	private byte[] secretKey;
+
+	public Person(String name) {
+		this.name = name;
+	}
+
+	// 生成本地KeyPair:
+	public void generateKeyPair() {
+		try {
+			KeyPairGenerator kpGen = KeyPairGenerator.getInstance("DH");
+			kpGen.initialize(512);
+			KeyPair kp = kpGen.generateKeyPair();
+			this.privateKey = kp.getPrivate();
+			this.publicKey = kp.getPublic();
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void generateSecretKey(byte[] receivedPubKeyBytes) {
+		try {
+			// 从byte[]恢复PublicKey:
+			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(receivedPubKeyBytes);
+			KeyFactory kf = KeyFactory.getInstance("DH");
+			PublicKey receivedPublicKey = kf.generatePublic(keySpec);
+			// 生成本地密钥:
+			KeyAgreement keyAgreement = KeyAgreement.getInstance("DH");
+			keyAgreement.init(this.privateKey); // 自己的PrivateKey
+			keyAgreement.doPhase(receivedPublicKey, true); // 对方的PublicKey
+			// 生成SecretKey密钥:
+			this.secretKey = keyAgreement.generateSecret();
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void printKeys() {
+		System.out.printf("Name: %s\n", this.name);
+		System.out.printf("Private key: %x\n", new BigInteger(1, this.privateKey.getEncoded()));
+		System.out.printf("Public key: %x\n", new BigInteger(1, this.publicKey.getEncoded()));
+		System.out.printf("Secret key: %x\n", new BigInteger(1, this.secretKey));
+	}
+}
+```
+<!-- SSH github 这些是哪种算法？ -->
+
+但是 DH 算法并未解决`中间人攻击`，即甲乙双方并不能确保与自己通信的是否真的是对方。消除中间人攻击需要其他方法。
+
+#### 小结
+
+DH 算法是一种`密钥交换`协议，通信双方通过不安全的信道协商密钥，然后进行对称加密传输。
+
+DH 算法没有解决中间人攻击。
+
+### 非对称加密算法
+
+从 DH 算法我们可以看到，`公钥—私钥组成的密钥对`是非常有用的加密方式，因为公钥是可以公开的，而私钥是完全保密的，由此奠定了非对称加密的基础。
+
+`非对称加密就是加密和解密使用的不是相同的密钥：只有同一个公钥—私钥对才能正常加解密。`
+
+因此，如果小明要加密一个文件发送给小红，他应该首先向小红索取她的公钥，然后，他用小红的公钥加密，把加密文件发送给小红，此文件只能由小红的私钥解开，因为小红的私钥在她自己手里，所以，除了小红，没有任何人能解开此文件。
+
+非对称加密相比对称加密的显著优点在于，<u>对称加密需要协商密钥，而非对称加密可以安全地公开各自的公钥，在 N 个密钥对，每个人只管理自己的密钥对。而使用对称加密则需要 `N* (N-1)/2` 个密钥 </u>，因此每个人需要管理 `N-1` 个密钥，密钥管理难度大，而且非常容易泄漏。
+
+既然非对称加密这么好，那我们抛弃对称加密，完全使用非对称加密行不行？也不行。因为非对称加密的缺点就是运算速度非常慢，比对称加密要慢很多。
+
+所以，在实际应用的时候，非对称加密总是和对称加密一起使用。假设小明需要给小红传输加密文件，他们首先交换了各自的公钥，然后：
+1. 小明生成一个随机的 AES 口令，然后用小红的公钥通过 RSA 加密这个口令，并发给小红；
+2. 小红用自己的 RSA 私钥解密得到 AES 口令；
+3. 双方使用这个共享的 AES 口令用 AES 加密通信。
+
+可见非对称加密实际上应用在第一步，即加密“AES 口令”。这也是<u>我们在浏览器中常用的 HTTPS 协议的做法，即浏览器和服务器先通过 RSA 交换 AES 口令，接下来双方通信实际上采用的是速度较快的 AES 对称加密，而不是缓慢的 RSA 非对称加密。</u>
+
+Java 标准库提供了 RSA 算法的实现：
+
+```java
+import java.math.BigInteger;
+import java.security.*;
+
+import javax.crypto.Cipher;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		// 明文:
+		byte[] plain = "Hello，使用RSA非对称加密算法对数据进行加密！".getBytes("UTF-8");
+		// 创建公钥／私钥对:
+		Person alice = new Person("Alice");
+		// 用Alice的公钥加密:
+		byte[] pk = alice.getPublicKey();
+		System.out.println(String.format("public key: %x", new BigInteger(1, pk)));
+		byte[] encrypted = alice.encrypt(plain);
+		System.out.println(String.format("encrypted: %x", new BigInteger(1, encrypted)));
+		// 用Alice的私钥解密:
+		byte[] sk = alice.getPrivateKey();
+		System.out.println(String.format("private key: %x", new BigInteger(1, sk)));
+		byte[] decrypted = alice.decrypt(encrypted);
+		System.out.println(new String(decrypted, "UTF-8"));
+	}
+}
+
+class Person {
+	String name;
+	// 私钥:
+	PrivateKey sk;
+	// 公钥:
+	PublicKey pk;
+
+	public Person(String name) throws GeneralSecurityException {
+		this.name = name;
+		// 生成公钥／私钥对:
+		KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA");
+		kpGen.initialize(1024);
+		KeyPair kp = kpGen.generateKeyPair();
+		this.sk = kp.getPrivate();
+		this.pk = kp.getPublic();
+	}
+
+	// 把私钥导出为字节
+	public byte[] getPrivateKey() {
+		return this.sk.getEncoded();
+	}
+
+	// 把公钥导出为字节
+	public byte[] getPublicKey() {
+		return this.pk.getEncoded();
+	}
+
+	// 用公钥加密:
+	public byte[] encrypt(byte[] message) throws GeneralSecurityException {
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.ENCRYPT_MODE, this.pk);
+		return cipher.doFinal(message);
+	}
+
+	// 用私钥解密:
+	public byte[] decrypt(byte[] input) throws GeneralSecurityException {
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.DECRYPT_MODE, this.sk);
+		return cipher.doFinal(input);
+	}
+}
+```
+
+#### 小结
+
+非对称加密就是加密和解密使用的不是相同的密钥，只有同一个公钥—私钥对才能正常加解密；
+
+`只使用非对称加密算法不能防止中间人攻击`。
+
+### 签名算法
+
+我们使用非对称加密算法的时候，对于一个公钥—私钥对，通常是用公钥加密，私钥解密。
+
+如果使用私钥加密，公钥解密是否可行呢？实际上是完全可行的。
+
+不过我们再仔细想一想，私钥是保密，而公钥是公开的，用私钥加密，那相当于所有人都可以用公钥解密。这个加密有什么意义？
+
+这个加密的意义在于，如果小明用自己的私钥加密了一条消息，比如`小明喜欢小红`，然后他公开了加密消息，由于任何人都可以用小明的公钥解密，从而使得任何人都可以确认`小明喜欢小红`这条消息肯定是小明发出的，其他人不能伪造这个消息，小明也不能抵赖这条消息不是自己写的。
+
+因此，<u>私钥加密得到的密文实际上就是数字签名，要验证这个签名是否正确，只能用私钥持有者的公钥进行解密验证。使用数字签名的目的是为了确认某个消息确实是由某个发送方发送的，任何人都不可能伪造消息，并且，发送方也不能抵赖。</u>
+
+在实际应用的时候，签名实际上并不是针对原始消息，而是针对`原始信息的哈希进行签名`，就：
+
+```bash
+signature = ecrypt(privateKey, sha256(message));
+```
+
+对签名进行验证实际上就是公钥解密：
+
+```bash
+hash = decrypt(publicKey, signature)
+```
+
+然后把解密后的哈希与远水新秀的哈希进行对比。
+
+因为用户总是使用自己的私钥进行签名，所以，私钥就相当于用户身份。而公钥用来给外部验证用户身份。
+
+常用数字签名算法有：
+- MD5withRSA
+- SHA1withRSA
+- SHA256withRSA
+
+它们实际上就是指定某种哈希算法进行 RSA 签名的方式。
+
+```java
+
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+
+public class Main {
+	public static void main(String[] args) throws GeneralSecurityException {
+		// 生成RSA公钥/私钥:
+		KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA");
+		kpGen.initialize(1024);
+		KeyPair kp = kpGen.generateKeyPair();
+		PrivateKey sk = kp.getPrivate();
+		PublicKey pk = kp.getPublic();
+
+		// 待签名的消息:
+		byte[] message = "Hello, I am Bob!".getBytes(StandardCharsets.UTF_8);
+
+		// 用私钥签名:
+		Signature s = Signature.getInstance("SHA1withRSA");
+		s.initSign(sk);
+		s.update(message);
+		byte[] signed = s.sign();
+		System.out.println(String.format("signature: %x", new BigInteger(1, signed)));
+
+		// 用公钥验证:
+		Signature v = Signature.getInstance("SHA1withRSA");
+		v.initVerify(pk);
+		v.update(message);
+		boolean valid = v.verify(signed);
+		System.out.println("valid? " + valid);
+	}
+}`
+```
+
+<!-- 文件切片上传，也可以采用私钥加密，公钥处理，不仅仅是 MD5 值 -->
+
+#### 小结
+
+数字签名就是用发送方的私钥对原始数据进行签名，只有用发送方公钥才能通过签名验证。
+
+数字签名用于：
+- 防止伪造
+- 防止抵赖
+- 检测篡改。
+
+常用的数字签名算法包括：MD5withRSA/SHA1withRSA/SHA256withRSA/SHA1with
+DSA/SHA512withDSA/ECDSA 等。
+
+### 数字证书
+
+我们知道，摘要算法用来确保数据没有被篡改，非对称加密可以对数据进行加解密，签名算法可以确保数据完整性和抗否认性，把这些算法集合到一起，并搞一套完善的标准，这就是数字证书。
+
+因此，数字证书就是集合了多种密码学算法，用于实现数据加解密、身份认证、签名等多种功能的一种安全标准。
+
+`数字证书可以防止中间人`攻击，因为它采用链式认证，即通过根证书（Root CA）去签名下一级证书，这样层层签名，直到最终的用户证书。<u>而 Root CA 证书内置于操作系统中，所以你，任何经过 CA 认证的数字证书都可以对其本身进行校验，确保证书本身不是伪造的。</u>
+
+我们在上网时常用的 HTTPS 协议就是数字证书的应用。浏览器会自动验证证书的有效性：
+
+![](../.vuepress/public/images/2020-07-13-21-45-36-https.png)
+
+要使用数字证书，首先需要创建证书。正常情况下，一个合法的数字证书需要经过 CA 签名，这需要`认证域名并支付一定的费用`。开发的时候，我们可以使用自签名的证书，这种证书可以正常开发调试，但不能对外作为服务使用，因为其他客户端并不认可未经 CA 签名的证书。
+
+在 Java 程序中，数字证书存储在一种 Java 专用的 key store 文件中，JDK 提供了一系列命令来创建和管理 key store。
+
+```java
+public static void main(String[] args) throws Exception {
+		byte[] message = "Hello, use X.509 cert!".getBytes("UTF-8");
+		// 读取KeyStore:
+		KeyStore ks = loadKeyStore("/my.keystore", "123456");
+		// 读取私钥:
+		PrivateKey privateKey = (PrivateKey) ks.getKey("mycert", "123456".toCharArray());
+		// 读取证书:
+		X509Certificate certificate = (X509Certificate) ks.getCertificate("mycert");
+		// 加密:
+		byte[] encrypted = encrypt(certificate, message);
+		System.out.println(String.format("encrypted: %x", new BigInteger(1, encrypted)));
+		// 解密:
+		byte[] decrypted = decrypt(privateKey, encrypted);
+		System.out.println("decrypted: " + new String(decrypted, "UTF-8"));
+		// 签名:
+		byte[] sign = sign(privateKey, certificate, message);
+		System.out.println(String.format("signature: %x", new BigInteger(1, sign)));
+		// 验证签名:
+		boolean verified = verify(certificate, message, sign);
+		System.out.println("verify: " + verified);
+	}
+```
+
+以 HTTPS 协议为例，浏览器和服务器建立安全连接的步骤如下：
+1. 浏览器向服务器发起请求，服务器向浏览器发送自己的数字证书；
+2. 浏览器用操作系统内置的 Root CA 来验证服务器的证书是否有效，如果有效，就使用该证书加密一个随机的 AES 口令并发送给服务器；
+3. 服务器用自己的私钥解密获得 AES 口令，并在后续通讯中使用 AES 解密。
+
+上述流程只是一种最常见的单向验证。如果服务器还要验证客户端，那么客户端也需要把自己的证书发送给服务器验证，这种常见常见于网银等。
+
+**注意**：数字证书存储的是公钥，以及相关的证书链和算法信息。私钥必须严格保密，如果数字证书对应的私钥泄漏，就会造成严重的安全威胁。如果 CA 证书的私钥泄漏，那么该 CA 证书签发的所有证书将不可信。数字证书服务商 [DigNotar](https://en.wikipedia.org/wiki/DigiNotar) 就发送过私钥泄漏导致公司破产的事故。
+
+#### 小结
+
+数字证书就是集合了多种密码学算法，用于实现数据加解密、身份认证、签名等多种功能的一种安全标准。
+
+数字证书采用链式签名管理，顶级的 Root CA 证书已内置在操作系统中。
+
+数字证书存储的是公钥，可以安全公开，而私钥必须严格保密。
 
 ## 多线程
 
@@ -905,10 +2313,12 @@ main() 启动新的线程，新的线程启动期间 main 的线程会`暂时`�
 
 显示调度器会有多个不可预测的范例，
 有时它会这样执行：
+
 - main() 启动新的线程，调度器把主线程搁置以便执行新的线程。
 - 调度器让新的程序执行完后，主线程恢复
 
 有时它会这样执行
+
 - main() 启动新的线程，调度器把主线程搁置以便执行新的线程。
 - 调度器让新的程序执一下就回到主线程继续执行。
 - 调度器回到新你的线程继续执行。
@@ -947,6 +2357,28 @@ Java 用 `Thread` 对象表示一个线程，通过调用 `start()` 启动一个
 
 ## 网络编程
 
+网络编程是 Java 最擅长的方向之一，使用 Java 进行网络编程时，由虚拟机实现了底层复杂的网络协议，Java 程序只需要调用 Java 标准库提供的接口，就可以简单高效地编写网络程序。
+
+### 网络编程的基础
+
+
+![](../.vuepress/public/images/2020-07-13-22-19-59-computer-network.png)
+
+
+在 OSI 模型中，第三层网络层负责 IP 地址，第二层数据链路层则负责 MAC 位址 [1]  。MAC 地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的 [MAC](https://baike.baidu.com/item/MAC%E5%9C%B0%E5%9D%80) 地址（MAC地址（英语：Media Access Control Address），直译为媒体存取控制位址，也称为局域网地址（LAN Address），MAC 位址，以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网络设备位置的位址，大多数接入 Internet 的方式是把主机通过局域网组织在一起，然后再通过交换机或路由器等设备和 Internet 相连接。这样一来就出现了如何区分具体用户，防止 IP地址被盗用的问题。由于 IP 地址只是逻辑上的标识，任何人都能随意修改，因此不能用来具体标识一个用户。而 MAC 地址则不然，它是固化在网卡里面的。从理论上讲，除非盗来硬件即网卡，否则一般是不能被冒名顶替的。基于 MAC 地址的这种特点，因此局域网采用了用 MAC 地址来标识具体用户的方法）。
+
+### TCP 编程
+
+### UDP 编程
+
+### 发送 Email
+
+### 接收 Email
+
+### HTTP 编程
+
+### RMI 远程调用
+
 ## XML 与 JSON
 
 ## JDBC 编程
@@ -957,6 +2389,33 @@ Java 用 `Thread` 对象表示一个线程，通过调用 `start()` 启动一个
 
 ## Web 开发
 
+JavaEE 最核心的组件就是基于 Servlet 标准的 Web 服务器，开发者编写的应用程序是基于 Servlet API 并运行在 Web 服务器内部的：
+
+```bash
+┌─────────────┐
+│┌───────────┐│
+││ User App ││
+│├───────────┤│
+││Servlet API││
+│└───────────┘│
+│ Web Server │
+├─────────────┤
+│ JavaSE │
+└─────────────┘
+```
+
+此外，JavaEE 还有一系列技术标准：
+
+- EJB：Enterprise JavaBean，企业级 JavaBean，早期经常用于实现应用程序的业务逻辑，现在基本被轻量级框架如 Spring 所取代；
+- JAAS：Java Authentication and Authorization Service，一个标准的认证和授权服务，常用于企业内部，Web 程序通常使用更轻量级的自定义认证；
+- JCA：JavaEE Connector Architecture，用于连接企业内部的 EIS 系统等；
+- JMS：Java Message Service，用于消息服务；
+- JTA：Java Transaction API，用于分布式事务；
+- JAX-WS：Java API for XML Web Services，用于构建基于 XML 的 Web 服务；
+  ...
+
+目前流行的基于 Spring 的轻量级 JavaEE 开发架构，使用最广泛的是 Servlet 和 JMS，以及一系列开源组件。
+
 ## Spring 开发
 
 ## 附录
@@ -965,6 +2424,7 @@ Java 用 `Thread` 对象表示一个线程，通过调用 `start()` 启动一个
 
 ## 参考资料
 
+- [Tomcat(一) Tomcat是什么：Tomcat与Java技术 Tomcat与Web应用 以及 Tomcat基本框架及相关配置](https://blog.csdn.net/tjiyu/article/details/54590258)
 - [Java 虚拟机——字节码、机器码和 JVM](https://zhuanlan.zhihu.com/p/44657693) 本文主要讲解 Java 虚拟机的概念，字节码、机器码、编译器、解释器的概念。
 - [廖雪峰 Java 教程](https://www.liaoxuefeng.com/wiki/1252599548343744)
 - [如何设置或更改 PATH 系统变量？](https://www.java.com/zh_CN/download/help/path.xml)
