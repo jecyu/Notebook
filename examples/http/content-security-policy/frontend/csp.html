@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      http-equiv="Content-security-Policy"
+      content="default-src 'self' 'unsafe-inline'; img-src blob: *"
+    />
+    <title>CSP 安全策略</title>
+    <style>
+      h1 {
+        color: cornflowerblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hello CSP !</h1>
+    <img
+      src="blob:http://127.0.0.1:59118/99c3dead-54be-478c-9041-8c5526bada8e"
+      alt=""
+    />
+    <script>
+      window.onload = () => alert("Hi, Jecyu");
+    </script>
+  </body>
+</html>

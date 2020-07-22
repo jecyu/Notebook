@@ -91,6 +91,16 @@ sudo du -sh *
 
 ### 第二种：下载 OmniDiskSweeper
 
+
+To Run these examples you need to add the below entry inside your `/etc/hosts` file in linux
+
+```
+127.0.0.1   sso.ankuranand.com
+127.0.0.1   consumer.ankuranand.in
+```
+
+You need to clean the browser cache and close your VPN for modifying the computer's hosts file work.[修改 hosts 为何不生效，是 DNS 缓存？](https://www.cnblogs.com/hustskyking/p/hosts-modify.html)
+
 ## 在中文输入法的情况下，如何快速输入英文字母？
 
 在输入中文输入法时，我们知道按下空格键就是输出中文，可以通过按下`enter`键即可输出英文字母。

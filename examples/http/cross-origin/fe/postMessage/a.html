@@ -1,0 +1,38 @@
+<!-- 文件：a.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>页面 A</title>
+  </head>
+  <style>
+    .hide {
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+    }
+  </style>
+  <body>
+    <iframe
+      class="hide"
+      src="http://localhost:4000/b.html"
+      id="frame"
+      onload="load()"
+    ></iframe>
+    <h2>页面a</h2>
+    <script>
+      function load() {
+        let frame = document.getElementById("frame");
+        // 通过片段识别符
+        frame.src = `http://localhost:4000/b.html#tom`;
+        frame.contentWindow.postMessage("I love you", "http://localhost:4000");
+        window.onmessage = function(e) {
+          console.log(e.data);
+        };
+      }
+      window.name = 'Jecyu'
+      // window.location = "http://localhost:4000/c.html"
+      localStorage.setItem('user', 'Tom'); // 设置
+    </script>
+  </body>
+</html>

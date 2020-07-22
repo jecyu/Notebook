@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CORS 实现跨域</title>
+  </head>
+  <body>
+    <h3>CORS 实现跨域</h3>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script>
+      const xhr = new XMLHttpRequest();
+      // xhr.open("GET", "http://localhost:8088"); // GET
+      // xhr.open("POST", "http://localhost:8088"); // POST
+      xhr.open("PUT", "http://localhost:8088"); // POST
+      xhr.setRequestHeader("token", "jecyu"); // 携带身份凭证
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+          if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+            console.log(xhr.responseText);
+          } else {
+            alert("Request was unsuccessful: " + xhr.status);
+          }
+        }
+      };
+      xhr.send(null);
+    </script> -->
+    <script>
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
+      
+      axios.get('http://localhost:8088', {
+        cancelToken: source.token
+      }).catch(function (thrown) {
+        if (axios.isCancel(thrown)) {
+          console.log('Request canceled', thrown.message);
+        } else {
+          // handle error
+        }
+      });
+      // cancel the request
+      setTimeout(() => {
+        // cancel();
+        source.cancel('Operation canceled by the user.');
+      }, 1000);
+    </script>
+  </body>
+</html>

@@ -82,6 +82,9 @@ zip -r abcdef.zip abc def.txt 这句命令的意思是将文件夹 abc 和文件
 
 tar -zxvf apache-tomcat-7.0.75.tar.gz 该命令在解压安装 tomcat 时使用，是将 apache-tomcat.7.0.75.tar.gz 直接解压到当前目录下。tar 同时具有压缩的解压的功能，使用时根据参数和命令结构区分。
 
+- [不用压缩软件，Mac如何一键轻松解压rar文件？](https://zhuanlan.zhihu.com/p/39753134)
+- [Linux下解压：tar、rar、7z命令简单易懂的教程（含实例）](https://blog.csdn.net/AC_huang/article/details/23279641)
+
 ### Linux 的规划与安装
 
 #### Linux 是什么
@@ -345,3 +348,5 @@ copy 命令的功能是将给出的文件或目录拷贝到另一文件或目录
 - [鸟哥的私房菜](http://linux.vbird.org/linux_basic/#part6)
 - [spell 库](https://github.com/jsoref/spelling)
 - [Linux 下文件（文件夹）的压缩和解压](https://baijiahao.baidu.com/s?id=1640987338729787489&wfr=spider&for=pc)
+- [Intro To Linux [For Beginners]](https://dev.to/ishandeveloper/intro-to-linux-for-beginners-g6l?utm_source=digest_mailer&utm_medium=email&utm_campaign=digest_email)
+- [如何测试端口通不通(四种方法）](https://blog.csdn.net/swazer_z/article/details/64442730)

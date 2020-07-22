@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "README.md"); // GET // 相对路径
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) { // 异步调用完毕
+          if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) { // 异步调用成功
+            console.log(xhr.responseText);
+          } else {
+            alert('Request was unsuccessful: ' + xhr.status);
+          }
+        }
+      };
+      xhr.send(null);
+    </script>
+  </body>
+</html>

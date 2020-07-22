@@ -195,7 +195,13 @@ saveAs(blob, filename);
 
 301，搜索引擎可以根据 301 更改失效的路径。
 
+
+## Cookie
+
+![](../.vuepress/public/images/2020-07-15-14-37-25.png)
+
 ## 参考资料
 
 - [HTTP 请求方法详解](https://juejin.im/entry/5b004085f265da0b886daf7c)
 - [MIME 类型](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types) -- 浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理 URL。
+- [聊一聊 cookie](https://segmentfault.com/a/1190000004556040)

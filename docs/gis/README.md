@@ -194,6 +194,10 @@ ESRI CityEngine 是三维城市建模的首选软件。
 - **发布注册服务（Registry）：**提供对各种服务的注册服务，以便于服务的发现。其中包括数据类型、数据实例、服务类型、服务实例的注册服务。注册服务提供了各个注册项的登记、更新及查找服务。
 - 客户端应用：即客户端的基本应用，如地图的显示、地图浏览以及其他一些增值服务。
 
+## 本地部署环境
+
+- [本地部署和配置ArcGIS API for JavaScript，实现server中JavaScript Viewer离线查看服务](http://zhihu.geoscene.cn/article/3052)
+
 ## 问题
 
 ### ArcGlobe 与 ArcScene 有什么区别?

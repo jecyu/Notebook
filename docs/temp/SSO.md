@@ -22,6 +22,8 @@
 - 加密算法
   - 非对称（常用用于系统登录时，先通过接口获去公钥（后台可能通过域名判断是否发送公钥），然后把密码和公钥一起加密发送给后台，后台再使用私钥来解密。）
 - 如何同步 sso 认证中心的用户表，例如给运维系统使用，可以得到授权连接它的数据，获取读写用户权限关联表的授权，然后跟现有的权限表进行关联。
+- 基于 token 的认证（保存用户状态到客户端）和基于 session 的认证（保存用户状态到服务器）
+- cookie 是存在于客户端不安全，因此便有了 session 的存在，session 是保存在服务端。然后把 sessionId 发送给浏览器端作为 cookie 保存下来。
 
 ## OAuth 2.0
 
@@ -46,6 +48,8 @@
 2. 用户同意，统一认证中心就会重定向回 A 网站，同时发回一个 token。
 3. A 网站后端获得 token 后，给 A 网站设置 cookie，并在统一认证中心设置该用户有效。
 4. 然后 B 网站进入系统时，如何同步登录？
+
+
 
 ### 单点登录
 
@@ -84,8 +88,111 @@ cookie： uid
 
 session 是服务端自己维护的会话数据结构，可以根据 cookie 获取当前用户的 session 会话状态
 
+### 单系统登录
+
+session 是另一种记录客户状态的机制，与 cookie 保存在客户端浏览器不同，session 保存在服务器当中；
+当客户端访问服务器时，服务器会生成一个 session 对象，对象中保存的是 key:value 值，同时服务器会将 key 传回给客户端的 cookie 当中；当用户第二次访问服务器时，就会把 cookie 当中的 key 传回到服务器中，最后服务器会吧 value 值返回给客户端。
+因此上面的 key 则是全局唯一的标识，客户端和服务端依靠这个全局唯一的标识来访问会话信息数据。
+
+这里的 session 在单点登录中则属于本地（局部）会话。
+
+这里是 session 方案：
+
+```js
+const http = require("http");
+const fs = require("fs");
+const url = require("url");
+const qs = require("querystring");
+const path = require("path");
+
+// converts string to object
+// Cookie is as string type such as `name=Jecyu;year=1994` and we need to convert this to object type such as {name: 'Jecyu', year: '1994'}
+const parseCookies = (cookie = "") =>
+  cookie
+    .split(";")
+    .map((v) => v.split("="))
+    .map(([k, ...vs]) => [k, vs.join("=")])
+    .reduce((acc, [k, v]) => {
+      acc[k.trim()] = decodeURIComponent(v);
+      return acc;
+    }, {});
+
+const session = {};
+
+const app = http.createServer((req, res) => {
+  const cookies = parseCookies(req.headers.cookie);
+  if (req.url.startsWith("/login")) {
+    // if the url start with `/login`
+    const { query } = url.parse(req.url); // analyze url
+    const { name } = qs.parse(query);
+    const expires = new Date();
+    expires.setMinutes(expires.getMinutes() + 1); // we set the cookie that expires in 1 minute
+    
+    const randomInt = +new Date();
+    session[randomInt] = { // we set name and expired time in session object
+      name,
+      expires
+    }
+
+    
+    res.writeHead(302, {
+      Location: "/",
+      "Set-Cookie": `session=${randomInt};Expires=${expires.toUTCString()};HttpOnly;Path=/`,
+    });
+    res.end();
+  } else if (cookies.session && session[cookies.session].expires > new Date()) { // If cookie.session does not exceed the expiration date, we get the user information from session variable
+    // if the url start with `/` and has the cookie
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(`Welcome ${session[cookies.session].name}`);
+  } else {
+    fs.readFile(path.join(__dirname, "./login.html"), (err, data) => {
+      // relative path should be written like this `path.join(__dirname, "./login.html")` rather than './login.html' https://stackoverflow.com/questions/40678995/relative-path-readfile-error-enoent-no-such-file
+      if (err) {
+        throw err;
+      }
+      res.end(data);
+    });
+  }
+});
+
+module.exports = app;
+```
+
+#### 登录
+
+#### 注销
+
 ## 应用
 
+
+实现的功能：单点登录与单点登出
+
+状态的同步：本地会话、全局会话的关系
+
+涉及的实体：
+
+- sso-client 单点登录客户端，也就是业务后台
+- sso-server 单点登录服务端，也就是统一认证中心
+- sso-client 对应的客户端，也就是 sso-client 对应的浏览器端。
+
+1. 用户访问系统 1 的受保护资源，系统 1 发现用户未登录，跳转至 sso 认证中心，并将自己的地址作为参数。
+
+```js
+// express.req.session
+```
+
+2. 入口文件
+
+```js
+app.use(checkSSORedirect()); // 中间件，每次请求都进行检查 SSO 重定向检查
+
+app.get("/", isAuthenticated, (req, res, next) => {
+  res.render("index", {
+    what: `SSO-Consumer One ${JSON.stringify(req.session.user)}`,
+    title: "SSO-Consumer | Home",
+  });
+});
+```
 
 ## 参考资料
 
@@ -94,6 +201,7 @@ session 是服务端自己维护的会话数据结构，可以根据 cookie 获�
   - [全面介绍 SSO（单点登录）](https://juejin.im/post/5de46d28e51d4532c21facb3#heading-2) —— 结合项目查看
   - [OAuth 2.0 的一个简单解释](http://www.ruanyifeng.com/blog/2019/04/oauth_design.html)
   - [前端登录，这一篇就够了](https://mp.weixin.qq.com/s/VSBC_KL5UaVWHEFooUEHAA)
+  - [Building A Simple Single Sign On(SSO) Server And Solution From Scratch In Node.js.](https://codeburst.io/building-a-simple-single-sign-on-sso-server-and-solution-from-scratch-in-node-js-ea6ee5fdf340)
 - 实战
   - [simple-sso](https://github.com/ankur-anand/simple-sso) nodeJS 版
   - [simple-sso](https://github.com/sheefee/simple-sso/tree/0.1) Java 版

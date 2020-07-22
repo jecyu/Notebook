@@ -701,7 +701,7 @@ IO 是指 Input/Output，即输入和输出。以内存为中心：
 
 因为内存有“易失性”的特点，所以必须要把处理后的数据以某种方式输出，例如，写入到文件。Output 实际上就是把 Java 表示的数据格式，例如 `byte[]`，`String[]` 等输出到某个地方。
 
-`字节`是最基本的计量单位，你可以使用`字节数组`来存储`二进制数据`的`集合`，例如文件的内容。这样做的缺点是<u>必须把整个文件内容加载到内存中。</u>对于大量二进制数据，如果语言支持，最好使用`流数据模型`。
+`字节`是最基本的计量单位，你可以使用`字节数组`来存储`二进制数据`的`集合`，例如文件的内容。这样做的缺点是<u>必须把`整个文件内容加载到内存中`。</u>对于大量二进制数据，如果语言支持，最好使用`流数据模型`。
 
 IO 流是一种顺序读写数据的模式，它的特点是`单向流动`。数据类似自来水一样在水管中流动，所以我们把它称为 `IO 流`。
 
@@ -2355,33 +2355,588 @@ Java 用 `Thread` 对象表示一个线程，通过调用 `start()` 启动一个
 
 ## Maven 基础
 
+Maven 是一个 Java 项目管理和构建工具，它可以定义项目结构、项目依赖，并使用统一的方式进行自动化构建，是 Java 项目不可缺少的工具。
+
 ## 网络编程
 
 网络编程是 Java 最擅长的方向之一，使用 Java 进行网络编程时，由虚拟机实现了底层复杂的网络协议，Java 程序只需要调用 Java 标准库提供的接口，就可以简单高效地编写网络程序。
 
 ### 网络编程的基础
 
+在学习 Java 网络编程之前，我们先来了解什么是计算机网络。
+
+计算机网络是指两台或更多的计算机组成的网络，在同一个网络中，任意两台计算机都可以直接通信，因为所有计算机都需要遵循同一种网络协议。
+
+那什么是互联网呢？互联网是网络的网络（internet），即把很多计算机网络连接起来，形成一个全球统一的互联网。
+
+对某个特定的计算机网络来说，它可能使用网络协议 ABC，而另一个计算机网络可能使用网络协议 XYZ。如果计算机网络各自的通讯协议不统一，就没法把不同的网络连接形成互联网。因此，为了把计算机网络接入互联网，就必须使用 `TCP/IP` 协议。
+
+<u>TCP/IP 协议泛指互联网协议，其中最重要的两个协议是 TCP 协议和 IP 协议。</u>只有使用 TCP/IP 协议的计算机才能够联入互联网，使用其他网络协议（例如 NetBIOS、AppleTale 协议等）是无法联入互联网的。
+
+#### IP 地址
+
+在互联网中，一个 IP 地址用于标识一个`网络接口（Network Interface）`。<u>一台接入互联网的计算机肯定有一个 IP 地址，但也可能有多个 IP 地址。</u>
+
+IP 地址分为 `IPv4` 和 `IPv6` 两种。IPv4 采用 32 位地址，类似 `101.202.99.12`，而 IPv6 采用 128 位地址，类似 `2001:0DA8:100A:0000:0000:1020:F2F3:1428`。IPv4 骶椎总共有 2^32 个（大约 42 亿），而 IPv6 地址则总共有 2^128 个（大约 340 万亿亿亿），IPv4 的地址目前已耗尽，而 IPv6 的地址是根本用不完的。
+
+IP 又分为`公网 IP 地址`和`内网 IP 地址`。公网 IP 地址可以直接被访问，内网 IP 地址只能在内网访问。内网 IP 地址类似于：
+
+- 192.168.x.x
+- 10.x.x.x
+
+IPv4 实际上是一个 32 整数。例如：
+
+```bash
+106717964 = 0x65ca630c
+					= 65  ca  63 0c
+					= 101.202.99.12
+```
+
+如果一台计算机只有一个网卡，并且接入了网络，那么，它有一个本机地址 `127.0.0.1`，还有一个 IP 地址，还有一个 IP 地址，例如 `101.202.99.12`，可以通过这个 IP 地址接入网络。
+
+如果一台计算机有两块网卡，那么除了本机地址，它可以有两个 IP 地址，可以分别接入两个网络。<u>通常连接两个网络的设备是路由器或者交换机，</u>它至少有两个 IP 地址，分别接入不同的网络，让网络之间连接起来。
+
+如果两台计算机位于同一个网络，那么他们之间可以直接通信，因为他们的 IP 地址前段是相同，也就是`网络号`是相同的。<u>网络号是 IP 地址通过子网掩码过滤后得到的。</u>
+
+例如：
+
+某台计算机的 IP 是 `101.202.99.2`，子网掩码是 `255.255.255.0`，那么计算该计算机的网络号是：
+
+```bash
+IP = 101.202.99.2
+Mask = 255.255.255.0
+Network = IP & Mask = 101.202.99.0
+```
+
+`每台计算机都需要正确配置 IP 地址和子网掩码`，根据这两个就可以 计算网络号，如果两台计算机的`网络号`相同（可以用手机开热点给电脑，然后进行测试），说明两台计算机在同一个网络，可以直接通信。<u>如果计算机计算出的网络号不同，那么两台计算机不在同一个网络，不能直接通信，它们之间必须通过`路由器`或者交换机这样的网络设备间接通信，我们把这种设备称为`网关`。</u>
+
+<u>网关的作用就是连接多个网络，负责把来自一个网络的数据包发到另一个网络，这个过程叫路由。</u>
+
+所以，一台计算机的一个网卡会有 3 个关键配置：
 
 ![](../.vuepress/public/images/2020-07-13-22-19-59-computer-network.png)
 
+上面的路由即是网卡。
+- IP 地址，例如：`192.168.43.183`
+- 子网掩码，例如：`255.255.255.0`
+- 网关的 IP 地址：`192.168.43.1`
 
-在 OSI 模型中，第三层网络层负责 IP 地址，第二层数据链路层则负责 MAC 位址 [1]  。MAC 地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的 [MAC](https://baike.baidu.com/item/MAC%E5%9C%B0%E5%9D%80) 地址（MAC地址（英语：Media Access Control Address），直译为媒体存取控制位址，也称为局域网地址（LAN Address），MAC 位址，以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网络设备位置的位址，大多数接入 Internet 的方式是把主机通过局域网组织在一起，然后再通过交换机或路由器等设备和 Internet 相连接。这样一来就出现了如何区分具体用户，防止 IP地址被盗用的问题。由于 IP 地址只是逻辑上的标识，任何人都能随意修改，因此不能用来具体标识一个用户。而 MAC 地址则不然，它是固化在网卡里面的。从理论上讲，除非盗来硬件即网卡，否则一般是不能被冒名顶替的。基于 MAC 地址的这种特点，因此局域网采用了用 MAC 地址来标识具体用户的方法）。
+#### 域名
+
+因为直接记忆 IP 地址非常困难，所以我们通常使用域名访问某个特定的服务。<u>域名解析服务器 DNS 负责把域名翻译成对应的 IP，客户端再根据 IP 地址访问服务器。</u>
+
+用 `nslookup` 可以查看域名对应的 IP 地址：
+
+```bash
+$ nslookup www.baidu.com
+Server:		172.20.10.1
+Address:	172.20.10.1#53
+
+Non-authoritative answer:
+www.baidu.com	canonical name = www.a.shifen.com.
+Name:	www.a.shifen.com
+Address: 183.232.231.174
+Name:	www.a.shifen.com
+Address: 183.232.231.172
+```
+
+有一个特殊的本机域名 `localhost`，它对应的 IP 地址总是本机地址：`127.0.0.1`。
+
+#### 网络模型
+
+由于计算机网络从底层的传输到高层的软件十分复杂，要合理地设计计算机网络模型，必须采用分层模型，每一层负责处理自己的操作。OSI （Open System Interconnect） 网络模型是 ISO 组织定义的一个计算机互联的标准模型，注意它只是一个定义，目的是为了简化网络各层的操作，提供标准接口便于实现和维护。这个模型依次从上到下依次是：
+- `应用层`:提供应用程序之间的通信；
+- `表示层`：处理数据格式，加解密`等；
+- `会话层`：负责建立和维护会话；
+- `传输层`：负责提供端到端的可靠传输；
+- `网络层`：负责根据目标地址选择路由来传输数据；
+- `链路层`和`物理层`把数据进行分片并且真正通过物理网络传输，例如，无线网、光纤等。
+
+互联网实际使用的 TCP/IP 模型并不是对应到 OSI 的 7 层模型，二水大致对应 OSI 的 5 层模型：
+
+|OSI|TCP/IP|
+|--|--|
+|应用层|应用层|
+|表示层||
+|会话层||
+|传输层|传输层|
+|网络层|IP 层|
+|链路层|网络接口层|
+|物理层|物理层|
+
+在 OSI 模型中，第三层网络层负责 IP 地址，第二层数据链路层则负责 MAC 位址 [1]  。MAC 地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的 [MAC](https://baike.baidu.com/item/MAC%E5%9C%B0%E5%9D%80) 地址（MAC地址（英语：Media Access Control Address），直译为媒体存取控制位址，也称为局域网地址（LAN Address），MAC 位址，以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网络设备位置的位址，大多数接入 Internet 的方式是把主机通过局域网组织在一起，然后再通过交换机或路由器等设备和 Internet 相连接。`这样一来就出现了如何区分具体用户，防止 IP地址被盗用的问题`。由于 IP 地址只是逻辑上的标识，任何人都能随意修改，因此不能用来具体标识一个用户。而 MAC 地址则不然，它是固化在网卡里面的。从理论上讲，除非盗来硬件即网卡，否则一般是不能被冒名顶替的。基于 MAC 地址的这种特点，因此局域网采用了用 MAC 地址来标识具体用户的方法）。
+
+#### 常用协议
+
+IP 协议是一个分组交换，它不保证可靠传输。而 TCP 协议是传输控制协议，它是面向连接的协议，支持可靠传输和双向通信。TCP 协议是建立在 IP 协议之上，简单地说，IP 协议只负责发数据包，不保证顺序和正确性，而 TCP 协议负责控制数据包传输，它在传输数据之前需要先建立连接，建立连接后才能传输数据，传输完后还需要断开连接。<u>TCP 协议之所以能保证数据的可靠传输，是通过接收确认、超时重传这些机制实现的。</u>并且，TCP 协议允许双向通信，即通信双方可以同时发送和接收数据。
+
+TCP 协议也是应用最广泛的协议，许多高级协议都是建立在 TCP 协议之上的，例如 HTTP、SMTP 等。
+
+UDP 协议（User Datagram Protocol）是一种数据报文协议，它是无连接协议，不保证可靠传输。因为 UDP 协议在通信前不需要建立连接，因此它的传输效率比 TCP 高，而且 UDP 协议比 TCP 协议要简单得多。
+
+选择 UDP 协议时，传输的数据通常是容忍丢失的，例如，一些语音视频通信的应用会选择 UDP 协议。
+
+#### 小结
+
+计算机网络的基本概念主要有：
+- `计算机网络`：由两台或更多计算机组成的网络；
+- `互联网`：连接网络的网络；
+- `IP 地址`：计算机的网络接口（通常是`网卡`）在网络中的唯一标识；
+- `网关`：负责连接多个网络，并在多个网络之间转发数据的计算机，通常是路由器或交换机；
+- 网络协议：互联网使用 TCP/IP 协议，它泛指互联网协议簇；
+- IP 协议：一种分组交换传输协议；
+- TCP 协议：一种面向连接、可靠传输的协议；
+- UDP 协议：一种无连接，不可靠传输的协议。
 
 ### TCP 编程
 
+在开发网络应用程序的时候，我们又会遇到 Socket 这个概念。Socket 是一个抽象概念，<u>一个应用程序通过一个 Socket 来建立一个远程连接，而 socket 内部通过 TCP/IP 协议把数据传输到网络：</u>
+
+```bash
+┌───────────┐                                   ┌───────────┐
+│Application│                                   │Application│
+├───────────┤                                   ├───────────┤
+│  Socket   │                                   │  Socket   │
+├───────────┤                                   ├───────────┤
+│    TCP    │                                   │    TCP    │
+├───────────┤      ┌──────┐       ┌──────┐      ├───────────┤
+│    IP     │<────>│Router│<─────>│Router│<────>│    IP     │
+└───────────┘      └──────┘       └──────┘      └───────────┘
+```
+
+<u>Socket、TCP 和部分 IIP 的功能都是操作系统提供的，不同的编程语言只是提供了对操作系统调用的简单的封装。</u>例如，Java 提供的几个 Socket 相关的类就封装了操作系统提供的接口。
+
+为什么需要 Socket 进行网络通信？因为仅仅通过 IP 地址进行通信是不够的，同一台计算机同一时间会运行多个网络应用程序，例如浏览器、QQ、邮件客户端等。当操作系统接收到一个数据包的时候，如果只有 IP 地址，它没法判断应用发给哪个应用程序，所以，操作系统抽象出 Socket 接口，每个应用程序需要各自对应到不同的 Socket，数据包才能根据 Socket 正确地发送到对应的应用程序。
+
+一个 Socket 就是由 IP 地址和端口号（范围是 0～65535）组成，可以把 Socket 简单理解为 `IP 地址加端口号`。端口号总是由操作系统分配，它是一个 `0～65535` 之间的数字，其中，小于 1024 的端口属于`特权端口`，需要管理员权限，大于 1024 的端口可以由任意用户的应用程序打开。
+
+- Chrome：101.202.99.2:1201
+- QQ：101.202.99.2:1304
+- 有道邮箱：101.202.99.2:15000
+
+使用 Socket 进行网络编程时，本质上就是<u>两个进程间的网络通信</u>。其中一个进程必须充当服务端，它回`主动监听`某个指定的端口，另一个进程必须充当客户端，它必须`主动连接`服务器的 IP 地址和端口，如果连接成功，服务器端和客户端就成功地建立了一个 TCP 连接，双方后续就可以随时发送和接收数据。
+
+因此，当 Socket 连接成功地在服务器端和客户端之间建立后：
+- 对服务器端来说，它的 Socket 是指定的 IP 地址和指定的端口号；
+- 对客户端来说，它的 Socket 是它在计算机的 IP 地址和一个操作系统分配的随机端口号。
+
+#### 服务端器端
+
+要使用 Socket 编程，我们首先要编写服务器端程序。Java 标准库提供了 `ServerSocket` 来实现对指定 IP 和指定端口的监听。`ServerSocket` 的典型实现代码如下：
+
+```java
+public class Server {
+	public static void main(String[] args) throws IOException {
+		ServerSocket ss = new ServerSocket(6666); // 监听指定端口
+		System.out.println("server is running...");
+		for (;;) {
+			Socket sock = ss.accept();
+			System.out.println("connected from " + sock.getRemoteSocketAddress());
+			Thread t = new Handler(sock);
+			t.start();
+		}
+	}
+}
+
+class Handler extends Thread {
+	Socket sock;
+
+	public Handler(Socket sock) {
+		this.sock = sock;
+	}
+
+	@Override
+	public void run() {
+		try (InputStream input = this.sock.getInputStream()) {
+			try (OutputStream output = this.sock.getOutputStream()) {
+				handle(input, output);
+			}
+		} catch (Exception e) {
+			try {
+				this.sock.close();
+			} catch (IOException ioe) {
+			}
+			System.out.println("client disconnected.");
+		}
+	}
+
+	private void handle(InputStream input, OutputStream output) throws IOException {
+		var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+		var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+		writer.write("hello\n");
+		writer.flush();
+		for (;;) {
+			String s = reader.readLine();
+			if (s.equals("bye")) {
+				writer.write("bye\n");
+				writer.flush();
+				break;
+			}
+			writer.write("ok: " + s + "\n");
+			writer.flush();
+		}
+	}
+}
+
+```
+
+服务端通过代码：
+
+```java
+ServerSocket ss = new ServerSocket(666);
+```
+
+在指定端口 `6666` 监听。这里我们没有指定 IP 地址，表示在计算机的所有网络接口上进行监听。
+
+如果 `ServerSocket` 监听成功，我们就使用一个无限循环来处理客户端的连接：
+
+```java
+for (;;) {
+	Socket sock = ss.accept();
+	Thread t = new Handler(sock);
+	t.start();
+}
+```
+
+注意到代码 `ss.accept()` 表示每当有新的客户端连接进来后，就返回一个 `Socket` 实例，这个 `Socket` 实例就是用来和刚连接的客户端进行通信的。由于客户端很多，要实现并发处理，我们就必须为每个新的 `Socket` 创建一个新线程来处理，这样，`主线程`的作用就是接收新的连接，每当收到新连接后，就创建一个新线程进行处理。
+
+我们在多线程编程的章节介绍过`线程池`，这里也完全可以利用线程池来处理客户端连接，能大大提高运行效率。
+
+如果没有客户端连接进来，`accpet()` 方法会阻塞并一直等待。如果有多个客户端同时连接进来，`ServerSocket` 会把连接扔进到队列里，然后一个一个处理。对于 Java 程序而言，只需要通过循环不断调用 `accept()` 就可以获取新的连接。
+
+#### 客户端
+
+相比服务器端，客户端程序就要简单得多。一个典型的客户端程序如下：
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+public class Client {
+	public static void main(String[] args) throws IOException {
+		Socket sock = new Socket("localhost", 6666); // 连接指定服务器和端口
+		try (InputStream input = sock.getInputStream()) {
+			try (OutputStream output = sock.getOutputStream()) {
+				handle(input, output);
+			}
+		}
+		sock.close();
+		System.out.println("disconnected.");
+	}
+
+	private static void handle(InputStream input, OutputStream output) throws IOException {
+		var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+		var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("[server] " + reader.readLine());
+		for (;;) {
+			System.out.print(">>> "); // 打印提示
+			String s = scanner.nextLine(); // 读取一行输入
+			writer.write(s);
+			writer.newLine();
+			writer.flush();
+			String resp = reader.readLine();
+			System.out.println("<<< " + resp);
+			if (resp.equals("bye")) {
+				break;
+			}
+		}
+	}
+}
+
+```
+
+客户端程序通过：
+
+```java
+Socket sock = new  Socket("localhost", 6666);
+```
+
+连接到服务端，注意上述代码的服务器地址是“`localhost`”，表示本机地址，端口号是 `6666`，将返回一个 `Socket` 实例，用于后续通信。
+
+目前 Chrome 46 以上的每个 tab 就是一个客户端进程。
+
+#### socket 流
+
+当 Socket 连接创建成功后，无论是服务器端，还是客户端，我们都使用 `Socket` 实例进行网络通信。因为 TCP 是一种基于流的协议，因此，Java 标准库使用 `InputStream` 和 `OutputStream` 来封装 Socket 的数据流，这样我们使用 Socket 的流，和普通的 IO 流类似：
+
+```java
+// 用于读取网络数据
+InputStream in  = sock.getInputStream();
+// 用于写入网络数据
+OutputStream out = sock.getOutputStream();
+```
+
+最后我们重点来看看，为什么写入网络时，要调用 `flush` 方法。
+
+如果不调用 `flush`，我们很可能会发现，客户端和服务器都收不到数据，这并不是 Java 标准库的设计问题，而是我们以流的形式写入数据的时候，并不是一写入就立刻发送到网络，而是先写入`内存缓冲区`，<u>直到缓冲区满了，才会一次性真正发送到网络，</u>这样设计的目的是为了提高传输效率。如果缓冲区的数据很少，而我们又想强制把这些数据发送到网络，就必须用 `flush()` 强制把缓冲区数据发送出去。
+
+#### 小结
+
+使用 Java 进行 TCP 编程时，需要使用 Socket 模型：
+
+- 服务器端用 `ServerSocket` 监听指定端口；
+- 客户端使用 `Socket(InetAddress, port)` 连接服务器；
+- 服务器端用 `accept()` 接收连接并返回 `socket`；
+- 双方通过 `Socket` 打开 `InputStream/OutputStream` 读写数据；
+- 服务器端通常使用多线程同时处理多个客户端连接，利用线程池可大幅提升效率；
+- `flush` 用于强制输出缓冲区到网络。
+
 ### UDP 编程
 
+和 TCP 编程相比，UDP 编程就简单得多，因为 UDP 没有创建连接，数据包也是一次收发一个，所以`没有流的概念`。
+
+在 Java 中使用 UDP 编程，仍然要使用 Socket，因为应用程序在使用 UDP 时必须指定网络接口（IP）和端口号。注意：UDP 端口和 TCP 端口虽然都使用 0～65535，但他们是两套独立的端口，`即一个应用程序用 TCP 占用了端口 1234，不影响另一个应用程序用 UDP 占用端口 1234。`
+
+#### 服务器端
+
+在服务器端，使用 UDP 也需要监听指定的端口。Java 提供了 `DatagramSocket` 来实现这个功能，代码如下：
+
+```java
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+public class Server {
+	public static void main(String[] args) throws IOException {
+		DatagramSocket ds = new DatagramSocket(6666); // 监听指定端口
+		System.out.println("server is running...");
+		for (;;) {
+			// 接收:
+			byte[] buffer = new byte[1024];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+			ds.receive(packet);
+			String cmd = new String(packet.getData(), packet.getOffset(), packet.getLength(), StandardCharsets.UTF_8);
+			// 发送:
+			String resp = "bad command";
+			switch (cmd) {
+			case "date":
+				resp = LocalDate.now().toString();
+				break;
+			case "time":
+				resp = LocalTime.now().withNano(0).toString();
+				break;
+			case "datetime":
+				resp = LocalDateTime.now().withNano(0).toString();
+				break;
+			case "weather":
+				resp = "sunny, 10~15 C.";
+				break;
+			}
+			System.out.println(cmd + " >>> " + resp);
+			packet.setData(resp.getBytes(StandardCharsets.UTF_8));
+			ds.send(packet);
+		}
+	}
+}
+
+```
+
+
+服务器首先使用如下语句在指定的端口监听 UDP 数据包：
+
+```java
+DatagramSocket  ds = new DatagramSocket(666);
+```
+
+如果没有其他应用程序占据这个端口，那么监听成功，我们就使用一个无限循环来处理收到的数据包：
+
+```java
+for(;;) {...}
+```
+
+要接收一个 UDP 数据包，需要准备一个 `byte[]` 缓冲区，并通过 `DatagramPacket` 实现接收：
+
+```java
+byte[] buffer = new byte[1024];
+DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+```
+
+假设我们收取到的是一个 `String`，那么，通过 `DatagramPacket` 返回的 `packet.getOffset()` 和 `packet.getLength()` 确定数据在缓冲区的起止位置：
+
+```java
+String s = new String(packet.getData(), packet.getOffset(), packet.getLength(), StandradCharset.UTF_8);
+```
+
+当服务器收到一个 DatagramPacket 后，<u>通常必须立刻回复一个或多个 UDP 包，因为客户端地址在 DatagramPacket 中，每次收到的 DatagramPacket 可能是不同的客户端，如果不回复，客户端就收不到任何 UDP 包。</u>
+
+发送 UDP 包也是通过 `DatagramPacket` 实现的：
+
+```java
+byte[] data = ...
+packet.setData(data);
+ds.send(packet);
+```
+
+#### 客户端
+
+和服务器端相比，客户端使用 UDP 时，只需要直接向服务器发送 UDP 包，然后接收返回的 UDP 包：
+
+```java
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class Client {
+	public static void main(String[] args) throws IOException, InterruptedException {
+		DatagramSocket ds = new DatagramSocket();
+		ds.setSoTimeout(1000);
+		ds.connect(InetAddress.getByName("localhost"), 6666); // 连接指定服务器和端口
+		DatagramPacket packet = null;
+		for (int i = 0; i < 5; i++) {
+			// 发送:
+			String cmd = new String[] { "date", "time", "datetime", "weather", "hello" }[i];
+			byte[] data = cmd.getBytes();
+			packet = new DatagramPacket(data, data.length);
+			ds.send(packet);
+			// 接收:
+			byte[] buffer = new byte[1024];
+			packet = new DatagramPacket(buffer, buffer.length);
+			ds.receive(packet);
+			String resp = new String(packet.getData(), packet.getOffset(), packet.getLength());
+			System.out.println(cmd + " >>> " + resp);
+			Thread.sleep(1500);
+		}
+		ds.disconnect();
+		System.out.println("disconnected.");
+	}
+}
+
+```
+
+客户端打开一个 `DatagramSocket` 使用以下代码：
+
+```java
+DatagramSocket ds = new DatagramSocket();
+		ds.setSoTimeout(1000);
+		ds.connect(InetAddress.getByName("localhost"), 6666); // 连接指定服务器和端口
+```
+
+客户端创建 `DatagramSocket` 实例时并不需要指定端口，而是由操作系统自动指定一个当前未使用的端口。紧接着，调用 `setSoTimeout(1000)` 设定超时 1 秒，意思是<u>后续接收 UDP 包时，等待时间最多不会超过 1 秒，否则在没有收到 UDP 包时，客户端会无限等待下去。这一点和服务器端不一样，服务器端可以无限等待，因为它本来就被设计成长时间运行。</u>
+
+注意到客户端的 `DatagramSocket` 还调用了一个 `connect()` 方法“连接”到指定的服务器端。不是说 UDP 是无连接的协议吗？为啥还需要 `connect()` ？
+
+这个 `connect()` 方法不是真连接，它是<u>为了在客户端的 `DatagramSocket` 实例中保存服务器端的 IP 和端口号，确保这个 `DatagramSocket` 实例只能往指定的地址和端口发送 UDP 包，不能往其他地址和端口发送。</u>这么做不是 UDP 的限制，而是 Java 内置了`安全检查`。
+
+如果客户端希望向两个不同的服务器发送 UDP 包，那么它必须创建两个 `DatagramSocket` 实例。
+
+后续的收发数据和服务器端是一致的。通常来说，<u>客户端必须先发 UDP 包，因为客户端步发 UDP 包，服务器端就根本不知道客户端的地址和端口号。</u>
+
+如果客户端认为通信结束，就可以调用 `disconnect()` 断开连接：
+
+```java
+ds.disconnect()
+```
+
+注意到 `disconnect()` 也不是真正地断开连接，它只是清除了客户端 `DatagramSocket` 实例记录的远程服务器地址和端口号，这样，`DatagramSocket` 实例就可以连接另一个服务器端。
+
+#### 小结
+
+使用 UDP 协议通信时，服务器和客户端双方无需建立连接：
+
+- 服务器端用 `DatagramSocket(port)` 监听端口；
+- 客户端使用 `DatagramSocket.connect()` 指定远程地址和端口；
+- 双方通过 `receive()` 和 `send()` 读写数据；
+- `DatagramSocket` 没有 IO 流接口，数据被直接写入 `byte[]` 缓冲区。
+
 ### 发送 Email
+
+Email 就是电子邮件。电子邮件的应用已经有几十年的历史了，我们熟悉的邮箱地址比如 `abc@example.com` ，邮件软件比如 Outlook 都是用来收发邮件的。
+
+使用 Java 程序也可以 i收发电子邮件。我们先来看一下传统的邮件是如何发送的。
+
+传统的邮件是通过邮局传递，然后从一个邮局到另一个邮局，最终到达用户的邮箱：
+
+```bash
+           ┌──────────┐    ┌──────────┐
+           │PostOffice│    │PostOffice│     .───.
+┌─────┐    ├──────────┤    ├──────────┤    (   ( )
+│═══ ░│───>│ ┌─┐ ┌┐┌┐ │───>│ ┌─┐ ┌┐┌┐ │───> `─┬─'
+└─────┘    │ │░│ └┘└┘ │    │ │░│ └┘└┘ │       │
+           └─┴─┴──────┘    └─┴─┴──────┘       │
+```
+
+电子邮件的发送过程也是类似的，只不过是电子邮件是从用户电脑的邮件软件，例如 Outlook，发送到邮件服务器上，可能经过若干个邮件服务器的中转，最终到达对方邮件服务器上，收件方就可以用软件接收邮件。
+
+```bash
+         ┌─────────┐    ┌─────────┐    ┌─────────┐
+             │░░░░░░░░░│    │░░░░░░░░░│    │░░░░░░░░░│
+┌───────┐    ├─────────┤    ├─────────┤    ├─────────┤    ┌───────┐
+│░░░░░░░│    │░░░░░░░░░│    │░░░░░░░░░│    │░░░░░░░░░│    │░░░░░░░│
+├───────┤    ├─────────┤    ├─────────┤    ├─────────┤    ├───────┤
+│       │───>│O ░░░░░░░│───>│O ░░░░░░░│───>│O ░░░░░░░│<───│       │
+└───────┘    └─────────┘    └─────────┘    └─────────┘    └───────┘
+   MUA           MTA            MTA            MDA           MUA
+```
+
+我们把类似 Outlook 这样的邮件称为 `MUA：Mail User Agent`，意思是给用户服务的邮件代理；邮件服务器则称为 `MTA：Mail Transfer Agent`，意思是邮件中转的代理；最终到达的邮件服务器称为 `MDA：Mail Delivery Agent`，意思是邮件到达的代理。电子邮件一旦到达 MDA，就不再动了。实际上，电子邮件通常就存储在 MDA 服务器的硬盘上，然后等收件人通过软件或者登录浏览器查看邮件。
+
+MTA 和 MAD 这样的服务器软件通常是现成的，我们不关心这些服务器内部是如何运行的。要发送邮件，我们关心的是<u>如何编写一个 MUA 的软件，把邮件发送到 MTA 上。</u>
+
+MUA 到 MTA 发送邮件的协议就是 `SMTP` 协议，它是 Simple Mail Transport Protocol 的缩写，使用`标准端口 25`，也可以使用加密端口 `464` 或 `587`。
+
+<u>SMTP 协议是一个建立在 TCP 之上的协议，任何程序发送邮件都必须遵守 SMTP 协议。</u>使用 Java 程序发送邮件时，我们无需关心 SMTP 协议的底层原理，只需要使用 JavaMail 这个标准 API 就可以直接发送邮件。
+
+#### 准备 SMTP 登录信息
+
+假设我们准备使用自己的邮件地址是 `me@example.com` 给小明发送邮件，已知小明的邮件地址是 `xiaoming@somewhere.com`，发送邮件前，我们首先要确定
+
+#### 发送邮件
+
+#### 发送 HTML 邮件
+
+#### 发送附件
+
+#### 发送内嵌图片的 HTML 邮件
+
+#### 常见问题
+
+#### 小结
 
 ### 接收 Email
 
 ### HTTP 编程
 
+#### HTTP 编程
+
 ### RMI 远程调用
+
+Java 的 RMI 远程调用是指，一个 JVM 中的代码可以通过网络实现远程调用另一个 JVM 的某个方法。RMI 是 Remote Method Invocation 的缩写。
 
 ## XML 与 JSON
 
+XML 和 JSON 是两种经常在网络使用的数据表示格式，本章我们介绍如何使用 Java 读写 XML 和 JSON。
+
 ## JDBC 编程
+
+程序运行的时候，往往需要存取数据。现代应用程序最基本的，也是使用最广泛的数据存储库就是关系数据库。
+
+Java 为关系数据库定义了一套标准的访问接口：`JDBC`（Java Database Connectivity）。
+
+### JDBC 简介
+
+### JDBC 查询
+
+### JDBC 更新
+
+### JDBC 事务
+
+### JDBC Batch 
+
+### JDBC 连接池
 
 ## 函数式编程
 

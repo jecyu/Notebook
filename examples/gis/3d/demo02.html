@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Overview map - 4.9</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+    }
+
+    #overviewDiv {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 300px;
+      height: 200px;
+      border: 1px solid black;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    #extentDiv {
+      background-color: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      z-index: 2;
+    }
+  </style>
+
+  <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css"> -->
+  <!-- <script src="https://js.arcgis.com/4.9/"></script> -->
+  <link rel="stylesheet" href="http://localhost:8080/arcgis_js_v49_api/arcgis_js_api/library/4.9/esri/css/main.css">
+  <script src="http://localhost:8080/arcgis_js_v49_api/arcgis_js_api/library/4.9/init.js"></script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <div id="overviewDiv">
+    <div id="extentDiv"></div>
+  </div>
+  <script src="./demo02.js"></script>
+</body>
+</html>

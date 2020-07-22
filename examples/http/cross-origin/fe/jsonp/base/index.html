@@ -1,0 +1,39 @@
+<!-- 本地通过 live-server 启动 localhost:8080 监听前端 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>jsonp 实现跨域</title>
+  </head>
+  <body>
+    <h3>jsonp 实现跨域</h3>
+  </body>
+
+  <script>
+    // ajax 无法进行跨域请求
+    // Access to XMLHttpRequest at 'http://localhost:8088/' from origin 'http://127.0.0.1:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:8088");
+    xhr.send();
+  </script>
+
+  <!-- script 标签进行跨域，动态写入 js 脚本 -->
+  <script>
+    // 第一次因为还没有引入外部 js，所以打印 undefined
+    console.log(window.user);
+
+    // 1. 1s 后，外部 js 加载完成，能打印后端返回的变量
+    // 通过这种方式, 我们能够成功的获取到后端返回的数据，不确定接口的快慢
+    // 2. setTimeout(() => {
+    //   console.log(window.user);
+    // }, 1e3);
+    // 3. 由于后端返回的内容即将调用函数 getUser, 那我们就预先定义一个回调函数
+    function getUser(param) {
+      console.log("后端返回的参数是：", param);
+    }
+  </script>
+  <!-- 请求脚本 -->
+  <script src="http://localhost:8088/"></script>
+</html>

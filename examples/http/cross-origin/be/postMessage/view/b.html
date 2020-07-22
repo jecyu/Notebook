@@ -1,0 +1,23 @@
+<!-- 文件：b.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>页面 B</title>
+  </head>
+  <body>
+    <h2>页面b</h2>
+    <script>
+      // 给父页面发送消息
+      window.onmessage = function(e) {
+        // 打印来自页面 A 的消息
+        console.log(e.data);
+        // 给页面 A 发送回执
+        e.source.postMessage("I love you, too", e.origin);
+      };
+      // 跨域不可以访问，父窗口的 localStorage、cookies
+      // const user = window.parent.localStorage.get('user');
+      console.log(window.parent.name)
+    </script>
+  </body>
+</html>

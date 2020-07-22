@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SceneView</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.9/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.9/"></script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/views/SceneView",
+      ], function(Map, SceneView) {
+        const map = new Map({
+          basemap: "hybrid",
+        });
+        // const view = new MapView({
+        //   container: "viewDiv", // Reference to the scene div created iin step 5
+        //   map: map, // Reference to the map object created before the scene
+        //   zoom: 4, // Sets zoom level based on level of detail(LOD)
+        //   center: [15, 65], // Sets center point of view using longitude, latitude
+        // });
+        const view = new SceneView({
+          container: "viewDiv",
+          map,
+        });
+
+        view.when(function() {
+          // SceneView is now ready for display and can be used.
+          // Here we will use goTo to view a particular location at a given zoom level, camera
+          // heading and tilt.
+          view.goTo({
+            center: [-112, 28],
+            zoom: 13,
+            heading: 30,
+            tilt: 60,
+          });
+        })
+        .catch(function(err) {
+          // A rejected view indicates a fatal error making it unable to display,
+          // this usually means that WebGL is not available, or too old.
+          console.error("SceneView rejected:", err)
+        })
+      });
+    </script>
+  </body>
+</html>

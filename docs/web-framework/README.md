@@ -24,6 +24,29 @@ app.post("/", function(req, res) {
 });
 ```
 
+路由文件
+```js
+const express = require("express");
+
+const router = express.Router();
+const controller = require("../controller");
+
+router
+  .route("/login") // 针对 /login 路由的get、post 采用不同的 controller 处理
+  .get(controller.login)
+  .post(controller.doLogin);
+
+router.get("/verifytoken", controller.verifySsoToken);
+
+module.exports = router;
+
+```
+
+### session
+
+session 是另一种记录客户状态的机制，与 cookie 保存在客户端
+
+
 ### 中间件
 
 ## 进阶活用
