@@ -1,0 +1,22 @@
+{
+  "name": "learnsql",
+  "version": "1.0.0",
+  "description": "A nodejs sample code for MYSQL",
+  "main": "sql.js",
+  "scripts": {
+    "start": "nodemon sql.js"
+  },
+  "keywords": [
+    "SQL",
+    "mysql",
+    "Node.js"
+  ],
+  "author": "Jecyu",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^2.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

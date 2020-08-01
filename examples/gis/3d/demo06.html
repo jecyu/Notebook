@@ -31,7 +31,7 @@
 
       var map = new Map({
         basemap: 'satellite',
-        ground: 'world-elevation'
+        // ground: 'world-elevation'
       });
 
       var view1 = new SceneView({
@@ -49,7 +49,8 @@
           snapToZoom: false
         }
       });
-
+      console.log(view1)
+      console.log(view2)
       /**
        * utility method that synchronizes the viewpoint of a view to other views
        */

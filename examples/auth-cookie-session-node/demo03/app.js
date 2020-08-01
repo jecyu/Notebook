@@ -2,7 +2,7 @@
  * @Description:
  * @Author: Jecyu
  * @Date: 2020-07-21 13:35:50
- * @LastEditTime: 2020-07-21 22:55:11
+ * @LastEditTime: 2020-07-22 13:52:49
  * @LastEditors: Jecyu
  */
 
@@ -24,7 +24,7 @@ const parseCookies = (cookie = "") =>
       return acc;
     }, {});
 
-const session = {};
+const session = {}; // it needs to use express session or DB for persistent storage in production 
 
 const app = http.createServer((req, res) => {
   const cookies = parseCookies(req.headers.cookie);

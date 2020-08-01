@@ -1,5 +1,19 @@
 # docker 
 
+- 为什么要有 docker
+- 有 docker 和没有 docker 的区别
+- 可以用 docker 来做什么
+
+![](../.vuepress/public/images/2020-07-29-15-21-48-compose.png)
+
+![](../.vuepress/public/images/2020-07-29-15-25-17-contianer.png)
+
+![](../.vuepress/public/images/2020-07-29-15-31-03-docker.png)
+
+![](../.vuepress/public/images/2020-07-29-15-34-48-docker.png)
+
+![](../.vuepress/public/images/2020-07-29-15-37-26-docker.png)
+
 ## 基础使用
 
 ### 操作容器
@@ -11,7 +25,7 @@
 ```bash
 # docker exec -it mysql bash
 docker exec -it `容器名` bash
-```
+``` 
 
 ### 退出容器
 
@@ -50,6 +64,8 @@ docker run -d -v $(pwd):/usr/share/nginx/html -p 80:80 --name nginx nginx
 - 容器可以挂载真实机目录或共享存储为卷
 
 https://blog.csdn.net/zhydream77/article/details/81909706
+
+![](../.vuepress/public/images/2020-07-29-16-05-38-docker.png)
 
 ## 参考资料
 

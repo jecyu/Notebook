@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="http://localhost:8080/arcgis_js_v49_api/arcgis_js_api/library/4.9/esri/css/main.css"
+    />
+    <script src="http://localhost:8080/arcgis_js_v49_api/arcgis_js_api/library/4.9/init.js"></script>
+    <style>
+      html,
+      body,
+      #map {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mapDiv"></div>
+    <script>
+      var map, topo, streetMap, usa, taxParcel;
+
+      require([
+        "dojo/parser",
+        "dijit/registry",
+        "esri/geometry/Extent",
+        "esri/map",
+        "esri/layers/ArcGISTiledMapServiceLayer",
+        "esri/layers/ArcGISDynamicMapServiceLayer",
+        "dijit/layout/BorderContainer",
+        "dijit/layout/ContentPane",
+        "dijit/form/Button",
+        "dojo/domReady!",
+      ], function(
+        parser,
+        registry,
+        Extent,
+        Map,
+        ArcGISTiledMapServiceLayer,
+        ArcGISDynamicMapServiceLayer
+      ) {
+        parser.parse();
+
+        var initialExtent = new Extent({
+          xmin: -9749695.83182828,
+          ymin: 4387485.423567985,
+          xmax: -8230739.205745666,
+          ymax: 5374440.332785915,
+          spatialReference: { wkid: 102100 },
+        });
+
+        map = new esri.Map("mapDiv", { extent: initialExtent });
+
+        registry.byId("addSameTiledLayer").on("click", addSameTiledLayer);
+        registry
+          .byId("addDifferentTiledLayer")
+          .on("click", addDifferentTiledLayer);
+        registry.byId("addGeoDynamicLayer").on("click", addGeoDynamicLayer);
+        registry.byId("addProjDynamicLayer").on("click", addProjDynamicLayer);
+
+        map.on("layer-add", function(evt) {
+          var layer = evt.layer;
+          document.getElementById("spatialReference").innerHTML =
+            "地图的空间参考系统为:" +
+            map.spatialReference.wkid +
+            ";<p>图层的空间参考系统为:" +
+            layer.spatialReference.wkid +
+            "</p>";
+        });
+
+        map.on("mouse-move", function(evt) {
+          document.getElementById("coords").innerHTML =
+            "X: " + evt.mapPoint.x + " | Y: " + evt.mapPoint.y;
+        });
+
+        function addSameTiledLayer() {
+          map.removeAllLayers();
+          if (!topo) {
+            var topoUrl =
+              "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
+            topo = new ArcGISTiledMapServiceLayer(topoUrl);
+          }
+
+          map.addLayer(topo);
+        }
+
+        function addDifferentTiledLayer() {
+          map.removeAllLayers();
+          if (!streetMap) {
+            var streetMapUrl =
+              "http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer";
+            streetMap = new esri.layers.ArcGISTiledMapServiceLayer(
+              streetMapUrl
+            );
+          }
+
+          map.addLayer(streetMap);
+        }
+
+        function addGeoDynamicLayer() {
+          map.removeAllLayers();
+          if (!usa) {
+            var usaUrl =
+              "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer";
+            usa = new esri.layers.ArcGISDynamicMapServiceLayer(usaUrl);
+          }
+
+          map.addLayer(usa);
+        }
+
+        function addProjDynamicLayer() {
+          map.removeAllLayers();
+          if (!taxParcel) {
+            var taxParcelUrl =
+              "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/TaxParcel/TaxParcelQuery/MapServer";
+            taxParcel = new esri.layers.ArcGISDynamicMapServiceLayer(
+              taxParcelUrl
+            );
+          }
+
+          map.addLayer(taxParcel);
+        }
+      });
+    </script>
+  </body>
+</html>

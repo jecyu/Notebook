@@ -1,0 +1,41 @@
+
+### 
+# POST http://localhost:3000/login
+# Content-Type: application/json
+
+# {
+#   "username": "Jecyu"
+# }
+### server1
+GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVjeXUiLCJpYXQiOjE1OTU5MTU3OTZ9.PFExw9ZcKzviqf41Hrk0CS15bnx73i30AImidN5GFGo
+
+### server2
+GET http://localhost:4000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVjeXUiLCJpYXQiOjE1OTYwMDEzMTMsImV4cCI6MTU5NjAwMTMyOH0.vZAent-QgBqexhO2nH_1f-93YULG-u0TXIrZwIy3UuY
+
+
+### authServer
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+  "username": "Jecyu"
+}
+
+### authServer
+POST http://localhost:5000/token
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVjeXUiLCJpYXQiOjE1OTYwMDEzMzh9.GA5wxEYZh8RyHJWJ5zXXrmDnJmS1xjf8qZMj_nAaF2Y"
+}
+
+
+### logout
+DELETE http://localhost:5000/logout
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVjeXUiLCJpYXQiOjE1OTYwMDEzODQsImV4cCI6MTU5NjAwMTM5OX0.vMk8uFLHqiMI38oUDGhKOd9Ljvz2nOx2XtWze42WVTU"
+}

@@ -2,6 +2,19 @@
 
 类 linux 系统
 
+## 查看端口号和进程
+
+MacOS统计TCP/UDP端口号与对应服务）
+
+```bash
+lsof -nP -iTCP -sTCP:LISTEN
+```
+
+查看进程
+```bash
+ps
+```
+
 ## mac 系统软件被阻止载入点允许没反应
 
 临时解决方案：

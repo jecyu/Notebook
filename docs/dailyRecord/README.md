@@ -4,6 +4,45 @@
 
 <!-- 横向和纵向排版统一使用 flex 布局。 -->
 
+## 七月
+
+### 计算树节点的孩子数量
+
+```js
+function getChilds(node, isIncludeParent) {
+  let hasChilds = 0;
+  if (node.children) {
+    node.children.forEach((node) => {
+      // 1-1 // 1-2
+      hasChilds += getChilds(node, isIncludeParent) + 1;
+      if (!isIncludeParent && node.children) { // 非叶子节点，把本身的计数去掉
+        hasChilds--;
+      }
+    });
+    return hasChilds;
+  } else { // 无孩子
+    return hasChilds;
+  }
+}
+// 不计算 hasChilds，计算叶子的数量
+
+// 遍历 + 递归搞掂，遍地的递归，以及 getChilds 的递归
+function transerverTree(arr, callback) {
+  arr.forEach((item) => {
+    callback(item);
+    if (item.children) {
+      transerverTree(item.children, callback);
+    }
+  });
+  return arr;
+}
+
+const result = transerverTree(tree, (item) => {
+  item.hasChilds = getChilds(item, true);
+});
+console.log(result);
+```
+
 ## 六月
 
 ### string.slice(start, end) vs string.substr(start, length) vs string.substring(start, end) vs string.splice

@@ -30,24 +30,25 @@
       "stopOnEntry": true,
       "skipFiles": ["<node_internals>/**"],
       // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
-      // "program": "${workspaceFolder}/examples/dataStructure/array/demo01.js"
+      "program": "${workspaceFolder}/examples/dataStructure/tree/demo01.js"
       // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
       // "program": "${workspaceFolder}/examples/js/object/prototype/demo08.js"
-      "program": "${workspaceFolder}/examples/js/object/oop/main.js"
+      // "program": "${workspaceFolder}/examples/js/object/oop/main.js"
       // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+      // "program": "${workspaceFolder}/examples/js/string/demo04.js"
     },
-    {
-      "name": "Debug Jest Tests",
-      "type": "node",
-      "request": "launch",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/examples/vue/simple-virtual-dom/node_modules/.bin/jest",
-        "--runInBand"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229
-    }
+    // {
+    //   "name": "Debug Jest Tests",
+    //   "type": "node",
+    //   "request": "launch",
+    //   "runtimeArgs": [
+    //     "--inspect-brk",
+    //     "${workspaceRoot}/examples/vue/simple-virtual-dom/node_modules/.bin/jest",
+    //     "--runInBand"
+    //   ],
+    //   "console": "integratedTerminal",
+    //   "internalConsoleOptions": "neverOpen",
+    //   "port": 9229
+    // }
   ]
 }

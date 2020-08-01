@@ -205,6 +205,19 @@ class Point {
 
 ## 函数
 
+### 箭头函数
+
+
+箭头函数中的 this是父级作用域中的this，arguements 也是来自父作用域中的。
+
+如果滥用，就会出错，例如在节流函数中：
+
+![](../.vuepress/public/images/2020-07-27-14-06-55-throttle.png)
+
+左边使用箭头函数的，argumens 一直都是 fn 和 delay，而右边才是正确的真正的参数传入值。
+
+- [https://cnodejs.org/topic/584a207a3ebad99b336b1ede](https://cnodejs.org/topic/584a207a3ebad99b336b1ede)
+
 ### rest 参数
 
 ES6 引入 rest 参数（形式为 `...变量名`），用于获取函数的多余参数，这样就不需要使用`arguments` 对象了。rest 参数搭配的变量是一个数组，该变量将多余的参数放入数组中。

@@ -1,5 +1,9 @@
 # Arcgis Server
 
+## 服务类型
+
+
+
 ## 计算服务
 
 ## 什么是 ArcGIS Server?
@@ -43,3 +47,14 @@ ArcGIS Server 上提供的 GIS 资源（例如地图）称为服务。ArcGIS Ser
 #### 什么是地图服务
 
 地图服务是一种利用 ArcGIS 使地图可通过 Web 进行访问的方法。你首先在 ArcMap 中制作地图，然后将地图作为服务发布到 ArcGIS Server 站点上。之后，Internet 或 Intranet 用户便可在 Web 应用程序、ArcGIS Desktop、ArcGIS Online 以及其他客户端应用程序中使用此地图服务。
+
+## 服务类型
+
+### OGC WMTS
+
+
+## 参考资料
+
+- [wiki 天地图](https://zh.wikipedia.org/wiki/%E5%A4%A9%E5%9C%B0%E5%9B%BE#%E6%95%B8%E6%93%9A%E4%BE%86%E6%BA%90)
+- [全国地理信息资源目录服务系统](http://www.webmap.cn/commres.do?method=tianMap&typeId=14)
+- [地理配准和坐标系](https://resources.arcgis.com/zh-cn/help/getting-started/articles/026n0000000s000000.htm)
