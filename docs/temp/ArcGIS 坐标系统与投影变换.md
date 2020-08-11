@@ -3,6 +3,10 @@
 - GIS 坐标系统是什么
 - 有了 GIS 坐标系统与没有的区别
 - 应该如何使用 GIS 坐标系统
+  
+  arcgis
+  openlayer
+  动态服务支持动态投影转换转换，这样可以在把不同的坐标系服务加载到某一指定的坐标系上。
 
 ## 头脑风暴
 
@@ -208,6 +212,10 @@ this.map.setExtent(line.getExtent().expan
 
 ## 参考资料
 
+- openlayer 坐标系转换，dist openlayer
+- [如何将天地图转换为默卡托投影坐标](https://my.oschina.net/u/2312934/blog/511852)
+- [对互联网中常见地图的坐标系探讨](https://www.cnblogs.com/naaoveGIS/p/5342177.html)
+- [秋意正寒](https://www.cnblogs.com/onsummer/) 
 - [聊聊 GIS 中的坐标系|再版](https://www.cnblogs.com/onsummer/p/12081889.html)
 - [聊聊 GIS 中的坐标系|再版 识别各种数据的坐标系及代码中的坐标系](https://www.cnblogs.com/onsummer/p/12082359.html)
 - [地理配准和坐标系](https://resources.arcgis.com/zh-cn/help/getting-started/articles/026n0000000s000000.htm)

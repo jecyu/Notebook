@@ -2,17 +2,34 @@
 
 类 linux 系统
 
-## 查看端口号和进程
+## 查看进程信息
 
-MacOS统计TCP/UDP端口号与对应服务）
+1、查看进程号
 
 ```bash
-lsof -nP -iTCP -sTCP:LISTEN
+ps -ef | grep 进程名
 ```
 
-查看进程
+2、查看端口被哪个进程监听
+
 ```bash
-ps
+sudo lsof -i :端口
+```
+
+3、查看进程监听的端口
+
+```bash
+sudo lsof -nP -p 进程号 | grep LISTEN
+```
+
+```bash
+sudo lsof -nP | grep LISTEN | grep 进程号
+```
+
+4、查看监听端口的进程
+
+```bash
+sudo lsof -nP | grep LISTEN | grep 端口号
 ```
 
 ## mac 系统软件被阻止载入点允许没反应

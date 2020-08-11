@@ -4352,7 +4352,9 @@ JDBC 连接池有一个标准
 
 ## Web 开发
 
-JavaEE 最核心的组件就是基于 Servlet 标准的 Web 服务器，开发者编写的应用程序是基于 Servlet API 并运行在 Web 服务器内部的：
+JavaEE 并不是一个软件产品，它更多的是一种软件架构和设计思想。我们可以把 JavaEE 看作是在 JavaSE 的基础上，开发的一系列基于服务器的组件、API 标准和通用架构。
+
+JavaEE 最核心的组件就是<u>基于 Servlet 标准的 `Web 服务器`，开发者编写的应用程序是基于 `Servlet API` 并运行在 Web 服务器内部的：</u>
 
 ```bash
 ┌─────────────┐
@@ -4378,6 +4380,134 @@ JavaEE 最核心的组件就是基于 Servlet 标准的 Web 服务器，开发�
   ...
 
 目前流行的基于 Spring 的轻量级 JavaEE 开发架构，使用最广泛的是 Servlet 和 JMS，以及一系列开源组件。
+
+### Web 基础
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * Learn Java from https://www.liaoxuefeng.com/
+ * 
+ * @author liaoxuefeng
+ */
+public class Server {
+	public static void main(String[] args) throws IOException {
+		ServerSocket ss = new ServerSocket(5050); // 监听指定端口
+		System.out.println("server is running...");
+		for (;;) {
+			Socket sock = ss.accept();
+			System.out.println("connected from " + sock.getRemoteSocketAddress());
+			Thread t = new Handler(sock);
+			t.start();
+		}
+	}
+}
+
+class Handler extends Thread {
+	Socket sock;
+
+	public Handler(Socket sock) {
+		this.sock = sock;
+	}
+
+	@Override
+	public void run() {
+		try (InputStream input = this.sock.getInputStream()) {
+			try (OutputStream output = this.sock.getOutputStream()) {
+				handle(input, output);
+			}
+		} catch (Exception e) {
+			try {
+				this.sock.close();
+			} catch (IOException ioe) {
+			}
+			System.out.println("client disconnected.");
+		}
+	}
+
+	private void handle(InputStream input, OutputStream output) throws IOException {
+		System.out.println("Process new http request...");
+		var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+		var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+		// 读取HTTP请求:
+		boolean requestOk = false;
+		String first = reader.readLine();
+		if (first.startsWith("GET / HTTP/1.")) {
+			requestOk = true;
+		}
+		for (;;) {
+			String header = reader.readLine();
+			if (header.isEmpty()) { // 读取到空行时, HTTP Header读取完毕
+				break;
+			}
+			System.out.println(header);
+		}
+		System.out.println(requestOk ? "Response OK" : "Response Error");
+		if (!requestOk) {
+			// 发送错误响应:
+			writer.write("404 Not Found\r\n");
+			writer.write("Content-Length: 0\r\n");
+			writer.write("\r\n");
+			writer.flush();
+		} else {
+			// 发送成功响应:
+			String data = "<html><body><h1>Hello, Jecyu!</h1></body></html>";
+			int length = data.getBytes(StandardCharsets.UTF_8).length;
+			writer.write("HTTP/1.0 200 OK\r\n");
+			writer.write("Connection: close\r\n");
+			writer.write("Content-Type: text/html\r\n");
+			writer.write("Content-Length: " + length + "\r\n");
+			writer.write("\r\n"); // 空行标识Header和Body的分隔
+			writer.write(data);
+			writer.flush();
+		}
+	}
+}
+
+```
+
+### Servlet 入门
+
+在上一节中，我们看到，编写 HTTP 服务器其实是非常简单的，只需要先编写基于多线程的 TCP 服务器，然后在一个 TCP 连接中读取 HTTP 请求，发送 HTTP 响应即可。
+
+但是，要编写一个完善的 HTTP 服务器，以 HTTP/1.1 为例，需要考虑的包括：
+
+- 识别正确和错误的 HTTP 请求；
+- 识别正确和错误的 HTTP 头；
+- 复用 TCP 连接；
+- 复用线程；
+- IO 异常处理；
+- ...
+
+这些基础工作需要耗费大量的时间，并且经过长期测试才能稳定运行。如果我们只需要输出一个简单的 HTML 页面，就不得不编写上千行底层代码，那就根本无法做到高效可靠地开发。
+
+因此，在 JavaEE 平台上，<u>处理 TFCP 连接，解析 HTTP 协议这些底层工作统统扔给现成的 Web 服务器去做，我们只需要把自己的应用程序跑在 Web 服务器上。为了实现，这一目的，JavaEE 提供了 Servlet API，我们使用 Servlet API 编写自己的 Servlet 来处理 HTTP 请求， Web 服务器实现 Servlet API 接口，实现底层功能：</u>
+
+```bash
+                 ┌───────────┐
+                 │My Servlet │
+                 ├───────────┤
+                 │Servlet API│
+┌───────┐  HTTP  ├───────────┤
+│Browser│<──────>│Web Server │
+└───────┘        └───────────┘
+```
+
+对于开发者来说，Java 的网络编程比 Node 更加底层，Node 已经封装的很好了，并且拥有大量的中间件来处理基础工作，再进一步可以使用 Express 框架。
+
+因此，Java 才需要 Sevlet API，让服务器 （例如 Tomcat ）实现我们编写的 Servlet API 接口，实现 Web 应用的底层工作。而 node 就很方便编写响应。
+
+编写完，还要把服务端程序打包到服务器上。可能不如 Node 那么方便。
 
 ## Spring 开发
 

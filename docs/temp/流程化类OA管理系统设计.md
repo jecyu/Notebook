@@ -12,3 +12,4 @@
 ## 参考资料
 
 - [Introducing the Flowable Process Engines by Paul Holmes Higgin & Joram Barrez](https://www.youtube.com/watch?v=i8dYR0LdpHg) flowable 包括流程图+表单
+- [https://www.bilibili.com/video/BV1rJ411L7pV?from=search&seid=9383636968527484872](flowable设计器集成)

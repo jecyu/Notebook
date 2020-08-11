@@ -8,6 +8,9 @@
 JS 又是如何通过原型这个概念来实现这两个概念的，原则上是基于类继承与基于原型继承的两种区别。
 - override 覆写
 
+目标读者：
+- 初级前端开发，对 JS 原型概念不熟悉者
+
 <!-- 再稿后，发布到 blogs 文件夹，之后同步掘金、个人博客-->
 
 ## 前言
@@ -369,13 +372,13 @@ exports.Animal = Animal;
 
 #### 子类和继承
 
-我们通过设置子类的 protype 的值为父类的值，并在 子类的构造函数调用超类的构造函数实现继承。
+我们通过设置子类的 protype 的值为父类的值，并在子类的构造函数调用超类的构造函数实现继承。
 
 ```js
 function inheri(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype); // 实现继承
   subClass.__proto__ = superClass;  // 子类的原型指向父类
-  // 这里的继承比直接 subClass.prototype =  new superClass，灵活，不用实例化传递参数
+  // 这里的两行代码继承比直接 subClass.prototype =  new superClass，灵活，不用实例化传递参数
   // 补回丢失的属性
   Object.defineProperty(subClass, "constructor", {
     enumerable: false,
@@ -419,38 +422,157 @@ keji.makeNoise();
 
 <!-- 一张图对比看是否需要放到其他位置 -->
 
+|Category|Class-based（Java）|Prototyp-based （JavaScript）|
+|--|--|--|
+|Class vs Instance|Class and instance are distinct entities|All objects can inherit from another object.|
+|Definition|Defines a class with a class definition；instantiate a class with constructor methods.| Define and create a set of objects with constructor functions.|
+|Creation of new object|Create a single object with the new operator.|Same. |
+|Construction of object hierachy|Construct an object   hierarchy by usinig class definitions to define subclasses of existing classes.| Construct an object hierarchy by assigning an object as the prototype associated with a constructor function|
+
 无论是基于类的 java 还是基于原型的 js ，都是为了实现面向对象的概念，可以统一理解为基于原型的实现。只不过 java 通过 class 和类的构造函数定义原型，而 js 通过 prototype 和构造函数来定义原型，本质上都是基于原型开发。
-
-### 构造器（构造函数）与原型的关系
-
-构造器（构造函数），英文是 contructor，它是可以根据原型构造实例对象的机器，提供消费者（用户）可以基于这个原型（在传统面向对象中就是当前整个类）进行初始化状态所用。
-
-例如 `new bar()` 这个 `bar` 是原型，而 `bar` 继承的类也是原型。通常我们 `a = new bar()` 也是调用 `bar` 类的构造函数，然后基于以整个类为原型进行创建新的对象。`bar` 为 `a` 的构造函数，则 `a` 为 `bar` 的一个实例。而 bar 作为原型还可以继承其他的原型例如 `foo`。
-
-C#、Java 都通过 class 进行原型的定义，JS 通过 prototype 属性，让我们来具体看看 JS 中基于原型的实现过程。
 
 ## 细说 JS 中的原型
 
-下面具体说说 JS 中的原型。
+下面具体说说 JS 中的原型。在 JavaScript 中，可以将一个对象的属性扩展到另一个对象上，这个是通过原型的概念实现。
 
-### 什么是原型链
+每个对象都有原型的引用，当查找属性时，若对象本身不具有该属性，则会查找原型上是否有该属性。例如，你正在和一组人共同玩一个游戏，游戏规则为：主持人提问，如果你知道答案，则可直接回答；如果你不知道答案，则可以询问你的下一个人。
 
-- 层层访问
+在 JS 中，函数也是对象，当使用 new 调用函数的时候，函数会作为构造函数来使用，以构造函数的 prototype 作为原型，然后触发一个新对象的分配：
 
-<!-- 同样使用上面的传统面向对象的继承例子 -->
+![](2020-08-06-14-15-46-prototype.png)
 
-### 为什么需要原型链
+ninja2 是新创建的对象的引用，具有 swingSword 方法，并调用 swingSword 方法。
 
-- 使用原型链进行继承
+![](2020-08-06-14-24-09-prototype.png)
 
-### JS 是如何使用原型链进行类的继承的
+由此可见：
+- 每一个函数都具有一个原型对象 `prototype`。
+- 每一个函数的原型（prototype）都具有一个 `constructor` 属性，该属性指向函数本身。
+- 新创建的对象 ninja2 的 `__proto__` 属性指向构造器的原型即 prototype。
 
-- 对象构造器
-- 重写 contructor 的问题
-- 一些操作符 instanceof typeof in 操作符
+因此，可以通过 ninja2 调用方法 swingSword，将查找该访问委托到 Ninja 的原型对象上。
+
+另外，我们也可以使用 constructor 属性来进行类型的校验。
+
+```js
+const assert = require('assert');
+function Ninja() {}
+const ninja = new Ninja();
+
+assert(typeof ninja === "object", true, "The type of instance is object."); // 通过 typeof 检测 ninja 的类型，但从结果仅仅能够得知 ninja 是一个对象而已
+
+assert(ninja instanceof Ninja, true, "instanceof identifies the constructor."); // 通过 instanceof 检测 ninja 的类型，其结果提供更多信息—— ninja 是由 Ninja 构造而来的
+
+assert(ninja.constructor === Ninja, true, "The ninja object was created by the Ninja function.");
+```
+
+### JS 是如何使用原型构成原型链进行类的继承
+
+我们已经知道什么是原型，也知道它是如何使用原型查找引用属性。在 JavaScript 中，继承（Inheritance）是在一种新对象上复用现有对象的属性的形式，这有助于避免重复代码和重复数据。
+
+我们尝试在以下代码中实现继承：
+
+```js
+function Animal() {}
+// 通过构造函数及其原型，创建一个具有 makeNoise 方法的 Animal 类型
+Animal.prototype.makeNoise = function() {
+  console.log("Animal makeNoise!");
+}; 
+
+function Canine() {} // 定义 Canine 构造函数
+Canine.prototype = { // 试图附着 Animal 的原型方法 makeNoise 到 Canine 的原型上 
+  makeNoise: Animal.prototype.makeNoise 
+}
+
+const canine = new Canine();
+assert.strictEqual(canine instanceof Canine, true, "canine receives functionality from the Canine prototype");
+
+assert.strictEqual(canine instanceof Animal, false, "... and the Animal prototype.")
+assert.strictEqual(canine instanceof Object, true, "... and the Object prototype.")
+```
+
+虽然我们把 Animal 的 makeNoise 复制到 Canine 身上，但是无法使得 Canine 称为真正的 Animal 类型。这不是真正的继承——仅仅是复制。
+
+要想实现真正继承的话，还需要知道原型链的存在，我们需要使用原型构成原型链进行真正意义上类的继承。在原型链上，keji 继承 Dog，Dog 继承 Canine， Canine 继承 Animal，以此类推，一直到 Object。
+
+创建这样的原型链的一种方式是一个对象的原型直接是另一个对象的实例：
+
+```js
+const assert = require('assert')
+function Animal() {}
+Animal.prototype.makeNoise = function() {}
+
+function Canine() {}
+Canine.prototype = new Animal(); // 通过将 Canine 的原型赋值为 Animal 的实例，实现 Canine 继承 Animal，Canine 指向新的原型，缺点是丢失了原来的 prototype 的 constructor 属性
+
+const animal1 = new Animal();
+const canine = new Canine();
+assert.strictEqual(canine instanceof Canine, true, "canine receives functionlity from the Canine prototype.")
+assert.strictEqual(canine instanceof Animal, true, "... and the Canine prototype.")
+assert.strictEqual(typeof canine.makeNoise === "function", true, "... and the Object prototype.")
+```
+
+这样，我们就可以实现访问对象的属性会通过原型链层层向上寻找了，既可以访问 Animal 的实例属性，也可以访问它原型上的属性。
+
+#### 重写 contructor 的问题
+
+在前面我们实现继承的过程中，直接把 Animal 的实例对象作为 Canine 的原型时，我们已经丢失了 Canine 与 Canine 初始原型之间的关联。这是一个问题，因为 constructor 可以用来监测一个对象是否由某一个函数创建的。
+
+```js
+assert(canine.constructor === Canine,  "The canine object was created by the Canine constructor.");
+```
+
+但是前面的程序是否无法通过这个测试。
+
+![](2020-08-11-14-31-17-prototype.png)
+
+如图所示，无法查找到 Canine 对象的 constructor 属性。回调原型上，原型上也没有 constructor 属性（因为 __proto__ 指向 Animal 实例对象了），继续在原型链上追溯，在 Animal 对象的原型还是那个具有指向 Animal 本身的 constructor 属性。事实上，如果我们询问 Canine 对象的构造函数，我们得到的答案是 Animal，但是这个答案是错误的。
+
+现在，我们需要手动修复这个缺陷：
+
+```js
+// ....
+Canine.prototype = new Animal();
+// 在这里添加
+Object.defineProperty(Canine.prototype, "constructor", { // 定义一个新的不可枚举的 constructor 属性，属性值为 Ninja
+  enumerable: false,
+  value: Canine,
+  writable: true
+});
+//...
+```
+
+![](2020-08-11-15-11-54-prototype.png)
+
+修复后，可以看到 canine 对象和 Canine 都有 constructor 属性了。
+
+#### 更好的继承方式
+
+我们总结下前面的实现方式可能存在的问题：`Canine.prototype = new Animal();`
+1. 没有初始化 Animal 的属性，比如 food，picture，如果要初始化只能传递函数。
+
+```js
+function inheri(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype); // 实现继承
+  subClass.__proto__ = superClass;  // 子类的原型指向父类
+  // 这里的两行代码继承比直接 subClass.prototype =  new superClass，灵活，不用实例化传递参数
+  // 补回丢失的属性
+  Object.defineProperty(subClass, "constructor", {
+    enumerable: false,
+    value: subClass,
+    writable: true
+  })
+}
+
+function Canine(picture, food, hunger, boundaries) {
+  return Animal.call(this, picture, food, hunger, boundaries);
+}
+inheri(Canine, Animal);
+```
+
+#### 一些操作符 instanceof typeof in 操作符
 
 ### 使用 ES6 的 class 实现继承
-
 
 ```js
 class Animal {
@@ -488,40 +610,51 @@ class Canine extends Animal {
 }
 ```
 
-## 属性 __proto、prototype、constructor 区别
+<!-- ## 构造器（构造函数）与原型的关系
 
-js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
+### 属性 __proto、prototype、constructor 区别
 
-### **proto** 与 prototype 的区别
+构造器（构造函数），英文是 contructor，它是可以根据原型构造实例对象的机器，提供消费者（用户）可以基于这个原型（在传统面向对象中就是当前整个类）进行初始化状态所用。
 
-### constructor 与 prototype 的区别
+例如 `new bar()` 这个 `bar` 是原型，而 `bar` 继承的类也是原型。通常我们 `a = new bar()` 也是调用 `bar` 类的构造函数，然后基于以整个类为原型进行创建新的对象。`bar` 为 `a` 的构造函数，则 `a` 为 `bar` 的一个实例。而 bar 作为原型还可以继承其他的原型例如 `foo`。
 
-<!-- 在 js 面向对象编程中，除了原型（`prototype`） 这个词外，构造器（`contructor`）也是我们接触比较多的术语。两者有什么区别呢，有哪些应用场景。 -->
+C#、Java 都通过 class 进行原型的定义，JS 通过 prototype 属性，让我们来具体看看 JS 中基于原型的实现过程。（下图是在 调试器（debugger）中查看 Person 函数的属性）
 
-### 在 调试器（debugger）中查看属性
+![](../.vuepress/public/images/2020-08-05-14-20-18-prototype.png)
+
+从图中可以看出函数 Person 的 `prototype` 属性包含了两个属性，一个是 construtor 构造器指向构造函数，跟传统面向对象的构造函数是一样的道理。一个是 `__proto__` 指向它的上一层原型 Object 函数。
+
+这个 prototype 其实就可以类比 Java 的 class，class 带有 构造函数，用来构造原型的实例。而 `__proto__` 则相当于Java 的 extend 操作符。 -->
+
+<!-- ### **proto** 与 prototype 的区别
+
+### constructor 与 prototype 的区别 -->
 
 ## 应用场景
 
-除了继承之外，理解计算机中的原型可以让我们做什么
+除了继承之外，理解计算机中的原型可以让我们做什么。
 
 ### 更新轮子：给第三方库、框架增加属性
 
 [vue-plugin-event-bus](https://github.com/shooterRao/vue-plugin-event-bus/blob/master/src/index.ts)
 
-给 vue 写插件。
+给 vue 写插件。(prototype)
 除了在 window 对象外
 要注意在大型项目中，prototype 属性的冲突问题。
 
-### 写个轮子：一棵树
+<!-- ### 写个轮子：一棵树 -->
+<!-- 写一个 eventbus -->
 
 ## 小结
 
+面向对象继承的缺点
 <!-- 构造器。面向过程、面向对象，稍微提下函数式编程，像面向过程的 C 语言是如何提高写法的呢  ts-->
 
 另外，像 UML 建模，顾名思义建立模型，也是建立原型的过程，之后再对系统进行具体的编码。
 
 ## 参考资料
 
+- 面向对象继承的缺点；
 - [Details of the object model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Details_of_the_Object_Model) 值得精读的 MDN 文档，关于基于类继承与基于原型继承的区别说得挺清楚的。
 - [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
@@ -538,3 +671,4 @@ js 中的 constructor 跟传统面向对象的构造函数是一样的道理。
 - [简单粗暴地理解 js 原型链–js 面向对象编程](https://mp.weixin.qq.com/s/93CQRYj8TraDIKeJxNGPAQ)
 - 《Head First Java》
 - [Babel —— 编译 JS 工具](https://babeljs.io/) 可以在线编译
+- 《JavaScript 忍者秘籍》

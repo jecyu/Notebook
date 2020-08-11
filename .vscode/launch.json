@@ -30,9 +30,9 @@
       "stopOnEntry": true,
       "skipFiles": ["<node_internals>/**"],
       // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
-      "program": "${workspaceFolder}/examples/dataStructure/tree/demo01.js"
+      // "program": "${workspaceFolder}/examples/dataStructure/tree/demo01.js"
       // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
-      // "program": "${workspaceFolder}/examples/js/object/prototype/demo08.js"
+      "program": "${workspaceFolder}/examples/js/object/prototype/demo10.js"
       // "program": "${workspaceFolder}/examples/js/object/oop/main.js"
       // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
       // "program": "${workspaceFolder}/examples/js/string/demo04.js"

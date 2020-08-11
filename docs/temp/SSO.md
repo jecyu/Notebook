@@ -4,6 +4,12 @@
 
 头脑风暴
 
+- 在线地图的 token 认证
+- http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-identity-IdentityManager.html#registerToken
+- 或者说应用的页面认证。访问安全的图层。
+- Access Secure Resources http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/guide/secure-resources/index.html
+- http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/sample-code/identity-oauth-basic/index.html ArcGIS Auth 2.0）
+
 - 登录方式
 - 授权方式
 - 用户账号系统如何同步（我方与第三方）（授权模式）、运维同步读取（读取现有的用户表和权限、进行运维的再次构造同步）
@@ -26,7 +32,10 @@
 - 如何同步 sso 认证中心的用户表，例如给运维系统使用，可以得到授权连接它的数据，获取读写用户权限关联表的授权，然后跟现有的权限表进行关联。
 - 基于 token 的认证（保存用户状态到客户端）和基于 session 的认证（保存用户状态到服务器）
 - cookie 是存在于客户端不安全，因此便有了 session 的存在，session 是保存在服务端。然后把 sessionId 发送给浏览器端作为 cookie 保存下来。
+
 - 网络安全
+- 代理&直接登录
+
 
 ## 安全
 
@@ -75,10 +84,16 @@ session 是另一种记录客户状态的机制，与 cookie 保存在客户端�
 - Setting up a server with Node.js and Express
 - Setting up Passport with Node.js and Express
 - How to encrypt user passwords
+  - 使用哈希
+  - 或使用公钥（更安全）
 - Restricting access to routes to only logged in users
 - Showing flash messages with Node.js and Express
 
-#### cookie-sessoin
+服务端存储密码时，做了哈希处理。而客户端也不能把明文传输，需要通过公钥加密。
+
+可以用 mysql 测试。
+
+#### cookie-sessoinn
 
 ![](../.vuepress/public/images/2020-07-23-22-23-24-cookie-session.png)
 
@@ -316,6 +331,7 @@ app.get("/", isAuthenticated, (req, res, next) => {
 
 ## 参考资料
 
+- 《HTTP 权威指南》
 - [auth](https://auth0.com/why-auth0?utm_source=jwtio&utm_medium=navbar_whats_auth0&utm_campaign=jwt_nav_cta_12_2019)
 - [jwt](https://jwt.io/)
 - [Build Node.js User Authentication - Password Login](https://www.youtube.com/watch?v=Ud5xKCYQTjM)

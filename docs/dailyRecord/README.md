@@ -9,6 +9,72 @@
 ### 计算树节点的孩子数量
 
 ```js
+const tree = [
+  {
+    name: "1",
+    // hasChildNumbers: 2,
+    children: [
+      {
+        // hasChildNumbers: 0,
+        name: "1-1",
+      },
+      {
+        // hasChildNumbers: 0,
+        name: "1-2",
+      },
+    ],
+  },
+  {
+    name: "2",
+    // hasChildNumbers: 3 + 1 + 1 + 1, // hasChildNumbers + 本身的节点数
+    children: [
+      {
+        name: "2-1",
+        // hasChildNumbers: 3,
+        children: [
+          {
+            // hasChildNumbers: 0,
+            name: "2-1-1",
+          },
+          {
+            // hasChildNumbers: 0,
+            name: "2-1-2",
+          },
+          {
+            // hasChildNumbers: 0,
+            name: "2-1-3",
+          },
+        ],
+      },
+      {
+        name: "2-2",
+        // hasChildNumbers: 1,
+        children: [
+          {
+            // hasChildNumbers: 0,
+            name: "2-1-3",
+          },
+        ],
+      },
+    ],
+  },
+];
+```
+
+上面的结构对应的树图：
+
+思路分析：
+```js
+// 计算父节点本身
+f(tree) = f(1) + f(2) + f(3)
+        = (f(1-1)+1) + (f(1-2)+1) + (f(2-1) + 1) + (f(2-2)+1) + (f(3)+1)
+// 不计算父节点，只需判断不是叶子节点，把本身的计数去掉
+f(tree) = f(1) + f(2) + f(3)
+        = (f(1-1)+1) + (f(1-2)+1) + (f(2-1) + 1) + (f(2-2)+1) + (f(3)+1) = (f(1)-1) + (f(2)-1) + f(3)
+```
+
+实现：
+```js
 function getChilds(node, isIncludeParent) {
   let hasChilds = 0;
   if (node.children) {

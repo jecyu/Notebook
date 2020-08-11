@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%-include('header') %>
+  <body>
+    <a href="/">Go back</a>
+    <h2><%= item.title %></h2>
+    <p><%= item.description %></p>
+    <h3>User reviews</h3>
+
+    <% if(reviews.length) { %> 
+      
+      <% reviews.forEach(review => { %> 
+        <b><%= review.stars %> </b>
+        <p><%= review.text %> </p>
+      <% }) %> 
+
+      <% } else { %> 
+      <p>No reviews to show. Write one!</p>
+      <% } %>
+      <form action="/item/<%= item.id %>/review" method="POST">
+        <fieldset>legend Create review</fieldset>
+        <p>
+          <label for="stars">Stars</label>
+          <select name="stars" id="stars">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </p>
+        <p>
+          <label for="review">Review</label>
+          <textarea name="text" id="" cols="30" rows="10"></textarea>
+        </p>
+        <p>
+          <button type="submit">Send</button>
+        </p>
+      </form>
+  </body>
+</html>

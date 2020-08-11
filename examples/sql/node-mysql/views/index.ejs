@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%-include('header') %>
+  </head>
+  <body>
+    <h1>My shopping cart</h1>
+    <h2>All items</h2>
+    <% if (items.length > 0) { %> <% items.forEach(item => { %>
+    <ul>
+      <li>
+        <h3>
+          <a href="/item/<%=  item.id%>">
+            <%= item.title %>
+          </a>
+        </h3>
+        <%= item.description %> 
+      </li>
+    </ul>
+    <% })%> <%} else { %>
+    <!-- else statment need follow the if end statem end -->
+    <p>No items to show</p>
+    <% } %>
+
+    <h2>Create new item</h2>
+    <form action="/create" method="POST">
+      <p>
+        <label for="title">Title</label>
+        <input type="text" name="title" />
+      </p>
+      <p>
+        <label for="description">Description</label>
+        <textarea name="description"></textarea>
+      </p>
+      <p>
+        <button type="submit">Sumbit</button>
+      </p>
+    </form>
+  </body>
+</html>

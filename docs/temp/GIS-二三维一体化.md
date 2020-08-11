@@ -1779,6 +1779,10 @@ tiled、dynamic、wmts、tdt
 </style>
 ```
 
+## 加载三维数据
+
+### 加载场景数据
+
 ## 一些必要调整
 
 分屏
@@ -1821,8 +1825,40 @@ val 也为 null，原因在于没有用 extent 初始化。后续都需要处理
 
 分屏同步视点。
 
+## 加载场景图层和高程图层
+
+数据的生成
+
+对应的加载图层
+
+如何直到数据是高程数据还是场景数据。
+
+ElevationLayer is a tile layer used for rendering elevations in SceneViews. A default world elevation layer can be added to the map by setting the map's ground property to world-elevation.
+
+If the service is requested from a different domain, a CORS enabled server or a proxy is required.
+
+The SceneLayer is a layer type designed for on-demand streaming and displaying large amounts of data in a SceneView. SceneLayers support two geometry types: Point and 3D Objects (e.g. Buildings).
+
+[A guide to scene layers](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/guide/working-with-scene-layers/index.html)
+
+判断 layerType 类型：3dObject sts
+
+**3D Object** scene layer	SceneLayer	yes (see renderers)	no	partially (see Query section of the SceneLayer class)	yes (see popupTemplate)	3D-object-sample
+**Point cloud scene layer**	PointCloudLayer	yes (see supported
+renderers in PointCloudRenderer)	no	no	no	point-cloud-samples
+**Integrated mesh scene laye**r	IntegratedMeshLayer	no	no	no	no	integrated-mesh-sample
+Point scene layer	SceneLayer
+
+如何判断使用哪个 sceneLayer 和 evaluationLayer 
+
 ## 参考资料
 
+- [viewing-modes](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-views-SceneView.html#viewing-modes)
+- [ArcGIS API for JavaScript 4.2学习笔记[21] 对3D场景上的3D要素进行点击查询【Query类学习】](https://www.cnblogs.com/onsummer/p/6421503.html)
+- 《（简）超图软件-SM二三维一体化解决方案V1-20120619 (1)》pdf
+- [ArcGis Api for JavaScript开发心得【原】](https://www.cnblogs.com/xionglee/articles/5814932.html)
+- [三维GIS开发](http://www.bolemap.com/xtkf/3w/)
+- 《SuperMap GIS二三维一体化开发实战》
 - [2019 年 Esri 技术公开课（9）使用 ArcGIS JavaScript API 开发 Web 3D 应用](https://malagis.com/esri-open-class-2019-07-16.html) 从 ArcGIS 三维数据产生、ArcGIS 服务发布、ArcGIS 三维服务使用。
 - 这个可以引入到地图中[使用 Javascript API for ArcGIS 4.X 实现二三维一体化](https://blog.csdn.net/qq_36264495/article/details/78032997?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase)
 - [Esri Events](https://www.youtube.com/c/EsriEvents/search?query=3d) Esri 官方演讲视频
