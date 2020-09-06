@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="311px" height="96px" viewBox="-0.5 -0.5 311 96" content="&lt;mxfile host=&quot;d58cdc4e-c384-4279-877a-0cb2b77aeb2c&quot; modified=&quot;2020-08-28T07:07:13.341Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.48.2 Chrome/78.0.3904.130 Electron/7.3.2 Safari/537.36&quot; etag=&quot;4BpcuDRjXx-4gYrF-ejz&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;xZXBjqMwDIafhjuQaUuP205n5jLSSj3sOQoORBMICmmh+/RrNqZAS9WuVtX0UMU/thN/NiFg26J9t7zKP00KOojDtA3YaxDHizDB/044kZCsvZBZlXopGoS9+g0khqQeVAr1xNEZo52qpqIwZQnCTTRurWmmbtLo6a4Vz+BK2Auur9VfKnW5V5N4NegfoLK83zlaUn0F752pkjrnqWlGEtsFbGuNcX5VtFvQHbuei497u/H0fDALpXskIPYBR64PVBudy536YptcOdhXXHR2g/0M2CZ3hUYrwiWvK49YqhYw60YqrbdGG/s3nEkp8Id67az5gtETtmRr1kXQGcA6aG/WEZ3p4FSBKcDZE7pQQBwSUJqoaE12M+oPSfmoNb3GaSKyc+YBGi6I2zxDdp8hBuBsorH5b5pSJsmzabL4+2i+3KfprOJlph/AeUFPCFhI+Wx6L4v79JZPord6YBbL9Ed3B6IlNK9rJabMxMEeu9GbAyhDzkI+B3DzugrxHewBQnp1g97FN8KzmMHTaxY0d+o4TT/HjHb4aRRuPMw2u9GdPkVtDlYARY2vzstE64tEl/1z3GbgrhIhfH4auVWdQ/0PB15NrnRc+IzDfJyZzo0MmsPnxbsP32i2+wM=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <rect x="0" y="15" width="80" height="80" fill="#ffcccc" stroke="#36393d" pointer-events="all"/>
+        <ellipse cx="160" cy="55" rx="40" ry="40" fill="#ffff88" stroke="#36393d" pointer-events="all"/>
+        <path d="M 250 15 L 310 55 L 250 95 Z" fill="#cce5ff" stroke="#36393d" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 130 15 Q 130 -5 183.72 3.95" fill="none" stroke="#bd7000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 188.9 4.82 L 181.42 7.12 L 183.72 3.95 L 182.57 0.21 Z" fill="#bd7000" stroke="#bd7000" stroke-miterlimit="10" pointer-events="all"/>
+    </g>
+</svg>

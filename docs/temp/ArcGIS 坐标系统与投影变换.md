@@ -1,9 +1,15 @@
 # 半路出家小白对地理坐标系统的认识
 
+目标读者
+
+写作目的
+
+头脑风暴
+
 - GIS 坐标系统是什么
 - 有了 GIS 坐标系统与没有的区别
 - 应该如何使用 GIS 坐标系统
-  
+- map 的 extent、center、scale 等的单位都是咋样的？这些都关系到定位以及初始的视图范围
   arcgis
   openlayer
   动态服务支持动态投影转换转换，这样可以在把不同的坐标系服务加载到某一指定的坐标系上。
@@ -42,6 +48,12 @@
 2、动态图层为地理坐标系，map 为投影坐标系（也可以为地理坐标系），此时动态图层不需要进行转换。
 
 国家坐标系与本地坐标系，需要投影。（）
+
+对于 Web Map 开发人员的意义
+对于 Web Map 开发人员来说，最熟悉的应该是 EPSG:4326 (WGS84) and EPSG:3857(Pseudo-Mercator)，这又是啥呢？
+
+3.1 EPSG:4326 (WGS84)
+前面说了 **WGS84 是目前最流行的地理坐标系统**。在国际上，每个坐标系统都会被分配一个 EPSG 代码，EPSG:4326 就是 WGS84 的代码。GPS 是基于 WGS84 的，所以通常我们得到的坐标数据都是 WGS84 的。一般我们在存储数据时，仍然按 WGS84 存储。
 
 ## 问题
 
@@ -130,6 +142,8 @@ esri.views.3d.state.ViewStateManager] #viewpoint= Viewpoint has an incompatible 
 
 地图图层跟游戏中的贴图原理是否类似，游戏只有世界坐标与物体的本地坐标。没有什么投影坐标、火星坐标等等。
 
+在 SceneView 中分为 global scene（全球场景）和 local scene（局部场景），其中全球场景只支持 WGS 84 和 WebMercator 地理坐标系，局部场景支持任何投影坐标系。
+
 ## 我们国家常用地理坐标系
 
 |坐标系|椭球体|坐标原点|椭球体长半轴|椭球体短半轴|
@@ -212,10 +226,11 @@ this.map.setExtent(line.getExtent().expan
 
 ## 参考资料
 
+- [GIS 基础知识 - 坐标系、投影、EPSG:4326、EPSG:3857](https://www.cnblogs.com/E7868A/p/11460865.html)
 - openlayer 坐标系转换，dist openlayer
 - [如何将天地图转换为默卡托投影坐标](https://my.oschina.net/u/2312934/blog/511852)
 - [对互联网中常见地图的坐标系探讨](https://www.cnblogs.com/naaoveGIS/p/5342177.html)
-- [秋意正寒](https://www.cnblogs.com/onsummer/) 
+- [秋意正寒](https://www.cnblogs.com/onsummer/)
 - [聊聊 GIS 中的坐标系|再版](https://www.cnblogs.com/onsummer/p/12081889.html)
 - [聊聊 GIS 中的坐标系|再版 识别各种数据的坐标系及代码中的坐标系](https://www.cnblogs.com/onsummer/p/12082359.html)
 - [地理配准和坐标系](https://resources.arcgis.com/zh-cn/help/getting-started/articles/026n0000000s000000.htm)

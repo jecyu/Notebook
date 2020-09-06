@@ -1,5 +1,7 @@
 # Java
 
+![](../temp/sketch/java.png)
+
 ## 入门
 
 ![java 编译输出流程图](../.vuepress/public/images/java-compiler.png)
@@ -674,13 +676,333 @@ Double 的计算与此类似，double 的符号位为 63 位，指数为 62 ～ 
 
 ### 数组类型
 
-## 类与对象
+### 循环语句
+
+循环结构的基本组成部分，一般可以分成四部分：
+
+1. 初始化语句：在循环开始最初执行，而且只做唯一一次。
+2. 条件判断：如果成立，则循环继续。
+3. 循环体：重复要做的事情，若干行语句。
+4. 步进语句：每次循环之后都要进行的扫尾工具，每次循环结束之后都要执行一次。
+
+![](../.vuepress/public/images/2020-08-29-14-46-54-loop.png)
+
+#### for 
+
+```java
+for (初始化语句; 条件判断; 步进语句) {
+	循环体
+}
+```
+
+#### while
+
+![](../.vuepress/public/images/2020-08-29-14-55-56-while.png)
+
+标准格式
+
+```java
+while(条件判断) {
+	循环体
+}
+```
+
+#### do while
+
+![](../.vuepress/public/images/2020-08-29-15-03-49-do-while.png)
+
+```java
+do {
+	循环体
+} while(条件判断);
+```
+
+#### 三种循环的区别
+
+1. 如果条件判断从来没有满足过，那么 for 循环和 while 循环将会执行 0 次，但是 `do while`	 循环会执行至少一次。
+2. for 循环的变量在小括号当中定义，只有循环内部才可以使用。while 循环和 do while 循环初始化语句本来就在外面，所以出来循环之后还可以继续使用。
+
+#### 循环控制 break 和 continue 语句
+
+<!-- 这个跟函数调试的 continue 很像 -->
+
+```java
+public class Break {
+	public static void main(String[] args) {
+		for (int i = 1; i <= 10; i++;) {
+			// if (i == 4) {
+			// 	break;
+			// }
+			if (i == 4) {
+				continue;
+			}
+		}
+		System.out.println("Hello" + i);
+	}
+}
+```
+
+#### 死循环
+
+```java
+死循环的标准格式
+while(true) {
+	循环体
+}
+```
+
+在 HTTP 一直处于接受请求的状态，就需要用到死循环。
+
+#### 循环嵌套
+
+```java
+public class LoopHourAndMinute {
+	public static void main(String[] args) {
+		for (int hour = 0; hour < 24; hour++) {
+				System.out.println("hour" + hour);
+			for (int minute = 0; minute < 60; minute++) {
+				System.out.println("minute" + minute);
+			}
+		}
+	}
+}
+```
+
+### IDEA (Integrated Development Enviroment)
+
+![](../.vuepress/public/images/2020-08-30-19-20-43-IntelliJ-JDK.png)
+
+#### IDEA 的项目结构
+
+IntelliJ
+
+![](../.vuepress/public/images/2020-08-29-16-52-12-project-idea.png)
+
+创建流程：项目 -> 模块 -> 包 -> 源代码
+
+![](../.vuepress/public/images/2020-08-29-23-06-41-ITelliJ.png)
+
+#### IDEA 的常用快捷键
+
+#### IDEA 项目关闭打开与模块导入
+
+![](../.vuepress/public/images/2020-08-29-23-44-13-package.png)
+
+### 方法
+
+#### 定义方法的完整格式
+
+```java
+/* 修饰符 返回值类型 方法名称(参数类型 参数名称, ...) {
+
+} */
+
+public static  int sum(int a, int b) {
+		return a + b;
+}
+```
+
+#### 方法的三种调用格式
+
+1. 单独调用：方法名称(参数) `sum(3, 5)`
+2. 打印调用：`System.out.println(sum(3, 5));`
+3. 赋值调用：`int result = sum(3, 5);`
+
+#### 对比有返回值和无返回值
+
+![](../.vuepress/public/images/2020-08-30-18-56-00-java-method.png)
+
+注意事项：
+1. 对于有返回值的方法，可以使用单独调用、打印调用或者赋值调用。
+2. 但是对于无返回值的方法，只能使用单独调用，不能使用打印调用或者赋值调用。
+
+#### 方法注意事项
+
+1. 方法应用定义在类当中，但是不能在方法当中再定义方法，不能嵌套。
+2. 方法定义的前后顺序无所谓。
+3. 方法定义之后不会执行，如果希望执行，一定要调用：单独调用、打印调用、赋值调用。
+4. 如果方法有返回值，那么必须写上 `return 返回值`，对应起来。
+5. return 后面的返回值数据，必须和方法的返回值类型，对应起来。
+6. 对于一个 void 没有返回值的方法，不能写 return 后面的返回值，只能写 `return;` 结束调用。
+7. 对于方法当中最后一行的 return 可以省略不写。
+8. 一个方法中可以有多个 return 语句，但是必须保证只有一个会被执行到。
+
+#### 方法重载
+
+对于功能类似的方法来说，因为参数列表不一样，却需要记住那么多不同的方法名称，太麻烦。
+
+方法的重载（overload），多个方法的名称一样，但是参数列表不一样。好处：只需要记住唯一一个方法名称，就实现类似的多个功能。
+```java
+/*
+ * 重载 overload
+ * */
+public class Demo03 {
+    public static void main(String[] args) {
+        System.out.println(sum(10, 20));
+        System.out.println(sum(10, 20, 30));
+    }
+
+    public static int sum(int a, int b) {
+        return a + b;
+    }
+
+    public static int sum(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+```
+
+#### 方法重载的注意事项：
+
+方法重载与下列因素有关
+
+1. 参数个数不同。
+2. 参数类型不同。
+3. 参数的多类型顺序不同。
+
+方法重载与下列因素无关
+
+1. 与参数的名称无关。。
+2. 与返回值类型无关
+
+### 数组
+
+#### 常见问题——数组索引越界异常
+
+#### 常见问题——空指针异常
+
+```java
+/*
+ * 所有的引用类型变量，都可以赋值为一个 null 值，但是代表其中什么都没有。
+ 数组必须进行 new 初始化才能使用其中的元素
+ 如果只是赋值一个 null，没有进行 new 创建
+ 那么将会发生：
+ 空指针异常 NullPointerException
+
+ 原因：忘了 new 
+ 解决：补上 new
+ */
+ public class Demo {
+	 public static void main(String[] args) {
+		 int [] array = null;
+		 array = new int [3];
+		 System.out.println(array[0]);
+	 }
+ }
+```
+
+#### 获取数组的长度
+
+```java
+/*
+ * 数组一旦创建，程序运行期间，长度不可改变。
+ */
+```
+
+#### 数组的遍历输出
+
+#### 求出数组中的最值
+
+![](../.vuepress/public/images/2020-09-06-16-24-37-max.png)
+
+```java
+public class Demo05 {
+    public static void main(String[] args) {
+        // 求出数组的最值
+        int[] array = {5, 15, 30, 20, 10000};
+        int max = array[0];
+        for (int i = 0; i < array.length; i++) {
+            if (max < array[i]) {
+                max = array[i];
+            }
+        }
+        System.out.println(max);
+    }
+}
+
+```
+
+#### 数组元素反转
+
+1. 数组元素反转，其实就是`对称位置`的元素变换。
+
+## 面向对象编程
+
+### 面向对象基础
+
+#### 包
+
+#### 小结
+
+Java 内建的 `package` 机制是为了避免 `class` 命名冲突；
+
+JDK 的核心类使用 `java.lang` 包，编译器会自动导入；
+
+JDK 的其他常用类定义在 `java.util.*`，`java.math.*`，`java.text.*`，.....；
+
+包名推荐使用倒置的域名，例如 `org.apache`。
+
+#### 作用域
+
+修饰符
+
+#### classpath 和 jar
+
+JVM 通过环境变量 `classpath` 决定搜索 `class` 的路径和顺序；
+
+不推荐设置系统环境变量 `classpath`，始终建议通过 `-cp` 命令传入；
+
+jar 包相当于目录，可以包含很多 `.class` 文件，方便下载和使用；
+
+`MANIFEST.MF` 文件可以提供 jar 包的信息，如 `Main-Class`，这样可以直接运行 jar 包。
+
+#### 模块
+
+从 Java 9 开始，JDK 又引入了模块（Module）。
+
+什么是模块？这要从 Java 9 之前的版本说起。
+
+我们知道，`.class` 文件是 JVM 看到的最小可执行文件，而一个大型程序需要编写很多 Class，并生成一堆 `.class` 文件，很不便于管理，所以 `jar` 文件就是 `class` 文件的容器。
+
+在 Java 9 之前，一个大型 Java 程序会生成自己的 jar 文件，同时引入依赖的第三方 jar，而 JVM 自带的 Java 标准库，实际上也是以 jar 文件形式存放的，这个文件叫 `rt.jar`，一共有 60 多M。
+
+如果是自己开发的程序，除了一个自己的 `app.jar` 以外，还需要一堆第三方的 jar 包，运行一个 Java 程序，一般来说，命令行写这样：
+
+```sh
+java -cp app.jar:a.jar:b.jar:c.jar com.xxxx.xxx.Main
+```
+
+⚠️注意：JVM 自带的标准库 rt.jar 不要写到 classpath 中，写了反而会干扰 JVM 的正常运行。
+
+<u>如果漏写了某个运行时需要用的 jar，那么在运行期极有可能抛出 `ClassNotFoundException`</u>。
+
+这个就跟传统的 Web 前端 HTML 直接引入多个 script 标签加载一样，依赖存在冲突等问题，最终才会有 commonJS、amd、esmodule 等模块化方案。
+
+jar 只是用于存放 class 的容器，它并不关心 class 之间的依赖。
+
+从 Java 9 开始引入的模块，主要是为了解决“依赖”这个问题。如果 `a.jar` 必须依赖另一个 `b.jar` 才能运行，那我们应该给 `a.jar` 加点说明什么的，让程序在编译和运行的时候自动定位到 `b.jar`，这种自带“依赖关系” 的 class 容器就是模块。
+
+##### 编写模块
+
+##### 运行模块
+
+##### 打包 JRE
+
+##### 访问权限
+
+##### 小结
+
+
+### Java 核心类
 
 ## 异常处理
 
 ## 反射
 
-## 注解
+## 注解（Annotation）
+
+Java 的注解是一种特殊的注释，相当于一个包装器，对类、方法等做一些处理，既可以让源代码更加简洁明了，也达到复用注解的目的。它就相当于一个过滤器，可以挂载在需要的地方。
 
 ## 泛型
 
@@ -4519,6 +4841,7 @@ class Handler extends Thread {
 
 ## 参考资料
 
+- [Java-Interview](https://github.com/xbox1994/Java-Interview)
 - [Tomcat(一) Tomcat 是什么：Tomcat 与 Java 技术 Tomcat 与 Web 应用 以及 Tomcat 基本框架及相关配置](https://blog.csdn.net/tjiyu/article/details/54590258)
 - [Java 虚拟机——字节码、机器码和 JVM](https://zhuanlan.zhihu.com/p/44657693) 本文主要讲解 Java 虚拟机的概念，字节码、机器码、编译器、解释器的概念。
 - [廖雪峰 Java 教程](https://www.liaoxuefeng.com/wiki/1252599548343744)

@@ -2,7 +2,30 @@
 
 ![](../.vuepress/public/images/Vue.js.png)
 
+- 变化侦测
+- 虚拟 DOM
+- 模版编译原理
+- 整体流程
+
 [[toc]]
+
+## 变化侦测
+
+### 什么是变化侦测
+
+Vue.js 会自动通过状态生成 DOM，并将其输出到页面上显示出来，这个过程叫渲染。Vue.js 的渲染过程是声明式的，我们通过模版来描述状态与 DOM 之间的映射关系。
+
+通常，在运行时应用内部的状态会不断发生变化，此时需要不停地重新渲染。这时如何确定状态发生了什么变化？
+
+变化侦测就是用来解决这个问题的，它分为两种类型：一种是“推”（push），另一种是“拉”（pull）。
+
+|侦测方式|粒度|框架例子|
+|--|--|--|
+|拉|粗|Angular 的脏检查、React 的虚拟 DOM|
+|推|细|Vue 1.0 ， Vue 2.0 虚拟 DOM|
+
+
+### 如何追踪变化
 
 ## 基础
 
@@ -1866,6 +1889,8 @@ handleClick(name) {
 
 ## 参考资料
 
+- [高阶高级前端，这9种Vue技术你掌握了吗？](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension#heading-6)
+- [面试题」20+Vue面试题整理](https://juejin.im/post/6844904084374290446)
 - [vue 中 8 种组件通信方式, 值得收藏!](https://juejin.im/post/5d267dcdf265da1b957081a3)
 - [Vue.js 组件编码规范](https://github.com/pablohpsilva/vuejs-component-style-guide/blob/master/README-CN.md)
 - [前端组件设计原则](https://juejin.im/post/5c49cff56fb9a049bd42a90f#heading-4)
@@ -1883,3 +1908,4 @@ handleClick(name) {
   - [从一个日常 bug 看 Vue 的列表 key 及 vnode 更新策略](https://juejin.im/post/5d5561ebe51d456210163b86#heading-2)
 - 最佳实践
   - [Vue 使用中的小技巧](https://juejin.im/post/5ae02f39518825672f198ac2#heading-26)
+- 《深入浅出 Vue》

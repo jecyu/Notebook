@@ -46,7 +46,7 @@ export default Vuetable;
 install 方法里给 Vue prototype 添加实例属性，`Vue.toast = Vue.prototype.$toast = toast`
 
 ```js
-mport Vue from 'vue'
+import Vue from 'vue'
 import EasyToastVue from './EasyToast'
 
 export default {

@@ -14,6 +14,7 @@
     - TileLayer
   - 加载场景数据
     - SceneLayer
+    - 
   - 加载三维影像数据
     - ImageryLayerView
 - 加载三维图层时，不需要设置 baseMap 地图，因为不是叠加。
@@ -1595,191 +1596,11 @@ tiled、dynamic、wmts、tdt
   };
 </script>
 
-<style lang="scss">
-  @import "./features/render.css";
-
-  .shadow-map {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: -100;
-
-    .esri-view-root .esri-view-surface.esri-view-surface--inset-outline::after {
-      content: none;
-    }
-
-    .esri-view-surface:focus {
-      outline: none;
-    }
-  }
-
-  .eyemap-map {
-    width: 100%;
-    height: 100%;
-
-    .esri-view-root .esri-view-surface.esri-view-surface--inset-outline::after {
-      content: none;
-    }
-
-    .esri-view-surface {
-      z-index: 0 !important;
-    }
-
-    .esri-view-surface:focus {
-      outline: none;
-    }
-
-    .esri-view-surface > div.esri-display-object:first-of-type {
-      z-index: 1 !important;
-    }
-
-    .esri-expand__content.esri-expand__content--expanded {
-      z-index: 3 !important;
-    }
-  }
-
-  .esri-scale-bar__ruler-block {
-    background-color: #000 !important;
-  }
-
-  .esri-ui .esri-ui-inner-container.esri-ui-corner-container {
-    top: 0.94rem !important;
-    left: 0.94rem !important;
-    right: 0.94rem !important;
-    bottom: 1rem !important;
-  }
-
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-ui-bottom-right {
-    flex-flow: column-reverse;
-  }
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-ui-bottom-right.active {
-    display: none;
-  }
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-ui-bottom-right
-    .esri-component {
-    margin-top: 10px;
-  }
-
-  /* infowindow */
-  .esri-ui .esri-ui-inner-container.esri-ui-manual-container .esri-popup {
-    display: none;
-    position: absolute;
-    /* height: 80px; */
-    width: 8.88rem;
-    min-width: 8.88rem;
-    z-index: 100;
-    border-radius: 0.26rem;
-    -moz-border-radius: 0.26rem;
-    -webkit-border-radius: 0.26rem;
-    -o-border-radius: 0.26rem;
-    -moz-box-shadow: 0 0 1em #26393d;
-    border: 0px solid #046380;
-    font-family: Microsoft YaHei, sans-serif;
-    font-size: 0.63rem;
-    background-color: rgba(109, 109, 109, 0.8);
-  }
-
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__main-container {
-    /* position: absolute;
-  height: 100%; */
-    width: 100%;
-    min-width: 8.88rem;
-    z-index: 100;
-    border-radius: 0.26rem;
-    -moz-border-radius: 0.26rem;
-    -webkit-border-radius: 0.26rem;
-    -o-border-radius: 0.26rem;
-    -moz-box-shadow: 0 0 1em #26393d;
-    border: 0px solid #046380;
-    font-family: Microsoft YaHei, sans-serif;
-    font-size: 0.63rem;
-    background-color: rgba(109, 109, 109, 0.8);
-  }
-
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__pointer,
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__pointer
-    > div {
-    background-color: rgba(109, 109, 109, 0.8);
-  }
-
-  .esri-ui .esri-ui-inner-container.esri-ui-manual-container .esri-attribution,
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__header,
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__footer,
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__feature-buttons {
-    display: none;
-  }
-
-  .esri-ui
-    .esri-ui-inner-container.esri-ui-manual-container
-    .esri-popup
-    .esri-popup__content {
-    overflow: hidden;
-    margin: 2px;
-  }
-
-  .esri-ui-bottom-right.esri-ui-corner {
-    .esri-widget--button {
-      width: 1.68rem;
-      height: 1.68rem;
-
-      .esri-icon {
-        font-size: 0.84rem;
-      }
-    }
-
-    .esri-component {
-      margin-top: 0.526rem !important;
-      margin-left: 0.526rem !important;
-    }
-  }
-
-  /* 底图切换 */
-  .esri-view-root
-    .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-basemap-toggle,
-  .esri-view-root
-    .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-basemap-toggle
-    > div,
-  .esri-view-root
-    .esri-ui
-    .esri-ui-inner-container.esri-ui-corner-container
-    .esri-basemap-toggle
-    > div
-    > div {
-    width: 30px;
-    height: 30px;
-  }
-</style>
 ```
 
 ## 加载三维数据
+
+![](../.vuepress/public/images/2020-08-12-10-12-47-3dMap.png)
 
 ### 加载场景数据
 
@@ -1872,3 +1693,11 @@ Point scene layer	SceneLayer
 - [4.11API 在三维加载 wkid4490 天地图](http://zhihu.geoscene.cn/article/3942)
 - [Switch view from 2D to 3D](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/sample-code/views-switch-2d-3d/index.html)
 - [SceneView](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-views-SceneView.html#viewing-modes)
+- [（原创）ArcGIS系列教程（一）：DEM数字高程模型数据的生成](（原创）ArcGIS系列教程（一）：DEM数字高程模型数据的生成)
+- [ArcGIS 10.5.1 三维能力全方位提升](http://zhihu.geoscene.cn/article/3249)
+- [本地部署和配置ArcGIS API for JavaScript，实现server中JavaScript Viewer离线查看服务](http://zhihu.geoscene.cn/article/3052)
+- [Portal for ArcGIS 与ArcGIS Server的集成方式](https://blog.csdn.net/esricd/article/details/17033657)
+- [场景和 3D 数据](https://enterprise.arcgis.com/zh-cn/portal/latest/use/troubleshoot-scenes.htm#anchor4)
+- [SceneView memory resources](https://developers.arcgis.com/javascript/latest/sample-code/sceneview-memory/index.html)
+- [arcgis api for js 4.5 部署到tomcat后如何解决跨域问题](http://zhihu.geoscene.cn/question/18749)
+- [Tomcat跨域配置](https://blog.csdn.net/qq_35117024/article/details/105435813)

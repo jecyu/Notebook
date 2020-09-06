@@ -1,0 +1,26 @@
+<%-include('header') %>
+<h2>Tasks for projects # <%= project.title %></h2>
+
+<ul id="tasks-list">
+  <% if (tasks.length > 0) { %> <% tasks.forEach(task => { %>
+    <li>
+      <span><%= task.title %></span>
+      <a class="delete" href="/task/<%=  task.id%>">
+        x
+      </a>
+    </li>
+  <% })%> <%} else { %>
+  <!-- else statment need follow the if end statem end -->
+  <p>No tasks to show</p>
+  <% } %>
+</ul>
+
+<h2>Create new task</h2>
+<form action="/project/<%= project.id %>/tasks" method="POST">
+  <p>
+    <label for="title">Title</label>
+    <input type="text" name="title" />
+    <button type="submit">Add</button>
+  </p>
+</form>
+<%-include('footer') %>

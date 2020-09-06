@@ -32,9 +32,11 @@
       // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
       // "program": "${workspaceFolder}/examples/dataStructure/tree/demo01.js"
       // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
-      "program": "${workspaceFolder}/examples/js/object/prototype/demo10.js"
+      // "program": "${workspaceFolder}/examples/js/object/prototype/demo16.js"
       // "program": "${workspaceFolder}/examples/js/object/oop/main.js"
       // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
+      // "program": "${workspaceFolder}/examples/node/event/demo02.js"
+      "program": "${workspaceFolder}/examples/vue/reactive/demo03.js"
       // "program": "${workspaceFolder}/examples/js/string/demo04.js"
     },
     // {

@@ -24,6 +24,7 @@ setting -》wrap
 Vscode 内置 Node 的调试环境，就不需要安装插件了，先建立一个名为 node.js 的文件，然后在 launch.json 里添加配置
 
 launch 模式与 attach 模式
+
 ```json
 {
   // Use IntelliSense to learn about possible attributes.
@@ -38,7 +39,7 @@ launch 模式与 attach 模式
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/examples/regex/demo01.js" // // 程序入口 ${workspaceFolder} 代表根路径
     },
-    { 
+    {
       "type": "node",
       "request": "attach",
       "name": "attach 程序",
@@ -52,6 +53,48 @@ launch 模式与 attach 模式
 配置完成后，在调试面板上，启动选项切换成 Launch Node，然后启动就可以了，断点调试什么都是没问题的。
 
 #### 调试启动服务器的 node.js 后端程序
+
+```json
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "name": "nodemon",
+      "program": "${workspaceFolder}/server.js",
+      "request": "launch",
+      "restart": true,
+      "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    }
+  ]
+}
+```
+
+这里设置 runtimeExecutable 运行时参数，使用 nodemon 启动 以 program 设置的入口参数程序。
+
+同样，也可以按照这种思路，来对 jest 单元测试进行断点调试：
+
+```json
+{
+  "name": "Debug Jest Tests",
+  "type": "node",
+  "request": "launch",
+  "runtimeArgs": [
+    "--inspect-brk",
+    "${workspaceRoot}/examples/vue/simple-virtual-dom/node_modules/.bin/jest",
+    "--runInBand"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen",
+  "port": 9229
+}
+```
 
 #### Debugger For Chrome
 
@@ -113,7 +156,6 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
 ![](../.vuepress/public/images/2020-05-07-10-59-54-debugger-webpack-vscode.png)
 
-
 ##### 使用 attach 模式启动
 
 首先用 live-server 打开 index.html，你会发现浏览器自动跳转到http://localhost:5500上了，接着到launch.json进行配置
@@ -140,7 +182,6 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 
 用 Vscode 的 Debugger 对用框架(react,vue,ng)编写的网页调试也是一样的，方法也都差不多，例如我们就可以使用 vueCli3 来启动一个 web 程序，然后通过 chrome debugger 附加过去。
 
-
 ### 使用 node 命令行快速测试代码
 
 日常开发 js 过程中，除了上面提到在 vscode 调试之外，我们可以打开命令行，进入 node 环境对快速测试代码。
@@ -154,7 +195,6 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 请求 url，避免空格换行。
 
 ![vscode 换行设置](../.vuepress/public/images/2020-05-07-09-09-43-vscode-wrap.png)
-
 
 ## 进阶活用
 
@@ -177,4 +217,4 @@ Vscode 里面是没有内置调试 Chrome 的模块的，需要单独安装。
 - [使用 VSCode 调试 Koa 或者 Express 项目](https://segmentfault.com/a/1190000017575583)
 - [在 VS Code 中调试](https://cn.vuejs.org/v2/cookbook/debugging-in-vscode.html)
 - [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
-- [[VS Code]跟我一起在Visual Studio Code 添加自定义snippet（代码段），附详细配置](https://blog.csdn.net/maokelong95/article/details/54379046)
+- [[VS Code]跟我一起在 Visual Studio Code 添加自定义 snippet（代码段），附详细配置](https://blog.csdn.net/maokelong95/article/details/54379046)

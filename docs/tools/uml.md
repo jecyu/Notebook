@@ -62,23 +62,61 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 
 ![](../.vuepress/public/images/2020-06-18-10-02-47-class-diagram.png)
 
-- Component diagram
-- Composite structure diagram
-- Deployment diagram
-- Object diagram
-- Package diagram
-- Profile diagram
+### Composite structure diagram
 
-## 行为图类型（Behavioral UML diagrams）
+### Object diagram
+
+### Package diagram
+
+包图
+
+### Component diagram
+
+### Profile diagram
+
+### 部署图/配置图（Deployment diagram）
+
+部署图用来建模系统的物理部署。例如计算机。
+
+部署图包括节点和连接。
+
+## 行为图类型（Behavioral UML diagrams）（常用）
 
 动态图
 
-- Activity diagram
-- Communication diagram
-- Interaction overview diagram
-- Sequence diagram
-- Timing diagram
-- Use Case diagram
+### Activity diagram
+
+状态图是描述一个实体基于
+
+- entry
+- do
+- exit
+
+### Interaction overview diagram
+
+### Sequence diagram
+
+消息序列，着重时间顺序
+
+### Communication diagram
+
+对象的交互
+
+### Timing diagram
+
+### Use Case diagram
+
+活动图
+
+## 画图工具
+
+- EA 工具（Enterprise Architect）
+- processon
+- vscode 插件
+
+## 应用场景
+
+- 如何通过代码自动生成 UML 图
 
 ## 参考资料
 
@@ -87,3 +125,4 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 - 《UML 精粹》
 - [领域驱动设计在前端中的应用](https://mp.weixin.qq.com/s/pROCXZNZ7RKeYDlDUJng_Q)]
 
+- [一键生成数据库文档，堪称数据库界的Swagger，有点厉害](https://juejin.im/post/6865485568038404103)

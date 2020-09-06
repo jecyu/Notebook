@@ -1,0 +1,21 @@
+{
+  "name": "websocket",
+  "version": "0.0.1",
+  "description": "socket",
+  "main": "index.js",
+  "author": "Jecyu",
+  "license": "MIT",
+  "engines": {
+    "node": "^v11"
+  },
+  "scripts": {
+    "dev": "nodemon ./index.js"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "ws": "7.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

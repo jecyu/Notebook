@@ -157,7 +157,6 @@ module.exports = {
             "es6",
             "ts",
             "react",
-            "vue",
             "regex",
             "file",
             "",
@@ -247,7 +246,7 @@ module.exports = {
         {
           title: "web 框架",
           collapsable: false,
-          children: ["", "koa"]
+          children: ["", "koa", "spring", "vue"]
         }
       ],
       "/math/": [

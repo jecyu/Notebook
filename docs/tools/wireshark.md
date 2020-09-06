@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: Jecyu
  * @Date: 2020-02-27 21:13:07
- * @LastEditTime: 2020-02-28 15:57:15
+ * @LastEditTime: 2020-08-23 11:39:16
  * @LastEditors: Jecyu
  -->
 # wireshark
@@ -87,5 +87,6 @@ Wireshark抓包和分析时的用户界面
 
 ## 参考资料
 
+- [Wireshark网络抓包(九)——为什么我的 Wireshark 抓不到/抓不全 HTTP 数据包](https://blog.csdn.net/zam183/article/details/103783785)
 - [wireShark 官方文档](https://www.wireshark.org/docs/wsug_html_chunked/ChUseMainWindowSection.html)
 - [《Wireshark实验 》](https://github.com/moranzcw/Computer-Networking-A-Top-Down-Approach-NOTES/blob/master/WiresharkLab/Wireshark%E5%AE%9E%E9%AA%8C-Intro/Wireshark%E5%AE%9E%E9%AA%8C-Intro.md)

@@ -10,6 +10,7 @@
 - Access Secure Resources http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/guide/secure-resources/index.html
 - http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/sample-code/identity-oauth-basic/index.html ArcGIS Auth 2.0）
 
+- 翻译 auth2.0
 - 登录方式
 - 授权方式
 - 用户账号系统如何同步（我方与第三方）（授权模式）、运维同步读取（读取现有的用户表和权限、进行运维的再次构造同步）
@@ -329,8 +330,13 @@ app.get("/", isAuthenticated, (req, res, next) => {
 
 ## 用户信息同步
 
+## 总结
+
+无论是作为前端还是后端，理解一个 sso 以及auth 关键的点，是把整个前后端看作一个整体。避免一开始就陷入前后端通信这一步。在前后端不分离的时候或者更加容易理解，毕竟个个都是全栈。
+
 ## 参考资料
 
+- [https://stackoverflow.com/questions/45701595/how-to-redirect-to-a-different-url-inside-the-vue-router-beforerouteenter-hook](https://stackoverflow.com/questions/45701595/how-to-redirect-to-a-different-url-inside-the-vue-router-beforerouteenter-hook) 前端权限
 - 《HTTP 权威指南》
 - [auth](https://auth0.com/why-auth0?utm_source=jwtio&utm_medium=navbar_whats_auth0&utm_campaign=jwt_nav_cta_12_2019)
 - [jwt](https://jwt.io/)
