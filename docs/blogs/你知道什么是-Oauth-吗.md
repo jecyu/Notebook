@@ -2,7 +2,7 @@
 
 > 原文链接：[What the hell is OAuth?](https://medium.com/@wdevon99/what-the-hell-is-oauth-6ba19f236612)
 > 原文作者：[Devon Wijesinghe]()
-> 译者：[Jecyu 森煜]()
+> 译者：[Jecyu 森煜](https://juejin.im/user/1486195450470023/posts)
 > 校对：[Yolanda]()
 
 ![](https://miro.medium.com/max/700/1*pcljELly2on6AG2J7N5tfw.png)
