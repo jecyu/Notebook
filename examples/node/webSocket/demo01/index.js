@@ -1,36 +1,23 @@
-const express = require("express");
-const WebSocket = require("ws");
+var app = require("express")();
+// var server = require("http").Server(app);
+var WebSocket = require("ws");
 
-/**
- * Create express app
- */
-const app = express();
+var wss = new WebSocket.Server({ port: 8080 });
 
-/**
- * Attach websocket server
- * Intercepting WebSocket requests for a http.Server
- */
+wss.on("connection", function connection(ws) {
+  console.log("server: receive connection.");
 
-const wss = new WebSocket.Server({ server: app });
-
-/**
- * Serve your code
- */
-app.use(express.static("public"));
-
-/**
- * Listening on connections
- */
-wss.on("connection", function(socket) {
-  socket.on("message", function(msg) {
-    console.log(" \033[96mgot:\033[39m " + msg);
-    socket.send("pong");
+  ws.on("message", function incoming(message) {
+    console.log("server: received: %s", message);
   });
+
+  ws.send("world");
 });
 
-/**
- * Listen
- */
-app.listen(3000);
+app.get("/", function(req, res) {
+  res.sendfile(__dirname + "/public/index.html");
+});
 
-// TODO WebSocket connection to 'ws://localhost:3000/' failed: Unexpected response code: 200
+app.listen(3000, () => {
+  console.log("listening on 3000");
+});
