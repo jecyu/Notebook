@@ -1,12 +1,9 @@
 # 【译】程序员日常：你知道什么是 OAuth 吗？
 
-<!-- 如果评论没回复，就尝试发邮件。 -->
-
 > 原文链接：[What the hell is OAuth?](https://medium.com/@wdevon99/what-the-hell-is-oauth-6ba19f236612)
 > 原文作者：[Devon Wijesinghe]()
 > 译者：[Jecyu 森煜]()
 > 校对：[Yolanda]()
-
 
 ![](https://miro.medium.com/max/700/1*pcljELly2on6AG2J7N5tfw.png)
 
@@ -36,7 +33,7 @@
 
 答案当然是不！你会信任该应用并把你的凭证告诉它，让它有能力去做更多的事情而不仅仅是获取你的朋友列表和个人信息吗？想想就知道了。
 
-无论如何，OAuth 的出现就是为了接手这个局面并解决现在的问题。（⚠️：`<--need help `）
+无论如何，OAuth 的出现就是为了接手这个局面并解决现在的问题。（⚠️：`<--need help`）
 
 ![OAuth]()
 
@@ -150,7 +147,7 @@ com.app.pubg://callback?`code`=oMsCeLvIaQm6bTrgtp7
 www.facebookapi.com/oauth2/v4/token
 `Content-Type`: application/x-www-form-urlencoded
 
-`code`=oMsCeLvIaQm6bTrgtp7& 
+`code`=oMsCeLvIaQm6bTrgtp7&
 `client_id`=C_1&
 `client_secret`secret123&
 `grant_type`=authorization_code
