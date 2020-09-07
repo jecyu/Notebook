@@ -29,6 +29,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "husky": {
-    "hooks": {}
+    "hooks": {
+      "pre-push": "bash deploy.sh"
+    }
   }
 }
