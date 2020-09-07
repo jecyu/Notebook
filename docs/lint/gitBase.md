@@ -199,11 +199,19 @@ $ ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/gitlab_id-rsa
 cat ~/.ssh/gitlab_id-rsa.pub 
 ```
 
+记得把 `ssh-rsa` 也复制到剪切板上。
+```js
+ssh-rsa 
+
+xxxxxxxxx
+xxxxx
+```
+
 #### Github 生成一个 SSH-Key 
 
 在`~/.ssh/`目录会生成`github_id-rsa`和`github_id-rsa.pub`私钥和公钥。我们将`github_id-rsa.pub`中的内容粘帖到`github`服务器的`SSH-key`的配置中。
 ```bash
-$ ssh-keygen -t rsa -C "xxxxx@xxxx.com” -f ~/.ssh/github_id-rsa
+ssh-keygen -t rsa -C "xxxx@xxxx.com" -f ~/.ssh/github_id-rsa
 ```
 
 #### 在 ~/.ssh 目录下添加`config`配置文件用于区分多个 SSH-Key
