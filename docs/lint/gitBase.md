@@ -1,6 +1,5 @@
 # Git 常用命令集合
 
-
 ![git 常用命令](../.vuepress/public/images/git-command.jpg)
 
 > Git 常用命令集合，Fork 于[tips](https://github.com/521xueweihan/git-tips#%E6%9F%A5%E7%9C%8B%E6%9F%90%E6%AE%B5%E4%BB%A3%E7%A0%81%E6%98%AF%E8%B0%81%E5%86%99%E7%9A%84)项目
@@ -27,9 +26,56 @@ Git 是一个“分布式版本管理工具”，简单的理解版本管理工�
 
 ## 基本操作
 
+### Github 进行 fork 后如何与原仓库同步
+
+1. 查看远程仓库
+
+```bash
+git remote -v
+```
+
+2. 配置原仓库的路径
+
+```bash
+git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.git
+```
+
+3. 再次查看远程目录的位置
+
+```bash
+git remote -v
+```
+
+4. 抓取原仓库的修改文件
+
+```bash
+git fetch upstream
+```
+
+5. 切换到 master 分支
+
+```bash
+git checkout master
+```
+
+6. 合并远程的 master 分支
+
+```bash
+git merge upstream/master
+```
+
+7. 此时本地库与原仓库已经同步，之后把本地仓库 push 到远程仓库即可。
+
+```bash
+git push origin
+```
+
+- [https://blog.csdn.net/matrix_google/article/details/80676034](https://blog.csdn.net/matrix_google/article/details/80676034)
+
 ### 回退操作
 
 git 版本最重要的功能之一就是回退版本了。
+
 - reset
 - cherry-pick
 - revert
@@ -108,14 +154,15 @@ git config --global user.email
 
 ### 查看 git 配置
 
-在项目的根目录下，输入 
+在项目的根目录下，输入
+
 ```bash
 # 打开 .git 目录
-cd .git 
+cd .git
 
 # 查看里面的文件
 
-ls 
+ls
 
 # 打开 config 文件
 vi config
@@ -143,12 +190,11 @@ $ echo <filename> >> .gitignore
 
 ## https 连接 push 不输入密码
 
+直接配置 config 配置文件不需要每次输入密码
 
-直接配置config 配置文件不需要每次输入密码
 1. vim .git-credentials
 2. 输入 https://{username}:{password}@github.com
 3. git config --global credential.helper store
-
 
 ## 设定 SSH 连接
 
@@ -159,11 +205,12 @@ SSH key 可以让你在你的电脑和 Git 远程仓库之间建立安全的加�
 ```bash
 ssh-keygen
 ```
+
 接着会显示以下的内容输出，在有需要的地方输入设定验证密码的文字，然后按“Enter”键。
 
 如果不设定验证密码，请不要输入任何文字，直接按“Enter”键即可。
 
-执行下一个命令就可以确认形成SSH键公钥的内容。
+执行下一个命令就可以确认形成 SSH 键公钥的内容。
 
 ```bash
 cat ~/.ssh/id_rsa.pub
@@ -171,7 +218,7 @@ cat ~/.ssh/id_rsa.pub
 
 接下来，在远程数据库设定公钥。
 
-### window 
+### window
 
 先下载 cmder 命令行（linux）工具，之后跟 mac 一样的命令行操作即可。
 
@@ -186,30 +233,34 @@ $ cd ~/.ssh/
 $ ls
 ```
 
-#### 公司的 GitLab 生成一个 SSH-Key 
+#### 公司的 GitLab 生成一个 SSH-Key
 
 在`~/.ssh/`目录会生成`gitlab_id-rsa`和`gitlab_id-rsa.pub`私钥和公钥。
+
 ```
 $ ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/gitlab_id-rsa
 ```
 
-查看你的public key，我们将`gitlab_id-rsa.pub`中的内容粘帖到公司`GitLab`服务器的`SSH-key`的配置中。
+查看你的 public key，我们将`gitlab_id-rsa.pub`中的内容粘帖到公司`GitLab`服务器的`SSH-key`的配置中。
+
 ```bash
 # 把文件内容打印到命令行工具上，方便复制
-cat ~/.ssh/gitlab_id-rsa.pub 
+cat ~/.ssh/gitlab_id-rsa.pub
 ```
 
 记得把 `ssh-rsa` 也复制到剪切板上。
-```js
-ssh-rsa 
 
-xxxxxxxxx
-xxxxx
+```js
+ssh - rsa;
+
+xxxxxxxxx;
+xxxxx;
 ```
 
-#### Github 生成一个 SSH-Key 
+#### Github 生成一个 SSH-Key
 
 在`~/.ssh/`目录会生成`github_id-rsa`和`github_id-rsa.pub`私钥和公钥。我们将`github_id-rsa.pub`中的内容粘帖到`github`服务器的`SSH-key`的配置中。
+
 ```bash
 ssh-keygen -t rsa -C "xxxx@xxxx.com" -f ~/.ssh/github_id-rsa
 ```
@@ -217,11 +268,13 @@ ssh-keygen -t rsa -C "xxxx@xxxx.com" -f ~/.ssh/github_id-rsa
 #### 在 ~/.ssh 目录下添加`config`配置文件用于区分多个 SSH-Key
 
 添加 config 配置文件
+
 ```bash
 vi ~/.ssh/config
 ```
 
 设置文件内容如下：
+
 ```bash
 # gitlab
 Host gitlab.com
@@ -229,7 +282,7 @@ Host gitlab.com
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/gitlab_id-rsa
 
-# github 
+# github
 Host github.com
   HostName github.com
   PreferredAuthentications publickey
@@ -237,28 +290,32 @@ Host github.com
 ```
 
 配置文件参数：
+
 - Host：可以看作是一个你要识别的模式，对识别的模式，进行配置对应的`主机名`和 `ssh` 文件。
 - HostName: 要登录主机的主机名。
 - User: 登录名。
 - IdentityFile: 知指明上面 User 对应的 identityFile 路径。
-  
+
 #### 测试
 
 ```bash
 ssh -T git@github.com
 ```
+
 输出：
+
 ```bash
 Hi Jecyu! You've successfully authenticated, but GitHub does not provide shell access.
 ```
+
 就表示成功的连上 github 了。也可以试试连接公司的 gitlab。
 
-> 更进一步阅读，了解 SSH  知识：https://segmentfault.com/q/1010000000835302 和 《SSH，The Secure Shell》 书本。
+> 更进一步阅读，了解 SSH 知识：https://segmentfault.com/q/1010000000835302 和 《SSH，The Secure Shell》 书本。
 
 ## 回到远程仓库的状态
 
 抛弃本地所有的修改，回到远程仓库的状态。
- 
+
 ```bash
 git fetch --all && git reset --hard origin/master
 ```
@@ -378,7 +435,7 @@ https://yanhaijing.com/git/2017/07/14/four-method-for-git-merge/
 
 #### merge
 
-如果添加 --no-ff 选项，就是 fast-forward 合并也可以建立合并提交。这是记录分支存在过的非常有用的选项。考虑一下“功能”分支上的一系列次要提交共同构成一个新功能的情况：如果你只是在没有--no-ff的情况下执行“git merge feature_branch”，那么就不可能从Git历史中看到哪一个 提交对象一起实现了一个功能 - 您必须手动读取所有日志消息。好处就是 GUI界面可以直观看到信息。
+如果添加 --no-ff 选项，就是 fast-forward 合并也可以建立合并提交。这是记录分支存在过的非常有用的选项。考虑一下“功能”分支上的一系列次要提交共同构成一个新功能的情况：如果你只是在没有--no-ff 的情况下执行“git merge feature_branch”，那么就不可能从 Git 历史中看到哪一个 提交对象一起实现了一个功能 - 您必须手动读取所有日志消息。好处就是 GUI 界面可以直观看到信息。
 
 ```bash
 git merge <branch>
@@ -403,13 +460,14 @@ git cherry-pick commitId
 #### rebase
 
 > rebase 作用简要为：可以对某一段线性提交历史进行编辑、删除、赋值、 粘贴，合理适应 rebase 命令可以让我们的提交历史干净、简介
-注意：不要通过rebase对任何已经提交到公共仓库中的commit进行修改（你自己一个人玩的分支除外）
+> 注意：不要通过 rebase 对任何已经提交到公共仓库中的 commit 进行修改（你自己一个人玩的分支除外）
 
 ##### 合并多个 commit 为一个完整的 commit
 
 ```bash
 git rebase -i [startponit] [endpoint]
 ```
+
 其中 -i 意思是 `--ineractive`，即弹交互式的界面让用户编辑完成合并操作，`[startponit]` `endpoint` 指定了一个编辑区间。如果不指定 `[endponit]` 则该区间的默认是当前分支 `HEAD` 所指向的 `commit`.
 
 ##### 将某一段 commit 粘贴到另外一个分支上
@@ -418,40 +476,47 @@ git rebase -i [startponit] [endpoint]
 
 #### 从其他分支合并指定文件或文件夹
 
-功能分为2个分支，分别为A、B。
-A上面有个列表页功能
-B上面有个详情页功能，还有个系统消息功能
+功能分为 2 个分支，分别为 A、B。
+A 上面有个列表页功能
+B 上面有个详情页功能，还有个系统消息功能
 
-产品经理说先上列表功能，于是我们就开发A分支，列表功能很快开发完成。
-第二天按常理开发B分支，开发到一半，产品经理说目前的系统消息功能需要急着上线，要和列表功能一起上线，当时就懵逼了，然后赶紧放下详情页的开发，立马去开发系统消息功能，开发完之后需要将列表功能和系统消息功能放在一个分支上提测，这时候分支合并就派上用场了。
+产品经理说先上列表功能，于是我们就开发 A 分支，列表功能很快开发完成。
+第二天按常理开发 B 分支，开发到一半，产品经理说目前的系统消息功能需要急着上线，要和列表功能一起上线，当时就懵逼了，然后赶紧放下详情页的开发，立马去开发系统消息功能，开发完之后需要将列表功能和系统消息功能放在一个分支上提测，这时候分支合并就派上用场了。
 
-使用git merge 命令进行分支合并是通用的做法，但是git merge 合并的时候会将两个分支的内容完全合并，如果想合并一部分肯定是不行的。那怎么办？
+使用 git merge 命令进行分支合并是通用的做法，但是 git merge 合并的时候会将两个分支的内容完全合并，如果想合并一部分肯定是不行的。那怎么办？
 
-如何从其他分支merge指定文件到当前分支，git checkout 是个合适的工具。
+如何从其他分支 merge 指定文件到当前分支，git checkout 是个合适的工具。
 
 ```bash
 git checkout source_branch <path>...
 ```
 
 - 强制合并
+
 ```bash
 git branch 当前位于 A 分支上
-  * A  
+  * A
     B
 # 在使用git checkout某文件到当前分支时，会将当前分支的对应文件强行覆盖
 git checkout B xxx.html xxx.js
 ```
 
 - 智能合并
-1. 使用git checkout 将根据A分支创建一个A_temp分支，避免影响A分支
+
+1. 使用 git checkout 将根据 A 分支创建一个 A_temp 分支，避免影响 A 分支
+
 ```bash
 git checkout -b A_temp
 ```
-2. 将B分支合并到A_temp分支
+
+2. 将 B 分支合并到 A_temp 分支
+
 ```bash
 git merge --no-ff B
 ```
-3. 切换到A分支，并使用git checkout 将A_temp分支上的系统消息功能相关文件或文件夹覆盖到A分支
+
+3. 切换到 A 分支，并使用 git checkout 将 A_temp 分支上的系统消息功能相关文件或文件夹覆盖到 A 分支
+
 ```bash
 $ git checkout A
 Switched to branch 'A'
@@ -611,13 +676,13 @@ git checkout <deleting_commit>^ -- <file_path> #回到删除文件 deleting_comm
 
 ### 恢复 git reset --hard 的误操作
 
-有时候使用Git工作得小心翼翼，特别是涉及到一些高级操作，例如 reset, rebase 和 merge。甚至一些很小的操作，例如删除一个分支，我都担心数据丢失。
+有时候使用 Git 工作得小心翼翼，特别是涉及到一些高级操作，例如 reset, rebase 和 merge。甚至一些很小的操作，例如删除一个分支，我都担心数据丢失。
 
-git的历史记录是不可修改的，也就是说你不能更 改任何已经发生的事情。你做的任何操作都只是在原来的操作上修改。也就是说，即使你删除了一个分支，修改了一个提交，或者强制重置，你仍然可以回滚这些操作。
+git 的历史记录是不可修改的，也就是说你不能更 改任何已经发生的事情。你做的任何操作都只是在原来的操作上修改。也就是说，即使你删除了一个分支，修改了一个提交，或者强制重置，你仍然可以回滚这些操作。
 
-但是 `reflog` 就是用来解决这个问题的。简单的说，它会记录所有HEAD的历史，也就是说当你做 reset，checkout等操作的时候，这些操作会被记录在reflog中。
+但是 `reflog` 就是用来解决这个问题的。简单的说，它会记录所有 HEAD 的历史，也就是说当你做 reset，checkout 等操作的时候，这些操作会被记录在 reflog 中。
 
-如果你因为reset等操作丢失一个提交的时候，你总是可以把它找回来。除非你的操作已经被git当做垃圾处理掉了，一般是30天以后。
+如果你因为 reset 等操作丢失一个提交的时候，你总是可以把它找回来。除非你的操作已经被 git 当做垃圾处理掉了，一般是 30 天以后。
 
 原文：[恢复 git reset --hard 的误操作](https://www.cnblogs.com/mliudong/archive/2013/04/08/3007303.html)
 
@@ -848,6 +913,7 @@ git config --global --list (全局)
 ```
 
 让 git 记录不忽视大小写，避免驼峰命名更改没变化。
+
 ```sh
 git config --global core.ignorecase false
 ```

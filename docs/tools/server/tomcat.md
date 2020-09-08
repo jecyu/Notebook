@@ -4,7 +4,7 @@ Apache Tomcat 是由 Apache Software Foundation （ASF）开发的一个开源 J
 
 tomcat 端口设置
 
-![](../.vuepress/public/images/2020-04-30-17-11-56-tomcat.png)
+![](../../.vuepress/public/images/2020-04-30-17-11-56-tomcat.png)
 
 ### Tomcat 是什么
 
@@ -50,7 +50,7 @@ Tomcat 安装后根目录如上图，由环境变量 $ CATALINA_HOME 表示，�
 
 这些目录说明如下：
 
-- `bin`：启动、关闭和其他脚本，`*.sh` 文件（对于 Unix 系统）是 *.bat 文件的功能重复（对于 Windows 系统）。
+- `bin`：启动、关闭和其他脚本，`*.sh` 文件（对于 Unix 系统）是 \*.bat 文件的功能重复（对于 Windows 系统）。
 - `conf`：配置文件及相关数据文件存放目录，如 server.xml，tomcat-users.xml，web.xml；
 - `logs`：默认的日志文件存放目录，如访问日志，可以通过 server.xml 文件配置到其他目录；
 - `lib`：Tomcat 使用的库文件存放目录，如 Servlet 规范的 API；
@@ -60,10 +60,12 @@ Tomcat 安装后根目录如上图，由环境变量 $ CATALINA_HOME 表示，�
 
 ### Tomcat 配置文件
 
-Tomcat 的配置文件默认存放在 $CATALINA_HOME/conf 目录中，主要有以下几个：
+Tomcat 的配置文件默认存放在 \$CATALINA_HOME/conf 目录中，主要有以下几个：
+
 - `server.xml`：Tomcat 核心配置文件，包含 Service，Connector，Engine，Readlm，Valve，Host 主组件的相关配置信息。
 - `context.xml`
 - `web.xml`：为部署与 Tomcat 实例上的所有 web 应用程序提供部署描述符，通常用于`为 webapp 提供默认的 servlet 定义`和基本的 MUIME 映射表。
 
 ### Web 应用部署目录结构
+
 ### Tomcat 基本框架及相关配置

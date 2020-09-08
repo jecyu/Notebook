@@ -10,8 +10,6 @@
 
 ![](../.vuepress/public/images/2020-08-07-07-16-18-node-apply.png)
 
-<!-- ![](../temp/sketch/3d地图UML.drawio.svg) 可以使用 svg 引入到 md 文件中，然后动态改，不需要截图-->
-
 Node 组成
 
 <!-- 参考node 面试题 -->
@@ -74,7 +72,6 @@ Node 应用依托在一个拥有大量共享状态的大进程中。
 在 Node.js 中，每步都要正确进行错误处理。一旦泄漏，你就会发现发生了错误后很难追踪，因为上下文信息都丢失了。
 
 ### Node 中的 JavaScript
-
 
 ### 模块机制
 
@@ -185,7 +182,7 @@ mysql2 支持
 
 #### 为什么 WebSocket 是更好的选择
 
-####  利与弊
+#### 利与弊
 
 #### 解决的问题
 
@@ -195,7 +192,7 @@ mysql2 支持
 2. ws 连接认证
 3. 发送数据
 
-- [[译] WebSockets 与长轮询的较量](https://juejin.im/post/6844903871710494733#heading-5v  )
+- [[译] WebSockets 与长轮询的较量](https://juejin.im/post/6844903871710494733#heading-5v)
 
 ## 应用实战
 
@@ -210,7 +207,7 @@ mysql2 支持
 ## 参考资料
 
 - [Node.js 和 Java 的史诗级对决，谁才是开发者的“真爱”？
-](https://www.infoq.cn/article/cQUg_HT1bcWCMJeWLxRs)
+  ](https://www.infoq.cn/article/cQUg_HT1bcWCMJeWLxRs)
 - [2w 字 + 40 张图带你参透并发编程！](https://juejin.im/post/6862464169158344717?utm_source=gold_browser_extension#heading-45)
 - [Node.js 在大前端领域的应用分析](https://mp.weixin.qq.com/s/FGwurp1GRyGevJ8tAXSq9w)
 - [nodejs.org](http://nodejs.org/api/http.html#http_server_listen_port_hostname_backlog_callback)
