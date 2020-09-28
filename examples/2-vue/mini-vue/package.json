@@ -1,0 +1,13 @@
+{
+  "name": "mini-vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jecyu",
+  "license": "MIT",
+  "scripts": {
+    "dev": "jest --watch"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2"
+  }
+}

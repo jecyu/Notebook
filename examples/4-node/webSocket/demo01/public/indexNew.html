@@ -1,0 +1,156 @@
+<!--
+ * @Author: Jecyu
+ * @Date: 2020-09-07 18:42:55
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2020-09-24 15:31:59
+ * @FilePath: /examples/4-node/webSocket/demo01/public/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket echo test</title>
+  </head>
+  <body>
+    <h1>WebSocket</h1>
+    <button id="query">查询同步状态</button>
+    <button id="sync">进行同步</button>
+    <button id="close">断开连接</button>
+    <button id="connect">连接</button>
+    <script>
+      class WebSocketUp {
+        constructor({ url, msgCallback, name = "default" }) {
+          this.url = url; // url
+          this.status = ""; // 是否关闭状态
+          this.ws = null; // ws 对象
+          this.name = name;
+          this.msgCallback = msgCallback;
+        }
+        connect(data) {
+          this.ws = new WebSocket(this.url);
+          this.ws.onopen = (e) => {
+            this.status = "open";
+            console.log(`${this.name} 连接成功`, e);
+            if (data !== undefined) {
+              return this.ws.send(data); // 发送服务端
+            }
+            this.heartCheck();
+          };
+
+          // 监听服务器端返回的信息
+          this.ws.onmessage = (e) => {
+            // 把数据传给回调函数，并执行回调
+            if (e.data === "pong") {
+              this.pingPong = "pong"; // 服务器端返回pong,修改pingPong的状态
+            }
+            return this.msgCallback(e.data);
+          };
+
+          this.ws.onclose = (e) => {
+            this.closeHandle(e); // 判断是否关闭
+          };
+
+          // ws出错回调
+          this.onerror = (e) => {
+            this.closeHandle(e); // 判断是否关闭
+          };
+        }
+        // 发送信息给服务器
+        sendHandle(data) {
+          console.log(`${this.name}发送消息给服务器:`, data);
+          return this.ws.send(data);
+        }
+
+        closeHandle(e = "err") {
+          // 因为webSocket并不稳定，规定只能手动关闭(调closeMyself方法)，否则就重连
+          if (this.status !== "close") {
+            console.log(`${this.name}断开，重连websocket`, e);
+            this.connect(); // 重连
+          } else {
+            if (
+              this.pingInterval !== undefined &&
+              this.pongInterval !== undefined
+            ) {
+              // 清除定时器
+              clearInterval(this.pingInterval);
+              clearInterval(this.pongInterval);
+              this.pingInterval = null;
+              this.pongInterval = null;
+            }
+            console.log(`${this.name}websocket手动关闭`);
+          }
+        }
+        // 手动关闭WebSocket
+        closeMyself() {
+          console.log(`关闭${this.name}`);
+          this.status = "close";
+          return this.ws.close();
+        }
+
+        heartCheck() {
+          // 心跳机制的时间可以自己与后端约定
+          this.pingPong = "ping"; // ws的心跳机制状态值
+          this.pingInterval = setInterval(() => {
+            if (this.ws.readyState === 1) {
+              // 检查ws为链接状态 才可发送
+              this.ws.send("ping"); // 客户端发送ping
+            }
+          }, 3000);
+          this.pongInterval = setInterval(() => {
+            if (this.pingPong === "ping") {
+              this.closeHandle("pingPong没有改变为pong"); // 没有返回pong 重启webSocket
+            }
+            // 重置为 ping 若下一次 ping 发送失败 或者pong返回失败(pingPong不会改成pong)，将重启
+            console.log("返回pong");
+            this.pingPong = "ping";
+          }, 5000);
+        }
+      }
+
+      (function() {
+        window.myws = null;
+        document.querySelector("#close").addEventListener("click", () => {
+          window.myws && window.myws.closeMyself();
+        });
+        document.querySelector("#query").addEventListener("click", () => {
+          window.myws && window.myws.sendHandle("status");
+        });
+        document.querySelector("#sync").addEventListener("click", () => {
+          window.myws && window.myws.sendHandle("sync");
+        });
+        document.querySelector("#connect").addEventListener("click", () => {
+          if (window.myws) {
+            window.myws.closeMyself();
+            window.myws = null;
+          }
+          window.myws = new WebSocketUp({
+            url: "ws://localhost:8082",
+            msgCallback: handleReceive,
+            name: "client",
+          });
+          window.myws.connect();
+        });
+        function handleReceive(data) {
+          switch (data) {
+            case "idle":
+              console.log("空闲状态，可以进行同步");
+              // loading 开始
+              break;
+            case "pending":
+              console.log("同步中");
+              break;
+            case "fullfilled":
+              // loading 结束
+              console.log("同步完成！");
+              break;
+            case "rejected":
+              // loading 结束
+              console.log("打印同步错误的信息，断开连接或其他的操作");
+              break;
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -87,6 +87,10 @@ yarn config set sass_binary_site http://cdn.npm.taobao.org/dist/node-sass -g
       <td>yarn global add [package]</td>
     </tr>
     <tr>
+      <td>npm uninstall [package] --global</td>
+      <td>yarn global remove [package]</td>
+    </tr>
+    <tr>
       <td>npm uninstall [package]</td>
       <td>yarn remove [package]</td>
     </tr>

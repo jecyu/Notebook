@@ -1,13 +1,13 @@
 # 【译】程序员日常：你知道什么是 OAuth 吗？
 
-> 原文链接：[What the hell is OAuth?](https://medium.com/@wdevon99/what-the-hell-is-oauth-6ba19f236612)
-> 原文作者：[Devon Wijesinghe]()
-> 译者：[Jecyu 森煜](https://juejin.im/user/1486195450470023/posts)
-> 校对：[Yolanda]()
+> - 原文链接：[What the hell is OAuth?](https://medium.com/@wdevon99/what-the-hell-is-oauth-6ba19f236612)
+> - 原文作者：[Devon Wijesinghe]()
+> - 译者：[Jecyu 森煜](https://juejin.im/user/1486195450470023/posts)
+> - 校对：[Yolanda](https://juejin.im/user/8451824561854/posts)
 
-![](https://miro.medium.com/max/700/1*pcljELly2on6AG2J7N5tfw.png)
+![](../.vuepress/public/images/2020-09-09-14-17-37-OAUTH.png)
 
-大家好！**OAuth** 成为一个时髦的词很长一段时间了，但是对于初学者来说还是很难领悟，并不是因为 OAuth 本身很难，而是因为在网上搜到有关 OAuth 的资料看完让人困惑。因此我写了这篇文章来解释 OAuth 被以一种非常简单的术语使用的原因和方式。（⚠️`<--help translate`）
+大家好！**OAuth** 成为一个时髦的词很长一段时间了，但是对于初学者来说还是很难领悟，并不是因为 OAuth 本身很难，而是因为在网上搜到有关 OAuth 的资料看完让人困惑。因此我写了这篇文章来解释 为什么以及如何以非常简单的方式使用 OAuth！
 
 ## 简单的登录
 
@@ -25,7 +25,7 @@
 
 ### 委托授权问题？
 
-委托授权是给予当前应用有权限去访问第三方应用的数据。（⚠️<--`help translate`）在没有获取用户凭证（credentials）的情况下去实现这个操作是个问题，被称为委托授权问题。
+委托授权是给予当前应用有权限去访问第三方应用的数据。在没有获取用户凭证（credentials）的情况下去实现这个操作是个问题，被称为委托授权问题。
 
 举个例子：如果让我们想想当前比较火的吃鸡游戏（**PUBG**），它想要访问你 Facebook 的朋友列表和个人资料。如果以下面的方式请求你的凭证是正确的吗？
 
@@ -33,9 +33,9 @@
 
 答案当然是不！你会信任该应用并把你的凭证告诉它，让它有能力去做更多的事情而不仅仅是获取你的朋友列表和个人信息吗？想想就知道了。
 
-无论如何，OAuth 的出现就是为了接手这个局面并解决现在的问题。（⚠️：`<--need help`）
+无论如何，OAuth 的出现就是为了接手这个局面并解决现在的问题。
 
-![OAuth]()
+![OAuth](https://miro.medium.com/max/700/1*aiskm3OoPeTqUT8EUdg3wQ.png)
 
 ## OAuth 是什么?
 
@@ -45,11 +45,9 @@ OAuth（开放授权）是互联网上基于令牌（token） 认证和授权的
 
 如果你仍然 get 不到，无需担心，接下来我会一步步解读它的工作原理！
 
-![](https://miro.medium.com/max/700/1*aiskm3OoPeTqUT8EUdg3wQ.png)
+![](https://miro.medium.com/max/700/1*Guf4916TAxgtG3BT9p-1Rw.png)
 
 如果你在网上搜索 OAuth，你看到的都是 OAuth 2.0。这是因为 1.0 版本已经废弃，也没什么人用了。所以从现在起，我将讨论 OAuth 2.0 版本。
-
-![](https://miro.medium.com/max/700/1*Guf4916TAxgtG3BT9p-1Rw.png)
 
 ## 认证（Authentication）vs 授权（Authorization）
 
@@ -103,8 +101,6 @@ https://www.facebook.com/v2.7/dialog/oauth?
 `scope`=profile user_friends&
 `response_type`=code
 ```
-
-![](https://miro.medium.com/max/700/1*o_BFJgBkkACtO-erWXd52A.png)
 
 正如前面所述，`redirect_uir` 是用户授权后跳转的位置，`client_id` 则是你从 OAuth 2.0 提供者获得的内容。
 
@@ -174,7 +170,7 @@ www.facebookapi.com/oauth2/v4/token
 
 ## 小结
 
-希望你对 OAuth 是怎么工作的以及为什么我们需要它有一些理解。现在是时候让你探索并找出更多 OAuth 流程类型。祝好！
+希望你对 OAuth 是怎么工作的以及为什么我们需要它有了更好的理解。现在是时候让你探索并找出更多 OAuth 流程类型。祝好！
 
 感谢阅读本文，希望你有所收获。如果你需要帮助，可以联系我：[%20wdevon99@gmail.com](%20wdevon99@gmail.com)
 

@@ -1,0 +1,16 @@
+{
+  "name": "demo01",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Jecyu",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "puppeteer": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

@@ -1,0 +1,123 @@
+<!--
+ * @Author: Jecyu
+ * @Date: 2020-09-07 18:42:55
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2020-09-24 17:30:35
+ * @FilePath: /examples/4-node/webSocket/demo01/public/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket echo test</title>
+  </head>
+  <body>
+    <h1>WebSocket</h1>
+    <button id="query">查询同步状态</button>
+    <button id="sync">进行同步</button>
+    <button id="close">断开连接</button>
+    <button id="connect">连接</button>
+    <script>
+      class WebSocketUp {
+        constructor({ url, msgCallback, name = "default" }) {
+          this.url = url; // url
+          this.status = ""; // 是否关闭状态
+          this.ws = null; // ws 对象
+          this.name = name;
+          this.msgCallback = msgCallback;
+        }
+        connect(data) {
+          this.ws = new WebSocket(this.url);
+          this.ws.onopen = (e) => {
+            this.status = "open";
+            console.log(`${this.name} 连接成功`, e);
+            if (data !== undefined) {
+              return this.ws.send(data); // 发送服务端
+            }
+          };
+
+          // 监听服务器端返回的信息
+          this.ws.onmessage = (e) => {
+            // 把数据传给回调函数，并执行回调
+
+            return this.msgCallback(e.data);
+          };
+
+          this.ws.onclose = (e) => {
+            this.closeHandle(e); // 判断是否关闭
+          };
+
+          // ws出错回调
+          this.onerror = (e) => {
+            this.closeHandle(e); // 判断是否关闭
+          };
+        }
+        // 发送信息给服务器
+        sendHandle(data) {
+          console.log(`${this.name}发送消息给服务器:`, data);
+          return this.ws.send(data);
+        }
+
+        closeHandle(e = "err") {
+          // 因为webSocket并不稳定，规定只能手动关闭(调closeMyself方法)，否则就重连
+          if (this.status !== "close") {
+            console.log(`${this.name}断开，重连websocket`, e);
+
+            this.connect(); // 重连
+          } else {
+            console.log(`${this.name}websocket手动关闭`);
+          }
+        }
+        // 手动关闭WebSocket
+        closeMyself() {
+          console.log(`关闭${this.name}`);
+          this.status = "close";
+          return this.ws.close();
+        }
+      }
+      window.myws = null;
+      document.querySelector("#close").addEventListener("click", () => {
+        window.myws && window.myws.closeMyself();
+      });
+      document.querySelector("#query").addEventListener("click", () => {
+        window.myws && window.myws.sendHandle("status");
+      });
+      document.querySelector("#sync").addEventListener("click", () => {
+        window.myws && window.myws.sendHandle("sync");
+      });
+      document.querySelector("#connect").addEventListener("click", () => {
+        if (window.myws) {
+          window.myws.closeMyself();
+          window.myws = null;
+        }
+        window.myws = new WebSocketUp({
+          url: "ws://52.82.69.134:18080/dgp-oms-server-service/watch/10.0.2.93",
+          msgCallback: handleReceive,
+          name: "client",
+        });
+        window.myws.connect();
+      });
+
+      function handleReceive(data) {
+        switch (data) {
+          case "stop":
+            console.log("空闲状态，可以进行同步");
+            // loading 开始
+            break;
+          case "pending":
+            console.log("同步中");
+            break;
+          case "success":
+            // loading 结束
+            console.log("同步完成！");
+            break;
+          case "error":
+            // loading 结束
+            console.log("打印同步错误的信息，断开连接或其他的操作");
+            break;
+        }
+      }
+    </script>
+  </body>
+</html>

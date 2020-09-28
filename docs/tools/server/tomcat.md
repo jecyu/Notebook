@@ -69,3 +69,133 @@ Tomcat 的配置文件默认存放在 \$CATALINA_HOME/conf 目录中，主要有
 ### Web 应用部署目录结构
 
 ### Tomcat 基本框架及相关配置
+
+Tomcat 8+
+
+### 开启 CORS
+
+进一步：能否自定对某些文件夹做 CORS 处理（比如 fonts 字体、图标资源，不仅仅是 GIS 服务）。还是说用 nginx 来做这块工作。
+
+在 tomcat 的 conf 的 web.xml 文件添加过滤规则：
+
+```xml
+...
+<!-- ================== Built In Filter Definitions ===================== -->
+<filter>
+  <filter-name>CorsFilter</filter-name>
+  <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+  <init-param>
+    <param-name>cors.allowed.origins</param-name>
+    <param-value>*</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>CorsFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+...
+```
+
+更多配置见：https://tomcat.apache.org/tomcat-9.0-doc/config/filter.html
+
+### 设置代理
+
+使用场景：GIS 服务添加代理，使用 tomcat 部署。
+
+在 tomcat 的 conf 的 web.xml 文件添加过滤规则，这里直接对所有部署到 tomcat 都允许跨域访问了。
+
+### 压缩
+
+![](../../.vuepress/public/images/2020-09-09-11-14-12-compression.png)
+
+xcli 自动集成配置，查看。
+
+#### 测试
+
+前端非压缩文件是如何处理？
+
+压缩之后开启与没开启的对比？
+
+- 使用压缩前后的对比
+- 客户端压缩与服务端压缩的时间对比
+
+同时使用 dist 有压缩文件版和没压缩版，即可知道。
+
+#### 静态资源：寻找压缩文件
+
+##### 前端先压缩好文件
+
+```js
+new CompressionPlugin({
+  filename: "[path].gz[query]",
+  algorithm: "gzip", // 压缩算法
+  test: new RegExp("\\.(" + productionGzipExtensions.join("|") + ")$"), // 压缩的资源
+  threshold: 10240, // 资源大于 10240B = 10 KB 时会被压缩
+  minRatio: 0.8, // 压缩比率
+});
+```
+
+##### Tomcat 配置
+
+修改 conf/web.xml 文件，不需要重启 tomcat。
+
+```xml
+    <servlet>
+        ...
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>gzip</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        ...
+    </servlet>
+```
+
+Tomcat 默认已经开启。
+
+If a precompressed version of a file exists (a file with .br or .gz appended to the file name located alongside the original file), Tomcat will serve the precompressed file if the user agent supports the matching content encoding (br or gzip) and this option is enabled. [false]
+The precompressed file with the with .br or .gz extension will be accessible if requested directly so if the original resource is protected with a security constraint, the precompressed versions must be similarly protected.
+It is also possible to configure the list of precompressed formats. The syntax is comma separated list of [content-encoding]=[file-extension] pairs. For example: br=.br,gzip=.gz,bzip2=.bz2. If multiple formats are specified, the client supports more than one and the client does not express a preference, the order of the list of formats will be treated as the server preference order and used to select the format returned.
+
+#### 针对 API 请求：实时压缩
+
+修改 server.xml，并进行 tomcat 的重启。
+
+before
+
+```xml
+<Connector port="8080" protocol="HTTP/1.1" compression="on" compressibleMimeType="text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml"  compressionMinSize="2048"  />
+```
+
+After
+添加 useSendfile，和设置端口为 80。端口问题待研究。
+
+```xml
+    <Connector port="80" protocol="HTTP/1.1" compression="on" compressibleMimeType="text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml"  compressionMinSize="2048" useSendfile="false" />
+```
+
+这里要注意的是：port 为 80 而不是 8080，另外一定要添加 useSendfile 属性并设置为 false，否则有可能不会压缩。这个 useSendfile 属性来保护 CPU 使用率，详情可以看对应的 tomcat 配置文档（connector 部分）。
+
+connector 的作用主要是处理请求，进行响应。
+
+访问地址：
+http:80//localhost/dist-notzip
+
+而不是
+http:8080//localhost/dist-notzip
+
+之后再集成 xcli 文档。
+
+## 参考资料
+
+- [Tomcat 7 GZIP compression not working
+  ](https://stackoverflow.com/questions/16653642/tomcat-7-gzip-compression-not-working)
+- [Tomcat8 Gzip Compression for CSS, JS](https://stackoverflow.com/questions/30608952/tomcat8-gzip-compression-for-css-js)
+- [Need Step-by-Step Overview for Compression on Tomcat
+  ](https://stackoverflow.com/questions/16690321/need-step-by-step-overview-for-compression-on-tomcat)
+- [Apache Tomcat Versions which version?](https://tomcat.apache.org/whichversion.html) Unsure which version you need? Specification versions implemented, minimum Java version required and lots more useful information may be found on the 'which version?' page.
+- [前端性能优化之缓存与 GZIP](https://zhuanlan.zhihu.com/p/124681905)
+- [前端性能优化之 gzip](https://segmentfault.com/a/1190000012571492)
+- [深入剖析 Tomcat](https://book.douban.com/subject/10426640/)
+- Tomcat 与 Java Web 开发技术详解

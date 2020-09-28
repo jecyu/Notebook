@@ -12,7 +12,7 @@
 
 ![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
 
-- __proto__ 与 prototype 的区别
+- **proto** 与 prototype 的区别
 - 构造器与原型的区别，两者的作用用于哪里，有哪些应用场景
 - contructor
 - 什么是原型链
@@ -141,7 +141,6 @@ export const traverseTree = (
 ##### 私有变量
 
 ##### 函数里返回函数
-
 
 ### 对象
 
@@ -637,15 +636,17 @@ greet("casual", formalGreeting, casualGreeting);
 
 #### 高阶函数
 
-高阶函数英文叫做Higher-order function。那么什么是高阶函数呢？
+高阶函数英文叫做 Higher-order function。那么什么是高阶函数呢？
 
 在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+
 - 接受一个或多个函数作为输入
 - 输出一个参数
 
 ```js
-function add(x, y, f) {  // 传入函数
-  return f(x) + f(y)
+function add(x, y, f) {
+  // 传入函数
+  return f(x) + f(y);
 }
 ```
 
@@ -678,6 +679,7 @@ console.log("arr4 =>", arr4);
 ##### reduce
 
 reduce 方法对调用数组的每个元素执行回调函数，最后生成一个单一的值并返回。 reduce 方法接受两个参数：
+
 - 1）reducer 函数（回调），
 - 2）一个可选的 initialValue。
 
@@ -691,13 +693,16 @@ reducer 函数（回调）接受四个参数：accumulator，currentValue，curr
 
 ```js
 const arr = [5, 7, 1, 8, 4];
-const sum = arr.reduce((accumulator, currentValue) => accumulator + currentValue, 10)
+const sum = arr.reduce(
+  (accumulator, currentValue) => accumulator + currentValue,
+  10
+);
 // => sum 35
 ```
 
 ##### filter
 
-filter 也是一个常用的操作，它用于把Array的某些元素过滤掉，然后返回剩下的元素。
+filter 也是一个常用的操作，它用于把 Array 的某些元素过滤掉，然后返回剩下的元素。
 
 和 `map()`类似，Array 的 `filter()` 也接收一个函数。和 `map()` 不同的是，`filter()` 把传入的函数依次作用于每个元素，然后根据返回值是 `true` 还是 `false 决定保留还是丢弃该元素。
 
@@ -2174,7 +2179,7 @@ require(["./vendor/multi"], function(multi) {
 
 ## 文件上传与下载
 
-- [纯前端JS zip打包文件并下载](https://www.zhangxinxu.com/wordpress/2019/08/js-zip-download/)
+- [纯前端 JS zip 打包文件并下载](https://www.zhangxinxu.com/wordpress/2019/08/js-zip-download/)
 
 ## 代码规范
 
@@ -2314,7 +2319,7 @@ function Random(min, max) {
 
 - 操作运算符
   - [可选链操作符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE)
-  - [JavaScript中圆括号()和方括号`[]`的特殊用法疑问解答](http://www.gimoo.net/t/1405/541b9f4d57767.html)
+  - [JavaScript 中圆括号()和方括号`[]`的特殊用法疑问解答](http://www.gimoo.net/t/1405/541b9f4d57767.html)
 - 浏览器原理
   - [从多线程到 Event Loop 全面梳理](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-15) —— 少有的从计算机方面讲解逐步引申到浏览器的线程文章。
 - 临时
@@ -2342,11 +2347,11 @@ function Random(min, max) {
   - [Javascript 的匿名函数与自执行](https://juejin.im/entry/57fee360a22b9d005b1d9ae3) -- 匿名函数与闭包。
   - [前端面试：谈谈 JS 垃圾回收机制](https://segmentfault.com/a/1190000018605776#comment-area) 图例说得不错。
   - [JavaScript 内存泄漏教程](http://www.ruanyifeng.com/blog/2017/04/memory-leak.html)
-  - [4种JavaScript内存泄漏浅析及如何用谷歌工具查内存泄露](https://www.jianshu.com/p/24874469dafd)
-  - [垃圾回收 (计算机科学)](https://zh.wikipedia.org/wiki/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8))
+  - [4 种 JavaScript 内存泄漏浅析及如何用谷歌工具查内存泄露](https://www.jianshu.com/p/24874469dafd)
+  - [垃圾回收 (计算机科学)](<https://zh.wikipedia.org/wiki/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8)>)
   - [使用 chrome-devtools Memory 面板](https://zhuanlan.zhihu.com/p/80792297)
   - [解决内存问题](https://developers.google.com/web/tools/chrome-devtools/memory-problems?hl=zh-cn#%E4%BD%BF%E7%94%A8%E5%88%86%E9%85%8D%E6%97%B6%E9%97%B4%E7%BA%BF%E7%A1%AE%E5%AE%9A_js_%E5%A0%86%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F)
-  - [JS内存泄漏实例解析](https://juejin.im/post/5a8e7f6df265da4e832677ec)
+  - [JS 内存泄漏实例解析](https://juejin.im/post/5a8e7f6df265da4e832677ec)
 - 异常处理
   - [前端错误收集以及统一异常处理](https://juejin.im/post/5be2b0f6e51d4523161b92f0?utm_source=gold_browser_extension#heading-15)
   - [异常处理，"try..catch"](https://mp.weixin.qq.com/s/jHSk4UeNmQ1ih_F5vs0jdw)
@@ -2360,5 +2365,5 @@ function Random(min, max) {
   - [wiki 百科高阶函数](https://zh.wikipedia.org/zh-hans/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0)
 - 对象
   - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
-  - [【进阶5-2期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)
-  - [【进阶5-1期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)
+  - [【进阶 5-2 期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)
+  - [【进阶 5-1 期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)

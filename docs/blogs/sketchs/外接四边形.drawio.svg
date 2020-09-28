@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="180px" height="61px" viewBox="-0.5 -0.5 180 61" content="&lt;mxfile host=&quot;b4d4ab57-3e50-409e-bc32-5ee491e7f524&quot; modified=&quot;2020-09-14T23:56:14.866Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.49.0 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36&quot; etag=&quot;Otuf7DZRJNQynHFAq8Cx&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;5VZNj5wgGP41HpuojK4eu9Pt9tKkyRx6JvCqpCgGcXT664sLfuKu03TbS+cwgYf38+EB8dC57J8lrouvggL3Qp/2HvrkheEpCvT/ANwMECe+AXLJqIGCGbiwn2DB0axlFJqVoRKCK1avQSKqCohaYVhK0a3NMsHXWWucgwNcCOYu+p1RVRg0CR9m/AuwvBgzB3FqVko8GttOmgJT0S0g9OShsxRCmVHZn4EP3I28GL/Pr6xOhUmo1D0OkXG4Yt7a3mxd6jY2K0VbURjsfQ89dgVTcKkxGVY7vbsaK1TJ9SzQw4xxfhZcyBdflGVE/zTeKCl+wGIFxShFOuijW7Ft4gpSQb+AbAfPIEpQ8qZNxtUHy6aVU5jaebfYHAsVi32JLYatHPIp8syYHljS9gkMjwlUkuEqH2ZH7EmhsGKi0tMPqe/SSQhEWfbX6Uw2dCYunfEOnck70Jkc00laeX2R48AYVPTjcKD1lHDcNIysGTXeQJ3zvOHHJWPRbLTT7IhJ4HrLruvwewzYDN8E04knriepWq5RtCGxEa0kYL2WB3kTCJ02gfxNIIVlDsoJpNnDt4VZPRg0rxfs5In8N+tyGvRX9npgKpjVMe3BXYJJ/zPBTPv6x4KJ/pFgtnkOBOM0+M6CCcb78A3FaA/9lLjjwsZNbd4XGesHiTnfP0xTGu1d2BhOAQonwTm3812SGylDx9+/YEeSwe9f2Ho6P04M+/MLDz39Ag==&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <rect x="0" y="0" width="80" height="60" fill="#ffcccc" stroke="#36393d" pointer-events="all"/>
+        <path d="M 10 -10 L 70 30 L 10 70 Z" fill="#cce5ff" stroke="#36393d" stroke-miterlimit="10" transform="rotate(-90,40,30)" pointer-events="all"/>
+        <path d="M 120 60 Q 170 60 145 35 Q 120 10 163.63 10" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 168.88 10 L 161.88 13.5 L 163.63 10 L 161.88 6.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 130 60 Q 180 60 155 35 Q 130 10 173.63 10" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 178.88 10 L 171.88 13.5 L 173.63 10 L 171.88 6.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <ellipse cx="165" cy="5" rx="5" ry="5" fill="#fad9d5" stroke="#ae4132" pointer-events="all"/>
+    </g>
+</svg>
