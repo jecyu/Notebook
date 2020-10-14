@@ -687,7 +687,7 @@ Double 的计算与此类似，double 的符号位为 63 位，指数为 62 ～ 
 
 ![](../.vuepress/public/images/2020-08-29-14-46-54-loop.png)
 
-#### for 
+#### for
 
 ```java
 for (初始化语句; 条件判断; 步进语句) {
@@ -719,7 +719,7 @@ do {
 
 #### 三种循环的区别
 
-1. 如果条件判断从来没有满足过，那么 for 循环和 while 循环将会执行 0 次，但是 `do while`	 循环会执行至少一次。
+1. 如果条件判断从来没有满足过，那么 for 循环和 while 循环将会执行 0 次，但是 `do while` 循环会执行至少一次。
 2. for 循环的变量在小括号当中定义，只有循环内部才可以使用。while 循环和 do while 循环初始化语句本来就在外面，所以出来循环之后还可以继续使用。
 
 #### 循环控制 break 和 continue 语句
@@ -813,6 +813,7 @@ public static  int sum(int a, int b) {
 ![](../.vuepress/public/images/2020-08-30-18-56-00-java-method.png)
 
 注意事项：
+
 1. 对于有返回值的方法，可以使用单独调用、打印调用或者赋值调用。
 2. 但是对于无返回值的方法，只能使用单独调用，不能使用打印调用或者赋值调用。
 
@@ -832,6 +833,7 @@ public static  int sum(int a, int b) {
 对于功能类似的方法来说，因为参数列表不一样，却需要记住那么多不同的方法名称，太麻烦。
 
 方法的重载（overload），多个方法的名称一样，但是参数列表不一样。好处：只需要记住唯一一个方法名称，就实现类似的多个功能。
+
 ```java
 /*
  * 重载 overload
@@ -880,7 +882,7 @@ public class Demo03 {
  那么将会发生：
  空指针异常 NullPointerException
 
- 原因：忘了 new 
+ 原因：忘了 new
  解决：补上 new
  */
  public class Demo {
@@ -933,6 +935,18 @@ public class Demo05 {
 
 #### 包
 
+1. 通常情况下，需要根据类创建一个对象，才能使用。
+2. 导包：也就是指出需要使用的类，在什么位置。
+   `import xxx.xx.Student`
+   对于和当前类属于同一个包的情况，可以省略导包语句不写。
+3. 使用，分为两种情况：
+   - 使用成员变量：对象名.成员变量名
+   - 使用成员方法：对象名.成员方法名（参数）
+
+#### 一个对象的内存图
+
+#### 两个对象使用同一个方法的内存图
+
 #### 小结
 
 Java 内建的 `package` 机制是为了避免 `class` 命名冲突；
@@ -965,7 +979,7 @@ jar 包相当于目录，可以包含很多 `.class` 文件，方便下载和使
 
 我们知道，`.class` 文件是 JVM 看到的最小可执行文件，而一个大型程序需要编写很多 Class，并生成一堆 `.class` 文件，很不便于管理，所以 `jar` 文件就是 `class` 文件的容器。
 
-在 Java 9 之前，一个大型 Java 程序会生成自己的 jar 文件，同时引入依赖的第三方 jar，而 JVM 自带的 Java 标准库，实际上也是以 jar 文件形式存放的，这个文件叫 `rt.jar`，一共有 60 多M。
+在 Java 9 之前，一个大型 Java 程序会生成自己的 jar 文件，同时引入依赖的第三方 jar，而 JVM 自带的 Java 标准库，实际上也是以 jar 文件形式存放的，这个文件叫 `rt.jar`，一共有 60 多 M。
 
 如果是自己开发的程序，除了一个自己的 `app.jar` 以外，还需要一堆第三方的 jar 包，运行一个 Java 程序，一般来说，命令行写这样：
 
@@ -973,7 +987,7 @@ jar 包相当于目录，可以包含很多 `.class` 文件，方便下载和使
 java -cp app.jar:a.jar:b.jar:c.jar com.xxxx.xxx.Main
 ```
 
-⚠️注意：JVM 自带的标准库 rt.jar 不要写到 classpath 中，写了反而会干扰 JVM 的正常运行。
+⚠️ 注意：JVM 自带的标准库 rt.jar 不要写到 classpath 中，写了反而会干扰 JVM 的正常运行。
 
 <u>如果漏写了某个运行时需要用的 jar，那么在运行期极有可能抛出 `ClassNotFoundException`</u>。
 
@@ -992,7 +1006,6 @@ jar 只是用于存放 class 的容器，它并不关心 class 之间的依赖�
 ##### 访问权限
 
 ##### 小结
-
 
 ### Java 核心类
 
@@ -2691,6 +2704,99 @@ Java 用 `Thread` 对象表示一个线程，通过调用 `start()` 启动一个
 
 Maven 是一个 Java 项目管理和构建工具，它可以定义项目结构、项目依赖，并使用统一的方式进行自动化构建，是 Java 项目不可缺少的工具。
 
+### Maven 介绍
+
+Maven 就是专门为 Java 项目打造的管理和构建工具，它的主要功能有：
+- 提供了一套标准化的项目结构；
+- 提供了一套标准化的构建流程（编译、测试、打包、发布......）；
+- 提供了一套依赖管理机制。
+
+Maven 标准项目结构：
+
+```sh
+a-maven-project # 项目名
+├── pom.xml # 项目描述文件
+├── src 
+│   ├── main
+│   │   ├── java # Java 源码
+│   │   └── resources # 资源文件
+│   └── test
+│       ├── java  # 测试源码
+│       └── resources # 测试资源
+└── target # 所有编译、打包生成的文件
+```
+
+```xml
+<project ...>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.itranswarp.learnjava</groupId>
+	<artifactId>hello</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+	<properties>
+        ...
+	</properties>
+	<dependencies>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+	</dependencies>
+</project>
+```
+
+其中，`groupId` 类似于 Java 的包名，通常是公司或组织名称，`artifactId` 类似于 Java 的类名，通常是项目结构，再加上 `version`，一个 Maven 工程就是由 `groupId` 、`arctifaceId` 和 `version` 作为唯一标识。我们在引用其他第三方依赖的时候，也是通过这个 3 个变量确定。例如，依赖 `commons-logging`：
+
+```xml
+<dependency>
+  <groupId>commons-logging</groupId>
+  <artifaceId>commons-logging</artifaceId>
+  <version>1.2</version>
+</dependency>
+```
+
+#### 安装 Maven
+
+**1、下载 Maven**
+打开 Maven 官网下载页面：maven.apache.org/download.cg…
+下载:apache-maven-3.5.0-bin.tar.gz
+
+解压下载的安装包到某一目录，比如：/Users/xxx/Documents/maven
+
+**2、配置环境变量**
+
+打开 terminel 输入以下命令：
+
+`vim ~/.bash_profile` 打开`.bash_profile`文件，在次文件中添加设置环境变量的命令
+
+```sh
+export M2_HOME=/Users/xxx/Documents/maven/apache-maven-3.5.0
+export PATH=$PATH:$M2_HOME/bin
+```
+
+添加之后保存并推出，执行以下命令使配置生效：
+
+```sh
+source ~/.bash_profile
+```
+
+**3、查看配置是否生效**
+
+输入：`mvn -v` 命令，输入如下：
+
+```sh
+Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-04T03:39:06+08:00)
+Maven home: /Users/xxx/Documents/maven/apache-maven-3.5.0
+Java version: 1.8.0_121, vendor: Oracle Corporation
+Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: "mac os x", version: "10.12.6", arch: "x86_64", family: "mac"
+则配置成功。
+```
+
+- [Mac OS X 下安装和配置 Maven](https://juejin.im/entry/6844903780148838407)
+
 ## 网络编程
 
 网络编程是 Java 最擅长的方向之一，使用 Java 进行网络编程时，由虚拟机实现了底层复杂的网络协议，Java 程序只需要调用 Java 标准库提供的接口，就可以简单高效地编写网络程序。
@@ -4261,12 +4367,12 @@ Java 为关系数据库定义了一套标准的访问接口：`JDBC`（Java Data
 
 而如何定义数据的存储格式就是一个大问题。如果我们自己来定义存储格式，比如保存一个班级所有学生的成绩单：
 
-|名字|成绩|
-|--|--|
-|Michael|99|
-|Bob|85|
-|Bart|59|
-|Lisa|87|
+| 名字    | 成绩 |
+| ------- | ---- |
+| Michael | 99   |
+| Bob     | 85   |
+| Bart    | 59   |
+| Lisa    | 87   |
 
 你可以用一个文本文件保存，一行保存一个学生，用 `,` 隔开：
 
@@ -4281,10 +4387,10 @@ Lisa,87
 
 ```json
 [
-  {"name":"Michael","score":99},
-  {"name":"Bob","score":85},
-  {"name":"Bart","score":59},
-  {"name":"Lisa","score":87}
+  { "name": "Michael", "score": 99 },
+  { "name": "Bob", "score": 85 },
+  { "name": "Bart", "score": 59 },
+  { "name": "Lisa", "score": 87 }
 ]
 ```
 
@@ -4302,26 +4408,26 @@ Lisa,87
 
 假设某个 XX 省 YY 市 ZZ 县第一实验小学有 3 个年纪，要表示出这 3 个年纪，可以在 Excel 中用一个表格画出来：
 
-|Grade_ID|Name|
-|--|--|
-|1|一年级|
-|2|二年级|
-|3|三年级|
+| Grade_ID | Name   |
+| -------- | ------ |
+| 1        | 一年级 |
+| 2        | 二年级 |
+| 3        | 三年级 |
 
 每个年级又有若干个班级，要把所有班级表示出来，可以咋 Excel 中再画一个表格：
 
-|Grade_ID|Class_ID|Name|
-|--|--|--|
-|1|11|一年级一班|
-|1|12|一年级二班|
-|1|13|一年级三班|
-|2|21|二年级一班|
-|2|22|二年级二班|
-|2|23|二年级三班|
-|3|31|三年级一班|
-|3|32|三年级二班|
-|3|33|三年级三班|
-|3|34|三年级四班|
+| Grade_ID | Class_ID | Name       |
+| -------- | -------- | ---------- |
+| 1        | 11       | 一年级一班 |
+| 1        | 12       | 一年级二班 |
+| 1        | 13       | 一年级三班 |
+| 2        | 21       | 二年级一班 |
+| 2        | 22       | 二年级二班 |
+| 2        | 23       | 二年级三班 |
+| 3        | 31       | 三年级一班 |
+| 3        | 32       | 三年级二班 |
+| 3        | 33       | 三年级三班 |
+| 3        | 34       | 三年级四班 |
 
 这两个表格有个`映射关系`，就是根据 Grade_ID 可以在班级表中查找到对应的所有班级：（这里还可以把 Grade_ID 抽出来，新建个班级和年级关联表）
 
@@ -4337,11 +4443,11 @@ SELECT * FROM classes WHERE grade_id = '1';
 
 结果也是一个表：
 
-|Grade_ID|Class_ID|Name|
-|--|--|--|
-|1|11|一年级一班|
-|1|12|一年级二班|
-|1|13|一年级三班|
+| Grade_ID | Class_ID | Name       |
+| -------- | -------- | ---------- |
+| 1        | 11       | 一年级一班 |
+| 1        | 12       | 一年级二班 |
+| 1        | 13       | 一年级三班 |
 
 类似的，Class 表的一行记录又可以关联到 Student 表的多行记录：
 
@@ -4356,12 +4462,14 @@ SELECT * FROM classes WHERE grade_id = '1';
 既然我们要使用关系数据库，就必须选择一个关系数据库。目前广泛使用的关系数据库也就这么几种：
 
 付费的商用数据库：
+
 - Oracle，典型的高富帅；
 - SQL Server，微软自家产品，Windows 定制专款；
 - DB2，IBM 的产品
 - Sybase，曾经跟微软是好基友，后来关系破裂，现在家境惨淡。
 
 这些数据库都是不开源而且付费的，最大的好处是花了钱出了问题可以找厂家解决，不过在 Web 的世界里，常常需要部署成千上万的数据库服务器，当然不能把大把大把的银子扔给厂家，所以，无论是 Google、Facebook，还是国内的 BAT，无一例外都选择了免费的开源数据库：
+
 - MySQL，大家都在用，一般错不了；
 - PostgreSQL，学术气息有点重，其实挺不错，但知名度没有 MySQL 高；
 - sqlite，嵌入式数据库，适合桌面和移动应用。
@@ -4500,6 +4608,7 @@ mysql> show variables like "%char%";
 #### 小结
 
 使用 JDBC 的好处是：
+
 - 各数据库厂商使用相同的接口，Java 代码不需要针对不同数据库分别开发；
 - Java 程序`编译期`仅依赖 `java.sql` 包，不依赖具体数据的 jar 包；
 - 可随时替换底层数据库，访问数据库的 Java 代码基本不变。
@@ -4531,7 +4640,7 @@ DROP DATABASE IF EXISTS learnjdbc;
 CREATE DATABASE learnjdbc;
 
 -- 创建登录用户learn/口令learnpassword
-CREATE USER IF NOT EXISTS 
+CREATE USER IF NOT EXISTS
 learn@'%' IDENTIFIED BY 'learnpassword';
 GRANT ALL PRIVILEGES ON learnjdbc.* TO learn@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
@@ -4640,8 +4749,6 @@ UPDATE accounts SET balance = balance + 100 WHERE id =456;
 
 #### 小结
 
-
-
 ### JDBC Batch
 
 使用 JDBC 操作数据库的时候，经常会执行一些批量操作。
@@ -4719,7 +4826,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Learn Java from https://www.liaoxuefeng.com/
- * 
+ *
  * @author liaoxuefeng
  */
 public class Server {
@@ -4841,6 +4948,7 @@ class Handler extends Thread {
 
 ## 参考资料
 
+- [mall 学习教程](https://github.com/macrozheng/mall-learning?utm_source=gold_browser_extension) 手把手实战学习
 - [Java-Interview](https://github.com/xbox1994/Java-Interview)
 - [Tomcat(一) Tomcat 是什么：Tomcat 与 Java 技术 Tomcat 与 Web 应用 以及 Tomcat 基本框架及相关配置](https://blog.csdn.net/tjiyu/article/details/54590258)
 - [Java 虚拟机——字节码、机器码和 JVM](https://zhuanlan.zhihu.com/p/44657693) 本文主要讲解 Java 虚拟机的概念，字节码、机器码、编译器、解释器的概念。

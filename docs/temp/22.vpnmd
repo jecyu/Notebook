@@ -1,0 +1,49 @@
+## 在安装过程中，可能会出现 python 安装错误
+
+<!-- 当前文只能发到 github，避免其他的地方 -->
+
+## 服务器的选择
+
+需要选择欧美的服务器才可以成功科学上网。
+
+## 配置小飞机
+
+需要另外通过命令行进行安装
+
+```bash
+
+wget https://www.python.org/ftp/python/3.8.0/Python-3.8.0b2.tar.xz
+tar xvf Python-3.8.0b2.tar.xz
+cd Python-3.8.0b2
+sudo ./configure --enable-optimizations
+# 安装 make 工具
+ yum -y install make 
+# 进行编译
+sudo make altinstall
+python3.8 -V
+```
+
+方法二：，通过 yum 命令工具，一行命令搞掂（centos 系统）
+```bash
+sudo yum install python2
+```
+
+Shadowsocks-go: 二进制编译, 轻量, 快速
+Shadowsocks-python: 无功无过，也是最原始的版本，近年来更新速度略慢
+Shadowsocks-libev: 一直处于更新之中，最大的特点是支持obfs混淆
+ShadowsocksR: 从作者到产品都极负争议性, obfs混淆模式开创者, 但是前一段时间SSR服务器普遍遭到GFW的封杀.
+
+目前跑到 python 安装不成功，后续处理。
+
+
+## 配置 VPN
+
+centos
+```bash
+wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh
+```
+
+- [setup-ipsec-vpn](https://github.com/hwdsl2/setup-ipsec-vpn)
+- [Shadowsocks 笔记](https://github.com/JadaGates/ShadowsocksBio#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E7%BB%9F)
+- [linux 一行命令安装python3.7 & python3.8](https://blog.csdn.net/jaket5219999/article/details/80894517)
+- [How to Install Python 3 on Linux (Ubuntu / Fedora / CentOS…)](https://www.csestack.org/install-python-on-linux/#3_Yum_Package_Manager_(Redhat_/_RHEL_/_CentOS))

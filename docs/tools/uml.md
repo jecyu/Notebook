@@ -120,6 +120,10 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 
 - [https://www.anxz.com/down/66703.html](https://www.anxz.com/down/66703.html)
 
+## EA
+
+### 绘制通信图
+
 ## 应用场景
 
 - 如何通过代码自动生成 UML 图

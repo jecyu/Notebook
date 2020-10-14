@@ -35,17 +35,17 @@ npx create-react-app comment-app
 ```
 
 ```js
-const button = document.querySelector('.like-btn');
-const buttonText = button.querySelector('.like-text');
+const button = document.querySelector(".like-btn");
+const buttonText = button.querySelector(".like-text");
 let isLiked = false;
 button.addEventListener(
-  'click',
+  "click",
   () => {
     isLiked = !isLiked;
     if (isLiked) {
-      buttonText.innerHTML = '取消';
+      buttonText.innerHTML = "取消";
     } else {
-      buttonText.innerHTML = '点赞';
+      buttonText.innerHTML = "点赞";
     }
   },
   false
@@ -76,7 +76,7 @@ class LikeButton {
 然后可以用这个类来构建不同的点赞功能的实例，然后把它们插到页面中。
 
 ```js
-const wrapper = document.querySelector('.wrapper');
+const wrapper = document.querySelector(".wrapper");
 const likeButton1 = new LikeButton();
 wrapper.innerHTML = likeButton1.render();
 
@@ -97,8 +97,8 @@ wrapper.innerHTML += likeButton2.render();
 
 ```js
 // 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
-const createDOMFromString = domString => {
-  const div = document.createElement('div');
+const createDOMFromString = (domString) => {
+  const div = document.createElement("div");
   div.innerHTML = domString;
   return div;
 };
@@ -118,9 +118,9 @@ class LikeButton {
           `
     );
     this.el.addEventListener(
-      'click',
+      "click",
       () => {
-        console.log('click');
+        console.log("click");
       },
       false
     );
@@ -134,7 +134,7 @@ class LikeButton {
 因为现在 `render` 返回的是 DOM 元素，所以不能用 `innerHTML` 暴力地插入 wrapper。而是要用 DOM API 插进去。
 
 ```js
-const wrapper = document.querySelector('.wrapper');
+const wrapper = document.querySelector(".wrapper");
 const likeButton1 = new LikeButton();
 wrapper.appendChild(likeButton1.render());
 
@@ -150,9 +150,9 @@ class LikeButton {
     this.state = { isLiked: false };
   }
   changeLikeText() {
-    const likeText = this.el.querySelector('.like-text');
+    const likeText = this.el.querySelector(".like-text");
     this.state.isLiked = !this.state.isLiked;
-    likeText.innerHTML = this.state.isLiked ? '取消' : '点赞';
+    likeText.innerHTML = this.state.isLiked ? "取消" : "点赞";
   }
   render() {
     this.el = createDOMFromString(
@@ -163,7 +163,7 @@ class LikeButton {
             </button>
           `
     );
-    this.el.addEventListener('click', this.changeLikeText.bind(this), false);
+    this.el.addEventListener("click", this.changeLikeText.bind(this), false);
     return this.el;
   }
 }
@@ -201,18 +201,18 @@ class LikeButton {
 
   changeLikeText() {
     this.setState({
-      isLiked: !this.state.isLiked
+      isLiked: !this.state.isLiked,
     });
   }
 
   render() {
     this.el = createDOMFromString(`
         <button class='like-btn'>
-          <span class='like-text'>${this.state.isLiked ? '取消' : '点赞'}</span>
+          <span class='like-text'>${this.state.isLiked ? "取消" : "点赞"}</span>
           <span>👍</span>
         </button>
       `);
-    this.el.addEventListener('click', this.changeLikeText.bind(this), false);
+    this.el.addEventListener("click", this.changeLikeText.bind(this), false);
     return this.el;
   }
 }
@@ -252,7 +252,7 @@ setState(state) {
 使用这个组件的时候：
 
 ```js
-const wrapper = document.querySelector('.wrapper');
+const wrapper = document.querySelector(".wrapper");
 const likeButton = new LikeButton();
 wrapper.appendChild(likeButton.render());
 likeButton.onStateChange = (oldEl, newEl) => {
@@ -270,6 +270,7 @@ likeButton.onStateChange = (oldEl, newEl) => {
 ### 前端组件化（三）：抽象出公共组件类
 
 抽象公共组件类，不需要说实现其他组件，也要重新 setState 等方法。我们把这种模式抽象出来，放到一个 `Component` 类当中：
+
 ```js
 class Component {
   constructor(props) {
@@ -289,7 +290,7 @@ class Component {
   _renderDOM() {
     this.el = createDOMFromString(this.render());
     if (this.onClick) {
-      this.el.addEventListener('click', this.onClick.bind(this), false);
+      this.el.addEventListener("click", this.onClick.bind(this), false);
     }
     return this.el;
   }
@@ -299,14 +300,14 @@ class Component {
 这个是一个组件父类 `Component` ，所有的组件都可以继承这个父类来构建。它定义的两个方法，一个是我们已经很熟悉的 `setState`；一个是私有方法 `_renderDOM`。`_renderDOM` 方法会调用 `this.render` 来构建 DOM 元素并且监听 `onClick` 事件。所以，组件子类继承的时候只需要实现一个返回 HTML 字符串的 `render` 方法就可以了。
 
 下面是工具方法 `createDOMFromString` 和 `mount`。
+
 ```js
 // 我们需要这个点赞功能的 HTML 字符串表示的 DOM 结构，才能添加事件
-const createDOMFromString = domString => {
-  const div = document.createElement('div');
+const createDOMFromString = (domString) => {
+  const div = document.createElement("div");
   div.innerHTML = domString;
   return div;
 };
-
 
 /**
  * @description: 把组件的 DOM 元素插入到页面中
@@ -316,14 +317,13 @@ const createDOMFromString = domString => {
  */
 const mount = (component, wrapper) => {
   wrapper.appendChild(component._renderDOM());
-  component.onStateChange = (oldEl, newEl) => { // 状态监听
+  component.onStateChange = (oldEl, newEl) => {
+    // 状态监听
     wrapper.insertBefore(newEl, oldEl);
     wrapper.removeChild(oldEl);
   };
 };
 ```
-
-
 
 业务组件类：
 
@@ -335,7 +335,7 @@ class LikeButton extends Component {
   }
   onClick() {
     this.setState({
-      isLiked: !this.state.isLiked
+      isLiked: !this.state.isLiked,
     });
   }
   /**
@@ -346,7 +346,7 @@ class LikeButton extends Component {
   render() {
     return `
         <button id='like-btn' style="background-color: ${this.props.bgColor}">
-          <span class="like-text">${this.state.isLiked ? '取消' : '点赞'}</span>
+          <span class="like-text">${this.state.isLiked ? "取消" : "点赞"}</span>
           <span>👍</span>
         </button>
       `;
@@ -357,11 +357,11 @@ class RedBlueButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      color: 'red'
+      color: "red",
     };
   }
   onClick() {
-    this.setState({ color: 'blue' });
+    this.setState({ color: "blue" });
   }
   render() {
     return `
@@ -374,14 +374,15 @@ class RedBlueButton extends Component {
 实际应用：
 
 ```js
-const wrapper = document.querySelector('.wrapper');
-mount(new LikeButton({ bgColor: 'green' }), wrapper);
+const wrapper = document.querySelector(".wrapper");
+mount(new LikeButton({ bgColor: "green" }), wrapper);
 mount(new RedBlueButton(), wrapper);
 ```
 
 流程：挂载 ➡️ 状态变化 ➡️ 视图更新
-- 初始化：`mount()` ➡️ `component._renderDOM()` ➡️ `render()` 
-- 交互： `setState` ➡️ `_renderDOM()` ➡️ `onStateChange()` ➡️ restartRender 
+
+- 初始化：`mount()` ➡️ `component._renderDOM()` ➡️ `render()`
+- 交互： `setState` ➡️ `_renderDOM()` ➡️ `onStateChange()` ➡️ restartRender
 
 需要手动调用 setState 驱动视图更新，而 vue 直接双向绑定更新。
 
@@ -426,24 +427,21 @@ create-react-app hello-react
 这一节，我们通过一个简单的例子讲解 React.js 描述页面 UI 的方式。把 `src/index.js` 中的代码改成：
 
 ```js
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import './index.css'
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
 
 class Header extends Component {
-  render () {
+  render() {
     return (
       <div>
         <h1>React 小书</h1>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(
-  <Header />,
-  document.getElementById('root')
-)
+ReactDOM.render(<Header />, document.getElementById("root"));
 ```
 
 我们在文件头部从 `react` 的包当中引入了 `React` 和 React.js 的组件父类 `Component` 。记住，只要你写 React.js 组件，那么就必须引入这两个东西。
@@ -467,20 +465,20 @@ ReactDOM.render(
 
 ```js
 const dom = {
-  tag: 'div',
-  attrs: { className: 'box', id: 'content' },
+  tag: "div",
+  attrs: { className: "box", id: "content" },
   children: [
     {
-      tag: 'div',
-      arrts: { className: 'title' },
-      children: ['Hello']
+      tag: "div",
+      arrts: { className: "title" },
+      children: ["Hello"],
     },
     {
-      tag: 'button',
+      tag: "button",
       attrs: null,
-      children: ['Click']
-    }
-  ]
+      children: ["Click"],
+    },
+  ],
 };
 ```
 
@@ -500,12 +498,13 @@ React 的 JSX 代码经过 babel + react 编译。
 会编译为：
 
 ```js
-React.createElement(MyButton, { color: 'blue', shadowSize: 2 }, 'Click Me');
+React.createElement(MyButton, { color: "blue", shadowSize: 2 }, "Click Me");
 ```
 
 #### 小结
 
 要记住几个点：
+
 1. JSX 是 JavaScript 语言的一种语法扩展，长的像 HTML，但并不是 HTML。
 2. React.js 可以用 JSX 来描述你的组件长什么样的。
 3. JSX 在编译的时候会变成相应的 JavaScript 对象描述。
@@ -657,7 +656,7 @@ class Title extends Component {
 class Header extends Component {
   // 继承 React.js 的组件父类 Component
   render() {
-    const className = 'header';
+    const className = "header";
     return (
       // 直接返回 HTML 代码，JSX 写法，需要经过编译成果 JavaScript 对象
       <div className={className}>
@@ -682,7 +681,7 @@ class Header extends Component {
   // 继承 React.js 的组件父类 Component
   render() {
     // const isGoodWord = true
-    const className = 'header';
+    const className = "header";
     return (
       // 直接返回 HTML 代码，JSX 写法，需要经过编译成果 JavaScript 对象
       <div className={className}>
@@ -725,7 +724,7 @@ class Index extends Component {
   }
 }
 // ReactDOM 可以帮助我们把 React 组件渲染到页面中
-ReactDOM.render(<Index />, document.getElementById('root'));
+ReactDOM.render(<Index />, document.getElementById("root"));
 ```
 
 ![组件树](../.vuepress/public/images/component_tree.png)
@@ -738,7 +737,7 @@ ReactDOM.render(<Index />, document.getElementById('root'));
 ```js
 class Title extends Component {
   handleClickOnTitle() {
-    console.log('Click on title');
+    console.log("Click on title");
   }
   render() {
     return <h1 onClick={this.handleClickOnTitle}>Jecyu</h1>;
@@ -746,7 +745,7 @@ class Title extends Component {
 }
 ```
 
-注意：没有经过特殊处理的话，这些 `on~ `的事件监听只能用在普通的 HTML 的标签上，而不能用在组件标签上。也就是说，`<Header onClick={…} /> `这样的写法不会有什么效果的。
+注意：没有经过特殊处理的话，这些 `on~`的事件监听只能用在普通的 HTML 的标签上，而不能用在组件标签上。也就是说，`<Header onClick={…} />`这样的写法不会有什么效果的。
 
 ### event 对象
 
@@ -773,13 +772,13 @@ handleClickOnTitle() {
 ```js
 class Title extends Component {
   handleClickOnTitle(word, event) {
-    console.log('event.target.innerHTML :', event.target.innerHTML);
-    console.log('this :', this);
+    console.log("event.target.innerHTML :", event.target.innerHTML);
+    console.log("this :", this);
     console.log(this, word);
   }
   render() {
     return (
-      <h1 onClick={this.handleClickOnTitle.bind(this, 'Hello')}>Jecyu</h1> // 把实例方法绑定到当前实例上，这样才可以在事件函数当中使用当前的实例
+      <h1 onClick={this.handleClickOnTitle.bind(this, "Hello")}>Jecyu</h1> // 把实例方法绑定到当前实例上，这样才可以在事件函数当中使用当前的实例
     );
   }
 }
@@ -802,13 +801,13 @@ class LikeButton extends Component {
   }
   handleClickOnLikeButton() {
     this.setState({
-      isLiked: !this.state.isLiked
+      isLiked: !this.state.isLiked,
     });
   }
   render() {
     return (
       <button onClick={this.handleClickOnLikeButton.bind(this)}>
-        {this.state.isLiked ? '取消' : '点赞'}
+        {this.state.isLiked ? "取消" : "点赞"}
       </button>
     );
   }
@@ -907,17 +906,17 @@ class Index extends Component {
 class LikeButton extends Component {
   constructor() {
     super();
-    this.state = { name: 'Jecyu', isLiked: false };
+    this.state = { name: "Jecyu", isLiked: false };
   }
   handleClickOnLikeButton() {
     this.setState({
-      isLiked: !this.state.isLiked
+      isLiked: !this.state.isLiked,
     });
   }
   render() {
     const wordings = this.props.wordings || {
-      likedText: '取消',
-      unlikedText: '点赞'
+      likedText: "取消",
+      unlikedText: "点赞",
     };
     return (
       <button onClick={this.handleClickOnLikeButton.bind(this)}>
@@ -934,8 +933,8 @@ class Index extends Component {
     return (
       <div>
         <LikeButton
-          wordings={{ likedText: '已赞', unlikedText: '赞' }}
-          onClick={() => console.log('Click on like button!')}
+          wordings={{ likedText: "已赞", unlikedText: "赞" }}
+          onClick={() => console.log("Click on like button!")}
         />
       </div>
     );
@@ -954,18 +953,18 @@ class LikeButton extends Component {
   // 默认配置 defaultProps
   static defaultProps = {
     wordings: {
-      likedText: '取消',
-      unlikedText: '点赞'
-    }
+      likedText: "取消",
+      unlikedText: "点赞",
+    },
   };
 
   constructor() {
     super();
-    this.state = { name: 'Jecyu', isLiked: false };
+    this.state = { name: "Jecyu", isLiked: false };
   }
   handleClickOnLikeButton() {
     this.setState({
-      isLiked: !this.state.isLiked
+      isLiked: !this.state.isLiked,
     });
   }
   render() {
@@ -1007,15 +1006,15 @@ class Index extends Component {
   constructor() {
     super();
     this.state = {
-      likedText: '已赞',
-      unlikedText: '赞'
+      likedText: "已赞",
+      unlikedText: "赞",
     };
   }
 
   handleClickOnChange() {
     this.setState({
-      likedText: '取消',
-      unlikedText: '点赞'
+      likedText: "取消",
+      unlikedText: "点赞",
     });
   }
 
@@ -1060,7 +1059,7 @@ class HelloWorld extends Component {
   }
 
   sayHi() {
-    alert('Hello World');
+    alert("Hello World");
   }
 
   render() {
@@ -1072,8 +1071,8 @@ class HelloWorld extends Component {
 用函数式组件的编写方式就是：
 
 ```js
-const HelloWorld = props => {
-  const sayHi = event => alert('Hello World');
+const HelloWorld = (props) => {
+  const sayHi = (event) => alert("Hello World");
   return <div onnClick={sayHi}>Hello World</div>;
 };
 ```
@@ -1089,20 +1088,20 @@ const HelloWorld = props => {
 ```js
 const users = [
   {
-    username: 'Jerry',
+    username: "Jerry",
     age: 21,
-    gender: 'male'
+    gender: "male",
   },
   {
-    username: 'Crazy',
+    username: "Crazy",
     age: 19,
-    gender: 'male'
+    gender: "male",
   },
   {
-    username: 'Lily',
+    username: "Lily",
     age: 221,
-    gender: 'female'
-  }
+    gender: "female",
+  },
 ];
 ```
 
@@ -1174,8 +1173,8 @@ class Index extends Component {
   constructor() {
     super();
     this.state = {
-      likedText: '已赞',
-      unlikedText: '赞'
+      likedText: "已赞",
+      unlikedText: "赞",
     };
   }
   render() {
@@ -1194,9 +1193,10 @@ class Index extends Component {
 
 ### 实战分析：评论功能（一）
 
-### ref 和 React.js 中的 DOM  操作
+### ref 和 React.js 中的 DOM 操作
 
 React.js 当中提供了 `ref` 属性来帮助我们获取已经挂载元素的 DOM 节点，你可以给某个 JSX 元素加上 `ref` 属性：
+
 ```js
 class AutoFocusInput extends Component {
   componentDidMount() {
@@ -1214,7 +1214,9 @@ ReactDOM.render(
 )
 ```
 
-可以 i看到我们给 `input` 元素加了一个 `ref` 属性，这个属性值是一个函数。当 `input` 元素在页面上挂载完成以后，React.js 就会调用这个函数，并且把这个挂载以后的 DOM 节点传给这个函数。在函数中我们把这个 DOM 元素设置为组件实例的一个属性，这样以后我们就可以通过 `this.input` 获取到这个 DOM 元素。
+可以 i 看到我们给 `input` 元素加了一个 `ref` 属性，这个属性值是一个函数。当 `input` 元素在页面上挂载完成以后，React.js 就会调用这个函数，并且把这个挂载以后的 DOM 节点传给这个函数。在函数中我们把这个 DOM 元素设置为组件实例的一个属性，这样以后我们就可以通过 `this.input` 获取到这个 DOM 元素。
+
+### 前端应用状态管理——状态提升
 
 ### dangerouslySetHTML 和 style 属性
 
@@ -1223,8 +1225,11 @@ ReactDOM.render(
 出于安全考虑的原因（XSS 攻击），在 React.js 当中所有的表达式插入的内容都会被自动转义，就相当于 jQuery 里面的 `text(...)` 函数一样，任何的 HTML 格式都会被转义掉。
 
 ```js
-<div className="daily-article-content" dangerouslySetInnerHTML={{__html: this.state.data.body}}>
-{/* { this.state.data.body }; */} 
+<div
+  className="daily-article-content"
+  dangerouslySetInnerHTML={{ __html: this.state.data.body }}
+>
+  {/* { this.state.data.body }; */}
 </div>
 ```
 
@@ -1234,7 +1239,1001 @@ React.js 中一切都是组件，用 React.js 构建的功能其实也就是由�
 
 组件的划分没有特别明确的标准。划分组件的目的性是为了代码可复用性、可维护性。只要某个部分有可能复用到别的地方，你都可以把它抽离出来当成一个组件；或者把某一部分抽离出来对代码的组织和管理带来帮助，你也可以毫不犹豫地把它抽离出来。
 
+### PropTypes 和组件参数验证
+
+```js
+import PropTypes from "prop-types";
+
+class Index extends Component {
+  static childContextTypes = {
+    themeColor: PropTypes.string,
+  };
+
+  constructor() {
+    super();
+    this.state = { themeColor: "red" };
+  }
+
+  getChildContext() {
+    return { themeColor: this.state.themeColor };
+  }
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <Main />
+      </div>
+    );
+  }
+}
+```
+
 ### 生命周期
+
+### 高阶组件（Higher-Order Components）
+
+高阶组件是一个概念上很简单，但却非常常用、实用的东西，被大量 React.js 相关的第三方库频繁地使用。在前端的业务开发当中，你不掌握高阶组件其实也可以完成项目的开发，但是如果你能够灵活地使用高阶组件，可以让你代码更加优雅，复用性、灵活性更强。
+
+#### 什么是高阶组件
+
+高阶组件就是一个函数，传给它一个组件，它返回一个新的组件。
+
+```js
+const NewComponent = higherOrderComponent(OldComponent);
+```
+
+```js
+```
+
+#### 总结
+
+**高阶组件是一个函数，传给它一个组件，它返回一个新的组件。**新的组件使用传入的组件作为子组件。
+
+**高阶组件的作用是用于代码复用，**可以把组件之间可复用的代码、逻辑抽离到高阶组件当中。**新组件和传入的组件通过 `props` 传递消息。**
+
+高阶组件有助于提高我们代码的灵活性，逻辑的复用性。灵活和熟练地掌握高阶组件的用法需要经验的积累还有长时间的思考和练习。
+
+### React.js 的 context
+
+了解 context 对理解 React-redux 很有好处。
+
+![](../.vuepress/public/images/2020-09-29-22-18-07-react-props.png)
+
+![](../.vuepress/public/images/2020-09-29-22-16-50-react-context.png)
+
+React.js 的 context 就是这么一个东西，某个组件只要往自己的 context 里面放了某些状态，这个组件之下的所有子组件都直接访问这个状态而不需要通过中间组件的传递。一个组件的 context 只有它的子组件能够访问，它的父组件是不能访问的，你可以理解每个组件的 context 就是瀑布的源头，只能往下流而不能往上飞。
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import "./App.css";
+
+class Index extends Component {
+  static childContextTypes = {
+    themeColor: PropTypes.string,
+  };
+
+  constructor() {
+    super();
+    this.state = { themeColor: "red" };
+  }
+
+  getChildContext() {
+    return { themeColor: this.state.themeColor };
+  }
+
+  componentWillMount() {
+    this.setState({ themeColor: "green" });
+  }
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <Main />
+      </div>
+    );
+  }
+}
+
+class Header extends Component {
+  render() {
+    return (
+      <div>
+        <h2>This is header</h2>
+        <Title />
+      </div>
+    );
+  }
+}
+
+class Main extends Component {
+  render() {
+    return (
+      <div>
+        <h2>This is main</h2>
+        <Content />
+      </div>
+    );
+  }
+}
+
+class Title extends Component {
+  static contextTypes = {
+    themeColor: PropTypes.string,
+  };
+  render() {
+    return (
+      <h1 style={{ color: this.context.themeColor }}>React.js 小书标题</h1>
+    );
+  }
+}
+
+class Content extends Component {
+  render() {
+    return (
+      <div>
+        <h2>React.js 小书内容</h2>
+      </div>
+    );
+  }
+}
+
+function App() {
+  return <Index />;
+}
+
+export default App;
+```
+
+#### 总结
+
+一个组件可以通过 `getChildContext` 方法返回一个对象，这个对象就是子树的 context，提供 context 的组件必须提供 `childContextTypes` 作为 `context` 的声明和验证（这个跟 Vue 的 provide/inject 很像）。
+
+如果一个组件设置了 context，那么它的子组件都可以直接访问到里面的内容，它就像这个组件为根的子树的全局变量。任意深度的子组件都可以通过 `contextTypes` 来声明你想要的 context 里面的哪些状态，然后可以通过 `thsi.context` 访问到那些状态。
+
+context 打破了组件和组件之间通过 `props` 传递数据的规范，极大地增强了组件之间的耦合性。而且，就如全局变量一样，**context 里面的数据能被随意接触就能被随意修改，**每个组件都能够改 context 里面的内容会导致程序的运行不可预料。
+
+但是这种机制对于前端应用状态管理来说是很有帮助，因为毕竟很多状态都会在组件之间共享，context 会给我们带来很大的方便。一些第三方的前端应用状态管理的库（例如 Redux）就是充分地利用了这种机制给我们提供便利的状态管理服务。但我们一般不需要手动写 context，也不要用它，只需要用好这些第三方的应用状态管理库就行了。
+
+### 动手实现 Redux（一）：优雅地修改共享状态
+
+要注意的是，Redux 和 React-redux 并不是同一个东西。Redux 是一种架构模式（Flux 架构的一种变种），它不关注你到底用什么库，你可以把它应用到 React 和 Vue，甚至跟 jQuery 结合都没有问题。而 React-redux 就是把 Redux 这种架构模式和 React.js 结合起来的一个库，就是 Redux 架构在 React.js 中的体现。
+
+![](../.vuepress/public/images/2020-09-29-23-41-23-make-redux.png)
+
+我们很难把控每一根指向 `appState` 的箭头，`appState` 里面的东西就无法把控。但现在我们必须通过一个“中间人”——`dispatch`，所有的数据修改必须通过它，并且你必须用 `action` 大声告诉它要修改什么，只有它允许的才能修改：
+
+![](../.vuepress/public/images/2020-09-29-23-41-40-make-redux.png)
+
+我们再也不用担心共享数据状态的修改的问题，我们只要把控了 `dispatch`，所有的对 `appState` 的修改就无所遁形，毕竟只有一根箭头指向 `appState` 了。
+
+```js
+let appState = {
+  title: {
+    text: "React.js 小书",
+    color: "red",
+  },
+  content: {
+    text: "React.js 小书内容",
+    color: "blue",
+  },
+};
+
+function dispatch(action) {
+  switch (action.type) {
+    case "UPDATE_TITLE_TEXT":
+      appState.title.text = action.text;
+      break;
+    case "UPDATE_TITLE_COLOR":
+      appState.title.color = action.color;
+      break;
+    default:
+      break;
+  }
+}
+
+function renderApp() {
+  renderTitle(appState.title);
+  renderContent(appState.content);
+}
+
+function renderTitle(title) {
+  const titleDOM = document.getElementById("title");
+  titleDOM.innerHTML = title.text;
+  titleDOM.style.color = title.color;
+}
+
+function renderContent(content) {
+  const contentDOM = document.getElementById("content");
+  contentDOM.innerHTML = content.text;
+  contentDOM.style.color = content.color;
+}
+
+renderApp(appState); // 首次渲染页面
+dispatch({ type: "UPDATE_TITLE_TEXT", text: "《React.js 小书》" }); // 修改标题文本
+dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜色
+renderApp(appState); // 把新的数据渲染到页面上
+```
+
+### 动手实现 Redux（二）：抽离 store 和监控数据变化
+
+#### 抽离 store
+
+专门生产这种 `state` 和 `dispatch` 的集合
+
+```js
+function createStore(state, stateChanger) {
+  const getState = () => state;
+  const dispatch = (action) => stateChanger(state, action);
+  return { getState, dispatch };
+}
+```
+
+```js
+let appState = {
+  title: {
+    text: "React.js 小书",
+    color: "red",
+  },
+  content: {
+    text: "React.js 小书内容",
+    color: "blue",
+  },
+};
+
+function stateChanger(state, action) {
+  switch (action.type) {
+    case "UPDATE_TITLE_TEXT":
+      state.title.text = action.text;
+      break;
+    case "UPDATE_TITLE_COLOR":
+      state.title.color = action.color;
+      break;
+    default:
+      break;
+  }
+}
+
+function createStore(state, stateChanger) {
+  const getState = () => state;
+  const dispatch = (action) => stateChanger(state, action);
+  return { getState, dispatch };
+}
+
+function renderApp() {
+  renderTitle(appState.title);
+  renderContent(appState.content);
+}
+
+function renderTitle(title) {
+  const titleDOM = document.getElementById("title");
+  titleDOM.innerHTML = title.text;
+  titleDOM.style.color = title.color;
+}
+
+function renderContent(content) {
+  const contentDOM = document.getElementById("content");
+  contentDOM.innerHTML = content.text;
+  contentDOM.style.color = content.color;
+}
+
+const store = createStore(appState, stateChanger);
+
+renderApp(store.getState()); // 首次渲染页面
+
+store.dispatch({ type: "UPDATE_TITLE_TEXT", text: "《React.js 小书》" }); // 修改标题文本
+store.dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜色
+renderApp(store.getState()); // 把新的数据渲染到页面上
+```
+
+#### 监控数据变化
+
+```js
+function createStore(state, stateChanger) {
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    stateChanger(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  return { getState, dispatch, subscribe };
+}
+```
+
+我们只需要 `subscribe` 一次，后面不管如何 `dispatch` 进行修改数据，`renderApp` 函数都会被重新调用，页面就会重新渲染。这样的订阅方式还有好处就是，以后我们还可以拿同一块数据渲染别的页面，这时 `dispatch` 导致的变化也会让每个页面都重新渲染。
+
+```js
+const store = createStore(appState, stateChanger)
+store.subscribe(() => renderApp(store.getState()))
+store.subscribe(() => renderApp2(store.getState()))
+store.subscribe(() => renderApp3(store.getState()))
+...
+```
+
+```js
+let appState = {
+  title: {
+    text: "React.js 小书",
+    color: "red",
+  },
+  content: {
+    text: "React.js 小书内容",
+    color: "blue",
+  },
+};
+
+function stateChanger(state, action) {
+  switch (action.type) {
+    case "UPDATE_TITLE_TEXT":
+      state.title.text = action.text;
+      break;
+    case "UPDATE_TITLE_COLOR":
+      state.title.color = action.color;
+      break;
+    default:
+      break;
+  }
+}
+
+function createStore(state, stateChanger) {
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    stateChanger(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  return { getState, dispatch, subscribe };
+}
+
+function renderApp() {
+  renderTitle(appState.title);
+  renderContent(appState.content);
+}
+
+function renderTitle(title) {
+  const titleDOM = document.getElementById("title");
+  titleDOM.innerHTML = title.text;
+  titleDOM.style.color = title.color;
+}
+
+function renderContent(content) {
+  const contentDOM = document.getElementById("content");
+  contentDOM.innerHTML = content.text;
+  contentDOM.style.color = content.color;
+}
+
+const store = createStore(appState, stateChanger);
+
+// 首次渲染页面
+store.subscribe(() => renderApp(store.getState()));
+store.dispatch({ type: "UPDATE_TITLE_TEXT", text: "《React.js 小书》" }); // 修改标题文本
+store.dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜色
+```
+
+#### 总结
+
+现在我们有了一个比较通用 `createStore`，它可以产生一种我们新定义的数据类型 `store`，通过 `store.getState` 我们获取共享状态，而且我们约定只能通过 `store.dispatch` 修改共享状态。`store` 也允许我们通过 `store.subscribe` 监听数据状态被修改了，并且进行后续的例如重新渲染页面的操作。
+
+### 动手实现 Redux（三）：纯函数（Pure Function）简介
+
+简单来说，**一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用，我们就把这个函数叫做纯函数。**
+
+1. 函数的返回结果只依赖于它的参数。
+2. 函数执行过程里面没有副作用。
+
+#### 函数的返回结果只依赖于它的参数
+
+#### 函数执行过程没有副作用
+
+一个函数执行过程对产生了**外部可观察的变化**那么就说这个函数是有副作用的。
+
+```js
+const a = 1;
+const foo = (obj, b) => {
+  obj.x = 2;
+  return obj.x + b;
+};
+const counter = { x: 1 };
+foo(counter, 2); // => 4
+counter.x; // => 2
+```
+
+现在情况发生了变化，我在 `foo` 内部加了一句 `obj.x = 2`，计算前 `counter.x` 是 1，但是计算以后 `counter.x` 是 2。 `foo` 函数的执行对外部的 `counter` 产生了影响，它产生了**副作用**，因为它修改了外部传进来的对象，现在它是不纯的。
+
+但是你在函数内部构建的变量，然后进行数据的修改不是副作用。
+
+```js
+const foo = (b) => {
+  const obj = { x: 1 };
+  obj.x = 2;
+  return obj.x + b;
+};
+```
+
+虽然 `foo` 函数内部修改了 `obj`，但是 `obj` 是内部变量，外部程序根本观察不到，修改 `obj` 并不会产生外部可观察的变化，这个函数是没有副作用的，因此它是一个纯函数。
+
+除了修改外部的变量，一个函数在执行过程中还有很多方式产生**外部可观察的变化**，比如说调用 DOM API 修改页面，或者你发送了 Ajax 请求，还有调用 `window.reload` 刷新浏览器，甚至是 `console.log` 往控制台打印数据也是副作用。
+
+#### 总结
+
+一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用，我们就把这个函数叫做纯函数。
+
+为什么要煞费苦心地构建纯函数？因为纯函数非常“靠谱”，执行一个纯函数你不用担心它会干什么坏事，它不会产生不可预料的行为，也不会对外部产生影响。不过何时何地，你给它什么它就会乖乖地吐出什么。如果你的应用程序大多数函数都是由纯函数组成，那么你的程序测试、调试起来非常方便。
+
+### 动手实现 Redux（四）：共享结构的对象提高性能
+
+```js
+state.title.text = action.text;
+```
+
+取而代之，我们新建一个 `appState`，新建 `appState.title` ，新建 `appState.title.text`：
+
+```js
+let newAppState = {
+  // 构建新的对象 newAppState
+  ...appState, // 复制 appState 里面的内容
+  title: {
+    // 用一个新对象覆盖原来的 title 属性
+    ...appState.title, // 复制原来 title 对象里面的内容
+    text: "《React.js 小书》", // 覆盖 text 属性
+  },
+};
+```
+
+![](../.vuepress/public/images/2020-09-30-10-14-22-make-redux.png)
+
+`appState` 和 `newAppState` 其实是两个不同的对象，因为对浅复制的缘故，其实它们里面的属性 `content` 指向的是同一个对象；但是因为 `title` 被一个新的对象覆盖了，所以它们的 `title` 属性指向的对象是不同的。
+
+```js
+function createStore(state, stateChanger) {
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    state = stateChanger(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  return { getState, dispatch, subscribe };
+}
+
+function renderApp(newState, oldAppState = {}) {
+  // 防止 oldAppState 没有传入
+  `if (newState === oldAppState) return;`; // 数据没有变化就不渲染
+  console.log("render app...");
+  renderTitle(newState.title, oldAppState.title);
+  renderContent(newState.content, oldAppState.content);
+}
+
+function renderTitle(newTitle, oldTitle = {}) {
+  if (newTitle === oldTitle) return; // 数据没有变化就不渲染了
+  console.log("render title...");
+  const titleDOM = document.getElementById("title");
+  titleDOM.innerHTML = newTitle.text;
+  titleDOM.style.color = newTitle.color;
+}
+
+function renderContent(newContent, oldContent = {}) {
+  if (newContent === oldContent) return; // 数据没有变化就不渲染了
+  console.log("render content...");
+  const contentDOM = document.getElementById("content");
+  contentDOM.innerHTML = newContent.text;
+  contentDOM.style.color = newContent.color;
+}
+
+let appState = {
+  title: {
+    text: "React.js 小书",
+    color: "red",
+  },
+  content: {
+    text: "React.js 小书内容",
+    color: "blue",
+  },
+};
+
+function stateChanger(state, action) {
+  switch (action.type) {
+    case "UPDATE_TITLE_TEXT":
+      return {
+        // 构建新的对象并返回
+        ...state,
+        title: {
+          ...state.title,
+          color: action.color,
+        },
+      };
+    case "UPDATE_TITLE_COLOR":
+      return {
+        // 构建新的对象并且返回
+        ...state,
+        title: {
+          ...state.title,
+          color: action.color,
+        },
+      };
+    default:
+      return state; // 没有修改，返回原来的对象
+  }
+}
+
+const store = createStore(appState, stateChanger);
+let oldState = store.getState(); // 缓存旧的 state
+store.subscribe(() => {
+  const newState = store.getState(); // 数据可能变化，获取新的 state
+  renderApp(newState, oldState);
+  oldState = newState; // 渲染完以后，新的 newState 变成了旧的 oldState，等待下一次更新
+});
+
+// 首次渲染页面
+renderApp(store.getState()); // 首次渲染页面
+store.dispatch({ type: "UPDATE_TITLE_TEXT", text: "《React.js 小书》" }); // 修改标题文本
+store.dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜色
+```
+
+并不需要担心每次修改都新建共享结构对象会有性能、内存问题，因为构建对象的成本非常低，而且我们最多保存两个对象引用 `oldState` 和 `newState` ，其余旧的对象都会被垃圾回收掉。
+
+### 动手实现 Redux（五）：不要问为什么的 reducer
+
+#### reducer
+
+`createStore` 接受一个叫 reducer 的函数作为参数，**这个函数规定是一个纯函数**，它接受两个参数，一个是 `state`，一个是 `action`。
+
+如果没有传入 `state` 或者 `state` 是 `null`，那么它就会返回一个初始化的数据。如果有传入 `state` 的话，就会根据 `action` 来“修改”数据，但其实它没有、也规定不能修改 `state`，而是通过上节说的把修改路径的对象都复制一遍，然后产生一个新的对象返回。如果它不能识别你的 `action`，它就不会产生新的数据，而是（在 `default` 内部）把 `state` 原封不动地返回。
+
+reducer 是不允许有副作用的。你不能在里面操作 DOM，也不能发 Ajax 请求，更不能直接修改 `state`，它要做的仅仅是 —— **初始化和计算新的 `state`**。
+
+```js
+function createStore(reducer) {
+  let state = null;
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    state = reducer(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  dispatch({}); // 初始化 state
+
+  return { getState, dispatch, subscribe };
+}
+
+function themeReducer(state, action) {
+  if (!state)
+    return {
+      themeName: "Red Theme",
+      themeColor: "red",
+    };
+  switch (action.type) {
+    case "UPATE_THEME_NAME":
+      return { ...state, themeName: action.themeName };
+    case "UPATE_THEME_COLOR":
+      return { ...state, themeColor: action.themeColor };
+    default:
+      return state;
+  }
+}
+const store = createStore(themeReducer);
+```
+
+### 动手实现 Redux（六）：Redux 总结
+
+1. 解决共享的状态被任意修改
+2. 抽离 createStore 模式
+3. 使用 store.subscribe 订阅数据，解决手动渲染
+4. 引入“共享结构的对象”解决重新渲染性能问题
+
+```js
+// 定义一个 reducer
+function reducer(state, action) {
+  /* 初始化 state 和 switch case */
+}
+
+// 生成 store
+const store = createStore(reducer)
+
+// 监听数据变化重新渲染页面
+store.subscribe(() => renderApp(store.getState()))
+
+// 首次渲染页面
+renderApp(store.getState())
+
+// 后面可以随意 dispatch 了，页面自动更新
+store.dispatch(...)
+```
+
+### 动手实现 React-redux（一）：初始化工程
+
+前端中应用的状态存在的问题：一个状态可能被多个组件**依赖**或者**影响**，而 React.js 并没有提供好的解决方案，我们只能把状态提升到**依赖**或者**影响**，而 React.js 并没有提供好的解决方案，我们只能把状态提升到**依赖**或者**影响**这个状态的所有组件的公共父组件上，我们把这种行为叫做状态提升。但是需求不停变化，共享状态没完没了地提升也不是办法。
+
+后面我们在 React.js 的 context 中提升出，我们可用把共享状态放到父组件的 context 上，这个父组件下所有的组件都可以从 context 中直接获取到状态而不需要一层层地进行传递了。但是直接从 context 里面存放，获取数据增强了组件的耦合性；并且所有组件都可以修改 context 里面的状态就像谁都可以修改共享状态一样，导致程序运行的不可预料。
+
+既然这样，为什么不把 context 和 store 结合起来？毕竟 store 的数据不是谁都能修改，而是约定只能通过 `dispatch` 来进行修改，这样的话每个组件既可以去 context 里面获取 store 从而获取状态，又不用担心它们乱改数据了。
+
+（在 Vue 一些基础组件虽然没有使用 prodive/inject 或 vuex，但是同样使用了 redux 这样的思想）
+
+![](../.vuepress/public/images/2020-09-30-13-42-20-react-redux.png)
+
+### 动手实现 React-redux （二）：结合 context 和 store
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import "./App.css";
+import Header from "./Header";
+import Content from "./Content";
+
+function createStore(reducer) {
+  let state = null;
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    state = reducer(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  dispatch({}); // 初始化 state
+
+  return { getState, dispatch, subscribe };
+}
+
+function themeReducer(state, action) {
+  if (!state)
+    return {
+      themeColor: "red",
+    };
+  switch (action.type) {
+    case "CHANGE_COLOR":
+      return { ...state, themeColor: action.themeColor };
+    default:
+      return state;
+  }
+}
+
+const store = createStore(themeReducer);
+
+class Index extends Component {
+  static childContextTypes = {
+    store: PropTypes.object,
+  };
+
+  getChildContext() {
+    return {
+      store,
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <Content />
+      </div>
+    );
+  }
+}
+
+function App() {
+  return <Index />;
+}
+
+export default App;
+```
+
+```js
+import React, { Component } from "react";
+import Protypes from "prop-types";
+
+class Header extends Component {
+  static contextTypes = {
+    store: Protypes.object,
+  };
+  constructor() {
+    super();
+    this.state = {
+      themeColor: "",
+    };
+  }
+
+  componentWillMount() {
+    const { store } = this.context;
+    this._updateThemeColor();
+    store.subscribe(() => this._updateThemeColor());
+  }
+
+  _updateThemeColor() {
+    const { store } = this.context;
+    const state = store.getState();
+    this.setState({ themeColor: state.themeColor });
+  }
+
+  render() {
+    return <h1 style={{ color: this.state.themeColor }}>React.js 小书</h1>;
+  }
+}
+export default Header;
+```
+
+### 动手实现 React-redux（三）：connect 和 mapStateToProps
+
+我们来观察一下刚写的这几个组件，可以轻易地发现它们有两个重大的问题：
+
+1. **有大量重复的逻辑**：
+2. **对 context 依赖性过强**：
+
+![](../.vuepress/public/images/2020-09-30-14-46-13-dumb-component.png)
+
+`connect` 函数接受一个组件 `WrappedComponent` 作为参数，把这个组件包含在一个新的组件 `Connect` 里面，`Connect` 会去 `context` 里面取出 store。现在要把 store 里面的数据取出来通过 `props` 传给 `WrappedComponent`。
+
+但是每个传进去的组件需要 store 里面的数据都是不一样的，所以除了给高阶组件传入 Dumb 组件以外，还要告诉高级组件我们需要什么数据，高阶组件才能正确地去取数据。为了解决这个问题，我们可以给高阶组件传入类似下面这样的函数：
+
+```js
+const mapStateToProps = (state) => {
+  return {
+    themeColor: state.themeColor,
+  };
+};
+```
+
+```js
+export const connect = (mapStateToProps) => (WrappedComponent) => {
+  class Connect extends Component {
+    static contextTypes = {
+      store: PropTypes.object,
+    };
+
+    render() {
+      const { store } = this.context;
+      let stateProps = mapStateToProps(store.getState());
+      // {...stateProps} 意思是把这个对象里面的属性全部通过 `props` 方式传递进去
+      return <WrappedComponent {...stateProps} />;
+    }
+  }
+};
+```
+
+添加事件监听
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+export const connect = (mapStateToProps) => (WrappedComponent) => {
+  class Connect extends Component {
+    static contextTypes = {
+      store: PropTypes.object,
+    };
+
+    constructor() {
+      super();
+      this.state = { allProps: {} };
+    }
+
+    componentWillMount() {
+      const { store } = this.context;
+      this._updateProps();
+      store.subscribe(() => this._updateProps());
+    }
+
+    _updateProps() {
+      const { store } = this.context;
+      let stateProps = mapStateToProps(store.getState(), this.props); // 额外传入 props，让获取数据更加灵活方便
+      this.setState({
+        allProps: {
+          // 整合普通的 props 和从 state 生成的 props
+          ...stateProps,
+          ...this.props,
+        },
+      });
+    }
+
+    render() {
+      return <WrappedComponent {...this.state.allProps} />;
+    }
+  }
+  return Connect;
+};
+```
+
+### 动手实现 React-redux（四）：mapDispatch
+
+既然可以通过 `connect` 函数传入 `mapStateProps` 来告诉它如何获取，我们也可以想到，可以给它传入另外一个参数来告诉它我们的组件需要如何触发 `dispatch`。我们把这个参数叫 `mapDispatchToProps`：
+
+```js
+const mapDispatchProps = (dispatch) => {
+  return {
+    onSwitchColor: (color) => {
+      dispatch({ type: "CHANGE_COLOR", themeColor: color });
+    },
+  };
+};
+```
+
+connect
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+export const connect = (mapStateToProps, mapDispatchToProps) => (
+  WrappedComponent
+) => {
+  class Connect extends Component {
+    static contextTypes = {
+      store: PropTypes.object,
+    };
+
+    constructor() {
+      super();
+      this.state = { allProps: {} };
+    }
+
+    componentWillMount() {
+      const { store } = this.context;
+      this._updateProps();
+      store.subscribe(() => this._updateProps());
+    }
+
+    _updateProps() {
+      const { store } = this.context;
+      let stateProps = mapStateToProps
+        ? mapStateToProps(store.getState(), this.props)
+        : {}; // 防止 mapStateToProps 没有传入
+      let dispatchProps = mapDispatchToProps
+        ? mapDispatchToProps(store.dispatch, this.props)
+        : {}; // 防止 mapDispatchProps 没有传入
+      this.setState({
+        allProps: {
+          // 整合普通的 props 和从 state 生成的 props
+          ...stateProps,
+          ...dispatchProps,
+          ...this.props,
+        },
+      });
+    }
+
+    render() {
+      return <WrappedComponent {...this.state.allProps} />;
+    }
+  }
+  return Connect;
+};
+```
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "./react-redux";
+
+class ThemeSwitch extends Component {
+  static contextTypes = {
+    themeColor: PropTypes.string,
+  };
+
+  constructor() {
+    super();
+    this.state = {
+      themeColor: "",
+    };
+  }
+
+  // dispatch action 去改变颜色
+  handleSwitchColor(color) {
+    if (this.props.onSwitchColor) {
+      this.props.onSwitchColor(color);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <button
+          style={{ color: this.props.themeColor }}
+          onClick={this.handleSwitchColor.bind(this, "red")}
+        >
+          Red
+        </button>
+        <button
+          style={{ color: this.props.themeColor }}
+          onClick={this.handleSwitchColor.bind(this, "blue")}
+        >
+          Blue
+        </button>
+      </div>
+    );
+  }
+}
+
+const mapStateProps = (state) => {
+  return {
+    themeColor: state.themeColor,
+  };
+};
+
+const mapDispatchProps = (dispatch) => {
+  return {
+    onSwitchColor: (color) => {
+      dispatch({ type: "CHANGE_COLOR", themeColor: color });
+    },
+  };
+};
+
+ThemeSwitch = connect(mapStateProps, mapDispatchProps)(ThemeSwitch);
+
+export default ThemeSwitch;
+```
+
+### 动手实现 React-redux（五）：Provider
+
+我们要把 context 相关的代码从所有业务组件中清除出去，现在的代码里面还有一个地方是被污染的。那就是 `src/index.js` 里面的 `Index：
+
+```js
+```
+
+其实它要用 `context` 就是因为要把 `store` 存放到里面，好让子组件 `connect` 的时候能够取到 `store`。我们可以额外构建一个组件来做这种脏活，然后让这个组件成为组件树的根节点，那么它的子组件都可以获取 context 了。
+
+我们把这个组件叫 `Provider`，因为它提供（provide）了 `store`：
+
+![](../.vuepress/public/images/2020-09-30-16-12-26-redux.png)
+
+```js
+export class Provider extends Component {
+  static propTypes = {
+    store: PropTypes.object,
+    children: PropTypes.any,
+  };
+
+  static childContextTypes = {
+    store: PropTypes.object,
+  };
+
+  getChildContext() {
+    return {
+      store: this.props.store,
+    };
+  }
+
+  render() {
+    return <div>{this.props.children}</div>;
+  }
+}
+```
+
+### 动手实现 React-redux（六）：React-redux 总结
+
+React.js 除了状态提升以外并没有更好的办法帮助我们解决组件之间共享状态的问题。
+
+1. store + context
+2. connect + context
+3. contect：mapStateToProps + mapDispatchProps
+4. Provider
+
+### 使用真正的 Redux 和 React-redux
+
+![](../.vuepress/public/images/2020-10-01-19-06-32-redux.png)
+
+在工程目录下使用 npm 安装 Redux 和 React-redux 模块：
+
+```sh
+npm install redux react-redux --save
+```
+
+把 src/ 目录下 Header.js、ThemeSwitch.js、Content.js 的模块导入中的：
+
+```js
+import { connect } from "./react-redux";
+```
+
+改成：
+
+```js
+import { connect } from "react-redux";
+```
+
+也就是本来从本地 ./react-redux 导入的 connect 改成从第三方 react-redux 模块中导入。
 
 ### 性能优化
 
@@ -1257,78 +2256,101 @@ React.js 中一切都是组件，用 React.js 构建的功能其实也就是由�
 ### 使用 react，实现类似 vue 的指令 v-html 的功能
 
 ```jsx
-<div className="daily-article-content" dangerouslySetInnerHTML={{__html: this.state.data.body}}>
-{/* { this.state.data.body }; */} 
+<div
+  className="daily-article-content"
+  dangerouslySetInnerHTML={{ __html: this.state.data.body }}
+>
+  {/* { this.state.data.body }; */}
 </div>
 ```
 
-### 在React中使用原生事件
+### 在 React 中使用原生事件
 
-由于原生事件需要绑定在真实DOM上，所以一般是在 componentDidMount阶段/ref的函数执行阶段进行绑定操作，在componentWillUnmount 阶段进行解绑操作以避免内存泄漏。如果涉及到跨组件的话，如在父组件里监听子组件的事件，可以通过 `props` 把父组件的函数传递给子组件，如下面这个例子：
+由于原生事件需要绑定在真实 DOM 上，所以一般是在 componentDidMount 阶段/ref 的函数执行阶段进行绑定操作，在 componentWillUnmount 阶段进行解绑操作以避免内存泄漏。如果涉及到跨组件的话，如在父组件里监听子组件的事件，可以通过 `props` 把父组件的函数传递给子组件，如下面这个例子：
 
 ```jsx
 // parent
-list.stories.map(item => (
-   <Item
-     key={item.id}
-     data={item}
-     onClick={   // 传递 onClick 属性给组件
-       this.handleClick.bind(this, item.id)
-     }
-   >
-   </Item>
- ))
+list.stories.map((item) => (
+  <Item
+    key={item.id}
+    data={item}
+    onClick={
+      // 传递 onClick 属性给组件
+      this.handleClick.bind(this, item.id)
+    }
+  ></Item>
+));
 ```
 
 child
+
 ```js
-import './index.scss';
-import $ from '../../utils/base'
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import "./index.scss";
+import $ from "../../utils/base";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
 
 class Item extends Component {
   static defaultProps = {
-    data: {}
+    data: {},
   };
   constructor(props) {
     super(props);
     this.state = {
-      imgPath: $.imgPath
-    }
+      imgPath: $.imgPath,
+    };
   }
   componentDidMount() {
     // 获取当前真实 DOM 元素
     const thisDOM = ReactDOM.findDOMNode(this);
-    thisDOM.addEventListener('click', this.props.onClick, false );
+    thisDOM.addEventListener("click", this.props.onClick, false);
   }
   componentWillUnmount() {
     const thisDOM = ReactDOM.findDOMNode(this);
-    thisDOM.removeEventListener('click', this.props.onClick );
+    thisDOM.removeEventListener("click", this.props.onClick);
   }
   render() {
     return (
       <a className="daily-item">
-        {
-          this.props.data.images 
-            ? <div className="daily-img">
-                <img src={this.state.imgPath + this.props.data.images[0]} />
-              </div>
-            : null
-        }
-        <div className="daily-title" className={ !this.props.data.images ? "noImg" : null }>
-          {this.props.data.title }
+        {this.props.data.images ? (
+          <div className="daily-img">
+            <img src={this.state.imgPath + this.props.data.images[0]} />
+          </div>
+        ) : null}
+        <div
+          className="daily-title"
+          className={!this.props.data.images ? "noImg" : null}
+        >
+          {this.props.data.title}
         </div>
       </a>
-    )
+    );
   }
 }
 
 export default Item;
 ```
 
+Redux 有很多的 Reducer，对于大型应用来说，State 必然十分庞大，导致 Reducer 函数也十分庞大，所以需要做拆分。Redux 里每一个 Reducer 负责维护 State 树里面的一部分数据，多个 Reducer 可以通过 combineReducers 方法合成一个根 Reducer，这个根 Reducer 负责维护整个 State。
+<!-- 
+```js
+
+``` -->
+
+### 中间件
+
+#### 处理异步
+
+Redux 
+
+Dva 的研究使用
+
+### Dva
+
 ## 参考资料
 
+- 手动实现 redux，再阅读：[前端状态管理 Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://mp.weixin.qq.com/s/T3UeN2-RjSNP0mGjJr0PDw)，效果棒棒
 - [深入 JSX](https://zh-hans.reactjs.org/docs/jsx-in-depth.html#___gatsby)
 - [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
-- [Vue与React的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
+- [Vue 与 React 的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
+- [Vue 进阶必学之高阶组件 HOC](https://juejin.im/post/6844904116603486221?utm_source=gold_browser_extension#heading-4)
