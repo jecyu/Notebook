@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML 属性设置宽和高</title>
+    <style>
+      #canvas {
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 在 HTML 属性中直接设置宽度和高度是可以不加单位的，默认单位是 px -->
+    <canvas id="canvas" height="400" width="400"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+
+      context.beginPath();
+      context.arc(100, 100, 50, 0, Math.PI * 2, true);
+      context.closePath();
+      context.fillStyle = "rgb(255, 255, 255)";
+      context.fill();
+    </script>
+  </body>
+</html>

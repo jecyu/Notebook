@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="161px" height="221px" viewBox="-0.5 -0.5 161 221" content="&lt;mxfile host=&quot;c9555670-76c4-4da1-a166-b6d674fe605c&quot; modified=&quot;2020-09-24T11:03:01.259Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.49.1 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36&quot; etag=&quot;-L5XjAIjr_sThcehmK5i&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;zZRLc4MgEIB/zd6DRAPHmND20lMOPTNK1RkUh5Bq+usLcdU4SWZ66ePiwLfL62MF6K7un61sy1eTKw3RKu+B7iGKkpj5bwBnBGw1gMJW+YDIDA7Vp0I4pp2qXB0Xic4Y7ap2CTPTNCpzCyatNd0y7d3o5aqtLNQNOGRS39K3KnflQFm0mfmLqopyXJkkfIjUckzGkxxLmZvuClEBdGeNcUOr7ndKB3ejl2Hc04PotDGrGvedAdEw4EPqE54NRAJbBlsCIgYugKUgfFdcyCY0OB7z6M6jEGtOTa7CnARo2pWVU4dWZiHa+QrwrHS1xjAuqaxT/cNtk0mGLyJlauXs2afgAI76sH4IxX433wYZFZdXN5Egk1gAxTTz7Mg3UNN9Zeu7yngC6Soo20bB2q3Ev1Y2OUJn8S8qi+8o86YSYL6xhnQPPAbBgcXA9qHKPPGF9t+UTe/PDzjz3fmvv8Sunk4qvgA=&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="611px" height="141px" viewBox="-0.5 -0.5 611 141" content="&lt;mxfile host=&quot;295ad84e-d58c-4984-be39-ba269249d5a7&quot; modified=&quot;2020-10-14T06:23:53.569Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.50.0 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36&quot; etag=&quot;x5Qq3CbHB-i3aHiFyH4S&quot; version=&quot;13.6.5&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;xZXLcoMgFEC/5u5FfOAyJjTddJVF14xSdUbFISSafn0hYNSazGTRaTYOnHt5Ha4KeNsMe8m68kPkvAbfywfAO/D9OAn004CLBWHsWVDIKrcITeBQfXMHx7RTlfPjIlEJUauqW8JMtC3P1IIxKUW/TPsS9XLVjhV8BQ4Zq9f0s8pVaSnx44m/86oox5VRlNhIw8Zkd5JjyXLRzxCmgLdSCGVbzbDltXE3erHj3h5EbxuTvFXPDPDtgDOrT+5sQCPYENggoCEkFEgKVHfplcSmkbhjHtVlFCLFqc25mRMBTvuyUvzQscxEe10BmpWqqV14vUe37TOXig8z5Pa856LhSl50iosGTp+rH0Rcv59uA42Ky9lNRI4xVwDFbebJkW44TfeVBXeVJRGknlG28Y21tcRXK0PolzPvH52Fd5xpVREQ3Qgg3UESAk2AhEB2psw00ZX2cmfkhXUWPVVn4xupQyk2Fv/A2UrQHY0PnYX4/+pMd6dP5TU2+99g+gM=&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <rect x="0" y="80" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
@@ -18,11 +18,11 @@
                 </text>
             </switch>
         </g>
-        <rect x="40" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <rect x="70" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
             <switch>
                 <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 41px;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 71px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 新增模型
@@ -30,16 +30,16 @@
                         </div>
                     </div>
                 </foreignObject>
-                <text x="100" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                <text x="130" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
                     新增模型
                 </text>
             </switch>
         </g>
-        <rect x="40" y="160" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <rect x="140" y="80" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
             <switch>
                 <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 190px; margin-left: 41px;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 110px; margin-left: 141px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 如何配置
@@ -47,8 +47,25 @@
                         </div>
                     </div>
                 </foreignObject>
-                <text x="100" y="194" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                <text x="200" y="114" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
                     如何配置
+                </text>
+            </switch>
+        </g>
+        <rect x="490" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 491px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                新增算法
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="550" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    新增算法
                 </text>
             </switch>
         </g>

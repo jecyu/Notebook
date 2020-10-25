@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>设置阴影</title>
+    <style>
+      #canvas {
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      // 使用 JS 来设置宽高
+      // 尽量使用 HTML 的width 和 height 属性或者直接使用 JS 动态来设置宽高，不要使用 CSS 设置
+      const cx = (canvas.width = 400);
+      const cy = (canvas.height = 400);
+
+      context.beginPath(); // 起始一条路径，或重置当前路径
+      context.arc(100, 100, 50, 0, 2 * Math.PI);
+      context.fillStyle = "#fff";
+      context.shadowBlur = 20;
+      context.shadowColor = "#fff";
+      context.fill();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>旋转</title>
+    <style>
+      #canvas {
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      // 使用 JS 来设置宽高
+      // 尽量使用 HTML 的width 和 height 属性或者直接使用 JS 动态来设置宽高，不要使用 CSS 设置
+      const cx = (canvas.width = 400);
+      const cy = (canvas.height = 400);
+
+      context.strokeStyle = "white"; // 设置画笔的描边颜色
+      context.strokeRect(5, 5, 50, 25);
+      context.scale(2, 2);
+      context.strokeRect(5, 5, 50, 25);
+      context.scale(2, 2);
+      context.strokeRect(5, 5, 50, 25);
+      // 在设置 scale() 方法之后再设置的矩形，无论是线条的宽度还是坐标的位置，都被放大了。并且 scale() 的效果是可以叠加的，也就是说，我们在上面的例子中使用了两次 scale(2,2) 那么，最后一个矩形相对于第一个矩形长和宽，以及坐标的位置就放大了 4 倍
+    </script>
+  </body>
+</html>

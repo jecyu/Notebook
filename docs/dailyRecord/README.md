@@ -4,6 +4,191 @@
 
 <!-- 横向和纵向排版统一使用 flex 布局。 -->
 
+## 十月
+
+### 置灰功能
+
+```css
+.gray-map {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+  filter: gray;
+}
+```
+### 前端地图添加水印
+
+业务需求：根据用户名和 IP 动态生成水印。
+
+不能用静态图片，既然是动态的，那么水印就是动态生成。
+
+可以使用 canvas 动态绘制，然后生成背景图片，加入到地图 DOM 容器中。
+
+```js
+/**
+ * 给网页添加水印
+ */
+export const createWaterMark = ({
+  container = document.body,
+  width = "200px",
+  height = "150px",
+  textAlign = "center",
+  textBaseline = "middle",
+  font = "10px microsoft yahei",
+  fillStyle = "rgba(184, 184, 184, 0.8)",
+  content = "请勿外传",
+  rotate = "30",
+  zIndex = 1000
+}) => {
+  // const args = arguments[0];
+  const canvas = document.createElement("canvas");
+
+  canvas.setAttribute("width", width);
+  canvas.setAttribute("height", height);
+  const ctx = canvas.getContext("2d");
+
+  ctx.textAlign = textAlign;
+  ctx.textBaseline = textBaseline;
+  ctx.font = font;
+  ctx.fillStyle = fillStyle;
+  ctx.rotate((Math.PI / 180) * rotate);
+  ctx.fillText(content, parseFloat(width) / 2, parseFloat(height) / 2);
+
+  const base64Url = canvas.toDataURL();
+  const watermarkDiv = document.createElement("div");
+  watermarkDiv.setAttribute(
+    "style",
+    `
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        z-index:${zIndex};
+        pointer-events:none;
+        background-repeat:repeat;
+        background-image:url('${base64Url}')`
+  );
+
+  container.style.position = "relative";
+  container.insertBefore(watermarkDiv, container.firstChild);
+};
+```
+<!-- 不通过地图的话，暂时不能根据比例尺进行水印的缩放。
+
+地图切片添加水印，后端出图。可以为每个切片等级显示不同的水印大小。
+
+是否可以设置等级。
+
+方式二：自动创建 canvas 遮罩，不能进行同步移动。且容易被删除 dom。针对拍照。或者屏幕截图
+
+直接把 背景 div 绘制到地图上去。
+
+需要做 mutationServer 监听处理。
+
+export const createWaterMark2 = ({
+  container = document.body,
+  width = "200px",
+  height = "150px",
+  textAlign = "center",
+  textBaseline = "middle",
+  font = "14px microsoft yahei",
+  fillStyle = "rgba(184, 184, 184, 0.8)",
+  content = "请勿外传",
+  rotate = "30",
+  zIndex = 1000
+}) => {
+  // const args = arguments[0];
+  const canvas = document.createElement("canvas");
+
+  canvas.setAttribute("width", width);
+  canvas.setAttribute("height", height);
+  const ctx = canvas.getContext("2d");
+
+  ctx.textAlign = textAlign;
+  ctx.textBaseline = textBaseline;
+  ctx.font = font;
+  ctx.fillStyle = fillStyle;
+  ctx.rotate((Math.PI / 180) * rotate);
+  ctx.fillText(content, parseFloat(width) / 2, parseFloat(height) / 2);
+
+  const base64Url = canvas.toDataURL();
+  const watermarkDiv = document.createElement("div");
+  watermarkDiv.setAttribute(
+    "style",
+    `
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        z-index:${zIndex};
+        pointer-events:none;
+        background-repeat:repeat;
+        background-image:url('${base64Url}')`
+  );
+
+  container.style.position = "relative";
+  container.insertBefore(watermarkDiv, container.firstChild);
+  return watermarkDiv;
+};
+
+  // 方案二 后续处理直接绘制地图 canvas 对象上
+          //   const waterMarkNode = createWaterMark2({
+          //     content: username,
+          //     container: document.querySelector(".eyemap-map")
+          //   });
+          //   const waterMarkNodeCanvas = await html2canvas(waterMarkNode, {
+          //     backgroundColor: null,
+          //   });
+          //   const url = waterMarkNodeCanvas.toDataURL();
+          //   var img = new Image();
+          //   const canvas = documen.querySelector(".esri-view-root canvas")
+          //   const ctx = canvas.getContext("2d");
+          //   img.onload = function() {
+          //     ctx.drawImage(img, 0, 0); // 获取地图 canvas
+          //   };
+          //   img.src = url; -->
+<!--
+不要陷入地图思维，跳出来。
+  // 矩阵水印，以屏幕为网格切割。
+      let textGra = new Graphic();
+      const screenPoint = {x: window.innerWidth/2, y: window.innerHeight/2};
+      const point = mapView.toMap(screenPoint);
+      textGra.geometry = point;
+      let textSymbol = {
+        type: "text",
+        color: "red",
+        text: "全国规划总量",
+        xoffset: 0,
+        yoffset: 0,
+        font: {
+          size: 32,
+          family: "Microsoft YaHei"
+        }
+      };
+
+      // 方式二获取地图 canvas，然后添加水印到画布上？
+      // textGra.symbol = textSymbol;
+      // let copyrightGraphicLayer = new GraphicsLayer({
+      //     id: "copyrightGraphicLayer"
+      // });
+      // copyrightGraphicLayer.add(textGra);
+
+
+      // map.add(copyrightGraphicLayer);
+      // map.reorder(copyrightGraphicLayer, 1000)
+      // console.log("map ->", map);
+      // map.order -->
+
+参考资料：
+
+- [前端水印生成方案(网页水印+图片水印)](https://juejin.im/entry/6844903645155164174#comment)
+- [小 tips:使用 canvas 在前端实现图片水印合成](https://www.zhangxinxu.com/wordpress/2017/05/canvas-picture-watermark-synthesis/)
+- [手摸手教你用 canvas 实现给图片添加平铺水印](https://juejin.im/post/6844903919378759688)
+
 ## 七月
 
 ### 计算树节点的孩子数量
@@ -64,16 +249,22 @@ const tree = [
 上面的结构对应的树图：
 
 思路分析：
+
 ```js
 // 计算父节点本身
-f(tree) = f(1) + f(2) + f(3)
-        = (f(1-1)+1) + (f(1-2)+1) + (f(2-1) + 1) + (f(2-2)+1) + (f(3)+1)
+f(tree) = f(1) + f(2) + f(3) =
+  f(1 - 1) + 1 + (f(1 - 2) + 1) + (f(2 - 1) + 1) + (f(2 - 2) + 1) + (f(3) + 1);
 // 不计算父节点，只需判断不是叶子节点，把本身的计数去掉
-f(tree) = f(1) + f(2) + f(3)
-        = (f(1-1)+1) + (f(1-2)+1) + (f(2-1) + 1) + (f(2-2)+1) + (f(3)+1) = (f(1)-1) + (f(2)-1) + f(3)
+f(tree) = f(1) + f(2) + f(3) = f(1 - 1) +
+1 +
+(f(1 - 2) + 1) +
+(f(2 - 1) + 1) +
+(f(2 - 2) + 1) +
+(f(3) + 1) = f(1) - 1 + (f(2) - 1) + f(3);
 ```
 
 实现：
+
 ```js
 function getChilds(node, isIncludeParent) {
   let hasChilds = 0;
@@ -81,12 +272,14 @@ function getChilds(node, isIncludeParent) {
     node.children.forEach((node) => {
       // 1-1 // 1-2
       hasChilds += getChilds(node, isIncludeParent) + 1;
-      if (!isIncludeParent && node.children) { // 非叶子节点，把本身的计数去掉
+      if (!isIncludeParent && node.children) {
+        // 非叶子节点，把本身的计数去掉
         hasChilds--;
       }
     });
     return hasChilds;
-  } else { // 无孩子
+  } else {
+    // 无孩子
     return hasChilds;
   }
 }
@@ -125,6 +318,7 @@ console.log(result);
 在测试树的渲染性能问题时，大量的测试数据是个问题。
 
 首先：可以采用这个函数，动态生成扁平化的树节点，参考 zTree 源码：
+
 ```js
 const dataMaker = function(count, nodeKey = "id", parentKey = "pId") {
   let nodes = [],
@@ -168,7 +362,9 @@ const dataMaker = function(count, nodeKey = "id", parentKey = "pId") {
   return nodes;
 };
 ```
+
 然后：根据扁平化的带有父子关系的节点，重新构建一棵树数据：
+
 ```js
 const BuildTree = (
   tree,
@@ -189,7 +385,8 @@ const BuildTree = (
     // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到它对应的父级中
     if (parent) {
       const children = parent[childrenKey] || []; // parent.children ，避免相同值
-      children.push(node);j
+      children.push(node);
+      j;
       parent[childrenKey] = children;
     } else {
       // 如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 n 结果集中，作为顶级
@@ -199,7 +396,9 @@ const BuildTree = (
   return n;
 };
 ```
+
 最后：丢给树组件渲染测试即可
+
 ```js
 const treeData = BuildTree(dataMaker(5000), "children", "id", "pId");
 ```

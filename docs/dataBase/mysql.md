@@ -9,11 +9,33 @@ MySQL 是一个关系型数据库管理系统，MySQL 是一种 DBMS，即它是
 
 ## 安装
 
-### 下载安装包
+系统环境：mac 10.15
+
+### 基于安装包
+
+#### 安装 MySQL
 
 所有平台的 MySQL 下载地址为： [MySQL 下载](https://dev.mysql.com/downloads/mysql/) 。 挑选你需要的 MySQL Community Server 版本及对应的平台
 
 > 注意：安装过程我们需要通过开启管理员权限来安装，否则会由于权限不足导致无法安装。
+
+选择对应的操作系统版本，下载安装即可。在安装过程中，MySQL 会自动创建一个 root 用户，并提示输入 root 口令。
+
+要在 Linux 上安装 MySQL，可以使用发行版的包管理器。例如，Debian 和 Ubuntu 用户可以简单地通过命令 apt-get install mysql-server 安装最新的 MySQL 版本。
+
+#### 配置数据目录
+
+搜索 Mysql 进行配置管理界面：
+
+![](../.vuepress/public/images/2020-10-15-22-42-17.png)
+
+#### 运行 MySQL
+
+MySQL 安装后会自动在后台运行。为了验证 MySQL 安装是否正确，我们需要通过 mysql 这个命令行程序来连接 MySQL 服务器。
+
+在命令提示符下输入 `mysql -u root -p` ，然后输入口令，如果一切正确，就会连接到 MySQL 服务器，同时提示符变为 `mysql>`。
+
+输入 exit 退出 MySQL 命令行。注意，MySQL 服务器仍在后台运行。
 
 ### 基于 docker 安装
 
@@ -98,6 +120,12 @@ Bye
 ```
 
 ## 管理
+
+要管理 MySQL，可以使用可视化图形界面 [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)。
+
+MySQL Workbench 可以用可视化的方式查询、创建和修改数据库表，但是，归根到底，MySQL Workbench 是一个图形客户端，**它对 MySQL 的操作仍然是发送 SQL 语句并执行**。因此，本质上，MySQL Workbench 和 MySQL Client 命令行都是客户端，和 MySQL 交互，唯一的接口就是 SQL。
+
+因此，MySQL 提供了大量的 SQL 语句用于管理。虽然可以使用 MySQL Workbench 图形界面来直接管理 MySQL，但是，很多时候，通过 SSH 远程连接时，只能使用 SQL 命令，所以，了解并掌握常用的 SQL 管理操作是必须的。
 
 ### 用户设置
 

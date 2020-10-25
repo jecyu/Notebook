@@ -1017,6 +1017,47 @@ jar 只是用于存放 class 的容器，它并不关心 class 之间的依赖�
 
 Java 的注解是一种特殊的注释，相当于一个包装器，对类、方法等做一些处理，既可以让源代码更加简洁明了，也达到复用注解的目的。它就相当于一个过滤器，可以挂载在需要的地方。
 
+### 使用注解
+
+什么是注解（Annotation）？注解就是放在 Java 源码的类、方法、字段、参数前的一种特殊“注释”：
+
+#### 注解的作用
+
+从 JVM 的角度看，注解本身对代码逻辑没有任何影响，如何使用注解完全由工具决定。
+
+Java 的注解可以分为三类：
+
+第一类是由编译器使用的注解，例如：
+
+- `@Override`：让编译器检查该方法是否正确地实现了覆写；
+- `@SuppressWarning`：告诉编译器忽略此处代码产生的警告。
+
+这类注解不会被编译进入 `.class` 文件，它们在编译后就被编译器扔掉了。
+
+第二类是由工具处理 `.class` 文件使用的注解，比如有些工具会在加载 class 的时候，对 class 做动态修改，实现一些特殊的功能。这类注解会被编译进入 `.class` 文件，但加载结束后并不会存在内容中。这类注解只被一些底层库使用，一般我们不必自己处理。
+
+<u>第三类是在程序运行期能够读取的注解，它们在加载后一直存在于 JVM 中，这也是最常用的注解。</u>例如，一个配置了 `@PostConstruct` 的方法会在调用构造方法会自动被调用（这是 Java 嗲吗读取该注解实现的功能，JVM 并不会识别该注解。）
+
+应用：
+
+```java
+package ltd.newbee.mall;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class IdeaController {
+    @GetMapping("/info")
+    @ResponseBody
+    public String getInfoFromIdea() {
+        return "this is a spring boot project from idea";
+    }
+}
+
+```
+
 ## 泛型
 
 ## 集合
@@ -2707,6 +2748,7 @@ Maven 是一个 Java 项目管理和构建工具，它可以定义项目结构�
 ### Maven 介绍
 
 Maven 就是专门为 Java 项目打造的管理和构建工具，它的主要功能有：
+
 - 提供了一套标准化的项目结构；
 - 提供了一套标准化的构建流程（编译、测试、打包、发布......）；
 - 提供了一套依赖管理机制。
@@ -2716,7 +2758,7 @@ Maven 标准项目结构：
 ```sh
 a-maven-project # 项目名
 ├── pom.xml # 项目描述文件
-├── src 
+├── src
 │   ├── main
 │   │   ├── java # Java 源码
 │   │   └── resources # 资源文件
@@ -4932,13 +4974,82 @@ class Handler extends Thread {
 └───────┘        └───────────┘
 ```
 
-对于开发者来说，Java 的网络编程比 Node 更加底层，Node 已经封装的很好了，并且拥有大量的中间件来处理基础工作，再进一步可以使用 Express 框架。
+**对于开发者来说，Java 的网络编程比 Node 更加底层，Node 已经封装的很好了，并且拥有大量的中间件来处理基础工作，再进一步可以使用 Express 框架。**
 
 因此，Java 才需要 Sevlet API，让服务器 （例如 Tomcat ）实现我们编写的 Servlet API 接口，实现 Web 应用的底层工作。而 node 就很方便编写响应。
 
 编写完，还要把服务端程序打包到服务器上。可能不如 Node 那么方便。
 
+### MVC 开发
+
+```sh
+                  ┌───────────────────────┐
+             ┌────>│Controller: UserServlet│
+             │     └───────────────────────┘
+             │                 │
+┌───────┐    │           ┌─────┴─────┐
+│Browser│────┘           │Model: User│
+│       │<───┐           └─────┬─────┘
+└───────┘    │                 │
+             │                 ▼
+             │     ┌───────────────────────┐
+             └─────│    View: user.jsp     │
+                   └───────────────────────┘
+```
+
+
+
 ## Spring 开发
+
+<!-- Spring 实现 Sevlet 继续进行组件封装，Spring Boot 更是做到开箱即用。 -->
+
+Spring 是一个支持快速开发 Java EE 应用程序的框架。它提供了一系列底层容器和基础设施，并可以和大量常用的开源框架无缝集成，可以说是开发 Java EE 应用程序的必备。
+
+随着 Spring 越来越受欢迎，又诞生了 Spring Boot、Spring Cloud、Spring Data、Spring Security 等一系列基于 Spring Framework 的项目。
+
+### 介绍
+
+#### Spring Framework
+
+Spring Framework 主要包括几个模块：
+
+- 支持 loC 和 AOP 的容器；
+- 支持 JDBC 和 ORM 的数据访问模块；
+- 支持声明式事务的模块；
+- 支持基于 Servlet 的 MVC 开发；
+- 支持基于 Reactive 的 Web 开发；
+- 以及集成 JMS、JavaMail、JMX、缓存等其他模块。
+
+## Spring Boot
+
+Spring Boot 是一个基于 Spring 的套件，它帮我们预组装了 Spring 的一系列组件，以便尽可能少的代码和配置来开发基于 Spring 的 Java 应用程序。
+
+Spring Boot 与 Spring 的关系就是整车和零部件的关系，它们不是取代关系。
+
+Spring Boot 的目标就是提供一个开箱即用的应用程序架构，我们基于 Spring Boot 的预置结构继续开发，省时省力。
+
+![](../.vuepress/public/images/2020-10-15-23-48-25.png)
+
+### Spring Boot 项目搭建及启动
+<!-- 很像一个 vuecli 脚手架 -->
+
+###  目录
+
+
+
+### java -jar 命令行启动
+
+项目初始化时我们选择的打包方式为 Jar ，因此项目开发完成进行打包时的结果是一个 Jar 包， Java 运行 Jar 包的命令为 java -jar xxx.jar ，结合以上两个原因我们可以使用这种方式启动 Spring Boot 项目，接下来我们来演示这一过程。
+
+首先，点击下方工具栏中的 Terminal 打开命令行窗口（或者打开 CMD 窗口并切换到当前的代码目录）
+
+之后使用 Maven 命令将项目打包，执行命令为: `mvn clean package -Dmaven.test.skip=true`，等待打包结果即可
+
+打包成功后进入 `target` 目录，`cd target`
+
+最后就是启动已经生成的 `Jar` 包，执行命令为 `java -jar newbee-mall-0.0.1-SNAPSHOT.jar`
+
+这种方式也是 Spring Boot 上线时常用的启动流程
 
 ## 综合应用——旅行 TODO 应用
 

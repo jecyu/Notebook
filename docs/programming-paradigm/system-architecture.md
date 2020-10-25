@@ -27,6 +27,8 @@ C/S 是双向的通讯，建立连接后会一直保持，任何一方都可以�
 来源：知乎
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
+## 消息队列
+
 ## MVC
 
 - Model（除了数据，里面也有 controller，用于控制数据变化的业务逻辑。）
@@ -78,6 +80,7 @@ C/S 是双向的通讯，建立连接后会一直保持，任何一方都可以�
 
 ## 参考
 
+- [阿里技术——架构](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzIzOTU0NTQ0MA==&action=getalbum&album_id=1442497572832346113&scene=173&from_msgid=2247498117&from_itemidx=1&count=10#wechat_redirect&scene=178&subscene=&sessionid=svr_db5bea1da1f&enterid=1603238869)
 - [实现领域驱动设计](https://book.douban.com/subject/25844633/)
 - [IDDD_Samples](https://github.com/VaughnVernon/IDDD_Samples)
 - [前端开发与架构师](https://mp.weixin.qq.com/s/LSOtald-laf29su_qN4luA)

@@ -550,6 +550,8 @@ git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/
 git stash
 ```
 
+git stash 命令可以暂存我们的所有文件，但有时我只想要存储部分的文件，这个时候可以用 `git stash -p`命令，这个命令可以决定要暂存哪些文件。有时候 git stash 了好几次，然后看 git stash 的 list 的时候，不记得哪个是我们想要找的那一次 git stash 了，可以在 git stash 的时候添加备注 `git stash save "save message"` ，这样下次就可以找到我们想要的那一次 stash 了。
+
 ### 展示所有 stashes
 
 ```sh
@@ -589,7 +591,6 @@ git checkout <stash@{n}> -- <file-path>
 ```
 
 ## 操作标签
-
 
 tag 就是一个只读的 `branch`，一般为每一个可发布的里程碑版本打一个 `tag`。
 
