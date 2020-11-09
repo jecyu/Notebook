@@ -153,7 +153,6 @@ webpack 4版本以上 直接运行 `npx webpack` 命令就能打包文件。
 
 ### 配置
 
-
 ### 分析打包结果
 
 设置 devtool 属性改为 `source-map`。
@@ -544,6 +543,32 @@ function decimalToBinary(decNumber) {
 
 ### 优化打包速度
 
+要解决的问题
+- webpack构建过程中的有两个部分是直接影响构建效率的，一个是文件的编译，另一个则是文件的分类打包。相较之下文件的编译更为耗时，而且在Node环境下文件只能一个一个去处理，因此这块的优化需要解
+
+- happypack
+- webpack-parallel-uglify-plugin
+
+正式环境下，不开启 sourcemap，加快速度。
+
+图片压缩。
+
+```js
+new HappyPack({
+      id: 'js',
+      threadPool: happyThreadPool,
+      loaders: [ 'babel-loader' ]
+    }),
+
+    new HappyPack({
+      id: 'styles',
+      threadPool: happyThreadPool,
+      loaders: [ 'style-loader', 'css-loader', 'less-loader' ]
+    })
+```
+
+vuecli3 如何处理。
+
 ### 长缓存优化
 
 ## 实战
@@ -806,3 +831,4 @@ import React from "react";
 - [PostCSS快速入门使用](https://aotu.io/notes/2015/10/13/start-postcss/index.htmls)
 - [vueCLI](https://cli.vuejs.org/zh/guide/css.html#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%AF%BC%E5%85%A5)
 - [CSS 像素大小]
+- [深入浅出的webpack构建工具---ParallelUglifyPlugin优化压缩(十)](https://www.cnblogs.com/tugenhua0707/p/9569762.html)

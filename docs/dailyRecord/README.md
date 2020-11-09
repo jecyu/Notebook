@@ -4,7 +4,58 @@
 
 <!-- 横向和纵向排版统一使用 flex 布局。 -->
 
+## 十一月
+
+### 不通过 webpack 压缩前端文件
+
+webpack 需要有一个入口文件，比如 main.js，通过 require/import 层层引入依赖进行文件压缩处理。
+
+只需要对 arcgis api for js 文件进行重新压缩处理。
+
+可以使用 gulp 来处理这个事情，gulp 是一个基于流的自动化构建工具。除了可以管理和执行任务，还支持监听文件、读写文件。 http://52.82.69.134:18080/dgp_js_api412
+
+- 通过 gulp.task 注册一个任务
+- 通过 gulp.run 执行任务；
+- 通过 gulp.watch 监听文件的变化
+- 通过 gulp.src 读取文件
+- 通过 gulp.dest 写文件。
+
+#### 前言
+
+#### 解决方案
+
 ## 十月
+
+### vuecli3 Webpack 编译提示内存溢出解决方案
+
+Node 是基于 V8 引擎，在一般的后端开发语言中，在基本的内存使用上没有什么限制，但是，在 Node 中通过 JavaScript 使用内存时只能使用部分内存（64 位系统下约为 `1.4 GB`，32 位系统下约为 0.7 GB）所以不管你电脑实际内存多大，在 node 运行 JavaScript 打包编译的时候所使用的内存大小，并不会因为你系统的实际内存大小改变而改变
+
+```json
+{
+  "name": "nature-resource-cli3",
+  "version": "3.2.28",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "permission": "node --max_old_space_size=4096 node_modules/@vue/cli-service/bin/vue-cli-service.js serve --mode permission "
+  }
+}
+```
+
+开启之后，运行 yarn permission，node 进程运行到 1.74GB 也不会崩掉。
+
+![](../.vuepress/public/images/2020-10-29-15-08-49.png)
+
+```sh
+node --max-nex-space-size=1024 app.js # 新生代，位为KB
+node --max-old-space-size=2000 app.js # 老生代，单位为MB
+```
+
+参考资料：
+
+- [NodeJS 中被忽略的内存](https://segmentfault.com/a/1190000004934938)
+  <!-- Webpack编译提示内存溢出解决方案 https://my.oschina.net/u/4359745/blog/3424593-->
 
 ### 置灰功能
 
@@ -18,6 +69,7 @@
   filter: gray;
 }
 ```
+
 ### 前端地图添加水印
 
 业务需求：根据用户名和 IP 动态生成水印。
@@ -40,7 +92,7 @@ export const createWaterMark = ({
   fillStyle = "rgba(184, 184, 184, 0.8)",
   content = "请勿外传",
   rotate = "30",
-  zIndex = 1000
+  zIndex = 1000,
 }) => {
   // const args = arguments[0];
   const canvas = document.createElement("canvas");
@@ -76,6 +128,7 @@ export const createWaterMark = ({
   container.insertBefore(watermarkDiv, container.firstChild);
 };
 ```
+
 <!-- 不通过地图的话，暂时不能根据比例尺进行水印的缩放。
 
 地图切片添加水印，后端出图。可以为每个切片等级显示不同的水印大小。

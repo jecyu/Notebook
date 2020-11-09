@@ -1,0 +1,311 @@
+{
+    "root": {
+        "data": {
+            "id": "c6n9x4xv5680",
+            "created": 1603761262512,
+            "text": "编制成果数据意见征求v0.0.1",
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c6na0a5gpj40",
+                    "created": 1603761508948,
+                    "text": "需求分析（用户角色）",
+                    "expandState": "expand",
+                    "note": "是否有必要给评论者分配角色？意见征求和意见反馈者都可以进行评论？\n\n整个流程是，把用户挂在意见征求管理者角色，权限是：任务发布，对应的页面权限为。\n\n如果需要评论模块的话，也把该用户挂在评论者角色，这样就可以评论或者回复意见。比如意见反馈者和意见征求者。\n\n这样区分开来是否会比较好呢？这样的好处是功能权限分开，可控的粒度细灵活。\n对于当前来说，比较可控。\n\n缺点就是意见反馈者必须到评论者视图进行评论，这样有点奇怪。按照当前的设计是的。\n"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c6n9yyonrxc0",
+                            "created": 1603761405623,
+                            "text": "意见征求管理者",
+                            "note": "发布的任务下，可以查看评论和意见。\n"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c6n9zh2a1r40",
+                                    "created": 1603761445628,
+                                    "text": "任务发布"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c6n9z2uzrdk0",
+                            "created": 1603761414713,
+                            "text": "意见反馈者",
+                            "note": "发表的意见视图，只可以评论和回复。"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c6n9zk7roh40",
+                                    "created": 1603761452491,
+                                    "text": "意见反馈"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c6n9zckzjc00",
+                            "created": 1603761435876,
+                            "text": "评论者",
+                            "note": "是否有必要给评论者分配角色？\n\n评论者只能发表评论。\n\n评论者不能下载附件。（按钮级别）\n\n"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c6n9zmisvcg0",
+                                    "created": 1603761457511,
+                                    "text": "意见评价",
+                                    "note": "是否有必要给评论者分配角色？"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c6nbdyfy2h40",
+                    "created": 1603765401668,
+                    "text": "实体",
+                    "note": "任务征求者可以发布任务、查看任务相关的意见和评论（发表评论）。\n\n意见反馈者可以查看任务、发表意见（查看评论、发表评论）\n\n评论者可以查看任务、发表查看评论）。\n\n\n居于以上，可以通过后端分配用户权限进行页面权限管理。\n\n三个角色的任务视图都是一样，以及任务详情也是一样的。会有些区别。\n\n"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c6nbe28yqaw0",
+                            "created": 1603765409953,
+                            "text": "任务"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c6nbe3ho2zk0",
+                            "created": 1603765412656,
+                            "text": "评论"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c6nbe4dn41s0",
+                            "created": 1603765414590,
+                            "text": "意见"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c6na0lbzdx40",
+                    "created": 1603761533287,
+                    "text": "任务时间安排",
+                    "layout_right_offset": {
+                        "x": -14.999999776482525,
+                        "y": -186.24999722465873
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c6na17y95a00",
+                            "created": 1603761582522,
+                            "text": "功能模块"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c6na28mwxqg0",
+                                    "created": 1603761662378,
+                                    "text": "数据库设计"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c6nahf9t2rs0",
+                                            "created": 1603762852285,
+                                            "text": "任务表"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c6nahk440vs0",
+                                            "created": 1603762862825,
+                                            "text": "评论表"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c6nahlxgbfk0",
+                                            "created": 1603762866776,
+                                            "text": "二级评论表"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c6nahh7x2y80",
+                                            "created": 1603762856524,
+                                            "text": "任务类型表"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c6na29zer0g0",
+                                    "created": 1603761665310,
+                                    "text": "模块 （前端路由视图+后端接口）"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c6na2eayk9s0",
+                                            "created": 1603761674716,
+                                            "text": "意见征求管理者页面",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c6nbq3wcjbs0",
+                                                    "created": 1603766353914,
+                                                    "text": "任务详情"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c6nbq6fadg80",
+                                                    "created": 1603766359413,
+                                                    "text": "任务列表"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c6na2tfv9c80",
+                                            "created": 1603761707664,
+                                            "text": "意见反馈者页面",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c6nbq89tjm80",
+                                                    "created": 1603766363436,
+                                                    "text": "列表"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c6nbqadxgmg0",
+                                                    "created": 1603766368038,
+                                                    "text": "详情"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c6na2y58vwo0",
+                                            "created": 1603761717906,
+                                            "text": "评论者页面",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c6nbqbmyyls0",
+                                                    "created": 1603766370761,
+                                                    "text": "列表"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c6nbqcpwo7c0",
+                                                    "created": 1603766373116,
+                                                    "text": "详情"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c6nc2e54o4o0",
+                                    "created": 1603767316583,
+                                    "text": "组件"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c6nc2f1q22w0",
+                                            "created": 1603767318554,
+                                            "text": "下载附件（评论者不能下载需要做权限处理）"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c6na35qdlgo0",
+                            "created": 1603761734421,
+                            "text": "时间节点（10天全职*70%时间）",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c6na15h63nk0",
+                                    "created": 1603761577136,
+                                    "text": "2020-11- 6 号完成初版",
+                                    "background": "#c00000",
+                                    "note": "目标：新建任务-任务意见填写-进行评论。\n文件上传、下载。（目前不需要检验规则）\n\n不包括：二级评论、大文件附件上传\n\n具体：完成剩余的页面开发。\n\n"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c6na3v7chx40",
+                                    "created": 1603761789867,
+                                    "text": "2020-10-30 前后端完成模块搭建",
+                                    "note": "完成前后端模块搭建，2/1部分页面的交互和接口联通。\n\n具体细节：\n\n- 附件上传\n- 评论功能\n- 回复功能\n- 任务增删改查 CRUD\n"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "classic",
+    "version": "1.4.43"
+}

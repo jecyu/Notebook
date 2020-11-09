@@ -650,6 +650,7 @@ void main() {
 
 ## 参考资料
 
+- CS61 课程 https://www.bilibili.com/video/av20538548/?p=1
 - [电脑硬件入门——基础之计算机架构](https://zhuanlan.zhihu.com/p/63322067)
 - Cache 和 Buffer
   - [Cache 和 Buffer 都是缓存，主要区别是什么？](https://www.zhihu.com/question/26190832)

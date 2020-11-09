@@ -16,6 +16,8 @@ Node 组成
 
 ![](../temp/sketch/node.png)
 
+## 版本管理-nvm
+
 ## 基础知识
 
 ### 阻塞与非阻塞 IO

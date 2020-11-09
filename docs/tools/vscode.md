@@ -2,6 +2,12 @@
 
 ## 基础知识
 
+### vscode 折叠展开全部代码快捷键
+
+**折叠：**`Ctrl/Command + k + 0`，这里 0 代表折叠第 1 层，1 代表第 2 层，依次类推。比如在 vue 文件中，method 属于第 3 层，就可以设置 `Ctrl/Command + k + 3` 进行折叠。
+
+**展开：**`Ctrl/Command + k + j`
+
 ### 用户自定义代码片段
 
 ### mac 使用 code 命令打开 VSCode

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>地图</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+    <script src="./main.css"></script>
+    <script src="./main.js"></script>
+    <!-- require module 支持 amd 处理 -->
+    <!-- <script></script> -->
+    <script>
+        require(["esri/Map", "esri/views/MapView"], function(Map, MapView) {
+        const map = new Map({
+          basemap: "street" // 底图 // 图片数据，绘制地图图片，目前只支持一个图片加载
+        });
+        const view = new MapView({
+          container: "viewDiv", // Reference to the scene div created in step 5
+          map: map, // Reference to the map object created before the scene
+        //   zoom: 4, // Sets zoom level based on level of detail (LOD)
+        //   center: [15, 65] // Sets center point of view using longitude,latitude
+        });
+      });
+    </script>
+  </body>
+</html>

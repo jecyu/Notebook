@@ -1,6 +1,19 @@
 # Nginx
 
+
+![](../../.vuepress/public/images/2020-11-09-15-29-17.png)
+
 .sh 是 Unix 系统运行的脚本、.bat 是 Windows 系统下运行脚本
+
+Nginx 采用了异步非阻塞的事件处理方式。
+
+- select
+- poll
+- epoll
+
+## 配置
+
+### 指令
 
 ## 操作常用命令
 
@@ -20,7 +33,9 @@ cmd 命令进入安装文件；
 
 1、启动：
 
+```sh
 C:\server\nginx-1.0.2>start nginx
+```
 
 或
 
