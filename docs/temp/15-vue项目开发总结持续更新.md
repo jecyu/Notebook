@@ -396,11 +396,16 @@ export default {
 };
 ```
 
+## 原理
+
+![](../.vuepress/public/images/2020-11-16-22-53-34.png)
+
 ## 参考资料
 
+- [vue-analysis]
+- [剖析 Vue.js 内部运行机制](https://juejin.im/book/6844733705089449991/section/6844733705211084808)
 - [Vue 风格指南](https://cn.vuejs.org/v2/style-guide/index.html)
 - [可能比文档还详细--VueRouter 完全指北](https://juejin.im/post/6844903665388486664)
-- [vue-analysis]
 - [axios 拦截器封装 http 请求，刷新 token 重发请求](https://juejin.im/post/6844903894481371143#heading-3)
 - [Vue 中使用 optionalChaining——可选链（包括在 js 和 template 中使用）](https://blog.csdn.net/weixin_43960696/article/details/105579832)
 - [10 分钟学会 optioanl chaining 可选链](https://juejin.im/post/6844904200220966920#heading-5)

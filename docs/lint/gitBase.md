@@ -196,7 +196,7 @@ $ echo <filename> >> .gitignore
 2. 输入 https://{username}:{password}@github.com
 3. git config --global credential.helper store
 
-## 设定 SSH 连接
+## 手把手教你设置 SSH 连接
 
 SSH key 可以让你在你的电脑和 Git 远程仓库之间建立安全的加密连接。
 
@@ -222,26 +222,26 @@ cat ~/.ssh/id_rsa.pub
 
 先下载 cmder 命令行（linux）工具，之后跟 mac 一样的命令行操作即可。
 
-### Git 配置多个 SSH-Key
+### ⚠️ 在本地配置多个 SSH-Key
 
 一般公司用的是 gitlab 提交代码，使用的是公司的用户名和公司的邮箱，而在个人的开源项目中，我们托管于 github，那么这个时候就需要两个 SSH-Key 去登录。
 
-#### 查看所有 SSH-Key
+#### 第一步：查看所有 SSH-Key
 
 ```bash
 $ cd ~/.ssh/
 $ ls
 ```
 
-#### 公司的 GitLab 生成一个 SSH-Key
+#### 第二步：公司的 GitLab 生成一个 SSH-Key
 
 在`~/.ssh/`目录会生成`gitlab_id-rsa`和`gitlab_id-rsa.pub`私钥和公钥。
 
 ```
-$ ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/gitlab_id-rsa
+$ ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/gitlabnei_id-rsa
 ```
 
-查看你的 public key，我们将`gitlab_id-rsa.pub`中的内容粘帖到公司`GitLab`服务器的`SSH-key`的配置中。
+查看你的 public key，我们将`gitlabnei_id-rsa.pub`中的内容粘帖到公司`GitLab`服务器的`SSH-key`的配置中。
 
 ```bash
 # 把文件内容打印到命令行工具上，方便复制
@@ -257,7 +257,7 @@ xxxxxxxxx;
 xxxxx;
 ```
 
-#### Github 生成一个 SSH-Key
+#### 第三步：Github 生成一个 SSH-Key
 
 在`~/.ssh/`目录会生成`github_id-rsa`和`github_id-rsa.pub`私钥和公钥。我们将`github_id-rsa.pub`中的内容粘帖到`github`服务器的`SSH-key`的配置中。
 
@@ -265,22 +265,58 @@ xxxxx;
 ssh-keygen -t rsa -C "xxxx@xxxx.com" -f ~/.ssh/github_id-rsa
 ```
 
-#### 在 ~/.ssh 目录下添加`config`配置文件用于区分多个 SSH-Key
+#### 第四步：在 ~/.ssh 目录下添加`config`配置文件用于区分多个 SSH-Key
 
-添加 config 配置文件
+1. 添加识别 SSH keys 新的私钥
+
+默认只读取 id_rsa，为了让 SSH 识别新的私钥，需要将新的私钥加入到 SSH agent 中
+
+```sh
+# 查看已经添加的私钥
+ssh-add -l
+
+3072 SHA256:xxxxxxxxxx linjy@xxxx.com.cn (RSA)
+```
+
+```sh
+$ ssh-agent bash
+$ ssh-add ~/.ssh/github_id_rsa
+$ ssh-add ~/.ssh/gitlabnei_id_rsa
+```
+
+这一步很重要，否则你在后面进行 git clone 拉取 ssh 地址的仓库会出现错误。
+
+```sh
+KaydeMBP:chengdu-project kayliang$ git clone ssh://git@xxxxxxx.amazonaws.com.cn:5337/xdata/SH2019GH109/chengdu-natural-resources-cli3.git
+Cloning into 'chengdu-natural-resources-cli3'...
+no such identity: gitlabnei_id-rsa: No such file or directory
+git@xxxxxxx.amazonaws.com.cn: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+```
+
+2. 添加 config 配置文件
 
 ```bash
 vi ~/.ssh/config
 ```
 
-设置文件内容如下：
+设置文件内容如下，这里要注意的是：配置的信息必须跟你在仓库界面的 ssh 的地址一致：
+
+![](../.vuepress/public/images/2020-11-11-11-39-18.png)
+
+ssh://git@xxxxx.amazonaws.com.cn:5337/xdata/SH2019GH109/xxxxx.git
+
+根据上面的地址可以进行配置如下：
 
 ```bash
 # gitlab
-Host gitlab.com
-  HostName gitlab.com
+  Host xxxxx.amazonaws.com.cn
   PreferredAuthentications publickey
-  IdentityFile ~/.ssh/gitlab_id-rsa
+  IdentityFile ~/.ssh/gitlabnei_id-rsa
+  Port 5337
 
 # github
 Host github.com
@@ -296,7 +332,9 @@ Host github.com
 - User: 登录名。
 - IdentityFile: 知指明上面 User 对应的 identityFile 路径。
 
-#### 测试
+#### 第五步：测试
+
+##### 测试 github 外网 ssh 地址
 
 ```bash
 ssh -T git@github.com
@@ -308,7 +346,14 @@ ssh -T git@github.com
 Hi Jecyu! You've successfully authenticated, but GitHub does not provide shell access.
 ```
 
-就表示成功的连上 github 了。也可以试试连接公司的 gitlab。
+##### 测试公司内网 ssh 地址
+
+```sh
+ssh -T git@xxxx.amazonaws.com.cn
+Welcome to GitLab, @linjy!
+```
+
+就表示成功的连接公司的 gitlab。
 
 > 更进一步阅读，了解 SSH 知识：https://segmentfault.com/q/1010000000835302 和 《SSH，The Secure Shell》 书本。
 
@@ -1016,3 +1061,4 @@ git push -f <remote-name> <branch-name>
 
 - [小姐姐用动图展示 10 个 Git 命令](https://mp.weixin.qq.com/s/cSaTdFfrc_u7YPmgFdYdAQ)
 - [learnGitBranching](https://github.com/pcottle/learnGitBranching) 一个 git 交互沙箱，可以让你直观看到 git 背后做了什么。
+- [如何同时使用外网码云和内网 Gitlab](https://www.codenong.com/cs106661793/)
