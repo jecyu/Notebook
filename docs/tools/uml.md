@@ -4,6 +4,11 @@
 
 统一建模语言（UML）是软件工程师领域中的一种通用的、开发性的建模语言，旨在提供一种`可视化系`统设计的标准方法。
 
+- UML是什么
+- 为什么要用 UML
+- 什么时候用 UML
+- 如何用 UML 
+
 ### 历史
 
 ### 设计
@@ -96,13 +101,23 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 
 ### Interaction overview diagram
 
-### Sequence diagram
+### Sequence diagram 顺序图
 
 消息序列，着重时间顺序
 
-### Communication diagram
+![](../.vuepress/public/images/2020-11-18-08-42-44.png)
+
+### Communication diagram 通信图
 
 对象的交互
+
+![](../.vuepress/public/images/2020-11-18-08-42-59.png)
+
+|类型|优势|劣势|
+|--|--|--|
+|顺序图|能够清晰表示消息的顺序和时间顺序|强制在右侧增加新对象，消耗水平空间|
+|通信图|空间效用——能够在二维空间内灵活地增加新对象|不易查阅消息的顺序，表示法选项较少｜
+
 
 ### Timing diagram
 
@@ -130,9 +145,9 @@ UML 提供了一种在图中可视化系统架构蓝图的方法，包括元素�
 
 ## 参考资料
 
-- [Unified Modeling Language](https://en.wikipedia.org/wiki/Unified_Modeling_Language)
 - 《UML 和模式应用》
 - 《UML 精粹》
+- [Unified Modeling Language](https://en.wikipedia.org/wiki/Unified_Modeling_Language)
 - [领域驱动设计在前端中的应用](https://mp.weixin.qq.com/s/pROCXZNZ7RKeYDlDUJng_Q)
 
 - [一键生成数据库文档，堪称数据库界的 Swagger，有点厉害](https://juejin.im/post/6865485568038404103)

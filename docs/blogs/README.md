@@ -1,5 +1,8 @@
 # Jecyu
 
+## 开发工具
+
+- [10分钟教你本地配置多个 git ssh 连接](https://juejin.im/post/6896288225212497928)
 ## GIS 相关
 
 - [GIS 专题概念与应用](https://juejin.im/post/5eb21176e51d4541491aab81)

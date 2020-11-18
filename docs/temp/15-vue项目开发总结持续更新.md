@@ -398,11 +398,18 @@ export default {
 
 ## 原理
 
+### 运行机制全局概览
+
+- 全局概览
+
 ![](../.vuepress/public/images/2020-11-16-22-53-34.png)
 
+render function 会被转化为 VNode 节点。Virtual DOM 其实就是一颗以 JavaScript 对象（VNode 节点）作为基础的树，用对象属性来描述节点，时机上它只是一层对真实 DOM 的抽象。最终可以通过一系列操作使这棵树映射到真实环境上。
+
+- 再看全局
 ## 参考资料
 
-- [vue-analysis]
+- [vue-analysis]结合源码分析。
 - [剖析 Vue.js 内部运行机制](https://juejin.im/book/6844733705089449991/section/6844733705211084808)
 - [Vue 风格指南](https://cn.vuejs.org/v2/style-guide/index.html)
 - [可能比文档还详细--VueRouter 完全指北](https://juejin.im/post/6844903665388486664)
