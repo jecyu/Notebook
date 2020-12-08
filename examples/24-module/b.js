@@ -2,7 +2,7 @@
  * @Author: Jecyu
  * @Date: 2020-11-17 22:27:54
  * @LastEditors: Jecyu
- * @LastEditTime: 2020-11-17 22:53:20
+ * @LastEditTime: 2020-11-20 15:59:34
  * @FilePath: /examples/24-module/b.js
  * @Description:
  */
@@ -24,25 +24,29 @@ function Module(p) {
   this.load = function(filepath) {
     //判断文件是json还是 node还是js
     let ext = path.extname(filepath);
-    return Module._extensions[ext](this);
+    return Module._extensions[ext](this); // 
   };
 }
-//js文件加载的包装类
+//js文件加载的包装器
 Module._wrapper = [
-  "(function(exports,require,module,__dirname,__filename){",
-  "\n})",
+  "(function(exports,require,module,__dirname,__filename){", // 头部
+  "\n})", // 尾部
 ];
+
 //所有的加载策略
 Module._extensions = {
   ".js": function(module) {
-    let fn =
-      Module._wrapper[0] +
+    let fn =  // 对 1. js 文件进行头尾包装
+      Module._wrapper[0] + 
       fs.readFileSync(module.id, "utf8") +
       Module._wrapper[1];
-    //执行包装后的方法 把js文件中的导出引入module的exports中
+    
+      // 2. 执行包装后的方法，获得一个 function 对象。
+      // 3. 使用 call 执行该 funciton，并把当前模块对象的 exports 属性、require() 方法、module（模块对象自身）、以及文件路径、文件目录作为参数传递给这个  funciton() 执行
+      // 4， 在执行之后，modulex.eports 被返回给了调用方，也就是从上述当前 module.load 获取，require 获取到。 const { add } = require(''/)
+
     //模块中的this === module.exports === {}  exports也只是module.exports的别名
-    vm.runInThisContext(fn).call(module.exports, module.exports, req, module);
-    return module.exports;
+    return vm.runInThisContext(fn).call(module.exports, module.exports, req, module);
   },
   ".json": function(module) {
     return JSON.parse(fs.readFileSync(module.id, "utf8"));

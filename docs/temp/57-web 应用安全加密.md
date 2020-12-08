@@ -34,7 +34,7 @@ sign 参数，这个 sign 参数可能是由当前时间信息、请求的 URL�
  * @Author: Jecyu
  * @Date: 2020-11-11 17:28:33
  * @LastEditors: Jecyu
- * @LastEditTime: 2020-11-12 17:55:59
+ * @LastEditTime: 2020-11-20 08:16:02
  * @FilePath: /Notebook/docs/temp/57-web 应用安全加密.md
  * @Description: 公钥加密，私钥解密。公钥和私钥可以通过操作系统进行配对。
 -->
@@ -136,6 +136,9 @@ url 请求并编码后：analysis=cmVnaW9uPTQ1MDEwMzAwMDAwMCZyZWdpb250eXBlPTM%3D
 
 ## 参考资料
 
+
+- [【第2123期】隐藏字符加密](https://mp.weixin.qq.com/s/DdWzKFh0wwmayuymHsfIEA)
+- [零宽度字符：和谐？屏蔽？不存在的](https://juejin.cn/post/6844903669192720391#heading-7)
 - [原来浏览器原生支持 JS Base64 编码解码](https://www.zhangxinxu.com/wordpress/2018/08/js-base64-atob-btoa-encode-decode/)
 - [这可能是史上最骚的 JavaScript 加密(一)
   ](https://zhuanlan.zhihu.com/p/67851318)
@@ -144,6 +147,4 @@ url 请求并编码后：analysis=cmVnaW9uPTQ1MDEwMzAwMDAwMCZyZWdpb250eXBlPTM%3D
 - [以变制变——前端动态化代码保护方案探索](https://juejin.im/post/6844903617883815950)
 - [总结一些网站加密和混淆技术](https://www.ershicimi.com/p/2b647cfcfeb044af14f763317cabe2f4)
 
-```
 
-```

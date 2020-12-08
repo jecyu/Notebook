@@ -447,7 +447,7 @@ renderMap(baiduMaop); // 输出：开始渲染百度地图
 
 这段程序得以顺利运行的关键是 googleMap 和 baiduMap 提供了一致的 show 方法，但第三方的接口方法并不在我们自己的控制范围之内，假如 baiduMap 提供的显示地图的方法不叫 show 而叫 display 呢？
 
-baidu 这个对象来源于第三方，正常情况下我们都不应该去改动它。此时我们可以通过增加 baiduMapAdapter 来解决问题：
+baidu 这个对象来源于第三方，正常情况下我们都不应该去改动它。此时我们可以通过增加 `baiduMapAdapter` 来解决问题：
 
 ```js
 var googleMap = {

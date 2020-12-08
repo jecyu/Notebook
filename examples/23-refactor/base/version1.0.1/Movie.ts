@@ -2,7 +2,7 @@
  * @Author: Jecyu
  * @Date: 2020-11-16 17:23:49
  * @LastEditors: Jecyu
- * @LastEditTime: 2020-11-17 09:59:48
+ * @LastEditTime: 2020-12-04 08:27:29
  * @FilePath: /examples/23-refactor/base/version1/src/Movie.ts
  * @Description: 
  */

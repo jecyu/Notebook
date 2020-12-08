@@ -569,6 +569,8 @@ new HappyPack({
 
 vuecli3 如何处理。
 
+#### sourcemap 的处理
+
 ### 长缓存优化
 
 ## 实战

@@ -357,7 +357,90 @@ vuejs，如何在父组件调用子组件的方法？
 - `$attrs与$listeners`
 - localStorage/sessionStorage 浏览器缓存
 
-向上派发和向下广播
+#### provide/inject
+
+```html
+<template>
+  <div
+    id="app"
+  >
+    <router-view
+      v-if="isRouterAlive"
+    />
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  components: {
+    MergeTipDialog,
+    BreakNetTip
+  },
+  data () {
+    return {
+      isShow: false,
+      isRouterAlive: true
+  },
+
+// 父组件中返回要传给下级的数据
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
+  }
+}
+</script>
+```
+
+```html
+<template>
+  <popup-assign
+    :id="id"
+    @success="successHandle"
+  >
+    <div class="confirm-d-tit"><span class="gray-small-btn">{{ name }}</span></div>
+    <strong>将被分配给</strong>
+    <a
+      slot="reference"
+      class="unite-btn"
+    >
+      指派
+    </a>
+  </popup-assign>
+</template>
+<script>
+import PopupAssign from '../PopupAssign'
+export default {
+//引用vue reload方法
+  inject: ['reload'],
+  components: {
+    PopupAssign
+  },
+methods: {
+    // ...mapActions(['freshList']),
+    async successHandle () {
+      this.reload()
+    }
+  }
+}
+</script>
+
+```
+作者：前端岚枫
+链接：https://juejin.cn/post/6844903806166106119
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+#### 向上派发和向下广播
 
 ```js
 function broadcast(componentName, eventName, params) {

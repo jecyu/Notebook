@@ -1,0 +1,252 @@
+{
+    "root": {
+        "data": {
+            "id": "c7b3fp776i00",
+            "created": 1606180408358,
+            "text": "领域驱动设计"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c7b3g6j2x880",
+                    "created": 1606180446081,
+                    "text": "绑定模型和实现"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7b3gjmod2o0",
+                            "created": 1606180474597,
+                            "text": "MODEL-DRIVEN DESIGN"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7b3gpckseg0",
+                            "created": 1606180487047,
+                            "text": "HANDS-ON MODELER"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7b4ni954a00",
+                    "created": 1606183841261,
+                    "text": "模型驱动设计的构造块",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7b4ti1xwxc0",
+                            "created": 1606184311010,
+                            "text": "分离领域"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7b4vvaeu9k0",
+                                    "created": 1606184496549,
+                                    "text": "layerd architecture"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c7b5qy6h5eo0",
+                                            "created": 1606186932131,
+                                            "text": "分离"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c7b5v4pvgu80",
+                                                    "created": 1606187259821,
+                                                    "text": "表示层"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c7b5v2jbbjc0",
+                                                    "created": 1606187255071,
+                                                    "text": "应用层"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c7b5v639h3k0",
+                                                    "created": 1606187262807,
+                                                    "text": "领域层"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c7b5v8mvvo80",
+                                                    "created": 1606187268347,
+                                                    "text": "基础设施层"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c7b5r1a3hb40",
+                                            "created": 1606186938880,
+                                            "text": "关联"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c7b5uyyxqao0",
+                                                    "created": 1606187247308,
+                                                    "text": "MVC"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c7b5yrh0eg00",
+                                            "created": 1606187544443,
+                                            "text": "架构框架"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7b6ju6rn1c0",
+                            "created": 1606189196002,
+                            "text": "软件中所表示的模型"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7b6k1zbhbs0",
+                                    "created": 1606189212966,
+                                    "text": "ENTITY（reference object）"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c7bc9iu3n9c0",
+                                            "created": 1606205314309,
+                                            "text": "标识"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c7b6k6gsku80",
+                                    "created": 1606189222729,
+                                    "text": "VALUE OBJECT"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7b6ka12enk0",
+                                    "created": 1606189230486,
+                                    "text": "SERVICE"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c7be5i8dsdk0",
+                                            "created": 1606210641759,
+                                            "text": "无状态"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c7benm322t40",
+                                    "created": 1606212060699,
+                                    "text": "MODULE(Package)"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7bf9cbj3go0",
+                            "created": 1606213763455,
+                            "text": "建模范式"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7bfb3syqu00",
+                                    "created": 1606213901647,
+                                    "text": "面向对象"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7b3funj7wg0",
+                            "created": 1606180420229,
+                            "text": "领域对象的生命周期",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7bfc8vf1940",
+                                    "created": 1606213991043,
+                                    "text": "AGGREGATE（聚合）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7bfchlibq00",
+                                    "created": 1606214010035,
+                                    "text": "FACTORY（工厂）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7bfcj3wfg80",
+                                    "created": 1606214013324,
+                                    "text": "REPOSITORY（存储库）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7b4nn5midc0",
+                    "created": 1606183851932,
+                    "text": "战略设计",
+                    "expandState": "expand"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "classic",
+    "version": "1.4.43"
+}

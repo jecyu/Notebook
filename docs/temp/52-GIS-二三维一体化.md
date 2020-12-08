@@ -1,5 +1,10 @@
 # Arcgis API For JS 二三维一体化
 
+**最好的方案是**：二三维使用统一的地理坐标系，比如都使用 4490。这样就避免了很多问题。
+
+（上）
+（下）
+
 头脑风暴
 
 - 运维权限，三维地图服务如何配置，目前只支持二维地图服务
@@ -14,7 +19,7 @@
     - TileLayer
   - 加载场景数据
     - SceneLayer
-    - 
+    -
   - 加载三维影像数据
     - ImageryLayerView
 - 加载三维图层时，不需要设置 baseMap 地图，因为不是叠加。
@@ -40,7 +45,7 @@
   - 场景图层
   - camera 的设置
 - [x] 二维叠加到三维地图上
-- [ ] 天地图加载到三维
+- [x] 天地图加载到三维
 - [ ] 运维权限的配置底图
 - 操作
   - 定位（二维要素的定位、三维要素的）
@@ -91,7 +96,8 @@ ArcGIS Pro
 
 ## 已知的限制
 
-- 二维数据可以在三维地图中加载显示
+- 二维数据（动态服务、要素服务）可以在三维地图中加载显示
+  - 切片无法叠加上去（待研究）
 - 三维数据不能在二维地图中加载显示
 - 绘制工具暂无法支持三维数据
 
@@ -211,8 +217,6 @@ arcmap 软件版本：
 
 三维数据：高程数据与场景数据
 
-### 使用 View
-
 ### 二三维模式切换
 
 版本一：不同步，全部初始化
@@ -258,6 +262,8 @@ viewpoint，如果底图的坐标系不同，那么会导致 viewpoint 不一致
 ## 地图坐标系
 
 - [地理坐标系统](./地理坐标系统.md)
+
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/api-reference/esri-geometry-projection.html
 
 ## 底图处理
 
@@ -326,121 +332,9 @@ tiled、dynamic、wmts、tdt
       measure,
     ],
     components: {},
-    props: {
-      // 底图地址
-      baseLayerUrls: {
-        type: Array,
-        default: () => [],
-      },
-      sceneType: {
-        type: String,
-        default: "2d",
-      },
-      // GeometryServer
-      geometryServerUrl: {
-        type: String,
-        default: () => "",
-      },
-      extent: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-      d3Layer: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-      // GeometryServer
-      tileInfo: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-      viewpoint: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-      // 全图
-      fullMap: {
-        type: Boolean,
-        default: false,
-      },
-      // 全屏
-      fullScreen: {
-        type: Boolean,
-        default: false,
-      },
-      // 图例
-      legend: {
-        type: Boolean,
-        default: false,
-      },
-      zoom: {
-        type: Boolean,
-        default: true,
-      },
-      // 底图切换
-      basemapToggle: {
-        type: Boolean,
-        default: false,
-      },
-      // 事件管理
-      eventBus: {
-        type: Object,
-        default: () => new Vue(),
-      },
-      mapExport: {
-        type: Boolean,
-        default: false,
-      },
-      showScaleBar: {
-        type: Boolean,
-        defalut: false,
-      },
-      shadowMapSize: {
-        type: Object,
-        default: () => {
-          return {
-            width: "1754px",
-            height: "1240px",
-          };
-        },
-      },
-      module: {
-        type: String,
-        default: "",
-      },
-      mapType: {
-        type: String,
-        default: "alone", // 默认均为独立地图页面，由于分屏同样使用该map，故设置地图类型为split，以防止初始化相互冲掉
-      },
-    },
+    props: {},
     data() {
       return {
-        map: null,
-        mapView: null, // 2dView or 3dView
-        shadowMapView: null,
-        activeView: null, // 当前激活的视图，用于同步视图点
-        mapStore: null,
-        regionGraphicLayer: null,
-        initViewPoint: null,
-        // eventBus: new Vue(),
-        url: null,
-        mapScalebar: null,
-        shadowScaleBar: null,
-        legendInst: null,
-        expandInst: null,
-        swipeValue: 25,
-        swipeLayers: [],
-        originImg: null,
-        toolTipTimeOut: null,
-        homeWidget: null, // 全图组件实例
         viewConfig: {
           mapView: null,
           sceneView: null,
@@ -530,7 +424,7 @@ tiled、dynamic、wmts、tdt
       this.curSubSystemName = subSysName;
     },
     methods: {
-      // 加载api
+      // 加载 api
       async loadApiModeules() {
         const modules = await loadModules(
           "esri/Graphic",
@@ -1595,7 +1489,6 @@ tiled、dynamic、wmts、tdt
     },
   };
 </script>
-
 ```
 
 ## 加载三维数据
@@ -1604,7 +1497,122 @@ tiled、dynamic、wmts、tdt
 
 ### 加载场景数据
 
-## 一些必要调整
+### 加载场景图层和高程图层
+
+数据的生成
+
+对应的加载图层
+
+如何直到数据是高程数据还是场景数据。
+
+ElevationLayer is a tile layer used for rendering elevations in SceneViews. A default world elevation layer can be added to the map by setting the map's ground property to world-elevation.
+
+If the service is requested from a different domain, a CORS enabled server or a proxy is required.
+
+The SceneLayer is a layer type designed for on-demand streaming and displaying large amounts of data in a SceneView. SceneLayers support two geometry types: Point and 3D Objects (e.g. Buildings).
+
+[A guide to scene layers](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/guide/working-with-scene-layers/index.html)
+
+判断 layerType 类型：3dObject sts
+
+**3D Object** scene layer SceneLayer yes (see renderers) no partially (see Query section of the SceneLayer class) yes (see popupTemplate) 3D-object-sample
+**Point cloud scene layer** PointCloudLayer yes (see supported
+renderers in PointCloudRenderer) no no no point-cloud-samples
+**Integrated mesh scene laye**r IntegratedMeshLayer no no no no integrated-mesh-sample
+Point scene layer SceneLayer
+
+如何判断使用哪个 sceneLayer 和 evaluationLayer
+
+- 操作图层和底图，三维中也有
+
+## 二三维同步&切换
+
+地理坐标、平面坐标、
+
+三维目录展示也是一个问题，
+
+当前在三维中，查看二维
+
+### 图层叠加
+
+- 不同坐标参考类型
+  - 地理坐标
+  - 投影坐标
+  - 屏幕坐标（图片叠加）
+- 同一个类型的不同的参考坐标（比如同时投影坐标 西安 80，国家 2000）
+- 不同视图下加载，比如三维中加
+- 不同加载类型，比如切片服务与动态服务
+
+- 计算单位的不同
+
+地图加载
+
+原理：如何展示地图，浏览器坐标系，canvas 。
+
+1. 4490 坐标系要在 4524 中加载，如何处理。
+2. 二维与三维视图点无法同步，是否需要转换处理的。
+   （地理坐标、投影坐标）地理坐标默认可以在三维中叠加，二维中又如何处理
+   多坐标系如何转换
+
+二维坐标（x，y）肯定可以转到三维上才对。
+
+对二维的 viewpoint 进行同步转换到三维中去。
+
+- 可用方面
+- 性能方面（webworker、投影转换）
+
+**Supported coordinate systems**
+The SceneView supports following coordinate systems in a global scene:
+
+- WGS84 or WebMercator
+
+  - Noncached layers with any spatial reference since they will be reprojected to the scene spatial reference（非缓存的图层，可以自动被投影）
+  - In a local scene the following coordinate systems are supported:
+
+- Any Projected Coordinate System
+  Noncached layers with any spatial reference since they will be reprojected to the scene spatial reference。（非缓存的图层，可以自动被投影，只要支持动态导出图片，统一以动态服务图层进行加载即可。）
+
+优点与缺点。
+
+### 同步视图 viewpoint
+
+地理坐标、（屏幕）平面坐标、投影坐标。
+
+viewpoint.targer
+
+参考坐标系不同，坐标值也不同，怎么同步视图点呢？
+
+相同视图下，可以直接赋值 viewpont 。二维视图到三维时，可以记录 x、y，至于 z 可以给一个默认的。
+
+因为二维视图的 viewpoint 的坐标点跟三维是不一致的，一个是平面坐标系系。
+
+投影进行坐标转换。
+
+直接把 viewpoint 传入 sceneView 构造函数有问题，需要设置为以下：
+
+```js
+  const viewpoint = await this.getViewPoint(this.viewpoint);
+      const viewOption = {
+        camera: viewpoint.camera,
+        spatialReference: viewpoint.spatialReference
+      };
+      const mapView3d = new SceneView({
+        map,
+        container: mapNode,
+        ...viewOption
+      });
+```
+
+默认情况下要给二维和三维固定的视图点，默认为全图。
+
+### 投影工具类（重构）
+
+涉及功能：
+- 保存场景、定位、视图点同步、图层加载
+- 行政区划的定位（也要进行投影，因此有必要把所有功能相关的投影抽离出来）
+### 同步加载数据
+
+### 一些必要调整
 
 分屏
 
@@ -1624,6 +1632,7 @@ this.curY = map.y.toFixed(2);
 需要判断 mapPoint 是否为空
 
 下面的 extent 触发时，val 为 null，在 SceneView 下。
+
 ```js
 mapView.when(
         lang.hitch(this, function() {
@@ -1646,40 +1655,632 @@ val 也为 null，原因在于没有用 extent 初始化。后续都需要处理
 
 分屏同步视点。
 
-## 加载场景图层和高程图层
+## 架构
 
-数据的生成
+![](../.vuepress/public/images/2020-11-24-09-07-30.png)
 
-对应的加载图层
+#### 传统的二三维一体化
 
-如何直到数据是高程数据还是场景数据。
+比如客户的，只是在三维视图中，进行二维图层的叠加，并不是应用层的二三维地图一致。
 
-ElevationLayer is a tile layer used for rendering elevations in SceneViews. A default world elevation layer can be added to the map by setting the map's ground property to world-elevation.
+把二维与三维的配置，独立开了，但共用同一个数据 store，以实现二维（动态）地图可以在三维中叠加。
 
-If the service is requested from a different domain, a CORS enabled server or a proxy is required.
+就算坐标系不同，视图点应该也可以同步才对，因为二维地图是投影坐标系，而三维地图是地理坐标系。肯定是要转换的。
 
-The SceneLayer is a layer type designed for on-demand streaming and displaying large amounts of data in a SceneView. SceneLayers support two geometry types: Point and 3D Objects (e.g. Buildings).
+无法同步 viewpoint，只有相同坐标系才能同步？？？
 
-[A guide to scene layers](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/guide/working-with-scene-layers/index.html)
+这样官方的例子，二维 viewpoint 与三维 viewpoint 是如何同步的
 
-判断 layerType 类型：3dObject sts
+第二个版本处理
 
-**3D Object** scene layer	SceneLayer	yes (see renderers)	no	partially (see Query section of the SceneLayer class)	yes (see popupTemplate)	3D-object-sample
-**Point cloud scene layer**	PointCloudLayer	yes (see supported
-renderers in PointCloudRenderer)	no	no	no	point-cloud-samples
-**Integrated mesh scene laye**r	IntegratedMeshLayer	no	no	no	no	integrated-mesh-sample
-Point scene layer	SceneLayer
+只有适合的才是更好的。
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/sample-code/sandbox/index.html?sample=views-switch-2d-3d
 
-如何判断使用哪个 sceneLayer 和 evaluationLayer 
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/sample-code/sandbox/index.html?sample=views-synchronize
+
+### 版本一的设计：同 map，同 dom，不同 view。 Smart UI 模式。
+
+在用户界面中实现所有的业务逻辑，将应用层序分成小的功能模块，分别将它们实现成用户界面，并在其中嵌入业务规则。用关系数据库作为共享的数据存储库。使用自动化程度最高的用户界面创建工具和可用的可视化编程工具。
+
+关注点：同步
+
+优缺点分析
+
+符合案例需求：客户的在三维地图 Map 中，添加二维的图层，使用同一个 map 和 node。
+
+如何在浏览器端实现地图二三维一体化？
+
+<!-- 具体可以控制台看 sourcecode -->
+
+### 领域驱动设计：版本二的设计：不同 map 不同 dom 不同 view
+
+关注点：可扩展且能同步
+
+需求：
+
+- 分层分级代理（地形图是否有效）
+- 不同图层服务的加载
+
+使用 UML 建领域模型与需求人员确定二三维
+
+数据的存储与走向。
+
+尝试使用。
+
+领域模型，可以使用 UML 类图顺序交互或通信交互图。
+
+电子元件的应用。
+
+草图 -》
+
+缩小型的分层架构
+
+- view（表示层）
+- controller（应用层，转换函数，工具类处理，协调 model 任务？）
+- model（业务领域层）
+
+每一层。确立好，最后再看基础设施层如何管好数据。
+
+上层对下层：
+
+- 上层可以直接使用或操作下层元素，方法是通过调用下层元素的公共接口，保存对下层元素的引用（至少是暂时的）
+
+下层对上层通信：
+
+- 回调模式
+- 观察者模式
+
+vue 单文件组件本质上还是解决 view 层面的事情。
+
+**实体**：
+很多对象不是通过它们的属性定义的，**而是通过连续性和标识定义的**。
+
+- 图层 id 是图层实体的唯一标识。
+- 图层的维度类型则是图层实体的属性，比如二维或三维，便于剔除。
+
+展示 -> 空间查询属性（可以参考 arcgis 的官方显示）
+
+**对象**：
+
+用于描述领域的某个方面而本身没有概念标识的对象成为 Value Object（值对象）。Value Object 被实例化之后用来表示一些设计元素，对于这些设计元素，我们只关心它们是什么，而不关心它们是谁。
+
+二维跟三维的数据、工具函数也不太一样，有多少。
+
+原始数据：包含二维图层、三维图层、视图点
+
+生命周期：
+
+先准备好每个。
+
+外部调用：
+
+同一个实体，在不同视图或者不同客户端同时展示，d2 View 和 d3 View。
+
+mv 层，c 层交给 vue 框架渲染处理（也就是子视图组件的 Map 组件）。
+
+- 原始数据改变，通知中间数据改变，地图进行重新初始化。关键这里。（依赖跟踪）
+
+原始数据只包含图层和基础，只要原始数据改变则会触发相关视图的渲染。重新初始化渲染
+
+Keep in mind that switching from a MapView to a SceneView requires careful consideration for a number of factors. See the list below for some of the factors of consideration. This list is not comprehensive.
+
+一些限制需要处理：
+
+- **Data types** - Some layers aren't supported in 2D because of their 3D nature. **These include SceneLayer, IntegratedMeshLayer, and PointCloudLayer**. They will need to be removed from the map instance altogether, or replaced with 2D counterparts. For example, you could switch a SceneLayer representing buildings with a polygon FeatureLayer representing building footprints. ElevationLayer doesn't need to be considered as closely as the other layers mentioned above since the Map's ground is ignored in MapViews.
+- **Symbols** - While most 2D symbols are useable in SceneView, all 3D symbols are not supported in MapViews. Renderers may need to be reconfigured if 3D symbols are used. -**UI components** - If adding widgets and other UI components using view.ui.add(), then keep in mind that these components need extra logic for persisting from one view to the next.
+- **Widgets** - All widgets in the API are tied to a specific view. If persisting widgets from a 2D to 3D view is desired then extra logic will need to be included for switching the view referenced by each widget. This includes a view's popup instance.
+
+后续重构运维的服务结构，统一灵活起来。
+
+要保证 layer 不被随便更改，获得当前激活的类型。
+
+- 禁用一些 UI 工具。全局。
+
+#### 前端
+
+难点：
+
+- props 的进一步重构，而不是仅仅通过 v-bind，后续会引起不少问题的。
+
+##### 三维地图的工具函数不同，比如加载图层，默认对二维图层都采用动态形式加载（这是针对采取了投影坐标 4524 的图层，以便系统 api 可以做投影转换处理）、切片暂不支持
+
+- 如何都通过 Map 对外作适配器，然后根据不同的视图下加载不同的工具类、Mixin，import() 动态加载
+- 以 draw 绘制工具为例，是选择适配器模式同一个 Map 的 draw 方法同时适配二维与三维的接口呢？还是使用策略模式，不同的视图下，根据用户的需求，使用 Map 的不同 draw 方法，比如 D2Draw、D3Draw，这样外部调用方需要学习两套不同的方法集合及名称。逻辑判断多。
+- 适配器模式是一种“亡羊补牢”的模式，没有人会在程序的设计之初就使用它。两个不适配的软件实体做处理，因此使用策略模式更好一点，因为三维工具方法和二维的入参可能不一样。采用策略模式，需要改动的地方比较多。
+- 二三维中，有不共用的工具，也有共用的工具，比如图层开启、定位。保持入参一致？然后在内部处理。先保持一致。统一在内部进行处理。把 Map 统一对外提供，就是为了保持接口的一致性。
+- 使用高阶组件来、函数式组件
+
+**方法一**：把原先访问到 this.\$refs.Map 给到 `this.$refs.Map.$refs.viewMap`，这样不太友好。
+
+基于当前的架构很难改，但是既然重构了，就应该好好拆开。
+
+**方法二**：把 component 组件的方法和属性都放到 map 的原型链上，虽然可以，但是查找问题时，也会有冲突。
+
+有没有第三种办法呢？方法一是比较好的解偶方法了。
+
+使用方法一，`this.$refs.Map.$refs.viewMap` -> `this.$refs.Map.getViewComponent()`，就不用改太多了，也能把二三维进行成功解偶。
+
+自定义适配器，·https://juejin.cn/book/6844733790204461070/section/6844733790271569933
+
+**目前需要保证二三维 mixin 的入参和名称一致，后续更改为分别获取就可以进行处理**
+
+主体重构，工具类函数也要重构。
+
+二三维一体化。
+
+- 后续，把三维地图的类型等，也添加到运维系统里去。先跑通前端的配置。整体重构好服务的配置，让汉文过来。也好改规划审查。
+
+改造。
+
+如何区分好上级与下级组件依赖，进一步分离处理，更好的设计模式。
+
+Map 作为一个地图类组件，接收 d2-map 和 d3-map，同一个操作时，输出不同的行为。
+
+
+##### eventBus 的处理
+
+通过上层 Map 组件注入到子组件，也就是 d2-map 和 d3-map 身上。
+
+##### map、mapView 的依赖。
+
+更好的重构模式。架构思考。
+
+```js
+  // 初始化 map 和 mapView
+    onMapReady({ map, mapView, mapDiv, eventBus }) {
+      this.map = map;
+      this.mapView = mapView;
+      this.eventBus = eventBus;
+      this.$emit("map-ready", {
+        map,
+        mapView,
+        mapDiv
+      });
+    }
+```
+
+先实现叠加，再处理同步数据。（叠加，要同步数据）
+
+##### 工具类的重构
+
+掌握设计模式的好机会。重构添加图层的工具类。
+
+添加图层时，添加进去 map 的所有图层，都要添加
+
+- customloadType
+- viewType
+- stackType
+- feLayerId
+
+**所有的图层都要添加上 feLayerId**，要不然增删改会有问题，特别是二维到三维的转换。
+
+- [ ] 绘制图层 graphics 是否需要同步，待处理。（其他的再处理）暂不同步，把 graphic 图层去掉。暂时不做 graphic 同步处理。
+- [x] 整体架构
+- [ ] 同步数据
+- [ ] 同步视点
+- [ ] 图层加载函数重构
+- [ ] 同步还要考虑加密的问题，比如三维底图（这个属性）
+- [ ] 地图组件初始化添加图层，要用工具类去处理，以及 access-token 等处理，还需要优化。
+- [ ] 需要处理初次加载的图层，以及同步之后加载的图层处理逻辑。
+- [x] 地图初始化重构
+- [ ] 三维其他工具，后续处理。
+- [ ] 一定要注意类型
+- [ ] 什么时候移除
+- 复盘
+  - 评估 2 天，那实际上需要 3 天才行，因为还需要一天的时间，学习一些重构的技巧、架构方面。
+  - 虽然二三维一体化，三维辅助。二维为主体。
+
+**专题 baseData 数据的 id 添加。所有添加图层和关闭图层，这个 layerId 要统一起来，id 要保持一致，避免处理。后续再弄。自定义的也要处理。**
+
+很多关闭、增删、都是用的 layer_shadow_id 等来处理的。考虑所有添加图层的地方。
+
+后续需要统一一个标识。
+
+```js
+    async closeLayer(info, isRenderLegend = true) {
+      this.map.layers.items.forEach(item => {
+        let uid = info.url + "_shadow_" + info.layerID;
+        if (item.id === uid) {
+          item.visible = false;
+        }
+      });
+      if (isRenderLegend) {
+        this.eventBus.$emit("setFeatureLegend", [
+          {
+            url: info.url,
+            layerID: info.layerID,
+            operation: "remove"
+          }
+        ]);
+      }
+    },
+
+```
+
+Map 对象
+
+- allLayers
+- layers 操作
+- basemap 地图
+- ground 高程
+
+**特殊的处理，可以考虑添加装饰器模式，比如 addLayer，addLayer_1 添加了是否渲染图例的。装饰器也可以添加到函数的**
+
+单一职责。
+
+图层类型，除了切片、动态服务，还有要素图层，这种没有 url 的，也需要处理。
+
+以作为同步加载数据处理，其他要继续弄。，后续再考虑其他的同步，先最小化处理。
+
+TODO 处理天地图、网络地图等非 tiled、mapLayer 的
+
+工具类函数，考虑抽离出公共
+
+非 arcgis 的属性需要注明，避免冲突。
+
+### 工具类重构
+
+#### 投影工具类重构抽离
+
+- 坐标系抽离
+- gp 服务抽离
+  
+让每个组件、其他工具类都可以正常访问到。而不是写死在 mixin 里。
+### 地图初始化重构
+
+addLayer 没有正常添加的话，导致后续的添加不成功。比如测试环境在 3D 环境中，无法正常添加二维。因为前面的底图有问题。这个需要处理的。
+
+后续处理。
+
+### EventBus 的重构规范法，整理系统的 eventBus 处理
+
+多个组件，统一一个 EventBus，在多个
+
+```js
+import Vue from "vue";
+
+export default new Vue();
+```
+
+因为模块的缓存作用，外部调用的是同一个实例。
+
+### widget 工具栏插件化架构
+
+### 透明度设置
+
+- 对于二维地图，直接设置 layer.opacity
+- 对于三维地图
+
+### 保存场景
+
+可以通过 json 格式，这个 valueObject 来存储不确定的字段信息给数据库。比较灵活，可以适应后续需要新增字段的情况，而不需要改动数据库。
+
+1. 问题：JSON.stringify 的问题，一些属性克隆有问题。对于具有 proto 属性。（后续要研究），很多 graphic 克隆有问题。lodash 深度拷贝 viewpoint 会丢失属性为空。
+2. promise async 会有些问题
+3. 正常是 dev 打包，但由于临时测试就没有办法，就用 linjy 分支
+4. 保存场景需要把三维的目录也记录下来，后面打开。
+
+```js
+let mapData = {
+  viewpoint,
+  extent,
+  visibleBaseMaps,
+  graphicObjs,
+  measureGraphicObjs,
+  openedTopics,
+};
+return {
+  content: JSON.stringify(mapData),
+  name: sceneMarkName,
+};
+```
+
+### 用户视图范围定位重构
+
+#### 定位的根本
+
+viewpoint
+
+- camera
+- rotation (视图的旋转角度，0 - 360 度)
+- scale（缩放比例）
+- targetGeometry
+
+三维的 viewpoint
+
+```js
+var view = new SceneView({
+  camera: {  // 摄像机
+    position: [
+       7.654, // longitude 经度
+         45.919, // lattitude 纬度
+      50000  // elevation in meters 高程
+    ],
+    //    position: [
+    //    x: 852039.3825316979, // longitude 对应的参考坐标系下的 x点
+    //    y: 5767378.401137408, // 参考坐标系下的 y 点
+    //   z: 50000  // elevation in meters 高程
+    // ],
+    tilt: 80, // 上下倾斜
+    heading: 360 // 左右转向
+  }
+// 对于的 targetGeometry 的 x、y、z（对应高程）
+  // x: 852039.3824024152
+  // y: 5776050.014277057
+  // z: 3939.0009986991063
+```
+
+二维的 viewpoint
+
+```js
+const viewpoint {
+  camera: null,
+  rotation: 351, // 跟三维一致
+  scale: 102469244,  // 跟三维一致
+  targetGeometry:
+  atitude: -20.081383638565047,
+  longitude: 82.07191146653412,
+  m: undefined,
+  spatialReference: Object,
+  type: "point",
+  x: 9136203.392885208,
+  y: -2282674.432435195,
+  z: unde
+}
+```
+
+注意上面记录的都是视图点，至于 extent 可以通过 mapView 获取。
+
+经度场景，定位处理
+
+因此在三维视图中，通用使用 camera 进行定位即可，而转换到二维视图中，可以使用 targetGeometry 进行同步。
+
+这里的 camera 不是 x、y、z 了，经度与维度相对于的坐标系不同了，是一个固定点？
+
+经度、纬度与 x、y、z 的描述区别，在 unity 中都是看的 x、y、z。什么时候经度与纬度，什么时候又可以用 x、y、z。
+
+在 arcgis 等 web 框架中，如何定位？
+
+定位原理如下：
+
+- 对于二维地图：
+  - 坐标点：x，y
+  - zoom（设置缩放等级 3）/scale（设置缩放比例：12400），都是对应的。
+  - rotation 旋转的角度
+- 对于三维地图
+  - 坐标点：x，y，z
+  - heading
+  - tile
+  - 缩放等级 zoom/scale
+  - rotation 旋转的角度
+- 另外：可以只使用 extent 范围定位，这样就不需要设置坐标点和缩放等级了，对于图层的定位是有用的。因为 extent 包括 xmin，ymin，xmax，ymax，zmin，zmax
+- 最重要的是，参考坐标系要一致，不一致需要进行转换处理。（二三维首先具有一个基本坐标系，再根据获得点进行转换。）
+
+**三维视图下如何定位**：需要对坐标点进行转换，包括 Extent 的处理。
+坐标采用 point 转换，extent 采用 polygon 转换。
+
+二三维默认接受 prop：viewpoint，抽离投影转换工具和定位工具。
+
+**使用场景：**
+
+- 二维图层，不同坐标系，在三维中的定位如何处理
+- 直接 this.mapView.goTo()
+
+#### 获取\*可以从下面的属性进行获取上述特性：
+
+- point
+- extent
+- graphic
+- layerView
+- layer（服务信息）
+- mapView（可以获取 viewpoint，也可以直接获取 mapView.spatialReference）
+- sceneView
+- viewpoint
+
+知识点：canvas 屏幕是如何根据投影或地理坐标
+
+**注意**：4490 的坐标系的图层也是可以叠加到二维地图的，只要二维的参考坐标系也是 4490 即可。
+
+##### 对于图层服务定位
+
+查询图层：统一走通 feLayerId 标识，避免 id 的影响。逐步更改，先从三维起。
+
+通过服务查询 json，也可以通过加载到地图中的图层，获取 fullExtent，后者比较稳定。前者可能有些服务没有范围。
+
+统一 feLayerId 与加载到图层中的 id，要确立好。这里的 feLayerId 不论是父图层，还是子图层，统一都有这个 feLayerId 标识。至于 id 则动态服务图层只有一个。全局使用唯一的 feLayerId。
+
+如果本身是投影坐标系，叠加到三维视图时 arcgis 会做一次转换，但是 map.allLayers 记录的图层实例，还是旧的参考坐标。以便每次转换。
+
+<!-- 如果是直接通过地图 map 获取图层的实例范围，就不需要手动进行转换，会出现错误的范围？ -->
+
+直接通过二维的 extent 进行定位是有问题的，三维的 mapView 会定位到其他地位，主要是没有 z 值。
+
+需要校正 z 值，可以获得当前视图的 viewpoint 获得中心点，把 z 值 和 extent 的 x、y 进行结合处理。
+
+然后 goTo(center)，而不是 extent 了。或者传入 camera 来处理，只需要把 position 的 x、y、z 进行替换，其他可以不变。
+
+传入 camera 的话，就不是全图了，只有 gotTo(Extent) 才是查看全图范围。
+
+还是用 Extent，以后校正 z。摄像机的设置如何处理。
+
+arcgis 定位。
+
+先暂时这样处理。后续再看看怎么处理摄像机的准确定位问题。
+
+#### 编码实现：使用 goTo，或者初始化 mapView 或 sceneView 提供配置 Object 配置。
+
+- goTo(target, options){Promise}
+  Sets the view to a given target. The target parameter can be one of the following:
+
+- [longitude, latitude] pair of coordinates
+- Geometry (or array of Geometry[])
+- Graphic (or array of Graphic[])
+- Viewpoint
+- Camera
+- Object with a combination of target, center, scale, position, heading and tilt properties (with target being any of the types listed above). The center property is provided as a convenience to animate the SceneView.center and is the equivalent of specifying the target with the center Point. **The target must be provided in the spatial reference of the view.**
+
+```js
+  if (tempExtent) {
+    if (isExtend) tempExtent = tempExtent.expand(2);
+    this.mapView.goTo([tempExtent], {
+      duration: 500
+    });
+  }
+  通过 extent 方法去定位。
+```
+
+二维的 extent 在做了三维转换后，会保持摄像机的情况下，进行终点范围的定位。以 extent 为中心。
+
+上面这种写法在二维地图是没有任何问题的。
+
+```json
+ "crossorigin": { // 跨域代理
+    config: [
+      {
+        "urlPrefix": "http://map5gh.nlis.local", // 前缀
+        "proxyUrl": "http://map.nlis.local/proxy" // 代理地址
+     },
+     {
+        "urlPrefix": "http://map4eps.nlis.local",
+        "proxyUrl": "http://map.nlis.local/proxy"
+      },
+     {
+        "urlPrefix": "http://172.16.2.32:6080",
+        "proxyUrl": "http://map.nlis.local/proxy"
+      },
+      {
+        "urlPrefix": "http://map6mix/arcgis/rest/services",
+        "proxyUrl": "http://map.nlis.local/proxy"
+      },
+    ]
+  },
+```
+
+http://map6mix/arcgis/rest/services", 这个没有给出 ip，无法做代理。如何处理呢。
+
+代理问题。
+
+#### 应用：按点、范围、图层服务定位、保存场景
+
+#### 同步视图点
+
+任务调度，二三维视图同步。
+
+之所有不能直接赋值 viewpoint，是因为坐标参考系不一致，不能直接使用，需要进行坐标转换。
+
+- extent
+- zoom
+- camera
+- center
+- 等等各种传入 props 的目的都是为了初始化定位
+- 如果不传入，默认会以底图为初始化范围。
+
+初始化描述：
+
+二维视图点：
+
+不同坐标系下的视图点，4524 与 4490 的处理。
+
+- center
+- zoom
+
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/sample-code/sandbox/index.html?sample=scene-easy-navigate
+
+```js
+const option = {
+  center: [x, y], // 中心点
+  zoom: 15, // 缩放等级 scale
+};
+```
+
+三维视图点
+
+```js
+const option = {
+  camera: {
+    position: [x, y, z], // 摄像机位置
+    tilt: 70, // 左右
+    heading: 0, // 上下
+  },
+  spatialReference: {
+    wkid: 4490, // 地理参考坐标系
+  },
+};
+```
+
+### ⚠ 重要：重构 vuex 对 map、mapView 的记录
+
+因为很多组件都用到了当前视图的记录，如果只是单个屏幕切换就没问题，多个分屏得要考虑用那个，还是说当前鼠标激活那个就用那个 map，情况需要考虑清楚。
+
+- viewPoint
+- 空间坐标参考系
+
+这些是否需要重构呢？以便更好匹配处理。
+
+是否需要时刻更新 map、mapView 的指向，对于多个 Map 组件视图，应该如何存储处理。
+
+目前先对单个处理，也就是同一个视图中只有一个地图组件出现，要么三维，要么二维出现。
+
+⚠️ ### TODO 组件通信重构 EventBus vs vuex 混乱
+
+（这个也需要好好花点时间理清楚调用关系，领域驱动）
+
+```js
+EventBus.$on("showClickLayers", this.showClickLayers);
+EventBus.$on("changeLayerOpacity", this.changeLayerOpacity);
+EventBus.$on("histroyData", this.handHistoryData);
+EventBus.$on("changeSwipeStyle", this.changeSwipeStyle);
+```
+
+### 重构图层工具函数
+
+主要为：
+
+- 获取（要素信息）、增、删、改（设置透明、是否可见、清除要素、过滤图层（对子图层的更改）、改变图层在地图容器中的排序等级）
+
+其他：
+
+- 图层类型：二维图层、三维图层？是否需要区别开来（能否重用某些部分）
+- 定位（缩放地图到整个图层范围）
+- 制图（置灰、获取图片）
+- 是否加密需要 token 访问、是否跨域（需要代理访问）
+  - 4.12 对三维 scene 加载需要 token，但是二维添加 token 反而访问不了。
+
+重构技术：
+
+- 装饰器模式
+- 继承？高阶函数？
+
+重构规则
+
+- 单一职责
+- 开发封闭
+
+在把三维专题目录弄出来的同时，对该图层函数进行重构处理。
+
+后续再整合到三维专题目录到二维专题目录中去。需要处理运维。
+
+另外抽离出来比较好，因为规划分析评价的系统没有这个目录。
+
+专题目录。这里也要处理。
 
 ## 参考资料
 
+- 架构设计
+
+  - 《领域驱动之前有那么一篇文章》前端页面
+  - 《领域驱动设计》
+  - 《实现领域驱动》
+  - 《重构-xxxx》
+  - 《恰如其分的软件架构》
+  - 《软件设计精要与模式》
+
 - [viewing-modes](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-views-SceneView.html#viewing-modes)
-- [ArcGIS API for JavaScript 4.2学习笔记[21] 对3D场景上的3D要素进行点击查询【Query类学习】](https://www.cnblogs.com/onsummer/p/6421503.html)
-- 《（简）超图软件-SM二三维一体化解决方案V1-20120619 (1)》pdf
-- [ArcGis Api for JavaScript开发心得【原】](https://www.cnblogs.com/xionglee/articles/5814932.html)
-- [三维GIS开发](http://www.bolemap.com/xtkf/3w/)
-- 《SuperMap GIS二三维一体化开发实战》
+- [ArcGIS API for JavaScript 4.2 学习笔记[21] 对 3D 场景上的 3D 要素进行点击查询【Query 类学习】](https://www.cnblogs.com/onsummer/p/6421503.html)
+- 《（简）超图软件-SM 二三维一体化解决方案 V1-20120619 (1)》pdf
+- [ArcGis Api for JavaScript 开发心得【原】](https://www.cnblogs.com/xionglee/articles/5814932.html)
+- [三维 GIS 开发](http://www.bolemap.com/xtkf/3w/)
+- 《SuperMap GIS 二三维一体化开发实战》
 - [2019 年 Esri 技术公开课（9）使用 ArcGIS JavaScript API 开发 Web 3D 应用](https://malagis.com/esri-open-class-2019-07-16.html) 从 ArcGIS 三维数据产生、ArcGIS 服务发布、ArcGIS 三维服务使用。
 - 这个可以引入到地图中[使用 Javascript API for ArcGIS 4.X 实现二三维一体化](https://blog.csdn.net/qq_36264495/article/details/78032997?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase)
 - [Esri Events](https://www.youtube.com/c/EsriEvents/search?query=3d) Esri 官方演讲视频
@@ -1693,11 +2294,15 @@ Point scene layer	SceneLayer
 - [4.11API 在三维加载 wkid4490 天地图](http://zhihu.geoscene.cn/article/3942)
 - [Switch view from 2D to 3D](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/sample-code/views-switch-2d-3d/index.html)
 - [SceneView](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-views-SceneView.html#viewing-modes)
-- [（原创）ArcGIS系列教程（一）：DEM数字高程模型数据的生成](（原创）ArcGIS系列教程（一）：DEM数字高程模型数据的生成)
+- [（原创）ArcGIS 系列教程（一）：DEM 数字高程模型数据的生成](（原创）ArcGIS系列教程（一）：DEM数字高程模型数据的生成)
 - [ArcGIS 10.5.1 三维能力全方位提升](http://zhihu.geoscene.cn/article/3249)
-- [本地部署和配置ArcGIS API for JavaScript，实现server中JavaScript Viewer离线查看服务](http://zhihu.geoscene.cn/article/3052)
-- [Portal for ArcGIS 与ArcGIS Server的集成方式](https://blog.csdn.net/esricd/article/details/17033657)
+- [本地部署和配置 ArcGIS API for JavaScript，实现 server 中 JavaScript Viewer 离线查看服务](http://zhihu.geoscene.cn/article/3052)
+- [Portal for ArcGIS 与 ArcGIS Server 的集成方式](https://blog.csdn.net/esricd/article/details/17033657)
 - [场景和 3D 数据](https://enterprise.arcgis.com/zh-cn/portal/latest/use/troubleshoot-scenes.htm#anchor4)
 - [SceneView memory resources](https://developers.arcgis.com/javascript/latest/sample-code/sceneview-memory/index.html)
-- [arcgis api for js 4.5 部署到tomcat后如何解决跨域问题](http://zhihu.geoscene.cn/question/18749)
-- [Tomcat跨域配置](https://blog.csdn.net/qq_35117024/article/details/105435813)
+- [arcgis api for js 4.5 部署到 tomcat 后如何解决跨域问题](http://zhihu.geoscene.cn/question/18749)
+- [Tomcat 跨域配置](https://blog.csdn.net/qq_35117024/article/details/105435813)
+
+```
+
+```
