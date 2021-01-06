@@ -2,8 +2,20 @@
 
 **最好的方案是**：二三维使用统一的地理坐标系，比如都使用 4490。这样就避免了很多问题。
 
+- 为什么不统一使用地理坐标系，这是因为投影坐标有它的作用，在计算某些面积的时候更加准确。统一坐标系的话，使用 arcgis 直接赋值 viewpoint 即可？如果有地形图是不是就不行了呢？
+- 如何跨越坐标系的影响，建立高度与比例尺的映射关系。
+- 主要是二维的投影坐标系对于统计、分析比较精确，而地理坐标系是不正确。因此不同。
+
+ppt 演讲，后组合成 blog。
+
+消息通信机制 + 同步处理。
+
 （上）
 （下）
+
+## 前言
+
+必须理解二维与三维地图展示的原理，否则在切换二三维或联动时就会遇到很多问题。[63-高效调试](63-高效调试.md)
 
 头脑风暴
 
@@ -84,17 +96,27 @@ var view = new SceneView({
       });
 ```
 
-## ArcGIS 三维数据生产
+## 前置知识
 
-## ArcGIS 服务发布
+### 地图坐标系
+
+- [地理坐标系统](./地理坐标系统.md)
+
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/api-reference/esri-geometry-projection.html
+
+### 数据
+
+### ArcGIS 三维数据生产
+
+### ArcGIS 服务发布
 
 10.7
 
 ArcGIS Pro
 
-## ArcGIS 三维服务使用
+### ArcGIS 三维服务使用
 
-## 已知的限制
+### 已知的限制
 
 - 二维数据（动态服务、要素服务）可以在三维地图中加载显示
   - 切片无法叠加上去（待研究）
@@ -201,14 +223,6 @@ ground：dm 图层
 
 webScene 作为一个非 Global 的自定义三维地图，直接加载一个特定的三维地图。
 
-### 绘制工具（geometry）
-
-### 定位
-
-### 查询
-
-### 渲染
-
 ## 实现三维
 
 arcgis for js api ：4.9
@@ -255,22 +269,220 @@ viewpoint，如果底图的坐标系不同，那么会导致 viewpoint 不一致
 
 坐标跟游戏的贴图。
 
-## 架构处理
+## 搭建架构
 
-## 权限配置
+技术：
 
-## 地图坐标系
+- 状态模式 （状态机就是说输出与两个因素有关:输入和当前状态。）
+  - Map 类（currentState：d2MapState/d3MapState）
+- 消息订阅发布通信
 
-- [地理坐标系统](./地理坐标系统.md)
+Map 类记录了当前的状态：
 
-http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/api-reference/esri-geometry-projection.html
+- this.d2MapState = new D2MapState()
+- this.d3MapState = new D3MapState()
 
-## 底图处理
+切换视图时，把请求委托给当前持有状态去执行。
+
+Map
+
+- setState() // d2MapState/d3MapState
+
+```js
+d2MapState {
+  onViewClick() {
+    console.log('三维')
+    this.Map.setState(this.d3MapState) // 切换到三维
+  }
+}
+```
+
+不太像。
+
+状态切换复杂度上升：
+
+- 另外切换状态不仅仅是 3d/2d 按钮的切换，还有各种不同的场景按钮记录。（但是这个不算是状态的新增，这是只是新增的场景，是备忘录模式。）
+
+数据的处理：（改造可以把 Map 作为 this 传进去，也可以只把 Map 的 data 数据传入）
+
+- 这个时候如果除了 currentState 外，还有 data 数据，这个 data 是所有状态对象都可以更改的，需要切换 state 把它传过去。setState(data)
+- Map 作为中介者，需要处理 data 为各个状态对象可以处理的数据。
+
+二三维一体化是有限的状态机。状态模式是状态机的实现之一。
+
+### 基本例子：电灯
+
+### Vue 的实现
+
+《JavaScript 设计模式》——状态模式
+
+![](../.vuepress/public/images/2020-11-24-09-07-30.png)
+
+状态模式、状态机、历史快照
+
+## 功能实现
+
+### 专题制图（或截屏）
+
+### 场景保存（书签）
+
+传统的书签，仅仅是保存地图范围。
+
+改善的书签：
+
+- 保存地图范围
+- 绘制的要素
+- 加载的图层
+- 专题开关
+- ...
+
+两个层面：
+
+- 数据的恢复
+- UI 的恢复
+
+以上均在同一个视图下，也就是同一个二维或三维视图下，数据、功能等恢复都没有问题。
+
+然而，当涉及到二三维数据同步的时候，并且使用同一个数据存储器进行数据同步。
+
+这个时候如果场景恢复后，比如当前在二维场景下，也就是图层数据 1，2，3。要恢复到三维时，是会把所有的图层 1，2，3 关闭，然后加载到三维中去进行恢复。
+
+如果此时用户切换到二维时，由于 1，2，3 已经被关闭，此时作为底图的 1 也会被关闭的，需要手动开启。
+
+会让用户觉得是 bug 的问题，因为首次进入二维场景是有底图 1 的。
+
+**解决方案**：如果切换时，检测到二维场景的基本底图或三维的基本底图被关闭，可以进行打开，这样就可以既能让历史快照恢复的干净，也不会让用户觉得有问题。况且现在三维的底图是无法进行开关的，这个也是需要进一步处理。
+
+用户使用角度来说，当前的恢复场景不要影响到原先三维或二维的初始化视图。因为解决方案是，二维与三维视图需要有默认状态，可以先显示为默认的底图的第一个图层不关闭。三维则是 ground 和 background。
+
+给要不清除的数据都添加一个 isDefault 属性，或者更具体的：`isSceneRestoreNotClear: false`
+
+不能违反历史快照恢复的规则，在恢复前其他的东西都要清除。避免出现恢复。
+
+#### 初步实现
+
+可以通过 json 格式，这个 valueObject 来存储不确定的字段信息给数据库。比较灵活，可以适应后续需要新增字段的情况，而不需要改动数据库。
+
+1. 问题：JSON.stringify 的问题，一些属性克隆有问题。对于具有 proto 属性。（后续要研究），很多 graphic 克隆有问题。lodash 深度拷贝 viewpoint 会丢失属性为空。
+2. promise async 会有些问题
+3. 正常是 dev 打包，但由于临时测试就没有办法，就用 linjy 分支
+4. 保存场景需要把三维的目录也记录下来，后面打开。
+
+```js
+let mapData = {
+  viewpoint,
+  extent,
+  visibleBaseMaps,
+  graphicObjs,
+  measureGraphicObjs,
+  openedTopics,
+};
+return {
+  content: JSON.stringify(mapData),
+  name: sceneMarkName,
+};
+```
+
+#### 多状态切换的问题（快照）
+
+使用备忘录：
+
+场景还原应用备忘录模式，场景内部涉及到二三维状态的切换。
+
+![](../.vuepress/public/images/2020-12-15-16-45-50.png)
+
+在前端层面，如果是一次性的保存与操作，比如地图中的场景保存功能。
+
+需要把保存快照和恢复快照的方法放到 Map 对象中，而 aMemento 备忘录则是后端提供接口处理。其他的组件则是 aCaretaker 的职位。
+
+实现：
+
+```html
+
+```
+
+### 绘制工具（geometry）
+
+### 测量工具
+
+### 视点同步
+
+如果从二维同步到三维时，用户不知道当前的视图点位于哪个位置，可以改善三维中显示出当前视图的行政区划名称，以及具体的地标名称。
+
+目前三维到二维，二维到三维的视点已基本进行同步。剩下就是行政区划的组件显示的一致了。
+
+只需要通过投影定位，以及一些细节的处理。
+
+viewpoint 等属性不可以枚举，这样使用了 Object.keys 的 isEmpty 函数都不能正常进行判断是否为空。
+
+```js
+const temp1 = {
+  rotation: 0,
+  scale: 875462.5441919795,
+  targetGeometry: {
+    spatialReference: {
+      latestWkid: 4524,
+      wkid: 4524,
+    },
+    x: 36548557.6947,
+    y: 2558020.34475,
+  },
+};
+temp1.propertyIsEnumerable("rotation");
+false;
+!0;
+true;
+temp1.hasOwnProperty("camera");
+true;
+```
+
+需要对以下非空的判断进行处理。
+
+```js
+/**
+ * returns true if the value is an empty object, collection, has no enumerable properties or is any type that is not cosidered a collection.
+ * @param {*} val
+ */
+export const isEmpty = val => val == null || !(Object.keys(val) || val).length;
+```
+
+这是因为 Object.key 带来的问题，只需要添加对对象的判断即可。
+当前这个判断是还是有问题，如果明确设置 enumeratable 为 false，
+JSON.stringify(val) === "{}"; 一样为空。需要后续处理。排查是否是其他的问题。
+
+```js
+/**
+ * 如果值是一个空对象，集合，或者是一个不被集合视为任何类型的类型，返回 true。注意：即使对象没有任何枚举属性，但实际有属性的。
+ * @param {*} val
+ */
+export const isEmpty = val => {
+  if (Object.prototype.toString.call(val) === "[object Object]") {
+    // 针对没有任何枚举属性的对象，特别是 Arcgis 4.12 的类实例，比如 viewpoint、graphic
+    return JSON.stringify(val) === "{}";
+  }
+  return val == null || !(Object.keys(val) || val).length;
+};
+```
+
+之前是在二三维的视点同步就出现这个判断。
+
+参考资料：
+- [js 如何判断对象是否为空](https://jingyan.baidu.com/article/86112f13bc89ec273797873a.html)
+
+### 定位
+
+### 查询
+
+### 渲染
+
+### 底图处理
 
 tiled、dynamic、wmts、tdt
 
 3D 坐标系
 投影坐标系也逐渐开始使用 z 值来计量低于或高于平均海平面的高程。
+
+### 权限配置
 
 ## 附录
 
@@ -296,25 +508,7 @@ tiled、dynamic、wmts、tdt
 </template>
 
 <script>
-  import Vue from "vue";
-  import loadModules from "@/utils/loadModules";
-  import layerUtils from "./layers/layerUtils";
-  import canvasLayerUtils from "./layers/canvasLayerUtils";
-  import createTDTLayer from "./layers/tdtLayer2";
-  import createWmtsLayer from "./layers/wmtsLayer";
-  import query from "./query/queryUtils";
-  import render from "./features/render";
-  import baseUtils from "./utils/baseUtils";
-  // import geometryUtils from "./utils/geometryUtils";
-  import locateUtils from "./locate/locateUtils";
-  import draw from "./draw/draw";
-  import drawTool from "./draw/drawTool";
-  import measure from "./measure/measure";
-  import screenLegend from "../Legend/Legend";
-  import html2canvas from "html2canvas";
-  import { logType } from "@/utils/base";
-  import { log } from "@/api/user";
-
+  // ...
   // import MapStore from "./model/mapStore";
   // import mapConfig from "../../../views/FZBZ/NatureAnalysisEvaluation/ModelEvalution/Common/mixins/mapConfig";
   export default {
@@ -1535,6 +1729,8 @@ Point scene layer SceneLayer
 
 ### 图层叠加
 
+**注意图层服务开关，如果服务还没有完全创建加载，这个时候又关闭服务，是不会从 map.layers 上获取到东西的。需要等待加载图层服务完毕，才可以继续点击 UI 切换按钮。可能是事件循环的问题，改变 visible 为 false 不起作用。需要等待之前的开启，才能进行关闭。**待调试处理。有时候可以，有时候不行。
+
 - 不同坐标参考类型
   - 地理坐标
   - 投影坐标
@@ -1574,42 +1770,13 @@ The SceneView supports following coordinate systems in a global scene:
 
 优点与缺点。
 
-### 同步视图 viewpoint
-
-地理坐标、（屏幕）平面坐标、投影坐标。
-
-viewpoint.targer
-
-参考坐标系不同，坐标值也不同，怎么同步视图点呢？
-
-相同视图下，可以直接赋值 viewpont 。二维视图到三维时，可以记录 x、y，至于 z 可以给一个默认的。
-
-因为二维视图的 viewpoint 的坐标点跟三维是不一致的，一个是平面坐标系系。
-
-投影进行坐标转换。
-
-直接把 viewpoint 传入 sceneView 构造函数有问题，需要设置为以下：
-
-```js
-  const viewpoint = await this.getViewPoint(this.viewpoint);
-      const viewOption = {
-        camera: viewpoint.camera,
-        spatialReference: viewpoint.spatialReference
-      };
-      const mapView3d = new SceneView({
-        map,
-        container: mapNode,
-        ...viewOption
-      });
-```
-
-默认情况下要给二维和三维固定的视图点，默认为全图。
-
 ### 投影工具类（重构）
 
 涉及功能：
+
 - 保存场景、定位、视图点同步、图层加载
 - 行政区划的定位（也要进行投影，因此有必要把所有功能相关的投影抽离出来）
+
 ### 同步加载数据
 
 ### 一些必要调整
@@ -1654,10 +1821,6 @@ mapView.when(
 val 也为 null，原因在于没有用 extent 初始化。后续都需要处理。
 
 分屏同步视点。
-
-## 架构
-
-![](../.vuepress/public/images/2020-11-24-09-07-30.png)
 
 #### 传统的二三维一体化
 
@@ -1816,7 +1979,6 @@ Keep in mind that switching from a MapView to a SceneView requires careful consi
 
 Map 作为一个地图类组件，接收 d2-map 和 d3-map，同一个操作时，输出不同的行为。
 
-
 ##### eventBus 的处理
 
 通过上层 Map 组件注入到子组件，也就是 d2-map 和 d3-map 身上。
@@ -1851,6 +2013,10 @@ Map 作为一个地图类组件，接收 d2-map 和 d3-map，同一个操作时�
 - viewType
 - stackType
 - feLayerId
+
+是否要添加坐标系的记录，在三维中，与当前视图坐标系不同的切片图层则走动态服务，如果相同，则正常用切片来加，避免速度过慢。
+
+能否直接通过
 
 **所有的图层都要添加上 feLayerId**，要不然增删改会有问题，特别是二维到三维的转换。
 
@@ -1924,8 +2090,9 @@ TODO 处理天地图、网络地图等非 tiled、mapLayer 的
 
 - 坐标系抽离
 - gp 服务抽离
-  
+
 让每个组件、其他工具类都可以正常访问到。而不是写死在 mixin 里。
+
 ### 地图初始化重构
 
 addLayer 没有正常添加的话，导致后续的添加不成功。比如测试环境在 3D 环境中，无法正常添加二维。因为前面的底图有问题。这个需要处理的。
@@ -1950,30 +2117,6 @@ export default new Vue();
 
 - 对于二维地图，直接设置 layer.opacity
 - 对于三维地图
-
-### 保存场景
-
-可以通过 json 格式，这个 valueObject 来存储不确定的字段信息给数据库。比较灵活，可以适应后续需要新增字段的情况，而不需要改动数据库。
-
-1. 问题：JSON.stringify 的问题，一些属性克隆有问题。对于具有 proto 属性。（后续要研究），很多 graphic 克隆有问题。lodash 深度拷贝 viewpoint 会丢失属性为空。
-2. promise async 会有些问题
-3. 正常是 dev 打包，但由于临时测试就没有办法，就用 linjy 分支
-4. 保存场景需要把三维的目录也记录下来，后面打开。
-
-```js
-let mapData = {
-  viewpoint,
-  extent,
-  visibleBaseMaps,
-  graphicObjs,
-  measureGraphicObjs,
-  openedTopics,
-};
-return {
-  content: JSON.stringify(mapData),
-  name: sceneMarkName,
-};
-```
 
 ### 用户视图范围定位重构
 
@@ -2001,7 +2144,7 @@ var view = new SceneView({
     //    y: 5767378.401137408, // 参考坐标系下的 y 点
     //   z: 50000  // elevation in meters 高程
     // ],
-    tilt: 80, // 上下倾斜
+    tilt: 80, // 上下倾斜 0 - 90 ，不能仰视
     heading: 360 // 左右转向
   }
 // 对于的 targetGeometry 的 x、y、z（对应高程）
@@ -2162,7 +2305,7 @@ http://map6mix/arcgis/rest/services", 这个没有给出 ip，无法做代理。
 
 #### 应用：按点、范围、图层服务定位、保存场景
 
-#### 同步视图点
+### 同步视图点
 
 任务调度，二三维视图同步。
 
@@ -2207,6 +2350,73 @@ const option = {
   },
 };
 ```
+
+地理坐标、（屏幕）平面坐标、投影坐标。
+
+viewpoint.targer
+
+参考坐标系不同，坐标值也不同，怎么同步视图点呢？
+
+相同视图下，可以直接赋值 viewpont 。二维视图到三维时，可以记录 x、y，至于 z 可以给一个默认的。
+
+因为二维视图的 viewpoint 的坐标点跟三维是不一致的，一个是平面坐标系系。
+
+投影进行坐标转换。
+
+直接把 viewpoint 传入 sceneView 构造函数有问题，需要设置为以下：
+
+```js
+const viewpoint = await this.getViewPoint(this.viewpoint);
+const viewOption = {
+  camera: viewpoint.camera,
+  spatialReference: viewpoint.spatialReference,
+};
+const mapView3d = new SceneView({
+  map,
+  container: mapNode,
+  ...viewOption,
+});
+```
+
+默认情况下要给二维和三维固定的视图点，默认为全图。
+
+**这里有个坑**：二维底图的切片等级与三维底图的切片等级是不一致的，那么记录 scale 缩放等级会有问题，不会正常显示的。
+
+- zoom: 5 缩放等级
+- scale：具体的缩放比例
+
+二维的缩放的 zoom 与 scale 在三维中是不同值的显示，这样同步数据时需要进行转换的。
+
+不同坐标系下的二三维地图，如何进行同步呢？：
+
+- 二维到三维，如何根据二维的比例尺计算三维的高度级数。以及缩放的比例。
+- 三维到二维中，如何根据当前的高度级数计算二维的比例尺。
+
+如果仅仅是三维视图点的恢复，比如场景恢复，就只需要记录视图点（包括当前视图下的 scale 和 zoom）即可恢复。
+
+二维到三维则不可以简单切换。
+
+二维有比例尺，那三维不是
+
+二维到三维的同步原理，如何映射的，比如游戏的纹理图。
+
+核心方法完成将电子地图的中心点坐标设为当前浏览的三维场景的中心点坐标，并计算三维场景的显示比例来确定电子地图的显示层级。**三维场景的显示比例是通过当前三维场景在 3D 窗口的宽度与其所展现的实际的三维球体上的距离的比值确定**
+
+显示比例需要计算。
+
+高度与比例尺的对应关系。
+
+- 三维的比例尺如何计算的，二维的比例尺是如何计算的。有什么区别？
+
+- 目前已经实现 x、y 的投影转换，但是比例尺计算是个问题。
+
+- 还有三维的高度计算问题。
+
+因为三维地图包含地形数据，所以拖拽过程当中如果地形有起伏，则当前地图距离视点会比较近，会自动加载高级别的地图，也就导致了地图级别发送变化，比例尺会对应的发生变化。而且三维地图没有绝对的级别概念，中间会有平滑缩放的过程，所以看起来会是逐渐变化。如果去掉地形，保持垂直视角，比例尺级别就不变了，也是这个道理。
+
+另外如果在三维地图当中视角是倾斜的，我们能看到远方的地图，这时候因为三维地图的特效，视野之外的或者距离视点远的地方会自动加载低级别的地图，这时候虽然都在同一个屏幕内，但地图的比例尺却是完全不一样的。
+
+因此不能简单传递 scale 的值。需要计算高度的映射。
 
 ### ⚠ 重要：重构 vuex 对 map、mapView 的记录
 
@@ -2264,7 +2474,16 @@ EventBus.$on("changeSwipeStyle", this.changeSwipeStyle);
 
 专题目录。这里也要处理。
 
+还得把**用经纬度表示的曲面地理坐标被转化成以距离为单位的平面直角坐标。**
+
+在三维地图中，就是用的经度和维度坐标。
+
 ## 参考资料
+
+- [怎样画一张地图？](https://zhuanlan.zhihu.com/p/93039025) 科普地图
+- 专利文件：[在 Web 页面上实现二三维地图联动的方法](https://patents.google.com/patent/CN103399928A/zh)，有很多系列文章。跟自己的初步构想一致。
+- 需求一步步。
+- 流水线。
 
 - 架构设计
 
@@ -2275,6 +2494,7 @@ EventBus.$on("changeSwipeStyle", this.changeSwipeStyle);
   - 《恰如其分的软件架构》
   - 《软件设计精要与模式》
 
+- [WebGL 入门与实践](https://juejin.cn/book/6844733755580481543/section/6844733755937013773)
 - [viewing-modes](http://localhost:8080/arcgis_js_v49_sdk/arcgis_js_api/sdk/latest/api-reference/esri-views-SceneView.html#viewing-modes)
 - [ArcGIS API for JavaScript 4.2 学习笔记[21] 对 3D 场景上的 3D 要素进行点击查询【Query 类学习】](https://www.cnblogs.com/onsummer/p/6421503.html)
 - 《（简）超图软件-SM 二三维一体化解决方案 V1-20120619 (1)》pdf

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>swipe</title>
+    <link
+      rel="stylesheet"
+      href="http://localhost:55355/dgp_js_api412/src/esri/themes/light/main.css"
+    />
+    <script src="http://localhost:55355/dgp_js_api412/src/init.js"></script>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+
+      /* 设置存放地图 div 的样式 */
+      #esri_view_div {
+        position: absolute;
+        top: 12%;
+        bottom: 4.5%;
+        left: 2.4%;
+        right: 2.4%;
+        background: no-repeat url("./girl-bg.png");
+        background-size: cover;
+      }
+
+      /* 设置存放卷帘地图 div 的样式 */
+      #esri_view_div_swipe {
+        position: absolute;
+        top: 12%;
+        bottom: 4.5%;
+        left: 2.4%;
+        right: 2.4%;
+        z-index: -1;
+        background: no-repeat url("./girl-fg.png");
+        background-size: cover;
+      }
+
+      /* 垂直分割线 */
+      .vertical_line {
+        position: absolute;
+        top: 12%;
+        left: 50%;
+        bottom: 4.2%;
+        z-index: 1;
+        float: left;
+        width: 10px;
+        background-color: rgba(50, 50, 50, 0.75);
+        user-select: none;
+      }
+
+      /* 圆按钮 */
+      .circle {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(50, 50, 50, 0.75);
+        border-radius: 50%;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        bottom: 4.2%;
+        z-index: 2;
+        margin-left: -10px;
+        user-select: none;
+      }
+
+      /* 左箭头 */
+      .triangle-left {
+        width: 0;
+        height: 0;
+        border-top: 4px solid transparent;
+        border-right: 7px solid white;
+        border-bottom: 4px solid transparent;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: 12px;
+        z-index: 3;
+        user-select: none;
+      }
+      /* 右箭头 */
+      .triangle-right {
+        width: 0;
+        height: 0;
+        border-top: 4px solid transparent;
+        border-left: 7px solid white;
+        border-bottom: 4px solid transparent;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-left: 10px;
+        margin-top: 12px;
+        z-index: 3;
+        user-select: none;
+      }
+      #swipe_split_box {
+        pointer-events: auto;
+        cursor: col-resize;
+        /* position: absolute;
+        height: 30px;
+        width: 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="esri_view_div"></div>
+    <div id="esri_view_div_swipe"></div>
+    <div id="swipe_split_box">
+      <div id="vertical_line" class="vertical_line"></div>
+      <div id="swipe_circle" class="circle"></div>
+      <div id="swipe_triangle_left" class="triangle-left"></div>
+      <div id="swipe_triangle_right" class="triangle-right"></div>
+    </div>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/core/watchUtils",
+        "dojo/dom-style",
+      ], function(Map, SceneView, watchUtils, EsriDomStyle) {
+        const esriContainerDiv = "esri_view_div";
+        const esriSwipeContainerDiv = "esri_view_div_swipe";
+
+        // 绑定事件
+        let isDragging = false; // 分割线移动状态
+        const swipeSplitBox = document.getElementById("swipe_split_box");
+        document.addEventListener("mousedown", onMapMouseDown);
+
+        // view1.on("point-move", (e) => {
+        //   console.log("pointMove ->", pointMove);
+        //   pointMove(e);
+        // });
+        // view2.on("point-move", (e) => {
+        //   pointMove(e);
+        // });
+
+        function onMapMouseDown() {
+          isDragging = true;
+          console.log("isDragging ->", isDragging);
+          // 添加监听
+          document.addEventListener("mouseup", onMapMouseUp);
+          document.addEventListener("mousemove", onMapMouseMove);
+        }
+        function onMapMouseUp() {
+          isDragging = false;
+          console.log("isDragging ->", isDragging);
+          // 取消监听
+          document.removeEventListener("mousemove", onMapMouseMove); 
+          document.removeEventListener("mouseup", onMapMouseMove);
+        }
+        function onMapMouseMove(e) {
+          e.stopPropagation();
+          console.log("e ->", e.x);
+          updateMapSwipeLocation(e.x);
+        }
+
+        /**
+         * @description:
+         * @param {Number} location 当前的位置
+         * @param {Boolean} isInit 是否是初始化
+         * @return {*}
+         */
+        function updateMapSwipeLocation(location, isInit) {
+          const swipeMap = document
+            .getElementById(esriSwipeContainerDiv)
+            .getBoundingClientRect();
+          const offsetX = location;
+          const toolOffset = offsetX + swipeMap.width * 0.024;
+          if (isDragging || isInit) {
+            EsriDomStyle.set(esriSwipeContainerDiv, "z-index", 1); // 改为位置
+            EsriDomStyle.set(
+              esriSwipeContainerDiv,
+              "clip",
+              `rect(0px, ${offsetX}px, ${swipeMap.height}px, 0px)`
+            );
+            EsriDomStyle.set("vertical_line", "left", toolOffset + "px ");
+            EsriDomStyle.set("swipe_circle", "left", toolOffset + "px ");
+            EsriDomStyle.set("swipe_triangle_left", "left", toolOffset + "px ");
+            EsriDomStyle.set("swipe_triangle_right", "left", toolOffset + "px ");
+          }
+        }
+        // 设置初始化位置
+        const swipeMap = document
+          .getElementById(esriSwipeContainerDiv)
+          .getBoundingClientRect();
+        updateMapSwipeLocation(swipeMap.width * 0.5, true);
+      });
+    </script>
+  </body>
+</html>

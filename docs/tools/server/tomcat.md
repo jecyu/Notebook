@@ -104,6 +104,62 @@ Tomcat 8+
 
 在 tomcat 的 conf 的 web.xml 文件添加过滤规则，这里直接对所有部署到 tomcat 都允许跨域访问了。
 
+![](../../.vuepress/public/images/2021-01-05-20-33-49.png)
+
+
+这里的 matchAll为 true，以 ip 地址为前缀的请求 URL 都进行拦截处理。
+
+serverUrl 可以配置正则表达式，比如固定的 ip 端口，需要把不同的服务地址都添加上去。
+
+然后在 web 程序中使用，如下使用 4.x
+
+![](../../.vuepress/public/images/2021-01-05-20-34-26.png)
+
+Note: Refresh the proxy application after updates to the proxy.config have been made. 
+
+更改代理配置文件后，需要重启 tomcat 才可以起作用。
+
+这个时候，在浏览器进行代理服务的访问就已经正常了。但是由于我的 web 应用并不是放在 tomcat 下。因此还要改写头 Access-Control-Allow-Origin * ，让不再 tomcat 下的程序可以访问 tomcat 代理地址，之后再通过 tomcat 代理请求其他服务的地址。在 tomcat 的 conf 的 web.xml 文件添加过滤规则。（我这里直接对所有部署到tomcat 都允许跨域访问了。
+
+```xml
+<filter>
+  <filter-name>CorsFilter</filter-name>
+  <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+  <init-param>
+    <param-name>cors.allowed.origins</param-name>
+    <param-value>*</param-value>
+  </init-param>
+  <init-param>
+    <param-name>cors.allowed.methods</param-name>
+    <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>
+  </init-param>
+  <init-param>
+    <param-name>cors.allowed.headers</param-name>
+    <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers</param-value>
+  </init-param>
+  <init-param>
+    <param-name>cors.exposed.headers</param-name>
+    <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+  </init-param>
+  <init-param>
+    <param-name>cors.support.credentials</param-name>
+    <param-value>true</param-value>
+  </init-param>
+  <init-param>
+    <param-name>cors.preflight.maxage</param-name>
+    <param-value>10</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>CorsFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+
+参考资料：
+- https://github.com/Esri/resource-proxy/blob/master/Java/README.md
+- 跨域配置文档，一般可以访问 tomcat 部署的端口，http://domain:8080/docs/config/filter.html
 ### 压缩
 
 ![](../../.vuepress/public/images/2020-09-09-11-14-12-compression.png)

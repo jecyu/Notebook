@@ -1,0 +1,10 @@
+{
+  "name": "7-gis",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "devDependencies": {
+    "fontnik": "^0.6.0"
+  }
+}

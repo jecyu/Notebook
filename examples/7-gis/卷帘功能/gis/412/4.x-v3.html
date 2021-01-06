@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>卷帘效果-地图视图使用 同一个 map</title>
+    <link
+      rel="stylesheet"
+      href="http://localhost:55355/dgp_js_api412/src/esri/themes/light/main.css"
+    />
+    <script src="http://localhost:55355/dgp_js_api412/src/init.js"></script>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+
+      /* 设置存放地图 div 的样式 */
+      #esri_view_div_bg {
+        position: absolute;
+        top: 12%;
+        bottom: 4.5%;
+        left: 2.4%;
+        right: 2.4%;
+      }
+
+      /* 设置存放卷帘地图 div 的样式 */
+      #esri_view_div_fg {
+        position: absolute;
+        top: 12%;
+        bottom: 4.5%;
+        left: 2.4%;
+        right: 2.4%;
+        z-index: -1;
+        /* filter: grayscale(); */
+      }
+
+      /* 垂直分割线 */
+      .vertical_line {
+        position: absolute;
+        top: 12%;
+        left: 50%;
+        bottom: 4.2%;
+        z-index: 1;
+        float: left;
+        width: 10px;
+        background-color: rgba(50, 50, 50, 0.75);
+        user-select: none;
+      }
+
+      /* 圆按钮 */
+      .circle {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(50, 50, 50, 0.75);
+        border-radius: 50%;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        bottom: 4.2%;
+        z-index: 2;
+        margin-left: -10px;
+        user-select: none;
+      }
+
+      /* 左箭头 */
+      .triangle-left {
+        width: 0;
+        height: 0;
+        border-top: 4px solid transparent;
+        border-right: 7px solid white;
+        border-bottom: 4px solid transparent;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: 12px;
+        z-index: 3;
+        user-select: none;
+      }
+      /* 右箭头 */
+      .triangle-right {
+        width: 0;
+        height: 0;
+        border-top: 4px solid transparent;
+        border-left: 7px solid white;
+        border-bottom: 4px solid transparent;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-left: 10px;
+        margin-top: 12px;
+        z-index: 3;
+        user-select: none;
+      }
+      #swipe_split_box {
+        pointer-events: auto;
+        cursor: col-resize;
+        /* position: absolute;
+        height: 30px;
+        width: 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); */
+      }
+    </style>
+  </head>
+  <body>
+    <button id="changeMap">改变卷帘地图数据</button>
+    <div id="esri_view_div_bg"></div>
+    <div id="esri_view_div_fg"></div>
+    <div id="swipe_split_box">
+      <div id="vertical_line" class="vertical_line"></div>
+      <div id="swipe_circle" class="circle"></div>
+      <div id="swipe_triangle_left" class="triangle-left"></div>
+      <div id="swipe_triangle_right" class="triangle-right"></div>
+    </div>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/core/watchUtils",
+        "dojo/dom-style",
+        "esri/layers/TileLayer",
+      ], function(Map, SceneView, watchUtils, EsriDomStyle, TileLayer) {
+        const esriContainerDiv = "esri_view_div_bg";
+        const esriSwipeContainerDiv = "esri_view_div_fg";
+        const housingLayer1 = new TileLayer({
+          url:
+            "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/New_York_Housing_Density/MapServer",
+          id: "ny-housing",
+          opacity: 0.9,
+        });
+
+        // const housingLayer2 = new TileLayer({
+        //   url:
+        //     "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/New_York_Housing_Density/MapServer",
+        //   id: "ny-housing",
+        //   opacity: 0.9,
+        // });
+
+        const map1 = new Map({
+          basemap: "osm",
+          // layers: [housingLayer1],
+        });
+
+        map1.add(housingLayer1);
+        const map2 = new Map({
+          basemap: "osm",
+        });
+        console.log("map1 ->", map1);
+        console.log("map2 ->", map2);
+
+        const view1 = new SceneView({
+          container: esriContainerDiv,
+          map: map1,
+        });
+
+        const view2 = new SceneView({
+          container: esriSwipeContainerDiv,
+          map: map1,
+        });
+        console.log("view1 ->", view1);
+        console.log("view2 ->", view2);
+        view1.when(function() {
+          // housingLayer 图层加载完毕
+          housingLayer1.when(function() {
+            view1.goTo(housingLayer1.fullExtent);
+          });
+        });
+
+        // 绑定事件
+        let isDragging = false; // 分割线移动状态
+        const swipeSplitBox = document.getElementById("swipe_split_box");
+        // document.addEventListener("mousedown", onMapMouseDown);
+        swipeSplitBox.addEventListener("mousedown", onMapMouseDown); // 只需要
+        document
+          .querySelector("#changeMap")
+          .addEventListener("click", changeMapData);
+
+        function syncMapDatas() {}
+        function changeMapData() {
+          // 克隆 map2，需要动态更改，获得不同的卷帘效果
+          const { layers, basemap, ground } = map1;
+          // console.log("map1 ->", map1);
+
+          const { viewpoint } = view1;
+          // // // 新建 map，避免影响原来的 map1
+          // // new Basemap new Ground new Layer，当前先这样处理。要不就要升级 api 为 4.14 了。
+          const clonedBaseMap = basemap.clone();
+          const clonedGround = ground.clone();
+          const layer = new TileLayer({
+            url:
+              "https://tiles.arcgis.com/tiles/nGt4QxSblgDfeJn9/arcgis/rest/services/New_York_Housing_Density/MapServer",
+            id: "ny-housing",
+            opacity: 0.9,
+          });
+
+          const map2 = new Map({
+            basemap,
+            ground,
+            layers: [layer],
+          });
+          // 新建 basemap，新建 layer
+          view2.map = map2;
+          // 下一帧再更新，待上面 map 添加到 view 上来。
+          window.requestAnimationFrame(() => {
+            view2.goTo(housingLayer1.fullExtent);
+            map2.allLayers.items.forEach((layer) => {
+              if (layer.id === "ny-housing") {
+                layer.visible = false;
+              }
+            });
+          });
+
+          // 至于同步过后的图层，可以通过监听 allLayers 动态添加。这种方式改动多，map 图层多的时候性能会有问题的。
+          // map1.allLayers.on("change", function(event) {
+          //   console.log('event ->', event);
+          //   console.log("Layer added: ", event.added);
+          //   console.log("Layer removed: ", event.removed);
+          //   console.log("Layer moved: ", event.moved);
+          // });
+        }
+
+        function onMapMouseDown() {
+          isDragging = true;
+          console.log("isDragging ->", isDragging);
+          // 添加监听
+          document.addEventListener("mouseup", onMapMouseUp);
+          document.addEventListener("mousemove", onMapMouseMove);
+        }
+        function onMapMouseUp() {
+          isDragging = false;
+          console.log("isDragging ->", isDragging);
+          // 取消监听
+          document.removeEventListener("mousemove", onMapMouseMove);
+          document.removeEventListener("mouseup", onMapMouseMove);
+        }
+        function onMapMouseMove(e) {
+          e.stopPropagation();
+          // console.log("e ->", e.x);
+          updateMapSwipeLocation(e.x);
+        }
+
+        /**
+         * @description:
+         * @param {Number} location 当前的位置
+         * @param {Boolean} isInit 是否是初始化
+         * @return {*}
+         */
+        function updateMapSwipeLocation(location, isInit) {
+          const swipeMap = document
+            .getElementById(esriSwipeContainerDiv)
+            .getBoundingClientRect();
+          const offsetX = location;
+          const toolOffset = offsetX + swipeMap.width * 0.024;
+          if (isDragging || isInit) {
+            EsriDomStyle.set(esriSwipeContainerDiv, "z-index", 1); // 改为位置
+            EsriDomStyle.set(
+              esriSwipeContainerDiv,
+              "clip",
+              `rect(0px, ${offsetX}px, ${swipeMap.height}px, 0px)`
+            );
+            EsriDomStyle.set("vertical_line", "left", toolOffset + "px ");
+            EsriDomStyle.set("swipe_circle", "left", toolOffset + "px ");
+            EsriDomStyle.set("swipe_triangle_left", "left", toolOffset + "px ");
+            EsriDomStyle.set(
+              "swipe_triangle_right",
+              "left",
+              toolOffset + "px "
+            );
+          }
+        }
+        // 设置初始化位置
+        const swipeMap = document
+          .getElementById(esriSwipeContainerDiv)
+          .getBoundingClientRect();
+        updateMapSwipeLocation(swipeMap.width * 0.5, true);
+
+        /**
+         * @description: utility method that synchronizes the viewpoint of a view to other views
+         * @param {Object} view 视图容器
+         * @param {Array ｜ Object} others 其他的视图容器
+         * @return {Object} 卸载操作对象
+         */
+
+        let synchronizeView = function(view, others) {
+          others = Array.isArray(others) ? others : [others];
+
+          let viewpointWatchHandle; // 视图点
+          let viewStationaryHandle; // 不可移动的
+          let otherInteractHandlers; // 其他交互
+          let scheduleId;
+
+          let clear = function() {
+            if (otherInteractHandlers) {
+              otherInteractHandlers.forEach(function(handle) {
+                handle.remove();
+              });
+            }
+            viewpointWatchHandle && viewpointWatchHandle.remove();
+            viewStationaryHandle && viewStationaryHandle.remove();
+            scheduleId && clearTimeout(scheduleId);
+            otherInteractHandlers = viewpointWatchHandle = viewStationaryHandle = scheduleId = null;
+          };
+
+          let interactWatcher = view.watch("interacting,animation", function(
+            newValue
+          ) {
+            if (!newValue) {
+              return;
+            }
+            if (viewpointWatchHandle || scheduleId) {
+              return;
+            }
+
+            // start updating the other views at the next frame
+            scheduleId = setTimeout(function() {
+              scheduleId = null;
+              viewpointWatchHandle = view.watch("viewpoint", function(
+                newValue
+              ) {
+                // console.log("newValue ->", newValue);
+
+                others.forEach(function(otherView) {
+                  otherView.viewpoint = newValue;
+                });
+              });
+            }, 0);
+
+            // stop as soon as another view starts interacting, like if the user starts panning
+            otherInteractHandlers = others.map(function(otherView) {
+              return watchUtils.watch(
+                otherView,
+                "interacting,animation",
+                function(value) {
+                  if (value) {
+                    clear();
+                  }
+                }
+              );
+            });
+
+            // or stop when the view is stationary again
+            viewStationaryHandle = watchUtils.whenTrue(
+              view,
+              "stationary",
+              clear
+            );
+          });
+
+          return {
+            remove: function() {
+              this.remove = function() {};
+              clear();
+              interactWatcher.remove();
+            },
+          };
+        };
+
+        /**
+         * @description: utility method that synchronizes the viewpoints of multiple views
+         * @param {Array} views 多个视图
+         * @return {Object} 卸载操作对象
+         */
+        var synchronizeViews = function(views) {
+          var handles = views.map(function(view, idx, views) {
+            var others = views.concat();
+            others.splice(idx, 1);
+            return synchronizeView(view, others);
+          });
+
+          return {
+            remove: function() {
+              this.remove = function() {};
+              handles.forEach(function(h) {
+                h.remove();
+              });
+              handles = null;
+            },
+          };
+        };
+
+        // bind the views
+        synchronizeViews([view1, view2]);
+      });
+    </script>
+  </body>
+</html>

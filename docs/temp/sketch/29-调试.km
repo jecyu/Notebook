@@ -1,0 +1,585 @@
+{
+    "root": {
+        "data": {
+            "id": "c7ngcsza9uo0",
+            "created": 1607435575402,
+            "text": "调试"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c7ngd0ekobk0",
+                    "created": 1607435591564,
+                    "text": "理解系统"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7nttisel680",
+                            "created": 1607473559838,
+                            "text": "阅读手册"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nttkblcqg0",
+                            "created": 1607473563175,
+                            "text": "逐字逐句阅读整个手册"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nttop83o80",
+                            "created": 1607473572707,
+                            "text": "知道什么是正常的"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntttupwt40",
+                            "created": 1607473583923,
+                            "text": "知道工作流程"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nttvv5tlc0",
+                            "created": 1607473588303,
+                            "text": "了解你的工具"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nttz34yj40",
+                            "created": 1607473595316,
+                            "text": "查阅手册"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngd9kr10g0",
+                    "created": 1607435611529,
+                    "text": "制造失败"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7ntu4ks2js0",
+                            "created": 1607473607266,
+                            "text": "制造失败"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntu8hfa600",
+                            "created": 1607473615771,
+                            "text": "从头开始"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntufmpv8o0",
+                            "created": 1607473631328,
+                            "text": "引发失败"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntuhfbiew0",
+                            "created": 1607473635234,
+                            "text": "不要模拟失败"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntus7locg0",
+                            "created": 1607473658712,
+                            "text": "如何处理间歇性 bug"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntuvq1kxk0",
+                            "created": 1607473666358,
+                            "text": "如果做了所有尝试之后问题仍然间歇性发生",
+                            "expandState": "collapse"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7ntv7tb2vs0",
+                                    "created": 1607473692677,
+                                    "text": "仔细观察失败"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntvaiwvf40",
+                                    "created": 1607473698578,
+                                    "text": "不要盲目相信统计数据"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntve61jnk0",
+                                    "created": 1607473706507,
+                                    "text": "是已修复 bug，还是仅仅由于运气好，它不再发生了"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntvrg5xew0",
+                            "created": 1607473735417,
+                            "text": "“那不可能发生”"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntvz9kf4g0",
+                            "created": 1607473752433,
+                            "text": "永远不要丢掉调试工具"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdguzm200",
+                    "created": 1607435627385,
+                    "text": "不要想，而要看"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7ntwm0sdnk0",
+                            "created": 1607473801968,
+                            "text": "观察失败"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntwnj6ofs0",
+                            "created": 1607473805257,
+                            "text": "查看细节"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntwoxnsag0",
+                            "created": 1607473808309,
+                            "text": "问题忽隐忽现"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntwrk2lxs0",
+                            "created": 1607473814018,
+                            "text": "对系统进行插装",
+                            "expandState": "collapse"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7ntx17onf40",
+                                    "created": 1607473835037,
+                                    "text": "设计插装工具"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntx79j9yo0",
+                                    "created": 1607473848209,
+                                    "text": "过后构建插装"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntxewg2s00",
+                                    "created": 1607473864832,
+                                    "text": "不要害怕深入研究"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntxl1mobk0",
+                                    "created": 1607473878206,
+                                    "text": "添加外部插装"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntxoihvvs0",
+                                    "created": 1607473885756,
+                                    "text": "日常生活中的插装"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7nty6izonk0",
+                            "created": 1607473924968,
+                            "text": "海森堡测不准原理"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntyalti1k0",
+                            "created": 1607473933847,
+                            "text": "猜测只是为了确定搜索的重点目标"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdh1yytc0",
+                    "created": 1607435627808,
+                    "text": "分而治之"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7ntyotveq00",
+                            "created": 1607473964808,
+                            "text": "缩小搜索范围"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7ntyt06sa80",
+                                    "created": 1607473973898,
+                                    "text": "确定范围"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7ntywb5ozc0",
+                                    "created": 1607473981091,
+                                    "text": "你在哪一侧"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntz6mtnhc0",
+                            "created": 1607474003564,
+                            "text": "插入易于识别的模式"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntzckvllc0",
+                            "created": 1607474016507,
+                            "text": "从有问题的支路开始查找问题"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntziba9dc0",
+                            "created": 1607474028988,
+                            "text": "修复已知 bug"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntzm3q6ds0",
+                            "created": 1607474037238,
+                            "text": "首先消除噪声干扰"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdll6lt40",
+                    "created": 1607435637676,
+                    "text": "一次只改一个地方"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7ntzshc1xk0",
+                            "created": 1607474051122,
+                            "text": "使用步枪，而不要用散弹枪"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7ntzyv0r0o0",
+                            "created": 1607474065010,
+                            "text": "用双手抓住黄铜杆"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu08vtyj40",
+                            "created": 1607474086827,
+                            "text": "一次只改变一个测试"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu0cl2on40",
+                            "created": 1607474094883,
+                            "text": "与正常系统进行比较"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu0hv1x5s0",
+                            "created": 1607474106371,
+                            "text": "自从上一次能够正常工作以来你更改了什么"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdn9lf400",
+                    "created": 1607435641329,
+                    "text": "保持审计跟踪"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7nu14dppeo0",
+                            "created": 1607474155388,
+                            "text": "记录你的每步操作、顺序和结果"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu1a97d9c0",
+                            "created": 1607474168176,
+                            "text": "魔鬼隐藏在细节中"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu1g7qwu00",
+                            "created": 1607474181149,
+                            "text": "关联"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu1ho5wg80",
+                            "created": 1607474184318,
+                            "text": "用于设计的审计跟踪在测试中也非常有用"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu1rxgmrc0",
+                            "created": 1607474206648,
+                            "text": "好记性不如烂笔头"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdpqw0m00",
+                    "created": 1607435646729,
+                    "text": "检查插头"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7nu1xs18e00",
+                            "created": 1607474219381,
+                            "text": "怀疑自己的假设"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu20rhag00",
+                            "created": 1607474225878,
+                            "text": "从头开始检查"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu22mjxew0",
+                            "created": 1607474229933,
+                            "text": "对工具进行测试"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdt2ih740",
+                    "created": 1607435653962,
+                    "text": "获得全新观点"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7nu3fgcdkg0",
+                            "created": 1607474336220,
+                            "text": "寻求帮助"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c7nu3i4c1gw0",
+                                    "created": 1607474342024,
+                                    "text": "获得全新观点"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7nu3k88zxc0",
+                                    "created": 1607474346615,
+                                    "text": "询问专家"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c7nu3lyopwg0",
+                                    "created": 1607474350390,
+                                    "text": "借鉴别人的经验"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu3rxycjs0",
+                            "created": 1607474363406,
+                            "text": "到哪里寻求帮助"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu3uur39c0",
+                            "created": 1607474369743,
+                            "text": "放下面子"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu3yhqprk0",
+                            "created": 1607474377664,
+                            "text": "报告症状，而不是理论"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c7ngdulcupk0",
+                    "created": 1607435657278,
+                    "text": "如果你不修复 bug，它依然存在",
+                    "layout_right_offset": {
+                        "x": -10,
+                        "y": 0
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c7nu4cmczhc0",
+                            "created": 1607474408418,
+                            "text": "检查问题确实已被修复"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu4i5o6p40",
+                            "created": 1607474420469,
+                            "text": "检查确实是修复错误解决了问题"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu4nd90m80",
+                            "created": 1607474431812,
+                            "text": "bug 从来不会自己消失"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu4r1n5cw0",
+                            "created": 1607474439817,
+                            "text": "从根本上解决问题"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c7nu4tv1xvs0",
+                            "created": 1607474445949,
+                            "text": "对过程进行修复"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "classic",
+    "version": "1.4.43"
+}

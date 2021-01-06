@@ -16,6 +16,293 @@ JWT
 
 Vue 应用状态管理。
 
+## Vue 项目
+
+- **vue-loader**：解析和转换 .vue 文件，提取出其中的逻辑代码 `script`、样式代码 `style` 及 HTML 模版 template，再分别将它们交给对应的 Loader 去处理。
+- **css-loader**：加载由 vue-loader 提取出的 CSS 代码。
+- **vue-template-compiler**：将 vue-loader 提取出的 HTML 模版编译成对应的可执行的 JavaScript 代码，这和 React 中的 JSX 语法被编译成 JavaScript 代码类似。预先编译好 HTML 模版相对于在浏览器中编译 HTML 模版，性能更好。
+
+### 指令
+
+#### 拖拽指令
+
+使用 mousedown、mousemove（传统） 还是说使用 html5 的 drag 事件呢？（新兴）
+
+1. 首先鼠标按下（onmousedown）
+   - 记录目标元素当前的 `left` 和 `top` 值
+2. 鼠标移动（onmousemove）
+   - 计算每次移动的横向距离 `（disX）` 和纵向距离 `（disY）`
+3. 鼠标松开（onmouseup）
+   - 完成一次拖拽，做一些收尾工作
+
+- disX = 鼠标按下时的 clientX - 鼠标松开时的 clientX
+- disY = 鼠标按下时的 clientY - 鼠标松开时的 clientY
+(
+4. 边界值处理（不好处理，iview modal，也没有处理，参考下 vue-draggable 的源码看看）
+
+主要考虑角度是：left 和 top 的角度，minLeft、maxLeft 和 minTop 和 maxTop.
+
+![](../.vuepress/public/images/2021-01-04-11-36-52.png)
+
+```js
+/*
+ * @Author: Jecyu
+ * @Date: 2020-12-26 12:41:12
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2021-01-04 16:57:32
+ * @FilePath: /scst-natural-resources-cli3/src/utils/directives/draggable.js
+ * @Description: 
+ */
+// const getAttr = (obj, key) =>
+//   obj.currentStyle
+//     ? obj.currentStyle[key]
+//     : window.getComputedStyle(obj, false)[key];
+
+const draggable = {
+  inserted: function(el, binding) {
+    const { handle, parent, moveElStyle } = binding.value; // 将组件的移动和尺寸限制为父对象。
+    // 手柄元素
+    const handler = el.querySelector(handle);
+    // 默认样式设置
+    handler.style.cursor = "move";
+    // 拖拽元素
+    const moveEl =
+      binding.value && binding.value.moveElId
+        ? document.getElementById(binding.value.moveElId)
+        : el;
+    moveEl.style.position = "absolute"; // 为拖动元素添加绝对定位
+    // 如果容器没有 position 属性，默认不设置为 relative
+    if (parent) {
+      moveEl.parentNode.style.position = "relative";
+    }
+
+    // 初始化目标元素位置
+    if (moveElStyle.right) {
+      moveEl.style.right = moveElStyle.right ? moveElStyle.right : 0;
+    } else if (moveElStyle.left) {
+      moveEl.style.left = moveElStyle.left ? moveElStyle.left : 0;
+    }
+
+    if (moveElStyle.top) {
+      moveEl.style.top = moveElStyle.top ? moveElStyle.top : 0;
+    } else if (moveElStyle.bottom) {
+      moveEl.style.bottom = moveElStyle.bottom ? moveElStyle.bottom : 0;
+    }
+
+    // 绑定手柄元素事件
+    handler.onmousedown = function(e) {
+      // 记录鼠标按下的坐标和目标元素的 left、top 值
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+      const left = el.offsetLeft;
+      const top = el.offsetTop;
+
+      document.onmousemove = function(e) {
+        // 鼠标移动时计算每次移动的距离，并改变拖拽元素的定位
+        const disX = e.clientX - currentX;
+        const disY = e.clientY - currentY;
+
+        // TODO 暂时不考虑边界的问题
+        // 分别计算四个方向的边界值处理
+        // const minLeft = parseInt(getAttr(el, "width"));
+        // const maxLeft = document.body.clientWidth - parseInt(getAttr(el, "width"));
+        // const minTop = parseInt(getAttr(el, "height"));
+        // const maxTop =
+        //   document.body.clientHeight - parseInt(getAttr(el, "height"));
+
+        // 判断左、右边界
+        // if (disX < 0 && disX <= -minLeft) {
+        //   // 往左移
+        //   el.style.left = `${0}px`;
+        // } else if (disX > 0 && disX >= maxLeft) {
+        //   // 往右移
+        //   el.style.left = `${maxLeft}px`;
+        // } else {
+        //   el.style.left = `${left + disX}px`;
+        // }
+        moveEl.style.left = `${left + disX}px`;
+        moveEl.style.top = `${top + disY}px`;
+
+        // 判断上、下边界
+        // if (disY < 0 && disY <= -minTop) {
+        //   el.style.top
+        // }
+        // 阻止事件的默认行为，可以解决选中文本的时候拖不动
+        // let x = e.paågeX - disx //
+        // let y = e.pageY - disy
+        // let maxX = document.body.clientWidth - parseInt(window.getComputedStyle(el).width)
+        // let maxY = document.body.clientHeight - parseInt(window.getComputedStyle(el).height)
+        // if (x < 0) {
+        //   x = 0
+        // } else if (x > maxX) {
+        //   x = maxX
+        // }
+
+        // if (y < 0) {
+        //   y = 0
+        // } else if (y > maxY) {
+        //   y = maxY
+        // }
+        return false;
+      };
+      document.onmouseup = function() {
+        document.onmousemove = document.onmouseup = null;
+      };
+    };
+  },
+  unbind(el, binding) {
+    const { handle } = binding.value;
+    // 手柄元素
+    const handler = el.querySelector(handle);
+    handler.onmousedown = null;
+  }
+};
+export default draggable;
+
+```
+
+上面实现这个拖拽指令有限制：
+- 不能实现像 modal 框在 header 才可以拖拽。
+- 必须设置当前被拖拽的元素为 absolute，且 right、bottom 不固定，只保留有 left、top 值。
+
+ 完善：
+ - 需要给予 left、top 位置的设置，并且传递可以拖拽的元素配置。
+ - 以及边界值的默认配置
+
+
+对比下来，还要给予 left、top 的初始化默认值设置，这样看来 vue-draggable-resizeable 更加适合实际应用。也更加符合默认设置。
+
+参考资料：
+- https://juejin.cn/post/6844903958633267208
+- antd 拖拽指令
+- iview 的 nrmodal 拖拽
+- vue-draggable-resizesvue-draggable-resizessvue-draggable-resizess
+#### 缩放指令
+
+缩放组件，比缩放指令更好。
+
+作为一个容器进行处理，这样更加容易操作。缩放指令需要插入手柄元素，这样导致性能问题，添加了多个元素。而不是单个组件例子。
+
+缩放指令，就先不弄了。
+
+```js
+/*
+ * @Author: Jecyu
+ * @Date: 2021-01-04 17:00:14
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2021-01-04 17:47:44
+ * @FilePath: /scst-natural-resources-cli3/src/utils/directives/resizable.js
+ * @Description: Vue Dom 元素缩放指令
+ */
+
+const getAttr = (obj, key) =>
+  obj.currentStyle
+    ? obj.currentStyle[key]
+    : window.getComputedStyle(obj, false)[key];
+const draggable = {
+  inserted: function(el, binding) {
+    const { handle, parent } = binding.value; // 将组件的移动和尺寸限制为父对象。
+    // 手柄元素
+    const handler = el.querySelector(handle);
+    // 默认样式设置
+    handler.style.cursor = "nwse-resize";
+    // 目标元素
+    const moveEl =
+      binding.value && binding.value.moveElId
+        ? document.getElementById(binding.value.moveElId)
+        : el;
+
+    // 检查父元素的尺寸，避免超过
+    let parentWidth = null;
+    let parentHeight = null;
+    if (parent) {
+      parentWidth = parseInt(getAttr(el.parentNode, "width"));
+      parentHeight = parseInt(getAttr(el.parentNode, "height"));
+    }
+
+    // 绑定手柄元素事件
+    handler.onmousedown = function(e) {
+      // 记录鼠标按下的坐标和目标元素的 left、top 值
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+      // const left = el.offsetLeft;
+      // const top = el.offsetTop;
+
+      document.onmousemove = function(e) {
+        // 鼠标移动时计算每次移动的距离，并改变拖拽元素的定位
+        const disX = e.clientX - currentX;
+        const disY = e.clientY - currentY;
+        // 目前只能往右下角进行缩放，后续再支持其他情况
+        let width = parseInt(getAttr(el, "width")) + disX;
+        let height = parseInt(getAttr(el, "height")) + disY;
+        if (parentWidth && width > parentWidth) {
+          width = parentWidth;
+        }
+        if (parentHeight && height > parentHeight) {
+          height = parentHeight;
+        }
+
+        moveEl.style.width = `${width}px`;
+        moveEl.style.height = `${height}px`;
+
+        return false;
+      };
+      document.onmouseup = function() {
+        document.onmousemove = document.onmouseup = null;
+      };
+    };
+  },
+  unbind(el, binding) {
+    const { handle } = binding.value;
+    // 手柄元素
+    const handler = el.querySelector(handle);
+    handler.onmousedown = null;
+  }
+};
+export default draggable;
+
+```
+
+参考资料：
+- https://github.com/mauricius/vue-draggable-resizable/blob/master/src/components/vue-draggable-resizable.vue
+#### 透明度指令
+
+## Vue loading 最佳实践
+
+使用 loading 占位的原因是因为白屏：
+vue 路由导航后，执行以下步骤：
+1. 渲染组件
+2. 请求数据
+3. 开始执行 js，调用各种函数处理数据，并重新渲染组件，进行 diff 更新。
+
+要考虑的问题：
+- 什么时候显示 loading，有些需要让用户感知到 loading，有些则不需要（比如获取用户的权限信息等）。
+- 显示 loading 的区域：全屏/区域
+
+什么时候显示 loading
+- 数据请求
+  - 普通后端数据
+  - arcgis 图层数据
+- 渲染耗时（主要是数据计算）
+
+最佳实践，就是 loading 与数据的请求挂钩，比如请求表格数据...，之后就是请求图层中...。
+
+渲染耗时，js 单线程会导致整个页面都无法操作。除非是使用 web worker 来操作。
+
+### 采取的方式
+
+有两种，loading 动画可以放在请求拦截里做统一处理，也可以放在每个页面单独处理。
+
+统一 loading 和 统一异常处理。
+
+统一 loading 处理的话，有些图层数据会请求出错。但仍然要正常显示。
+
+不需要显示 loading：
+- 少于 2s
+### 参考资料
+
+- loading 动画 放在请求拦截里做统一处理，还是放在每个页面里？ - 这波能反杀的回答 - 知乎
+https://www.zhihu.com/question/361499790/answer/941722470
 ## 路由
 
 ### 用法
@@ -361,80 +648,72 @@ vuejs，如何在父组件调用子组件的方法？
 
 ```html
 <template>
-  <div
-    id="app"
-  >
-    <router-view
-      v-if="isRouterAlive"
-    />
+  <div id="app">
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App',
-  components: {
-    MergeTipDialog,
-    BreakNetTip
-  },
-  data () {
-    return {
-      isShow: false,
-      isRouterAlive: true
-  },
+  export default {
+    name: 'App',
+    components: {
+      MergeTipDialog,
+      BreakNetTip
+    },
+    data () {
+      return {
+        isShow: false,
+        isRouterAlive: true
+    },
 
-// 父组件中返回要传给下级的数据
-  provide () {
-    return {
-      reload: this.reload
-    }
-  },
-  methods: {
-    reload () {
-      this.isRouterAlive = false
-      this.$nextTick(() => {
-        this.isRouterAlive = true
-      })
+  // 父组件中返回要传给下级的数据
+    provide () {
+      return {
+        reload: this.reload
+      }
+    },
+    methods: {
+      reload () {
+        this.isRouterAlive = false
+        this.$nextTick(() => {
+          this.isRouterAlive = true
+        })
+      }
     }
   }
-}
 </script>
 ```
 
 ```html
 <template>
-  <popup-assign
-    :id="id"
-    @success="successHandle"
-  >
-    <div class="confirm-d-tit"><span class="gray-small-btn">{{ name }}</span></div>
+  <popup-assign :id="id" @success="successHandle">
+    <div class="confirm-d-tit">
+      <span class="gray-small-btn">{{ name }}</span>
+    </div>
     <strong>将被分配给</strong>
-    <a
-      slot="reference"
-      class="unite-btn"
-    >
+    <a slot="reference" class="unite-btn">
       指派
     </a>
   </popup-assign>
 </template>
 <script>
-import PopupAssign from '../PopupAssign'
-export default {
-//引用vue reload方法
-  inject: ['reload'],
-  components: {
-    PopupAssign
-  },
-methods: {
-    // ...mapActions(['freshList']),
-    async successHandle () {
-      this.reload()
-    }
-  }
-}
+  import PopupAssign from "../PopupAssign";
+  export default {
+    //引用vue reload方法
+    inject: ["reload"],
+    components: {
+      PopupAssign,
+    },
+    methods: {
+      // ...mapActions(['freshList']),
+      async successHandle() {
+        this.reload();
+      },
+    },
+  };
 </script>
-
 ```
+
 作者：前端岚枫
 链接：https://juejin.cn/post/6844903806166106119
 来源：掘金
@@ -481,18 +760,181 @@ export default {
 
 ## 原理
 
+### 快速调试源码
+
+大型项目的构建流程较为复杂，如果只是想简单了解源码，不需要去了解这些复杂的东西。直接到 CDN 上下载官方编译好了的开发版源码（cdn.jsdelivr.net/npm/react@1…），中间的版本号可以替换成任何想看的版本。
+
+1. 使用 vuecli 搭建调试框架
+2. 设置 vscode，配合调试 vue-cli 项目
+
+```json
+ {
+   "type": "chrome",
+   "request": "launch",
+   "name": "vuejs: chrome",
+   "url": "http://localhost:9980",
+   "webRoot": "${workspaceFolder}/src", // 使用 url，需要设置 webRoot 这个提供文件的目录
+   "breakOnLoad": true, // 如果为真，调试适配器将尝试在加载脚本之前设置断点，以便能够在这些脚本开始时命中断点
+   "sourceMapPathOverrides": { // 防止 sourceMap 没有正确生成，则使用下面右边的文件路径进行覆盖
+     "webpack:///src/*": "${webRoot}/*"
+   }
+ },
+```
+
 ### 运行机制全局概览
 
-- 全局概览
+#### 全局概览
 
 ![](../.vuepress/public/images/2020-11-16-22-53-34.png)
 
 render function 会被转化为 VNode 节点。Virtual DOM 其实就是一颗以 JavaScript 对象（VNode 节点）作为基础的树，用对象属性来描述节点，时机上它只是一层对真实 DOM 的抽象。最终可以通过一系列操作使这棵树映射到真实环境上。
 
-- 再看全局
+#### 初始化及挂载
+
+![](../.vuepress/public/images/2020-12-23-00-04-43.png)
+
+```js
+const app = new Vue({
+  render: (h) => h(App),
+});
+app.$mount("#app");
+```
+
+在 `new Vue()` 之后。Vue 会调用 `_init` 函数进行初始化，也就是这里的 `init` 过程，
+
+⬇️
+
+```js
+function Vue(options) {
+  if (!(this instanceof Vue)) {
+    warn("Vue is a constructor and should be called with the `new` keyword");
+  }
+  this._init(options);
+}
+```
+
+它会初始化生命周期、事件、props、methods、data、computed 和 watch 等。其中最重要的是通过 `Object.defineProperty` 设置 `setter` 与 `getter` 函数，用来实现「响应式」以及「收集依赖」。
+⬇️
+
+```js
+function initMixin(Vue) {
+  Vue.prototype._init = function(options) {
+    // ...
+    initLifecycle(vm);
+    initEvents(vm);
+    initRender(vm);
+    callHook(vm, "beforeCreate");
+    initInjections(vm); // resolve injections before data/props
+    initState(vm);
+    initProvide(vm); // resolve provide after data/props
+    callHook(vm, "created");
+    // ...
+    if (vm.$options.el) {
+      vm.$mount(vm.$options.el);
+    }
+  };
+}
+```
+
+初始化之后调用 `$mount` 会挂载组件，如果是运行时编译，即不存在 render function 但是存在 template 的情况，需要进行 「**编译**」步骤。
+
+#### 编译
+
+compile 可以编译为 `parse`、`optimize`
+
+![](../.vuepress/public/images/2020-12-28-22-12-06.png)
+
+```js
+Vue.prototype.$mount = function(el, hydrating) {
+  el = el && query(el);
+
+  /* istanbul ignore if */
+  if (el === document.body || el === document.documentElement) {
+    warn(
+      "Do not mount Vue to <html> or <body> - mount to normal elements instead."
+    );
+    return this;
+  }
+
+  var options = this.$options;
+  // resolve template/el and convert to render function
+  if (!options.render) {
+    var template = options.template;
+    if (template) {
+      if (typeof template === "string") {
+        if (template.charAt(0) === "#") {
+          template = idToTemplate(template);
+          /* istanbul ignore if */
+          if (!template) {
+            warn(
+              "Template element not found or is empty: " + options.template,
+              this
+            );
+          }
+        }
+      } else if (template.nodeType) {
+        template = template.innerHTML;
+      } else {
+        {
+          warn("invalid template option:" + template, this);
+        }
+        return this;
+      }
+    } else if (el) {
+      template = getOuterHTML(el);
+    }
+    if (template) {
+      /* istanbul ignore if */
+      if (config.performance && mark) {
+        mark("compile");
+      }
+
+      var ref = compileToFunctions(
+        template,
+        {
+          outputSourceRange: "development" !== "production",
+          shouldDecodeNewlines: shouldDecodeNewlines,
+          shouldDecodeNewlinesForHref: shouldDecodeNewlinesForHref,
+          delimiters: options.delimiters,
+          comments: options.comments,
+        },
+        this
+      );
+      var render = ref.render;
+      var staticRenderFns = ref.staticRenderFns;
+      options.render = render;
+      options.staticRenderFns = staticRenderFns;
+
+      /* istanbul ignore if */
+      if (config.performance && mark) {
+        mark("compile end");
+        measure("vue " + this._name + " compile", "compile", "compile end");
+      }
+    }
+  }
+  return mount.call(this, el, hydrating);
+};
+```
+
+> 渲染库的核心大致就是，compile，render，diff，对应的语法系统。之后往上就是开发应用层，angular 几乎将所有能用的模式都抽象了。
+
+分析打包后的 vue 版本。
+
+#### 响应式
+
+#### Virtual DOM
+
+#### 更新视图
+
+<!-- 调用栈截图分析 -->
+
 ## 参考资料
 
-- [vue-analysis]结合源码分析。
+- [Vue 项目里戳中你痛点的问题及解决办法（更新）](https://juejin.cn/post/6844903632815521799#heading-26)
+- 原理：
+  - 入门教程：使用 CDN 快速调试源码，结合 深入了解 vue.js 内部运行机制小册
+  - 进阶：结合慕课网教程和 gitbook [vue-analysis]结合源码分析，进行逐步构建。这块只要是看要深入那部分的讲解。
+  - 深入：模仿制造个小框架
 - [剖析 Vue.js 内部运行机制](https://juejin.im/book/6844733705089449991/section/6844733705211084808)
 - [Vue 风格指南](https://cn.vuejs.org/v2/style-guide/index.html)
 - [可能比文档还详细--VueRouter 完全指北](https://juejin.im/post/6844903665388486664)

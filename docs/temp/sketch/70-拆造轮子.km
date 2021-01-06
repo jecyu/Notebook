@@ -1,0 +1,221 @@
+{
+    "root": {
+        "data": {
+            "id": "c8bnw3wg3z40",
+            "created": 1609894274824,
+            "text": "轮子",
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8bnw7khehs0",
+                    "created": 1609894282808,
+                    "text": "JS 类库",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8bnworfm1s0",
+                            "created": 1609894320233,
+                            "text": "函数库",
+                            "expandState": "collapse"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8bnzrygyhs0",
+                                    "created": 1609894562282,
+                                    "text": "lodash"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8bo0r74zag0",
+                                    "created": 1609894638993,
+                                    "text": "Underscore"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8bo2wn79y00",
+                                    "created": 1609894807577,
+                                    "text": "Ramda"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8bo305dgw80",
+                                    "created": 1609894815206,
+                                    "text": "outils"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8bo357bw480",
+                                    "created": 1609894826208,
+                                    "text": "30-seconds-of-code"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8bo36ey8pk0",
+                            "created": 1609894828846,
+                            "text": "动画库"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bo3g48i000",
+                            "created": 1609894849965,
+                            "text": "滚动库"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bnwu6ibyg0",
+                            "created": 1609894332029,
+                            "text": "axios "
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bo3uxwgfc0",
+                            "created": 1609894882234,
+                            "text": "数据可视化"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8bo3wng1680",
+                                    "created": 1609894885956,
+                                    "text": "echart"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8bnxv7zzhs0",
+                    "created": 1609894412660,
+                    "text": "node",
+                    "layout_bottom_offset": {
+                        "x": -53,
+                        "y": 0
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8bnxi70l3s0",
+                    "created": 1609894384302,
+                    "text": "构建工具",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8bnxkznwqo0",
+                            "created": 1609894390388,
+                            "text": "babel"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bnxoztotc0",
+                            "created": 1609894399105,
+                            "text": "postcss"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bnxqls7gw0",
+                            "created": 1609894402609,
+                            "text": "webpack"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8bnwxf3m540",
+                    "created": 1609894339079,
+                    "text": "vue 系",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8bo18dd6bc0",
+                            "created": 1609894676375,
+                            "text": "UI 组件"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8bnx0v22a80",
+                    "created": 1609894346574,
+                    "text": "react 系"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8bnysmax4w0",
+                            "created": 1609894485360,
+                            "text": "React Native"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8bo1c2g5js0",
+                            "created": 1609894684422,
+                            "text": "UI 组件"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8bo10oyxbs0",
+                    "created": 1609894659662,
+                    "text": "angular 系"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8bnytm2lgg0",
+                    "created": 1609894487521,
+                    "text": "vanillaJS"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

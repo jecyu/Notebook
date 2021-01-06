@@ -28,107 +28,15 @@
 
 设计模式的核心思想，就是“封装变化”。确实如此，无论是创建型、结构型还是行为型，这些具体的设计模型都是在用自己的方式去封装不同类型的变化——**创建型模式封装了创建对象过程中的变化**，比如工厂模式，它做的事情就是将创建对象的过程抽离；**结构型模式封装的是对象之间组合方式的变化，目的在于灵活地表达对象间的配合与依赖关系**；**而行为型模式则是将是对象千变万化的行为进行抽离**，确保我们能够更安全、更方便地对行为进行更改。
 
-## 创建型：工厂模式-简单工厂
+## 创建型
 
-## 创建型：原型模式—谈 prototype 无小事
+### 工厂模式-简单工厂
+
+### 原型模式—谈 prototype 无小事
 
 在原型模式下，当我们想要创建一个对象时，会先找到一个对象作为原型，然后通过**克隆原型**的方式来创建一个与原型一样（共享一套数据/方法）的对象。
 
 原型编程范式的核心思想就是**利用实例来描述对象，用实例定义对象和继承的基础。**在 JavaScript 中，原型编程范式的体现就是**基于原型链的继承。**
-## 观察者模式
-
-当对象存在一对多关系时，则使用观察者模式（Observer Pattern）。比如，当一个对象被修改时，则会自动通知它的依赖对象。观察者模式又叫做发布-订阅（Publish/Subscribe）模式、模式-视图（Model/View）模式、源-监听器（Source/Listener）模式或从属者（Dependents）。观察者模式属于一种对象行为型模式。
-
-### 介绍
-
-**意图**：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。在此，发生改变的对象称为<strong>观察目标</strong>，而被通知的对象称为<strong>观察者</strong>，一个观察目标可以对应多个观察者，而且这些观察者之间没有相互联系，可以根据需要增加和删除观察者，使得系统更易于扩展，这就是观察者模式的模式动机。
-
-**主要解决**：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合（观察者之间没有联系），保证高度的协作。
-
-**如何解决**：使用面向对象技术，可以将这种依赖弱化。
-
-**关键代码**：在抽象类里有一个 ArrayList 存放观察者们。
-
-**优点**：
-
-- 观察者和被观察者是抽象耦合的。
-- 建立一套触发机制。
-
-**缺点**：
-
-- 如果一个被观察者有很多的直接和间接的观察者的话，将所有的观察者都通知到会花费很多时间。（前端的话，如阻塞卡顿）
-- 如果在观察者和观察模板之间有循环依赖的话，观察目标会触发它们之间进行循环调用，可能导致系统崩溃。
-- 观察者模式没有相应的机制让观察者知道所观察的目标对象是怎么发生变化的，而仅仅只是知道观察目标发生了变化。
-
-**使用场景**：
-
-- 一个抽象模型有两个方面，其中一个方面依赖于另一个方面。将这些方面封装在独立的对象中使它们可以各自独立地改变和复用。
-- 一个对象的改变将导致其他一个或多个对象也发生改变，而不知道具体有多少对象将发生改变，可以降低对象之间的耦合度。
-- 一个对象必须通知其他对象，而并不知道这些对象是谁。
-- 需要在系统中创建一个触发链，A 对象的行为将影响 B 对象，B 对象的行为将影响 C 对象......，可以使用观察者模式创建一种链式触发机制。
-
-### 实现
-
-- 一种一对多的依赖，当一个对象的状态发生改变时，所以依赖它的对象都将得到通知
-- 关于“观察者模式”的设计模式，也是 vue 响应式实现的核心，订阅发布模式是观察者模式的升级版，dojo 的 Topic，vue 的 eventBus 这些就是用的发布订阅模式
-
-```js
-class Observer {
-  constructor() {
-    this.subs = [];
-  }
-  subscribe(target, cb) {
-    target.subs.push(cb);
-  }
-
-  publish() {
-    this.subs.forEach((sub) => sub());
-  }
-}
-
-const ob1 = new Observer();
-const ob2 = new Observer();
-const ob3 = new Observer();
-
-ob2.subscribe(ob1, function() {
-  console.log("ob2 添加了对 ob1 的依赖，ob1 通知了我会响应");
-});
-
-ob3.subscribe(ob1, function() {
-  console.log("ob3 添加了对 ob1 的依赖，ob1 通知了我会响应");
-});
-
-ob1.publish(); // ob1 发起了通知
-```
-
-#### 发布——订阅
-
-- 发布——订阅是观察者的升级版
-- 发布——订阅 拥有一个调度中心
-- 如果用 发布——订阅，上面 Observer 类的 subscribe 和 publish 方法都在 observer 对象（调度中心）进行管理
-
-```js
-const observer = {
-  subs: Object.create(null),
-  subscribe(type, cb) {
-    (this.subs[type] || (this.subs[type] = [])).push(cb);
-  },
-  publish(type, ...args) {
-    (this.subs[type] || []).forEach((cb) => cb.apply(null, args));
-  },
-};
-
-observer.subscribe("foo", function() {
-  console.log("foo 事件被订阅了，可以发布");
-});
-
-observer.subscribe("bar", function() {
-  console.log("bar 事件被订阅了，可以发布");
-});
-
-observer.publish("foo");
-observer.publish("bar");
-```
 
 ## 结构型：装饰者模式——对象装上它，就像开了挂
 
@@ -302,6 +210,212 @@ plane.fire();
 #### JS 装饰器
 
 ### 实现
+
+## 行为型
+
+### 备忘录模式
+
+备忘录模式又称为快照模式（Snapshot Pattern）或 Token 模式。
+
+故名游戏存档、数据库事务、crtl + z。
+
+使用场景
+
+- 需要保存历史快照的场景
+- 希望在对象之外保存状态，且除了自己其他类对象无法访问状态保存具体内容。
+
+#### 具体实现
+
+主要目的是保存一个对象的某个状态，以便在适当的时候恢复对象。假设有原始类 A，A 中有各种属性，A 可以决定需要备份的属性，备忘录类 B 是用来存储 A 的一些内部状态，类 C 用来存储备忘录的，只能存储，不能修改。
+
+![](../.vuepress/public/images/2020-12-15-15-30-54.png)
+
+Origin 是原始类，里面有需要保存的属性 value 以及创建一个备忘录的类方法，用来保存 value 值。
+
+Memento 类是备忘录类，Storeage 类是存储备忘录的类，持有 Memento 类的实类。
+
+```ts
+class Memento {
+  private _value: string;
+  constructor(value: string) {
+    this._value = value;
+  }
+  public getValue(): string {
+    return this._value;
+  }
+  public setValue(value: string) {
+    this._value = value;
+  }
+}
+export default Memento;
+```
+
+```ts
+class Original {
+  private _value: string;
+  constructor(value: string) {
+    this._value = value;
+  }
+  public getValue(): string {
+    return this._value;
+  }
+  public setValue(value: string) {
+    this._value = value;
+  }
+  /**
+   * @description: 创建备忘录
+   * @param {*}
+   * @return {*}
+   */
+  public createMemento(): Memento {
+    return new Memento(this._value);
+  }
+
+  public restoreMemento(memento: Memento) {
+    this._value = memento.getValue();
+  }
+}
+```
+
+```ts
+class Storage {
+  private _memento: Memento;
+  constructor(memento: Memento) {
+    this._memento = memento;
+  }
+  public getMemento(): Memento {
+    return this._memento;
+  }
+  public setMemento(value: Memento) {
+    this._memento = value;
+  }
+}
+export default Storage;
+```
+
+```ts
+describe("Name of the group", () => {
+  it("should restore state correctly", () => {
+    // 创建原始类
+    const origin: Original = new Original("egg");
+    // 创建备忘录
+    const storage: Storage = new Storage(origin.createMemento());
+
+    // 修改原始类的状态
+    expect(origin.getValue()).toBe("egg"); // 初始化状态 `egg`
+    origin.setValue("niu");
+    expect(origin.getValue()).toBe("niu"); // 修改状态为 `niu`
+
+    // 恢复原始类的状态
+    origin.restoreMemento(storage.getMemento());
+    expect(origin.getValue()).toBe("egg");
+  });
+});
+```
+
+![](../.vuepress/public/images/2020-12-15-16-45-50.png)
+
+在前端层面，如果是一次性的保存与操作，比如地图中的场景保存功能。
+
+需要把保存快照和恢复快照的方法放到 Map 对象中，而 aMemento 备忘录则是后端提供接口处理。其他的组件则是 aCaretaker 的职位。
+
+- [java23 种设计模式-行为型模式之备忘录模式](https://zhuanlan.zhihu.com/p/126247747)
+- [保存快照和撤销功能的实现方案——备忘录模式总结](https://www.cnblogs.com/kubixuesheng/p/10353325.html#_label0)
+
+### 观察者模式
+
+当对象存在一对多关系时，则使用观察者模式（Observer Pattern）。比如，当一个对象被修改时，则会自动通知它的依赖对象。观察者模式又叫做发布-订阅（Publish/Subscribe）模式、模式-视图（Model/View）模式、源-监听器（Source/Listener）模式或从属者（Dependents）。观察者模式属于一种对象行为型模式。
+
+#### 介绍
+
+**意图**：定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。在此，发生改变的对象称为<strong>观察目标</strong>，而被通知的对象称为<strong>观察者</strong>，一个观察目标可以对应多个观察者，而且这些观察者之间没有相互联系，可以根据需要增加和删除观察者，使得系统更易于扩展，这就是观察者模式的模式动机。
+
+**主要解决**：一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合（观察者之间没有联系），保证高度的协作。
+
+**如何解决**：使用面向对象技术，可以将这种依赖弱化。
+
+**关键代码**：在抽象类里有一个 ArrayList 存放观察者们。
+
+**优点**：
+
+- 观察者和被观察者是抽象耦合的。
+- 建立一套触发机制。
+
+**缺点**：
+
+- 如果一个被观察者有很多的直接和间接的观察者的话，将所有的观察者都通知到会花费很多时间。（前端的话，如阻塞卡顿）
+- 如果在观察者和观察模板之间有循环依赖的话，观察目标会触发它们之间进行循环调用，可能导致系统崩溃。
+- 观察者模式没有相应的机制让观察者知道所观察的目标对象是怎么发生变化的，而仅仅只是知道观察目标发生了变化。
+
+**使用场景**：
+
+- 一个抽象模型有两个方面，其中一个方面依赖于另一个方面。将这些方面封装在独立的对象中使它们可以各自独立地改变和复用。
+- 一个对象的改变将导致其他一个或多个对象也发生改变，而不知道具体有多少对象将发生改变，可以降低对象之间的耦合度。
+- 一个对象必须通知其他对象，而并不知道这些对象是谁。
+- 需要在系统中创建一个触发链，A 对象的行为将影响 B 对象，B 对象的行为将影响 C 对象......，可以使用观察者模式创建一种链式触发机制。
+
+### 实现
+
+- 一种一对多的依赖，当一个对象的状态发生改变时，所以依赖它的对象都将得到通知
+- 关于“观察者模式”的设计模式，也是 vue 响应式实现的核心，订阅发布模式是观察者模式的升级版，dojo 的 Topic，vue 的 eventBus 这些就是用的发布订阅模式
+
+```js
+class Observer {
+  constructor() {
+    this.subs = [];
+  }
+  subscribe(target, cb) {
+    target.subs.push(cb);
+  }
+
+  publish() {
+    this.subs.forEach((sub) => sub());
+  }
+}
+
+const ob1 = new Observer();
+const ob2 = new Observer();
+const ob3 = new Observer();
+
+ob2.subscribe(ob1, function() {
+  console.log("ob2 添加了对 ob1 的依赖，ob1 通知了我会响应");
+});
+
+ob3.subscribe(ob1, function() {
+  console.log("ob3 添加了对 ob1 的依赖，ob1 通知了我会响应");
+});
+
+ob1.publish(); // ob1 发起了通知
+```
+
+#### 发布——订阅
+
+- 发布——订阅是观察者的升级版
+- 发布——订阅 拥有一个调度中心
+- 如果用 发布——订阅，上面 Observer 类的 subscribe 和 publish 方法都在 observer 对象（调度中心）进行管理
+
+```js
+const observer = {
+  subs: Object.create(null),
+  subscribe(type, cb) {
+    (this.subs[type] || (this.subs[type] = [])).push(cb);
+  },
+  publish(type, ...args) {
+    (this.subs[type] || []).forEach((cb) => cb.apply(null, args));
+  },
+};
+
+observer.subscribe("foo", function() {
+  console.log("foo 事件被订阅了，可以发布");
+});
+
+observer.subscribe("bar", function() {
+  console.log("bar 事件被订阅了，可以发布");
+});
+
+observer.publish("foo");
+observer.publish("bar");
+```
 
 ## 单例模式
 
@@ -610,7 +724,7 @@ render( treeAdapter(getArchiveTypeTree) );
 - 装饰器模式和代理模式也不会改变原有对象的接口，<u>但是装饰器模式的作用是为了给对象增加功能。</u>装饰者模式常常形成一条长的装饰链，而适配器模式通常只包装一次。代理模式是为了恐难治对对象的访问，通常也只包装一次。
 - 外观模式的作用倒是和适配器比较相似，有人把外观模式看成一组对象的适配器，<u>但外观模式最显著的特点是定义了一个新的接口。</u>
 
-## 策略模式
+### 策略模式
 
 ```js
   private async DrillDown(currentNode: any) {
@@ -644,7 +758,7 @@ render( treeAdapter(getArchiveTypeTree) );
 
 在 C# 中，是通过函数委托来实现策略模式的。
 
-## 行为型：状态模式
+### 行为型：状态模式
 
 ### 基本示例——自助咖啡机背后的力量
 
@@ -663,6 +777,11 @@ render( treeAdapter(getArchiveTypeTree) );
 唯一的区别在于，定义里强调了“类”的概念。但我们的示例中，包括今后的实践中，一个对象的状态如果复杂到了你不得不给它的每 N 种状态划分为一类、一口气划分很多类程度，我们要反思这个对象是不是做太多事情了。在大多数场景下，我们的行为划分，都是可以像本节一样，控制在“函数”这个粒度的。
 
 TODO 状态机模式，还需要进一步看下《HeadFirst 设计模式》 的处理。
+
+案例：规划审查，流程审查状态。
+
+- 复杂的流程控制
+- 上传文件
 
 #### UML 图-状态机
 
@@ -700,10 +819,18 @@ TODO 状态机模式，还需要进一步看下《HeadFirst 设计模式》 的�
 
 但这并不意味着，发布-订阅模式就比观察者模式“高级”。在实际开发中，我们的模块解藕诉求**并非总是需求它们完全解耦。**如果两个模块之间本身存在关联，且这种关联是稳定的、必要的，那么我们使用观察者模式就足够了。而在模块与模块之间独立性较强、且没有必要单纯为了数据通信而强行为两者制造依赖的情况下，我们往往会倾向于使用发布——订阅模式。
 
+### 结构型：代理模式
+
+真实例子：
+
+- vue 代理
+- xxx 文章，第一次输出 obj.a = 1，第二次 obj.a = 2
+- 分层分级代理和跨域代理
+
 ## 参考资料
 
-- [在 Vue 中使用装饰器，我是认真的](https://juejin.im/post/6856517315010232333#heading-8)
 - 《JavaScript 设计模式与开发实践》
-- 《HeadFirst 设计模式》
 - [JavaScript 设计模式核⼼原理与应⽤实践](https://juejin.im/book/6844733790204461070/section/6844733790246404109)
+- [在 Vue 中使用装饰器，我是认真的](https://juejin.im/post/6856517315010232333#heading-8)
+- 《HeadFirst 设计模式》
 - [漫画：什么是单例模式？（整合版）](https://mp.weixin.qq.com/s/2UYXNzgTCEZdEfuGIbcczA)

@@ -67,6 +67,21 @@ C:\server\nginx-1.0.2>nginx.exe -s reopen
 
 C:\server\nginx-1.0.2>nginx -v
 
+## 相关概念
+
+### 负载均衡
+
+![](../../.vuepress/public/images/2020-12-16-15-21-45.png)
+### 动静分离
+
+![](../../.vuepress/public/images/2020-12-16-15-18-11.png)
+### 正向代理和反向代理
+
+![](../../.vuepress/public/images/2020-12-16-15-15-38.png)
+
+### 配置动静分离
+### 配置反向代理
+
 ## 参考资料
 
 - [Nginx 从入门到实践，万字详解！](https://juejin.im/post/6844904144235413512#heading-12)

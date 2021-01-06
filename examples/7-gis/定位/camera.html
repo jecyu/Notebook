@@ -47,7 +47,7 @@
         // Create the Map
         var map = new Map({
           basemap: "hybrid",
-          ground: "world-elevation"
+          ground: "world-elevation",
         });
 
         // Create the SceneView
@@ -57,11 +57,10 @@
           camera: {
             position: [7.654, 45.919, 5000],
             tilt: 80,
-            heading: 360
+            heading: 360,
           },
         });
-        console.log('view ->', view);
-        
+        console.log("view ->", view);
 
         // Register events to control
         var rotateAntiClockwiseSpan = document.getElementById(
@@ -95,7 +94,7 @@
           }
 
           view.goTo({
-            heading: heading
+            heading: heading,
           });
         }
 
@@ -113,7 +112,7 @@
           }
 
           view.goTo({
-            tilt: tilt
+            tilt: tilt,
           });
         }
 
@@ -138,11 +137,67 @@
   </head>
 
   <body>
-    <div id="viewDiv"></div>
+    <div id="viewDiv" style="height: 50%; width:100%;"></div>
+    <canvas
+      style="height: 50%; width:100%; background: #000;"
+      id="middleCanvas"
+    ></canvas>
     <div id="buttonsDiv">
+      <button id="export">导出</button>
       <button id="rotateAntiClockwiseSpan" title="Rotate 90°">↻</button>
       <button id="indicatorSpan"></button>
       <button id="rotateClockwiseSpan" title="Rotate 90°">↺</button>
     </div>
+    <script>
+      const exportBtn = document.querySelector("#export");
+      exportBtn.addEventListener("click", () => {
+        // 测试底图打印出图
+        // const webGLTestCanvas = document.querySelector("canvas");
+        // console.log('webGLTestCanvas ->', webGLTestCanvas);
+        
+        // const middleCanvas = document.querySelector("#middleCanvas");
+        // const mctx = middleCanvas.getContext("2d");
+        // const sctx = webGLTestCanvas.getContext("experimental-webgl", {
+        //   preserveDrawingBuffer: true,
+        // });
+        // mctx.drawImage(webGLTestCanvas, 0, 0);
+        // const capturedImage = middleCanvas.toDataURL();
+        // console.log("capturedImage ->", capturedImage);
+
+        const webGLTestCanvas = document.querySelector("canvas");
+        const middleCanvas = document.querySelector("#middleCanvas");
+        const sctx = webGLTestCanvas.getContext("webgl", {
+          preserveDrawingBuffer: true,
+        });
+        // console.log('sctx.canvas.toDataURL(); ->', sctx.canvas.toDataURL());
+        // 这个时候获得的 3D 缓冲区是空的了，因为 4.12 绘制后图形后，会进行清除，得把它记录
+        const mctx = middleCanvas.getContext("2d");
+
+        const { drawingBufferWidth: width, drawingBufferHeight: height } = sctx;
+        debugger;
+        const pixels = new Uint8Array(width * height * 4);
+        sctx.readPixels(
+          0,
+          0,
+          width,
+          height,
+          sctx.RGBA,
+          sctx.UNSIGNED_BYTE,
+          pixels
+        );
+        const imageData = new ImageData(
+          new Uint8ClampedArray(pixels.buffer),
+          width,
+          height
+        );
+        try {
+          mctx.putImageData(imageData, 0, 0);
+        } catch (err) {
+          console.log("err ->", err);
+        }
+        const capturedImage = middleCanvas.toDataURL();
+        console.log("capturedImage ->", capturedImage);
+      });
+    </script>
   </body>
 </html>

@@ -797,3 +797,15 @@ exportMap 专门用来实现动态服务的加载的，让前端可以动态获�
 - 投影变换
 
 ### arcgis for js 4.x extent 属性详解
+
+## 渲染器
+
+Renderers define how to visually represent each feature in one of the following layer types:
+
+- FeatureLayer
+- SceneLayer
+- MapImageLayer
+- CSVLayer
+- StreamLayer
+
+http://localhost:55355/arcgis_js_v412_sdk/arcgis_js_api/sdk/latest/api-reference/esri-renderers-Renderer.html
