@@ -1,0 +1,85 @@
+{
+    "root": {
+        "data": {
+            "id": "c8gugou0eqg0",
+            "created": 1610420614115,
+            "text": "前端工程师如何学好可视化"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8guh2a2nso0",
+                    "created": 1610420643385,
+                    "text": "初级",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8gugsqzb7c0",
+                            "created": 1610420622639,
+                            "text": "入门概念"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8ha2wbzzrs0",
+                                    "created": 1610464671101,
+                                    "text": "什么是 Web 可视化"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8gugyg9v1c0",
+                            "created": 1610420635052,
+                            "text": "基础知识"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8ha2h07oq80",
+                            "created": 1610464637736,
+                            "text": "专业"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8ha2ibxets0",
+                            "created": 1610464640621,
+                            "text": "训练"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8guh3nwxbs0",
+                    "created": 1610420646398,
+                    "text": "中级",
+                    "layout_bottom_offset": {
+                        "x": -19,
+                        "y": -1
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8guh5jlnzs0",
+                    "created": 1610420650491,
+                    "text": "高级"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

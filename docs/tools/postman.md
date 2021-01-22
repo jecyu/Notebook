@@ -14,7 +14,6 @@ body
 - raw
 - binary
 
-
 ### Form 表单提交的四种方式
 
 #### application/json
@@ -29,7 +28,7 @@ body
 
 #### form-data
 
-当涉及到提交附近时，就需要使用这种方式。
+当涉及到提交表单时，就需要使用这种方式。
 
 ![](../.vuepress/public/images/2020-12-18-11-32-32.png)
 

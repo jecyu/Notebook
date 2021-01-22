@@ -82,3 +82,6 @@ convert("./fonts/microsoft-yahei-bold.ttf", "./fonts/pbf/microsoft-yahei-bold");
 
 - https://www.jianshu.com/p/23634e54487e
 - [Mapbox GL JS 学习笔记六：Mapbox 样式字体本地化方法](https://zhuanlan.zhihu.com/p/31419736)
+- https://github.com/mapbox/tiny-sdf/security
+- https://www.npmjs.com/package/fontnik
+- [mapbox/node-fontnik工具使用介绍](https://www.jianshu.com/p/23634e54487e)

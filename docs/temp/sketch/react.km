@@ -1,0 +1,99 @@
+{
+    "root": {
+        "data": {
+            "id": "c8ohfgyzsuw0",
+            "created": 1611196323863,
+            "text": "React"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8ohfy52rj40",
+                    "created": 1611196361236,
+                    "text": "入门（小白）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8ohjt2tb6o0",
+                            "created": 1611196663672,
+                            "text": "考核标准"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8ohg0zt99c0",
+                    "created": 1611196367448,
+                    "text": "基础（初级）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8ohjxvduqw0",
+                            "created": 1611196674106,
+                            "text": "考核标准"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8ohg1sp4eo0",
+                    "created": 1611196369194,
+                    "text": "专业（中级）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8ohk2vlgcw0",
+                            "created": 1611196685003,
+                            "text": "考核标准"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8ohghydmyo0",
+                    "created": 1611196404366,
+                    "text": "专家（高级）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8ohk5uzdlk0",
+                            "created": 1611196691496,
+                            "text": "考核标准"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8ohg2sgc4w0",
+                    "created": 1611196371356,
+                    "text": "训练（实战）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8oisioghx40",
+                            "created": 1611200167423,
+                            "text": "运维系统基础搭建重构\n以及项目总结文章输出说明"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

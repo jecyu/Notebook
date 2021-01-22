@@ -1,0 +1,165 @@
+{
+    "root": {
+        "data": {
+            "id": "c8infa4nrhs0",
+            "created": 1610603875887,
+            "text": "提升流量"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8inj3xsekw0",
+                    "created": 1610604175868,
+                    "text": "结合热点"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8inow4d16w0",
+                            "created": 1610604629036,
+                            "text": "新闻时事"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inp01x6c80",
+                            "created": 1610604637595,
+                            "text": "明星八卦"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inp2ee1ig0",
+                            "created": 1610604642703,
+                            "text": "互联网金融圈大事"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inp6t0row0",
+                            "created": 1610604652295,
+                            "text": "安全相关"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inp90pzyw0",
+                            "created": 1610604657114,
+                            "text": "民生相关"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inpak9tiw0",
+                            "created": 1610604660473,
+                            "text": "节假日"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8inj8kmods0",
+                    "created": 1610604185956,
+                    "text": "强化第一印象"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8inm69k62w0",
+                            "created": 1610604416025,
+                            "text": "吸引人的标题"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8inneivwu80",
+                                    "created": 1610604512368,
+                                    "text": "激发好奇《这才是旅行者的生活》"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8innk2mv740",
+                                    "created": 1610604524446,
+                                    "text": "引发共鸣《xx 案后谈xxx》"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8innrxoq740",
+                                    "created": 1610604541561,
+                                    "text": "实用技能《爆款文章的 10 个做法》"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8innzs7maw0",
+                                    "created": 1610604558644,
+                                    "text": "蹭蹭大咖，人/或大公司《xxx 面试题》《马云背后的女人故事》"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8inoidj2480",
+                                    "created": 1610604599115,
+                                    "text": "戳中痛点《努力后为什么焦虑》《程序员是青春饭吗》"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8inma2uol40",
+                            "created": 1610604424327,
+                            "text": "吸引人的导读"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8inmcds8mg0",
+                            "created": 1610604429342,
+                            "text": "吸引人的图片（封面图）"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8injjjb0dc0",
+                    "created": 1610604209820,
+                    "text": "抓共鸣词",
+                    "layout_bottom_offset": {
+                        "x": -9,
+                        "y": 0
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8ingavxp940",
+                    "created": 1610603955901,
+                    "text": "链接资源"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

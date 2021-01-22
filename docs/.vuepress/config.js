@@ -85,6 +85,10 @@ module.exports = {
             text: "JS 事件循环机制",
             link: "https://jecyu.github.io/JS-Event-Loop/",
           },
+          {
+            text: "微谈 Web 前端性能优化",
+            link: "https://jecyu.github.io/Web-Performance-Optimization/reference/",
+          },
         ],
       },
     ],

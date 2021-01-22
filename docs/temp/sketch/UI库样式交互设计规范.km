@@ -1,0 +1,988 @@
+{
+    "root": {
+        "data": {
+            "id": "c8jceqzs5740",
+            "created": 1610674361981,
+            "text": "antd UI 库设计规范",
+            "hyperlink": "https://ant.design/docs/spec/stay-cn",
+            "hyperlinkTitle": "Ant Design"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8jcf3jbzkw0",
+                    "created": 1610674389285,
+                    "text": " 全局样式"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nl3gc0kyo0",
+                            "created": 1611105106586,
+                            "text": "色彩"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8p9ih241m80",
+                                    "created": 1611275550221,
+                                    "text": "系统级色彩体系"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9iqs3ocw0",
+                                            "created": 1611275571384,
+                                            "text": "基础色板"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9iy9mqsg0",
+                                            "created": 1611275587681,
+                                            "text": "中性色板"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9j3cjhpc0",
+                                            "created": 1611275598741,
+                                            "text": "数据可视化色板"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9j5cok800",
+                                            "created": 1611275603103,
+                                            "text": "色板生成工具"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9jbekuls0",
+                                    "created": 1611275616278,
+                                    "text": "产品级色彩体系"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9jh2bk8g0",
+                                            "created": 1611275628598,
+                                            "text": "品牌色的应用"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9kt53wko0",
+                                            "created": 1611275733252,
+                                            "text": "功能色"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9l99w5q00",
+                                            "created": 1611275768370,
+                                            "text": "中性色"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9lbtv3eg0",
+                                    "created": 1611275773931,
+                                    "text": "企业级产品设计中的色彩应用"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl3hg1szs0",
+                            "created": 1611105109007,
+                            "text": "布局"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8p9mbnq66g0",
+                                    "created": 1611275851924,
+                                    "text": "统一画板"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9nuibtwo0",
+                                            "created": 1611275971321,
+                                            "text": "为了尽可能减少沟通与理解的成本，有必要在组织内部统一设计板的尺寸。蚂蚁中台设计团队统一的画板尺寸为 1440."
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9mgbmi540",
+                                    "created": 1611275862076,
+                                    "text": "适配"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9mh6c2a00",
+                                    "created": 1611275863933,
+                                    "text": "网格单位"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9miszuyw0",
+                                    "created": 1611275867480,
+                                    "text": "栅格"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8p9n8msnnk0",
+                                    "created": 1611275923702,
+                                    "text": "常用模度"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl3isbteo0",
+                            "created": 1611105111926,
+                            "text": "字体"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl3jvyunc0",
+                            "created": 1611105114323,
+                            "text": "图标"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl3msbzww0",
+                            "created": 1611105120634,
+                            "text": "阴影"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl3o8low00",
+                            "created": 1611105123794,
+                            "text": "暗黑模式"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8jcf5m3l5s0",
+                    "created": 1610674393805,
+                    "text": "设计模式",
+                    "layout_bottom_offset": {
+                        "x": 220,
+                        "y": 3
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nkvvmt6b40",
+                            "created": 1611104512977,
+                            "text": "原则",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nkvyee3eg0",
+                                    "created": 1611104518999,
+                                    "text": "亲密性",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofiw1ofbk0",
+                                            "created": 1611190949549,
+                                            "text": "纵向间距关系"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofj7tyqu00",
+                                            "created": 1611190975204,
+                                            "text": "横向间距关系"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nkw9c8gbc0",
+                                    "created": 1611104542813,
+                                    "text": "对齐",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofjc6w8ww0",
+                                            "created": 1611190984693,
+                                            "text": "文案类对齐"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofjjx8oa00",
+                                                    "created": 1611191001524,
+                                                    "text": "如果页面的字段或段落较短、较散时，需要确定一个统一的视觉起点。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofjeh8luo0",
+                                            "created": 1611190989672,
+                                            "text": "表单类对齐"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofjweoucg0",
+                                                    "created": 1611191028700,
+                                                    "text": "冒号对齐（右对齐）能让内容锁定在一定范围内，让用户眼球顺着冒号的视觉流，就能找到所有填写项，从而提供填写效率。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofjhi2cwo0",
+                                            "created": 1611190996253,
+                                            "text": "数字类对齐"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofknk2kw80",
+                                                    "created": 1611191087799,
+                                                    "text": "为了快速对比数值大小，建议所有数值取相同的有效位数，并且右对齐。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nkwbc6ni00",
+                                    "created": 1611104547163,
+                                    "text": "对比",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofl87wglc0",
+                                            "created": 1611191132775,
+                                            "text": "主次关系对比"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofljat8140",
+                                                    "created": 1611191156896,
+                                                    "text": "为了让用户能在操作上（类似表单、弹出框常见）快速做出判断，来突出其中一项相对更重要或者更高频的操作"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofmj57go80",
+                                                    "created": 1611191234921,
+                                                    "text": "在一些需要用户慎重决策的场景中，系统应该保持中立，不能替用户或者诱导用户做出判断"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofldyvcvs0",
+                                            "created": 1611191145290,
+                                            "text": "总分关系对比"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofn38ao2w0",
+                                                    "created": 1611191278644,
+                                                    "text": "通过调整排版、字体、大小等方式来突出层次感，区分总分关系，使得页面更具张力和节奏感"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8oflfp760g0",
+                                            "created": 1611191149059,
+                                            "text": "状态关系对比"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofnnnkic80",
+                                                    "created": 1611191323103,
+                                                    "text": "通过改变颜色、增加辅助形状等方法来实现状态关系的对比，以便用户更好的区分信息。"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofo755u5k0",
+                                                    "created": 1611191365525,
+                                                    "text": "常见类型有「静态对比」、「动态对比」"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nkwbz53ls0",
+                                    "created": 1611104548551,
+                                    "text": "重复",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofogb92ow0",
+                                            "created": 1611191385485,
+                                            "text": "重复元素"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofojid8q00",
+                                                    "created": 1611191392445,
+                                                    "text": "重复元素可以是一条粗线、一种线框，某种相同的颜色、设计要素、设计风格，某种格式、空间关系等"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nkwd7kl5c0",
+                                    "created": 1611104551238,
+                                    "text": "直截了当",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofp7rrcf40",
+                                            "created": 1611191445256,
+                                            "text": "业内编辑"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofpe0u7m80",
+                                                    "created": 1611191458866,
+                                                    "text": "单字段行内编辑"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofrp3qwww0",
+                                                    "created": 1611191639714,
+                                                    "text": "多字段行内编辑"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofpafy80w0",
+                                            "created": 1611191451072,
+                                            "text": "利用拖放"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofrladp400",
+                                                    "created": 1611191631408,
+                                                    "text": "拖放列表"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8ofs6u3he00",
+                                                            "created": 1611191678313,
+                                                            "text": "只能限制在一个维度（上/下或者左/右）进行拖放"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofs1pvtfs0",
+                                                    "created": 1611191667174,
+                                                    "text": "拖放图片/文件"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nkwi1rm480",
+                                    "created": 1611104561771,
+                                    "text": "足不出户",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nkxe8kwbk0",
+                                            "created": 1611104631840,
+                                            "text": "覆盖层"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nkxfr4zp40",
+                                            "created": 1611104635139,
+                                            "text": "嵌入层"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nkxofhczc0",
+                                            "created": 1611104654025,
+                                            "text": "虚拟页面"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nkxs7gki00",
+                                            "created": 1611104662247,
+                                            "text": "流程处理"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nl4nyw6fs0",
+                                    "created": 1611105201571,
+                                    "text": "简化交互",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nl5kf6ek80",
+                                            "created": 1611105272213,
+                                            "text": "实时可见工具"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nl5xyfg600",
+                                            "created": 1611105301675,
+                                            "text": "悬停即现工具"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nl6o00cow0",
+                                            "created": 1611105358367,
+                                            "text": "开关显示工具"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nl74rcep40",
+                                            "created": 1611105394848,
+                                            "text": "可视区域不等于可点击区域"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nl9omgisg0",
+                                    "created": 1611105594817,
+                                    "text": "提供邀请",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nl9ytmulk0",
+                                            "created": 1611105617019,
+                                            "text": "静态邀请"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nla0d998w0",
+                                            "created": 1611105620382,
+                                            "text": "动态邀请"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nlglvlg5s0",
+                                                    "created": 1611106137388,
+                                                    "text": "悬停"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nlgn5isg80",
+                                                    "created": 1611106140165,
+                                                    "text": "推论"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8oexi2n4080",
+                                    "created": 1611189273485,
+                                    "text": "巧用过渡",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8oeyaadamw0",
+                                            "created": 1611189334902,
+                                            "text": "在视图变化时保持上下文"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8oezblimmw0",
+                                                    "created": 1611189416117,
+                                                    "text": "滑入与滑出：可以有效构建虚拟空间"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8of1go39vc0",
+                                                    "created": 1611189583885,
+                                                    "text": "传送带：可极大地扩展虚拟空间"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8of1vsmreo0",
+                                                    "created": 1611189616812,
+                                                    "text": "折叠窗口：在视图切换时，有助于保持上下文，同时也能拓展虚拟空间"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8of2qmrv5c0",
+                                            "created": 1611189683938,
+                                            "text": "解释刚刚发生了什么"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8of2umd3js0",
+                                                    "created": 1611189692620,
+                                                    "text": "对象增加：在列表/表格中，新增了一个对象"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8of314935k0",
+                                                    "created": 1611189706762,
+                                                    "text": "对象删除：在列表/表格中，删除了一个对象"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8of6tdff400",
+                                                    "created": 1611190003359,
+                                                    "text": "对象更改：在列表/表格中，更改了一个对象"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8of726v3b40",
+                                                    "created": 1611190022554,
+                                                    "text": "对象呼出：点击页面中元素，呼出一个新对象"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8of7eex98o0",
+                                            "created": 1611190049162,
+                                            "text": "改善感知性能"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8of7hbpktc0",
+                                                    "created": 1611190055498,
+                                                    "text": "当无法有效提升「实际性能」时，可以考虑适当转移用户的注意力，来缩短某项操作的感知时间，改善感知性能。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8of87332h40",
+                                            "created": 1611190111573,
+                                            "text": "自然运动",
+                                            "hyperlink": "https://motion.ant.design",
+                                            "hyperlinkTitle": "Ant Motion"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofardce0o0",
+                                    "created": 1611190312457,
+                                    "text": "即时反应",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ofd6uk0sg0",
+                                            "created": 1611190502878,
+                                            "text": "查询模式"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofd8w3pz40",
+                                                    "created": 1611190507325,
+                                                    "text": "自动完成：用户输入时，下拉列表会随着输入的关键词显示匹配项。根据查询结果分类的多少，可分为「确定类目」、「不确定类目」两种类型"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofe5jhucw0",
+                                                    "created": 1611190578397,
+                                                    "text": "实时搜索：随着用户输入，实时显示搜索结果。「自动完成」、「实时建议」的近亲。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ofeozzhk00",
+                                            "created": 1611190620753,
+                                            "text": "反馈模式"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8ofequ05q00",
+                                                    "created": 1611190624745,
+                                                    "text": "实时预览：在用户提交输入之前，让他先行了解系统将如何处理他的输入"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofg1e2t8g0",
+                                                    "created": 1611190726091,
+                                                    "text": "渐进式展现：在必要的时候提供必要的提示，而不是一股脑儿显示所有提示，导致界面混乱，增加认知负担。案例详见「足不出户/渐进式展现」"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofguk26340",
+                                                    "created": 1611190789579,
+                                                    "text": "进度指示：当一个操作需要一定的时间完成时，就需要即时告知进度，保持与用户的沟通。常见的进度指示：「按钮加载」、「表格加载」、「富列表加载」、「页面加载」。可根据操作的量级和重要性，展示不同类型的进度指示。"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofi2ki7j40",
+                                                    "created": 1611190885384,
+                                                    "text": "点击刷新：告知用户有新内容，并提供按钮等工具帮助用户查看新内容。"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ofic943800",
+                                                    "created": 1611190906463,
+                                                    "text": "定时刷新：无需用户介入，定时展示新内容"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nl7vxlan40",
+                            "created": 1611105453999,
+                            "text": "全局原则",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8ofsnw4lgw0",
+                                    "created": 1611191715441,
+                                    "text": "数据录入"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofsq7wdc80",
+                                    "created": 1611191720506,
+                                    "text": "数据展示"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofsrr6jb40",
+                                    "created": 1611191723849,
+                                    "text": "数据格式"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofsu718jc0",
+                                    "created": 1611191729161,
+                                    "text": "文案"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofswgtajk0",
+                                    "created": 1611191734106,
+                                    "text": "按钮"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8ofszlgbc00",
+                            "created": 1611191740917,
+                            "text": "模版文档"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8oftiedpeo0",
+                            "created": 1611191781848,
+                            "text": "topic"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8oftk886ns0",
+                    "created": 1611191785830,
+                    "text": "设计模式-探索",
+                    "layout_bottom_offset": {
+                        "x": -167,
+                        "y": 2
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8ofucgrjog0",
+                            "created": 1611191847296,
+                            "text": "全局规则"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8ofueoenjk0",
+                                    "created": 1611191852112,
+                                    "text": "导航"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofufzd5a00",
+                                    "created": 1611191854951,
+                                    "text": "消息与反馈"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofuhkdlds0",
+                                    "created": 1611191858398,
+                                    "text": "空状态"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8ofun4tc5s0",
+                            "created": 1611191870518,
+                            "text": "模版文档"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8ofuouet200",
+                                    "created": 1611191874242,
+                                    "text": "表单页"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofuqmtisg0",
+                                    "created": 1611191878137,
+                                    "text": "工作台"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofus6t9uo0",
+                                    "created": 1611191881523,
+                                    "text": "列表页"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofuu4ar800",
+                                    "created": 1611191885724,
+                                    "text": "结果页"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8ofuvk9dxs0",
+                                    "created": 1611191888866,
+                                    "text": "异常页"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8oftwo1mjk0",
+                    "created": 1611191812908,
+                    "text": "可视化"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8ofty3ap6o0",
+                    "created": 1611191816007,
+                    "text": "动效"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -157,7 +157,8 @@
                         "data": {
                             "id": "c8bcldu8lnk0",
                             "created": 1609862402244,
-                            "text": "生活"
+                            "text": "生活",
+                            "expandState": "expand"
                         },
                         "children": [
                             {
@@ -181,6 +182,14 @@
                                     "id": "c8bu7550vog0",
                                     "created": 1609912066185,
                                     "text": "健身"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8c7531mqs00",
+                                    "created": 1609948579326,
+                                    "text": "前端自检计划"
                                 },
                                 "children": []
                             }

@@ -67,6 +67,14 @@
                     },
                     {
                         "data": {
+                            "id": "c8ih4uuw70o0",
+                            "created": 1610586132344,
+                            "text": "编辑器"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
                             "id": "c8bo36ey8pk0",
                             "created": 1609894828846,
                             "text": "动画库"
@@ -101,6 +109,23 @@
                                     "id": "c8bo3wng1680",
                                     "created": 1609894885956,
                                     "text": "echart"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8ih4pk4t2o0",
+                            "created": 1610586120809,
+                            "text": "UI 组件"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8ih50wuu940",
+                                    "created": 1610586145523,
+                                    "text": "按钮"
                                 },
                                 "children": []
                             }

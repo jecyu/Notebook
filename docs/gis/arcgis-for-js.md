@@ -2,6 +2,9 @@
 
 版本使用：4.x
 
+## 资源
+
+- [arcgis 动态图层之动态工作空间](https://www.yuque.com/docs/share/6830a2fc-dd13-4bc5-ae2a-51e5ff184a26)
 ## 创建地图和添加图层
 
 ### 使用 ArcGIS API for JavaScript 创建应用程序的基本步骤

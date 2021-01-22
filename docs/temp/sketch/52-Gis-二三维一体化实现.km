@@ -1,0 +1,741 @@
+{
+    "root": {
+        "data": {
+            "id": "c8nm9s9nawg0",
+            "created": 1611108423859,
+            "text": "二三维一体化实现",
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8nmly9o1d40",
+                    "created": 1611109377292,
+                    "text": "需要了解的二三维知识",
+                    "layout_bottom_offset": {
+                        "x": -196,
+                        "y": -2
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nmqkiq96w0",
+                            "created": 1611109739185,
+                            "text": "二维地图",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmrkknkcg0",
+                                    "created": 1611109817666,
+                                    "text": "二维地图应用"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmi3dy03k0",
+                                    "created": 1611109074977,
+                                    "text": "地图展示原理"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nmidz4w2g0",
+                                            "created": 1611109098026,
+                                            "text": "二维 Canvas"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmsrid3so0",
+                                    "created": 1611109911129,
+                                    "text": "二维地图应用"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmuv6jm0o0",
+                                    "created": 1611110075849,
+                                    "text": "GIS 坐标系"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmqt7ojmw0",
+                            "created": 1611109758108,
+                            "text": "三维地图",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmrkknkcg0",
+                                    "created": 1611109817666,
+                                    "text": "三维地图应用"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmih0sv3c0",
+                                    "created": 1611109104657,
+                                    "text": "地图展示原理：三维 WebGL"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmrc4ledc0",
+                                    "created": 1611109799280,
+                                    "text": "三维数据的产生"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmi7jbam00",
+                                    "created": 1611109084009,
+                                    "text": "GIS 坐标系"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8nmishix9s0",
+                    "created": 1611109129613,
+                    "text": "什么是二三维一体化",
+                    "layout_bottom_offset": {
+                        "x": -188,
+                        "y": -1
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nmv8n90yg0",
+                            "created": 1611110105158,
+                            "text": "二三维一体化应用"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmn2w0vh40",
+                            "created": 1611109465714,
+                            "text": "互不相干的二三维分离系统",
+                            "expandState": "expand"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8nms35k5zk0",
+                            "created": 1611109858112,
+                            "text": "二三维一体化"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmtgvgh800",
+                                    "created": 1611109966340,
+                                    "text": "分屏"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmthzktxk0",
+                                    "created": 1611109968766,
+                                    "text": "单屏切换"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8nmvs69t0w0",
+                    "created": 1611110147667,
+                    "text": "为什么要二三维一体化",
+                    "layout_bottom_offset": {
+                        "x": -168,
+                        "y": -1
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nn80wnt340",
+                            "created": 1611111107047,
+                            "text": "为什么同时需要投影坐标和地理坐标"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8nmaokit8w0",
+                    "created": 1611108494174,
+                    "text": "如何实现二三维一体化",
+                    "layout_bottom_offset": {
+                        "x": -147,
+                        "y": -2
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8nmmgt7vog0",
+                            "created": 1611109417655,
+                            "text": "需要实现的效果",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmd6os0xc0",
+                                    "created": 1611108690342,
+                                    "text": "地图工具的二三维同时支持",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nmet8n8p40",
+                                            "created": 1611108817796,
+                                            "text": "场景收藏"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmfom6ixk0",
+                                            "created": 1611108886095,
+                                            "text": "行政区划定位"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmeuu1c7s0",
+                                            "created": 1611108821267,
+                                            "text": "卷帘工具"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmewbz9hs0",
+                                            "created": 1611108824528,
+                                            "text": "I 查询"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmeynzvj40",
+                                            "created": 1611108829608,
+                                            "text": "截图"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmfca4h2w0",
+                                            "created": 1611108859245,
+                                            "text": "置灰"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nn7edohxs0",
+                                            "created": 1611111058010,
+                                            "text": "分屏"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ntgdjzctc0",
+                                            "created": 1611128688151,
+                                            "text": "空间分析"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ntgeu8wa00",
+                                            "created": 1611128690948,
+                                            "text": "空间统计"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8ntgh3lth40",
+                                            "created": 1611128695868,
+                                            "text": "加载数据"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmcywr8s80",
+                                    "created": 1611108673410,
+                                    "text": "二三维数据同步",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nmefxp18g0",
+                                            "created": 1611108788836,
+                                            "text": "运维系统统一管理"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nn7kbhtz40",
+                                                    "created": 1611111070938,
+                                                    "text": "UI 管理"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nn7nrkl5k0",
+                                                    "created": 1611111078441,
+                                                    "text": "二三维数据资源管理"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmg3t9m800",
+                                            "created": 1611108919175,
+                                            "text": "图层服务访问"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nmga3jaow0",
+                                                    "created": 1611108932857,
+                                                    "text": "分层分级代理服务"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nmgdm8kc00",
+                                                    "created": 1611108940518,
+                                                    "text": "token 访问"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nmgf0ssps0",
+                                                    "created": 1611108943575,
+                                                    "text": "跨域代理"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmcx1xfyo0",
+                                    "created": 1611108669369,
+                                    "text": "视图点同步",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nn1t9d1ow0",
+                                            "created": 1611110620216,
+                                            "text": "二三维联动"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmxbixpy00",
+                            "created": 1611110268156,
+                            "text": "需要考虑的问题",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmxlceug00",
+                                    "created": 1611110289529,
+                                    "text": "不同坐标系"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ntgoo4w2o0",
+                                            "created": 1611128712347,
+                                            "text": "投影转换"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nmxne18rk0",
+                                    "created": 1611110293981,
+                                    "text": "不同的图层类型"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8noqt0suxc0",
+                                    "created": 1611115399912,
+                                    "text": "图层的唯一标识"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nor3j42zk0",
+                                            "created": 1611115422787,
+                                            "text": "feLayerId guid() 生成/serviceCode 获得，总之保证在 map 运行期间，每个图层的标识是固定且唯一的"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nme1fikmg0",
+                                    "created": 1611108757262,
+                                    "text": "不同维度的考虑",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nmeaq3xvk0",
+                                            "created": 1611108777493,
+                                            "text": "摄像机与比例尺、坐标点"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nmxeg9ryw0",
+                                            "created": 1611110274525,
+                                            "text": "二维地图数据（x，y/经度、维度）如何映射叠加到三维球体"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nngeyllnk0",
+                                            "created": 1611111764552,
+                                            "text": "二维/三维的数据、视图转换加载"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nnjzl7hhk0",
+                                            "created": 1611112044547,
+                                            "text": "组件的差异"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nnk4vzx1k0",
+                                            "created": 1611112056084,
+                                            "text": "API 差异（mapView、sceneView）"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nn0s08r6o0",
+                                    "created": 1611110539123,
+                                    "text": "不同的叠加类型"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nn0w2eheo0",
+                                            "created": 1611110547961,
+                                            "text": "底图 basemap"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nn11pko2g0",
+                                            "created": 1611110560246,
+                                            "text": "高程 ground"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nn13ptu0w0",
+                                            "created": 1611110564615,
+                                            "text": "操作图层"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nnhrp38vs0",
+                                    "created": 1611111870639,
+                                    "text": "二三维切换的时机"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nwm7bno800",
+                                    "created": 1611137608102,
+                                    "text": "Arcgis JS for API 的版本（4.9 、4.12）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmah96a2g0",
+                            "created": 1611108478250,
+                            "text": "基础纯展示版本"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmgoyt3ow0",
+                                    "created": 1611108965223,
+                                    "text": "实现效果：二维图层可以在三维视图叠加，纯展示 "
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmjik6j680",
+                            "created": 1611109186370,
+                            "text": "高级复杂操作版本"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmgoyt3ow0",
+                                    "created": 1611108965223,
+                                    "text": "实现效果：支持二三维一体化 GIS 操作"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8nmpnwzeco0",
+                            "created": 1611109668213,
+                            "text": "实现方案",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8nmo9mroc00",
+                                    "created": 1611109558756,
+                                    "text": "WebGIS 引擎",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nmoebo9g00",
+                                            "created": 1611109568969,
+                                            "text": "Arcgis 4.x API"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nn2vqubvk0",
+                                    "created": 1611110703990,
+                                    "text": "已知的限制 4.x"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nn4grn4yw0",
+                                            "created": 1611110828115,
+                                            "text": "Limitations about switching between 2D and 3D",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nn4grn7mo0",
+                                                    "created": 1611110828115,
+                                                    "text": "Keep in mind that switching from a MapView to a SceneView requires careful consideration for a number of factors. See the list below for some of the factors of consideration. This list is not comprehensive."
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nn4grnv340",
+                                                    "created": 1611110828116,
+                                                    "text": "- **Data types** - Some layers aren't supported in 2D because of their 3D nature. These include SceneLayer, IntegratedMeshLayer, and PointCloudLayer. They will need to be removed from the map instance altogether, or replaced with 2D counterparts. For example, you could switch a SceneLayer representing buildings with a polygon FeatureLayer representing building footprints. ElevationLayer doesn't need to be considered as closely as the other layers mentioned above since the Map's ground is ignored in MapViews."
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nn4grnsyo0",
+                                                    "created": 1611110828116,
+                                                    "text": "- **Symbols** - While most 2D symbols are useable in SceneView, all 3D symbols are not supported in MapViews. Renderers may need to be reconfigured if 3D symbols are used."
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nn4grnoww0",
+                                                    "created": 1611110828116,
+                                                    "text": "- **UI components** - If adding widgets and other UI components using view.ui.add(), then keep in mind that these components need extra logic for persisting from one view to the next."
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8nn4grnkb40",
+                                                    "created": 1611110828116,
+                                                    "text": "- **Widgets** - All widgets in the API are tied to a specific view. If persisting widgets from a 2D to 3D view is desired then extra logic will need to be included for switching the view referenced by each widget. This includes a view's popup instance."
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nn44fvs3s0",
+                                    "created": 1611110801283,
+                                    "text": "具体实现",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nnp1svvw80",
+                                            "created": 1611112441186,
+                                            "text": "组件、API 差异",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nn6eeqa4o0",
+                                                    "created": 1611110979709,
+                                                    "text": "是否二维和三维共用一个地图组件，考虑到复用公共的组件，在三维中能否使用二维地图的工具函数、初始化 ，或者说区分为不同的工具类合集"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nn6j49b080",
+                                            "created": 1611110989960,
+                                            "text": "更复杂的功能：二维一些地图功能，三维实现"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8nn75ky1sg0",
+                                                    "created": 1611111038858,
+                                                    "text": "vuex 的状态管理问题"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8nn6mzqbzc0",
+                                            "created": 1611110998393,
+                                            "text": "实现二三维一体化主体框架"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8nn5erqkeg0",
+                                    "created": 1611110902132,
+                                    "text": "性能问题的优化"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8nn5hlo2e00",
+                                            "created": 1611110908295,
+                                            "text": "三维中加载二维图层切换，要根据坐标系判断而不是每次都固定用动态图层的形式加载，导致过慢"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

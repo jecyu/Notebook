@@ -1,0 +1,13 @@
+{
+    "root": {
+        "data": {
+            "id": "c8h9z8v0r5k0",
+            "created": 1610464384915,
+            "text": "如何用好 Vue2"
+        },
+        "children": []
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
