@@ -103,11 +103,28 @@ var view = new SceneView({
 
 ## 前置知识
 
-### 加载三维数据
+### 加载三维数据 
 
 ![](../.vuepress/public/images/2020-08-12-10-12-47-3dMap.png)
 
+![](../.vuepress/public/images/2021-01-28-15-21-07.png)
+
+![](../.vuepress/public/images/2021-01-28-15-21-52.png)
+
+![](../.vuepress/public/images/2021-01-28-15-27-08.png)
+
+![](../.vuepress/public/images/2021-01-28-15-29-15.png)
+
+![](../.vuepress/public/images/2021-01-28-15-30-07.png)
+
+S3M 数据格式标准
+
+![](../.vuepress/public/images/2021-01-28-15-32-08.png)
+
+![](../.vuepress/public/images/2021-01-28-15-32-22.png)
+
 #### 加载场景数据
+
 
 #### 加载场景图层和高程图层
 
@@ -1136,8 +1153,6 @@ d2MapState {
 如果当前在于二维地图的话，则不能加载三维图层类型。
 
 对于二维服务，如果是不同坐标系的，则统一以动态形式加载。
-
-
 ### 底图切换
 
 在运维配置是否为底图，如果是底图，再根据图层类型进行过滤为：ground、还是 basemap，这样就可以跑通二、三维的底图切换。
@@ -2785,3 +2800,4 @@ tiled、dynamic、wmts、tdt
 - [Tomcat 跨域配置](https://blog.csdn.net/qq_35117024/article/details/105435813)
 - [2020 项目经验总结](https://www.yuque.com/docs/share/b2a38ec5-9280-4bd0-90c9-d8778ed69b59#b6c64f1b)
 
+- 如何结合，就是把 unreal 的制作视频效果，加载 gis 三维体[三维GIS与游戏引擎的跨界融合，打造数字化孪生的平行世界](https://blog.csdn.net/supermapsupport/article/details/109535178)

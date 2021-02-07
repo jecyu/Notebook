@@ -1,0 +1,78 @@
+<canvas id="canvas" width=400 height=400></canvas>
+<script src="../../lib/webgl.js"></script>
+<script>
+var gl = canvas.getContext('webgl');
+
+// Vertex shader
+var vshader = `
+attribute vec4 position;
+attribute vec4 color;
+varying vec4 v_color;
+void main() {
+  gl_Position = position;
+  v_color = color;
+}`;
+
+// Fragment shader
+var fshader = `
+precision mediump float;
+varying vec4 v_color;
+void main() {
+  gl_FragColor = v_color;
+}`;
+
+// Compile program
+const program = compile(gl, vshader, fshader);
+
+// Define vertices and colors
+const verticesColors = new Float32Array([
+   //x ,  y,    z,    r,    g,    b
+   0.0,   0.5,  0.0,  0.0,  1.0,  0.0, 
+  -0.5,  -0.5,  0.0,  0.0,  0.0,  1.0, 
+   0.5,  -0.5,  0.0,  1.0,  0.0,  0.0, 
+]);
+  
+// Save the number of vertices (3)
+const n = 3;
+
+// Get the size of each float in bytes (4)
+const FSIZE = verticesColors.BYTES_PER_ELEMENT;
+console.log('FSIZE ->', FSIZE); // -> 获得每个元素的字节大小为：4，即 32 位
+
+// Create a buffer object
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); // 绑定某个缓冲区对象为当前缓冲区
+gl.bufferData(gl.ARRAY_BUFFER, verticesColors, gl.STATIC_DRAW); // 往缓冲区中复制数据
+
+// Bind the attribute position to the 1st, 2nd and 3rd floats in every chunk of 6 floats in the buffer
+const position = gl.getAttribLocation(program, 'position');
+gl.vertexAttribPointer( // 设置顶点属性从缓冲区中读取数据的方法
+  position,   // target
+  3,          // interleaved data size // 读取 3 个
+  gl.FLOAT,   // type
+  false,      // normalize
+  FSIZE * 6,  // stride (chunk size)，x、y、z、r、g、b 每一组数据有 6 个
+  0           // offset (position of interleaved data in chunk) 从第一个开始读取
+);
+gl.enableVertexAttribArray(position); // 启用顶点属性
+  
+// Bind the attribute color to the 4th, 5th and 6th float in every chunk
+const color = gl.getAttribLocation(program, 'color');
+gl.vertexAttribPointer(
+  color,      // target
+  3,          // interleaved chunk size，每次读取的 chunk 大小为 3
+  gl.FLOAT,   // type
+  false,      // normalize
+  FSIZE * 6,  // stride 步长
+  FSIZE * 3   // offset // 偏移 3，进行读取
+);
+gl.enableVertexAttribArray(color);
+
+// Set the clear color，设置背景颜色
+gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+// Clear canvas
+gl.clear(gl.COLOR_BUFFER_BIT);
+
+// Render
+gl.drawArrays(gl.TRIANGLES, 0, n);
+</script>

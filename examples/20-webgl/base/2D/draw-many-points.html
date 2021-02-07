@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draw many points， a matter of continuity</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../../lib/webgl.js"></script>
+
+    <script>
+      // Get the WebGL rendering context
+      const canvas = document.querySelector("canvas");
+      // const gl = canvas.getContext("webgl");
+      const gl = canvas.getContext("webgl", { preserveDrawingBuffer: true }); // 强制保留旧的绘制内容
+
+      // Vertex shader
+      const vshader = `
+      attribute vec4 position;
+      attribute float size;
+      void main() {
+        gl_Position = position;
+        gl_PointSize = size;
+      }`;
+
+      // Fragment shader
+      const fshader = `
+      precision mediump float;
+      uniform vec4 color;
+      void main() {
+        gl_FragColor = color;
+      }`;
+
+      // Compile program
+      const program = compile(gl, vshader, fshader);
+
+      // Select the position attribute and set its X/Y/Z values
+      const position = gl.getAttribLocation(program, "position");
+      // Select the size attribute and set its value
+      const size = gl.getAttribLocation(program, "size");
+      // Select the color uniform and set its value
+      const color = gl.getUniformLocation(program, "color");
+
+      // Set the clear color (black)
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+      // Clear the canvas
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      // Add a new random point every 500ms
+      setInterval(() => {
+        const x = Math.random() * 2 - 1;
+        const y = Math.random() * 2 - 1;
+
+        const r = Math.random();
+        const g = Math.random();
+        const b = Math.random();
+
+        gl.vertexAttrib3f(position, x, y, 0);
+        gl.vertexAttrib1f(size, 10);
+        gl.uniform4f(color, r, g, b, 1);
+        // Draw points
+        gl.drawArrays(gl.POINTS, 0, 1); // mode, starting pint, number of points to draw
+      }, 500);
+    </script>
+  </body>
+</html>

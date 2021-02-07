@@ -765,7 +765,8 @@ export default {
 大型项目的构建流程较为复杂，如果只是想简单了解源码，不需要去了解这些复杂的东西。直接到 CDN 上下载官方编译好了的开发版源码（cdn.jsdelivr.net/npm/react@1…），中间的版本号可以替换成任何想看的版本。
 
 1. 使用 vuecli 搭建调试框架
-2. 设置 vscode，配合调试 vue-cli 项目
+3. 运行 vue-cli 项目，一般为 `yarn serve`
+3. 设置 vscode，配合调试 vue-cli 项目，配置的端口记得为 `yarn serve` 启动的端口。
 
 ```json
  {
@@ -780,6 +781,8 @@ export default {
    }
  },
 ```
+4. 在需要断点的地方，进行断点
+5. 启动调试运行程序即可。
 
 ### 运行机制全局概览
 
@@ -840,9 +843,22 @@ function initMixin(Vue) {
 
 #### 编译
 
-compile 可以编译为 `parse`、`optimize`
+compile 可以编译为 `parse`、`optimize` 与 `generate` 三个阶段，最终需要得到 render function。
 
 ![](../.vuepress/public/images/2020-12-28-22-12-06.png)
+
+##### parse
+
+`parse` 会用正则等方式解析 tempalte 模板中的指令、class、style 等数据，形成 AST。
+
+##### optimize 
+
+`optimize` 的主要作用是标记 static 静态节点，这是 Vue 在编译过程中的一处优化，后面当 `update` 更新界面时，会有一个 `patch` 的过程，diff 算法会直接跳过静态节点，从而减少了比较的过程，优化了 `patch` 的性能。
+##### generate 
+
+`generate` 是将 AST 转化为 render function 字符串的过程，得到结果是 render 的字符串以及 staticRenderFns 字符串。
+
+在经历 `parse`、`optimize` 与 `generate` 三个阶段以后，组件中就会存在渲染 VNode 所需的 render function。
 
 ```js
 Vue.prototype.$mount = function(el, hydrating) {
@@ -922,12 +938,157 @@ Vue.prototype.$mount = function(el, hydrating) {
 
 #### 响应式
 
+![](../.vuepress/public/images/2021-02-05-11-29-04.png)
+
+这里的 `getter` 跟 `setter` 已经在之前介绍过了，在 `init` 的时候通过 `Object.defineProperty` 进行了绑定，它使得当被设置的对象被读取的实际会执行 `getter` 函数，而在当被赋值的时候会执行 `setter` 函数。
+
+当 render function 被渲染的时候，因为会读取所需对象的值，所以会触发 `getter` 函数进行「依赖收集」，「依赖收集」的目的是将观察者 Watcher 对象存放到当前闭包中的订阅者 Dep 的 subs 中。形成如下所示的这样一个关系。
+
+![](../.vuepress/public/images/2021-02-05-11-42-26.png)
+
+在修改对象的值的时候，会触发对应的 `setter`，`setter` 通知之前「依赖收集」得到的 Dep 中的每一个 Watcher，告诉它们自己的值改变了，需要重新渲染视图。这时候这些 Watcher 就会开始调用 `update` 来更新视图，当然这中间还有一个 `patch` 的过程以及使用队列异步更新的策略，这个后面再讲。
 #### Virtual DOM
+
+我们知道，render function 会被转化为 VNode 节点。Virtual DOM 其实就是一颗以 JavaScript 对象（VNODE 节点）作为基础的树，用对象属性来描述节点，实际上它只是一层对真实 DOM 的抽象。最终可以通过一系列操作使这棵树映射到真实环境上。由于 Virtual DOM 是以  JavaScript 对象为基础而不依赖真实平台环境，所以使用它具有了跨平台的能力，比如说浏览器平台、Weex、Node 等。
+
+比如说下面这样一个例子：
+
+```js
+{
+  tag: 'div', // 说明这是一个 div 标签
+  children: [ // 存放该标签的子节点
+    { 
+      tag: 'a', // 说明这是一个 a 标签
+      text: 'click me' // 标签的内容
+    }
+  ]
+}
+```
+
+渲染后可以得到
+
+```js
+<div>
+  <a>click</a>
+</div>
+```
+
+这只是一个简单的例子，实际上的节点有更多的属性来标识节点，比如 isStatic（代表是否为静态节点）、isComment（代表是否为注释节点）等。
 
 #### 更新视图
 
-<!-- 调用栈截图分析 -->
+![](../.vuepress/public/images/2021-02-05-12-05-47.png)
 
+前面我们说到，在修改一个对象值的时候，会通过 `setter -> Watcher -> update` 流程来修改对应的视图，那么最终是如何更新视图的呢？
+
+当数据变化后，执行 render function 就可以得到一个新的 VNode 节点，我们如果想要得到新的视图，最简单粗暴的方法就是直接解析这个新的 VNode 节点，然后用 `innerHTML` 直接全部渲染到真实 DOM 中。但是其实我们只对其中的一小块内容进行了修改，这样做似乎有些「**浪费**」。
+
+那么我们为什么不能把只修改那些「改变了的地方」呢？这个时候就要介绍我们的「`patch`」了。我们会将新的 VNode 与旧的 VNode 一起传入 `patch` 进行比较，经过 diff 算法得出它们的「**差异**」。最后我们只需要将浙西「**差异**」的对应 DOM 进行修改即可。
+
+### 响应式系统的基本原理
+#### 响应式系统
+
+Vue.js 是一款 MVVM 框架，数据模型仅仅是普通的 JavaScript 对象，但是对这些对象进行操作时，却能影响对应视图，它的核型实现就是「**响应式系统**」。尽管我们在使用 Vue.js 进行开发时不会直接修改「**响应式系统**」，但是理解它的实现有助于避开一些常见的「**坑**」，也有助于在遇见一些琢磨不透的问题时可以深入其原理去解决它。
+
+#### Object.defineProperty
+
+首先我们来介绍一下 `Object.defineProperty`，Vue.js 就是基于它实现「**响应式系统**」的。
+
+首先是使用方法：
+
+```js
+/*
+ * obj：目标对象
+   prop: 需要操作的目标对象的属性名
+   descriptor: 描述符
+   return value 传入对象
+ */
+Object.defineProperty(obj, prop, descriptor);
+```
+
+针对 [Object.defineProperty](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) 的descriptor 的访问属性如下：
+- `enumerable`，属性是否可以枚举，defineProperty 则默认是 false。
+- `configurable`，属性是否可以被修改或删除，默认 false。
+- `get`，获取函数，在读取属性时调用，默认值为 undefined。
+- `set`，设置函数，在写入属性时调用，默认值为 undefined。
+#### 实现 observer （可观察的）
+
+知道了 `Object.defineProperty` 以后，我们来用它使对象变成可观察的。
+
+这一部分的内容在前面介绍过，在 `init` 的阶段会进行初始化，对数据进行「**响应式化**」。
+
+![](../.vuepress/public/images/2021-02-05-12-24-48.png)
+
+为了便于理解，我们不考虑数组等复杂的情况，只对对象进行处理。
+
+首先我们定义一个 `cb` 函数，这个函数用来模拟视图更新，调用它即代表更新视图，内部可以是一些更新视图的方法。
+
+```js
+function cb(val) {
+  // 渲染视图
+  console.log("视图更新啦～");
+}
+```
+
+然后我们定义一个 `defineReactive`，这个方法通过 `Object.defineProperty` 来实现对象的 「**响应式**」化，入参是一个 obj（需要绑定的对象）、key（obj 的某一个属性），val（具体的值）。经过 `defineReactive` 处理以后，我们的 obj 的 key 属性在「读」的时候会触发 `reactiveGetter` 方法，而在该属性被「写」的时候则会出触发 `reactiveSetter` 方法。
+
+```js
+function defineReactive(obj, key, val) {
+  Object.defineProperty(obj, key, {
+    enumerable: true, // 属性可枚举
+    configurable: true, // 属性可被修改或删除
+    get: function reactiveGetter() {
+      return val; // 实际上会依赖收集，下一小节会讲
+    },
+    set: function reactiveSetter(newVal) {
+      if (newVal === val) return;
+      cb(newVal);
+    }
+  })
+}
+```
+当然这里是不够的，因为它仅仅是针对对象的一个属性做「**响应式**」，因此我们需要在上面再封装一层 `observer`。这个函数传入一个 value（需要「**响应式**」化的对象），通过遍历所有属性的方式对该对象的每一个属性都通过 `defineReactive` 处理。（注：实际上 observer 会进行递归调用，为了便于理解去掉了递归的过程。）
+
+```js
+function observer(value) {
+  if (!value || typeof value !== 'object') {
+    return;
+  }
+
+  Object.keys(value).forEach((key) => {
+    defineReactive(value, key, value[key]);
+  })
+}
+```
+
+最后，让我们用 `observer` 来封装一个 Vue 吧！
+
+在 Vue 的构造函数中，对 `options` 的 `data` 进行处理，这里的 `data` 就是我们在写 Vue 项目时组件中的 `data` 属性（实际上时一个函数，这里当作一个对象来简单处理）。
+
+```js
+class Vue {
+  // Vue 构造类
+  constructor(options) {
+    this._data = options.data;
+    observer(this._data);
+  }
+}
+```
+
+这样我们只要 new 一个 Vue 对象，就会将 `data` 中的数据进行「**响应式**」化。如果我们对 `data` 的属性进行下面的操作，就会触发 `cb` 方法更新视图。
+
+```js
+let o = new Vue({
+  data: {
+    test: "I am test."
+  }
+});
+o._data.test = "hello, world"; // 视图更新啦
+```
+
+#### 响应式系统的依赖收集追踪原理 
+
+结合 vue Vue.js v2.6.11 源码过程。
 ## 参考资料
 
 - [Vue 项目里戳中你痛点的问题及解决办法（更新）](https://juejin.cn/post/6844903632815521799#heading-26)

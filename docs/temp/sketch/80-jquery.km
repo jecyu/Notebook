@@ -1,0 +1,226 @@
+{
+    "root": {
+        "data": {
+            "id": "c8t4109adu00",
+            "created": 1611666315736,
+            "text": "Jquery 拆解"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8t4qh2gx5k0",
+                    "created": 1611668311433,
+                    "text": "快速 review"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8t4tto78o80",
+                            "created": 1611668573961,
+                            "text": "版本： 3.4.1"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4twoiac80",
+                            "created": 1611668580510,
+                            "text": "思路",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8t4umkkm7s0",
+                                    "created": 1611668636868,
+                                    "text": "直接从 CDN unpack 下载非压缩版代码调试，理通整个源码整体架构"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8t4uii934w0",
+                                    "created": 1611668628021,
+                                    "text": "然后，再根据需要是否下载源代码跑动调试查看"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8t4v27wppc0",
+                    "created": 1611668670931,
+                    "text": "源码整体架构",
+                    "layout_bottom_offset": {
+                        "x": -50,
+                        "y": 5
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8t4ss603rc0",
+                            "created": 1611668492320,
+                            "text": "自执行函数"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4vlzul8g0",
+                            "created": 1611668713979,
+                            "text": "支持多种环境下使用 比如 commonjs、amd规范"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4vojm1go0",
+                            "created": 1611668719528,
+                            "text": "无 new 构造"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4vqeipu00",
+                            "created": 1611668723574,
+                            "text": "核心函数之一 extend"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4vv2eszc0",
+                            "created": 1611668733725,
+                            "text": "链式调用"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4vxtju600",
+                            "created": 1611668739720,
+                            "text": "jQuery.noConflict"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8t4qmbqeso0",
+                    "created": 1611668322877,
+                    "text": "src",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8t4rczqfwg0",
+                            "created": 1611668380925,
+                            "text": "attributes"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rfwwpr40",
+                            "created": 1611668387284,
+                            "text": "core"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rgzjmtc0",
+                            "created": 1611668389620,
+                            "text": "css"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rhzmc740",
+                            "created": 1611668391802,
+                            "text": "data"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rjev0w80",
+                            "created": 1611668394900,
+                            "text": "deferred"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rld2djs0",
+                            "created": 1611668399145,
+                            "text": "effects"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4rntpazc0",
+                            "created": 1611668404505,
+                            "text": "event"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4s8pxl600",
+                            "created": 1611668449989,
+                            "text": "ajax"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4sd7lgrk0",
+                            "created": 1611668459764,
+                            "text": "exports"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4sebe5kw0",
+                            "created": 1611668462171,
+                            "text": "manipulatation",
+                            "background": "#f79646"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4si14gc00",
+                            "created": 1611668470257,
+                            "text": "queue"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8t4sj8q0lk0",
+                            "created": 1611668472893,
+                            "text": "traversing"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

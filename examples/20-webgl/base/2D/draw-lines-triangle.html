@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing lines and triangles</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../../lib/webgl.js"></script>
+
+    <script>
+      // Get the WebGL rendering context
+      const canvas = document.querySelector("canvas");
+      const gl = canvas.getContext("webgl");
+
+      // Vertex shader
+      const vshader = `
+      attribute vec4 position;
+      void main() {
+        gl_Position = position;
+      }`;
+
+      // Fragment shader
+      const fshader = `
+      precision mediump float;
+      uniform vec4 color;
+      void main() {
+        gl_FragColor = color;
+      }`;
+
+      // Compile program
+      const program = compile(gl, vshader, fshader);
+
+      // Select the position attribute and set its X/Y/Z values
+      const position = gl.getAttribLocation(program, "position");
+      // Select the color uniform and set its value
+      const color = gl.getUniformLocation(program, "color");
+
+      // Set color
+      gl.uniform4f(color, 1, 0, 0, 1);
+
+      // Fill a buffer with a list of x/y/z coordinates,
+      // and pass them to the position attribute of the vertex shader
+      const vertices = new Float32Array([
+        0, // point 1
+        0.5,
+        0,
+        -0.5, // point 2
+        -0.5,
+        0,
+        0.5, // point 3
+        -0.5,
+        0,
+      ]);
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+      // target chunk size type normalize stride offset
+      gl.enableVertexAttribArray(0.0, 0.0, 0.0, 1.0);
+
+      // Set the clear color (black)
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+      // Clear the canvas
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      // Render
+      // gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.drawArrays(gl.LINE_LOOP, 0, 3); 
+      // gl.drawArrays(gl.LINE_STRIP, 0, 3);  // 线框
+
+    </script>
+  </body>
+</html>

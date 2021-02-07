@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom values: attributes and uniform</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../lib/webgl.js"></script>
+
+    <script>
+      // Get the WebGL rendering context
+      const canvas = document.querySelector("canvas");
+      const gl = canvas.getContext("webgl");
+
+      function compile(gl, vshader, fshader) {
+        // Compile the vertex shader
+        const vs = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vs, vshader);
+        gl.compileShader(vs);
+
+        // Compile the fragment shader
+        const fs = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fs, fshader);
+        gl.compileShader(fs);
+
+        // Create the WebGL program and use it
+        const program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        // Log compilation errors, if any
+        console.log("vertex shader:", gl.getShaderInfoLog(vs) || "OK");
+        console.log("fragment shader:", gl.getShaderInfoLog(fs) || "OK");
+        console.log("program:", gl.getProgramInfoLog(program) || "OK");
+        return program;
+      }
+
+      // Vertex shader
+      const vshader = `
+      attribute vec4 position;
+      attribute float size;
+      void main() {
+        gl_Position = position;
+        gl_PointSize = size;
+      }`;
+
+      // Fragment shader
+      const fshader = `
+      precision mediump float;
+      uniform vec4 color;
+      void main() {
+        gl_FragColor = color;
+      }`;
+
+      // Compile program
+      const program = compile(gl, vshader, fshader);
+
+      // Select the position attribute and set its X/Y/Z values
+      const position = gl.getAttribLocation(program, "position");
+      gl.vertexAttrib4f(position, 0, 0, 0, 1);
+
+      // Select the size attribute and set its value
+      const size = gl.getAttribLocation(program, "size");
+      gl.vertexAttrib1f(size, 10);
+
+      // Select the color uniform and set its value
+      const color = gl.getUniformLocation(program, "color");
+      gl.uniform4f(color, 1, 0, 0, 1);
+
+      // Set the clear color (black)
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+      // Clear the canvas
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      // Draw points
+      gl.drawArrays(gl.POINTS, 0, 1); // mode, starting pint, number of points to draw
+
+      // gl.vertexAttrib3f(position, 0.25, 0, 0);
+      // gl.uniform4f(color, 0, 1, 0, 1); // green
+      // gl.drawArrays(gl.POINTS, 0, 1);
+
+      // gl.vertexAttrib3f(position, 0.5, 0, 0);
+      // gl.uniform4f(color, 0, 0, 1, 1); // blue
+      // gl.drawArrays(gl.POINTS, 0, 1);
+    </script>
+  </body>
+</html>

@@ -5,14 +5,12 @@
 <!-- <TOC /> -->
 
 [[toc]]
-
 ## 基础
-
 ### 面向对象与原型
 
 ![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
 
-- **proto** 与 prototype 的区别
+- **proto** 与 prototype 的区别e
 - 构造器与原型的区别，两者的作用用于哪里，有哪些应用场景
 - contructor
 - 什么是原型链
@@ -2327,6 +2325,10 @@ function Random(min, max) {
 
 ## 参考资料
 
+- 面试题  
+  - [Web-interview](https://github.com/luxiangqiang/Web-interview)
+  - [动画：《大前端吊打面试官系列》 之原生 JavaScript 精华篇](https://blog.csdn.net/qq_36903042/article/details/104207646)
+- 月影 JavaScript 基础  https://ppt.baomitu.com/d/218977d1#/7
 - 操作运算符
   - [可选链操作符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE)
   - [JavaScript 中圆括号()和方括号`[]`的特殊用法疑问解答](http://www.gimoo.net/t/1405/541b9f4d57767.html)
@@ -2348,6 +2350,9 @@ function Random(min, max) {
   - [Javascript 模块化编程（一）：模块的写法](http://www.ruanyifeng.com/blog/2012/10/javascript_module.html) -- 简洁、清晰、透彻
   - [谈谈 Js 前端模块化规范](https://segmentfault.com/a/1190000015991869#articleHeader0) -- 详细的 JS 模块化规范对比。
 - 书籍
+  - 《JavaScript 核心原理解析》
+  - 《重学前端》
+  - 《全栈修仙之旅》
   - 《JavaScript 忍者秘籍》
   - [JavaScript 开发者应懂的 33 个概念(中文版)](https://github.com/stephentian/33-js-concepts)
   - [JavaScript 开发者应懂的 33 个概念(英文版)](https://github.com/leonardomso/33-js-concepts)

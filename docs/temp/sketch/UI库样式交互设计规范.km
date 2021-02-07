@@ -19,7 +19,8 @@
                         "data": {
                             "id": "c8nl3gc0kyo0",
                             "created": 1611105106586,
-                            "text": "色彩"
+                            "text": "色彩",
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -110,7 +111,8 @@
                         "data": {
                             "id": "c8nl3hg1szs0",
                             "created": 1611105109007,
-                            "text": "布局"
+                            "text": "布局",
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -136,7 +138,41 @@
                                     "created": 1611275862076,
                                     "text": "适配"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9pa770ls0",
+                                            "created": 1611276083840,
+                                            "text": "适配方案"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8p9sjeeln40",
+                                                    "created": 1611276338960,
+                                                    "text": "左右布局"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8p9snmogm80",
+                                                    "created": 1611276348167,
+                                                    "text": "上下布局"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9xf4h4sw0",
+                                            "created": 1611276721473,
+                                            "text": "根据具体情况判断系统是否需要进行适配，以及哪些区块需要考虑动态布局。常用的中台系统用户主流分辨率 1920、1440、1366、1280"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -144,7 +180,16 @@
                                     "created": 1611275863933,
                                     "text": "网格单位"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9y9h0uxc0",
+                                            "created": 1611276787535,
+                                            "text": "8"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -152,7 +197,48 @@
                                     "created": 1611275867480,
                                     "text": "栅格"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8p9ygodnu80",
+                                            "created": 1611276803217,
+                                            "text": "24"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9yk9tei00",
+                                            "created": 1611276811044,
+                                            "text": "清晰的定义动态布局范围"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9yodp5u00",
+                                            "created": 1611276819986,
+                                            "text": "尽量保持偶数思维"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9yr3dd0o0",
+                                            "created": 1611276825892,
+                                            "text": "关键数据的交付（Gutter、Column）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8p9yx5jaww0",
+                                            "created": 1611276839083,
+                                            "text": "区块的定义要从 column 开始到 column 结束"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -170,7 +256,48 @@
                             "created": 1611105111926,
                             "text": "字体"
                         },
-                        "children": []
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8pa04quufk0",
+                                    "created": 1611276933974,
+                                    "text": "字体家族"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa07kiu0g0",
+                                    "created": 1611276940121,
+                                    "text": "主字体"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa0ag2chs0",
+                                    "created": 1611276946382,
+                                    "text": "字阶与行高"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa0eyup5s0",
+                                    "created": 1611276956225,
+                                    "text": "字重"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa0hr9o0w0",
+                                    "created": 1611276962298,
+                                    "text": "字体颜色"
+                                },
+                                "children": []
+                            }
+                        ]
                     },
                     {
                         "data": {
@@ -186,7 +313,32 @@
                             "created": 1611105120634,
                             "text": "阴影"
                         },
-                        "children": []
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8pa0uhtwb40",
+                                    "created": 1611276990025,
+                                    "text": "高度"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa0vhsn4g0",
+                                    "created": 1611276992199,
+                                    "text": "光源"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8pa0x5mnlc0",
+                                    "created": 1611276995817,
+                                    "text": "阴影值"
+                                },
+                                "children": []
+                            }
+                        ]
                     },
                     {
                         "data": {
@@ -813,9 +965,189 @@
                                 "data": {
                                     "id": "c8ofsnw4lgw0",
                                     "created": 1611191715441,
-                                    "text": "数据录入"
+                                    "text": "数据录入",
+                                    "expandState": "expand"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8pa3ihrqg80",
+                                            "created": 1611277198992,
+                                            "text": "文本录入",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8pa3mz86nk0",
+                                                    "created": 1611277208755,
+                                                    "text": "文本框（Input）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa3qz09kg0",
+                                                    "created": 1611277217449,
+                                                    "text": "文本域（Textarea）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa4i5n3vc0",
+                                                    "created": 1611277276623,
+                                                    "text": "提示与帮助"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa4ovd4jk0",
+                                                    "created": 1611277291239,
+                                                    "text": "搜索（Search）"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pa4ezsp400",
+                                            "created": 1611277269739,
+                                            "text": "选择录入",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8pa4wzl41s0",
+                                                    "created": 1611277308908,
+                                                    "text": "单选框（Radio Button）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa5ayge1c0",
+                                                    "created": 1611277339315,
+                                                    "text": "复选框（Checkbox）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa5l5sxf40",
+                                                    "created": 1611277361527,
+                                                    "text": "开关（Switch）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa73ab38g0",
+                                                    "created": 1611277479346,
+                                                    "text": "选择列表（Dropdown）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa7ittcf40",
+                                                    "created": 1611277513177,
+                                                    "text": "滑块选择（Slider）"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa7w8ypeo0",
+                                                    "created": 1611277542391,
+                                                    "text": "穿梭框（Tranfer）"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pa8cl9huo0",
+                                                            "created": 1611277577963,
+                                                            "text": "穿梭框用直观的方式在两栏中移动元素，完成选择行为。"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pa8rcyuj40",
+                                                    "created": 1611277610114,
+                                                    "text": "日期选择器（DatePicker）"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pa4gcjyao0",
+                                            "created": 1611277272687,
+                                            "text": "文件上传",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8pa92cre9k0",
+                                                    "created": 1611277634046,
+                                                    "text": "简单点击上传"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pab57xbwg0",
+                                                            "created": 1611277797012,
+                                                            "text": "一般用于单个上传且不需要预览效果的文件上传，点击按钮弹出文件选择框"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pabm9qz7s0",
+                                                    "created": 1611277834128,
+                                                    "text": "显示缩略图上传"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pac1via200",
+                                                            "created": 1611277868095,
+                                                            "text": "一般用于图片文件上传，当上传照片数达到限制后，上传按钮消失"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pabz88u8o0",
+                                                    "created": 1611277862335,
+                                                    "text": "拖拽上传"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pacpl7q3k0",
+                                                            "created": 1611277919715,
+                                                            "text": "文件上传需要提供明确的文件大小和文件格式"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -823,7 +1155,56 @@
                                     "created": 1611191720506,
                                     "text": "数据展示"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8paddavtbs0",
+                                            "created": 1611277971333,
+                                            "text": "表格（Table）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pae2b13uo0",
+                                            "created": 1611278025762,
+                                            "text": "折叠面板（Collapse）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pagaftw6o0",
+                                            "created": 1611278200195,
+                                            "text": "卡片（Card）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pagpznkc80",
+                                            "created": 1611278234045,
+                                            "text": "走马灯（Carousel）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pahantiiw0",
+                                            "created": 1611278279042,
+                                            "text": "树形控件（Tree）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8pahluctg00",
+                                            "created": 1611278303382,
+                                            "text": "时间轴（Timeline）"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -831,23 +1212,974 @@
                                     "created": 1611191723849,
                                     "text": "数据格式"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8pai7gts6w0",
+                                            "created": 1611278350453,
+                                            "text": "设计目标"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8pai9yr3yw0",
+                                                    "created": 1611278355890,
+                                                    "text": "规范数据表达，保证直观准确一致地理解数据"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8paiiwzmu00",
+                                            "created": 1611278375375,
+                                            "text": "类型",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8paikoymy00",
+                                                    "created": 1611278379243,
+                                                    "text": "数值",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8paj25cba80",
+                                                            "created": 1611278417239,
+                                                            "text": "符号格式"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8paivuuscw0",
+                                                            "created": 1611278403544,
+                                                            "text": "位置排列"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pajbm64880",
+                                                            "created": 1611278437847,
+                                                            "text": "计量单位"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pajg28flc0",
+                                                    "created": 1611278447526,
+                                                    "text": "金额"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pajpwq2m80",
+                                                            "created": 1611278468960,
+                                                            "text": "小写金额"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pajsh5rkw0",
+                                                            "created": 1611278474550,
+                                                            "text": "大写金额"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pak10gdfc0",
+                                                            "created": 1611278493131,
+                                                            "text": "大额计算"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pakdxtj940",
+                                                    "created": 1611278521269,
+                                                    "text": "日期时间",
+                                                    "expandState": "collapse"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pakftm9bs0",
+                                                            "created": 1611278525369,
+                                                            "text": "绝对时间"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8pakpddcf40",
+                                                                    "created": 1611278546154,
+                                                                    "text": "日期格式"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8pakqgq6ps0",
+                                                                    "created": 1611278548534,
+                                                                    "text": "时间格式"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8paks4m3540",
+                                                                    "created": 1611278552155,
+                                                                    "text": "标准格式"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pakiaszc00",
+                                                            "created": 1611278530762,
+                                                            "text": "相对时间"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8pal6bn3vs0",
+                                                    "created": 1611278583055,
+                                                    "text": "数据脱敏",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8pala8jn0g0",
+                                                            "created": 1611278591575,
+                                                            "text": "全部脱敏"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8palhhkfeo0",
+                                                            "created": 1611278607358,
+                                                            "text": "部分脱敏"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8palr47v000",
+                                                    "created": 1611278628319,
+                                                    "text": "数据状态"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8palu25t940",
+                                                            "created": 1611278634725,
+                                                            "text": "无数据 --"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8palwkjk0g0",
+                                                            "created": 1611278640190,
+                                                            "text": "数据加载"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
                                 "data": {
                                     "id": "c8ofsu718jc0",
                                     "created": 1611191729161,
-                                    "text": "文案"
+                                    "text": "文案",
+                                    "expandState": "collapse"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8titfqbxd40",
+                                            "created": 1611708039154,
+                                            "text": "注意点"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8titid2dns0",
+                                                    "created": 1611708044882,
+                                                    "text": "从用户角度出发"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8titka9z1s0",
+                                                    "created": 1611708049067,
+                                                    "text": "表述一致"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8titnhheyw0",
+                                                    "created": 1611708056033,
+                                                    "text": "重要的信息放在显著位置"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8titrvysmg0",
+                                                    "created": 1611708065616,
+                                                    "text": "专业、精准、完整"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8titunoodc0",
+                                                    "created": 1611708071645,
+                                                    "text": "精简、友好、正面"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8tiqywnsa00",
+                                            "created": 1611707845803,
+                                            "text": "语言"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8tiu9da8aw0",
+                                                    "created": 1611708103668,
+                                                    "text": "明确表述立足点"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tiuixelps0",
+                                                            "created": 1611708124476,
+                                                            "text": "以用户为主体"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tiud7dadc0",
+                                                    "created": 1611708112018,
+                                                    "text": "精简语句"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tiuuzhwk00",
+                                                    "created": 1611708150724,
+                                                    "text": "使用用户熟悉的语言"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tiwkk3lwg0",
+                                                    "created": 1611708284753,
+                                                    "text": "表述一致"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tiwmj5u800",
+                                                            "created": 1611708289050,
+                                                            "text": "描述同一个事物的词汇要保持一致"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tiwqr4l6w0",
+                                                            "created": 1611708298239,
+                                                            "text": "上下文的语法、语种、语序要保持统一"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tiwy9b0dc0",
+                                                            "created": 1611708314575,
+                                                            "text": "操作的名称和目标页面标题的名称保持一致"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tixo10zw80",
+                                                    "created": 1611708370672,
+                                                    "text": "重要的信息放在显著位置"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tixt8336o0",
+                                                            "created": 1611708381982,
+                                                            "text": "让用户第一眼看到最重要的内容，不用到段落中寻找"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tiyknr0zk0",
+                                                    "created": 1611708441702,
+                                                    "text": "完整、直接得到阐述信息",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tiyyf4c140",
+                                                            "created": 1611708471655,
+                                                            "text": "报错是 UI 中常见的功能，它同样是用户体验中不可小视的组成部分。当用户填写的内容出错的适合，你的报错信息应当符合用户的认知，用易于理解的方式表达出来。",
+                                                            "expandState": "expand"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tj06hfl800",
+                                                    "created": 1611708567574,
+                                                    "text": "用词精准完整"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8tir0wflo00",
+                                            "created": 1611707850142,
+                                            "text": "语气"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8tj4974c9k0",
+                                                    "created": 1611708886937,
+                                                    "text": "拉近彼此的距离"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj4c44he80",
+                                                            "created": 1611708893286,
+                                                            "text": "直接使用「你」、「我」来和用户对话，与用户建立亲密感。避免使用「您」，让用户感觉太过疏远"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj57b0r2g0",
+                                                            "created": 1611708961184,
+                                                            "text": "不要在同一个句式中混用「你」和「我」，交互中指代混乱会让用户相当纠结。"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tj6stvfi80",
+                                                    "created": 1611709086400,
+                                                    "text": "友好、尊重用户"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj6xtkam80",
+                                                            "created": 1611709097265,
+                                                            "text": "多给用户支持与鼓励，不要命令和强迫用户"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8tj7bkd9ds0",
+                                                    "created": 1611709127184,
+                                                    "text": "表述不应过于极端"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj7jk55u80",
+                                                            "created": 1611709144585,
+                                                            "text": "不要使用过于绝对的表述，这样会让用户觉得不适"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8tir9i1g0w0",
+                                            "created": 1611707868863,
+                                            "text": "大小写和标点符号"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8tj83q9ho80",
+                                                    "created": 1611709188491,
+                                                    "text": "英文名词大小写规范",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj8f0r5340",
+                                                            "created": 1611709213069,
+                                                            "text": "产品名词全称，首字母大写。产品名词缩写需要全部大写，入：ESC、SLB等"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8tj8vv8e3k0",
+                                                            "created": 1611709249741,
+                                                            "text": "正确使用专有名词的大小写规范"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uda1pkrhk0",
+                                                            "created": 1611793974121,
+                                                            "text": "全英文的标题，标签，菜单项等等都要遵循英文句式中首字母大写的规范"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udajcg7u80",
+                                            "created": 1611794012509,
+                                            "text": "统计数据使用阿拉伯数字"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udbv86dpc0",
+                                                    "created": 1611794116737,
+                                                    "text": "用户对于数字的感知速度更快，使用数字而非文字表述会更加有效"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udcb1vkwo0",
+                                            "created": 1611794151184,
+                                            "text": "省略不必要的标点"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udd03ots00",
+                                                    "created": 1611794205713,
+                                                    "text": "为了帮助用户更加高效地扫视文本内容，可以省略不必要的断句点"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8uddea4aps0",
+                                                    "created": 1611794236577,
+                                                    "text": "以下元素单独出现时可以省略标点："
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uddl4fxd40",
+                                                            "created": 1611794251471,
+                                                            "text": "标签"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uddmhkhns0",
+                                                            "created": 1611794254442,
+                                                            "text": "标题"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uddnl23ag0",
+                                                            "created": 1611794256829,
+                                                            "text": "输入框下的提示"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uddq2wfew0",
+                                                            "created": 1611794262262,
+                                                            "text": "悬停文本中的提示"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8uddtm6x5s0",
+                                                            "created": 1611794269959,
+                                                            "text": "表格中的句子"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8ude1sow0w0",
+                                                    "created": 1611794287766,
+                                                    "text": "以下元素单独出现时需要加上标点："
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8ude6khz8g0",
+                                                            "created": 1611794298155,
+                                                            "text": "多句或多段的文案和列表内容"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udefep84g0",
+                                                            "created": 1611794317395,
+                                                            "text": "任何文字链前的句子"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udfyfeheg0",
+                                            "created": 1611794437160,
+                                            "text": "基本标点符号规范"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udg7jvwkw0",
+                                                    "created": 1611794457023,
+                                                    "text": "正确得使用标点符号会让句子看起来更清晰和具有可读性。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udev0mppk0",
+                                            "created": 1611794351373,
+                                            "text": "谨慎使用感叹号"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udeyr6e4g0",
+                                                    "created": 1611794359508,
+                                                    "text": "感叹号会让文案显得过于激动，容易让气氛变得过于紧张。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
                                 "data": {
                                     "id": "c8ofswgtajk0",
                                     "created": 1611191734106,
-                                    "text": "按钮"
+                                    "text": "按钮",
+                                    "expandState": "collapse"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8ud8v58h4o0",
+                                            "created": 1611793881466,
+                                            "text": "设计目标"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udgwwo4yo0",
+                                                    "created": 1611794512215,
+                                                    "text": "指导用户采取你希望他们采取的行动"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8udh1qcffk0",
+                                                    "created": 1611794522717,
+                                                    "text": "帮助用户避免犯错"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udh6ghjio0",
+                                            "created": 1611794533004,
+                                            "text": "类型"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8udi8px0b40",
+                                                    "created": 1611794616292,
+                                                    "text": "常规按钮"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udjiz7nmo0",
+                                                            "created": 1611794716986,
+                                                            "text": "① 次按钮"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udjtfpp8g0",
+                                                                    "created": 1611794739752,
+                                                                    "text": "常规按钮，用于非主要动作。如果不确定选择哪种按钮，次按钮永远是最安全的选择"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udl6rg0r40",
+                                                            "created": 1611794847124,
+                                                            "text": "② 主按钮"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udl7mv9600",
+                                                                    "created": 1611794849024,
+                                                                    "text": "突出“完成”、“推荐”类操作；一个按钮区最多使用一个主按钮"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udlmjoin40",
+                                                            "created": 1611794881483,
+                                                            "text": "③ 文字按钮"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udm16rmcg0",
+                                                                    "created": 1611794913354,
+                                                                    "text": "弱化的按钮，采用更轻量的按钮样式，可用于需大面积展示按钮场景，例如表格组件中的操作列"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udlr5fxa00",
+                                                            "created": 1611794891506,
+                                                            "text": "④ 图标按钮"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udmsq3aow0",
+                                                                    "created": 1611794973295,
+                                                                    "text": "图标提供视觉线索，避免逐字阅读按钮文案，更高效地使用界面"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udoekw3940",
+                                                                    "created": 1611795099234,
+                                                                    "text": "需要在较小的空间内展示尽量多的按钮"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udokgt6e80",
+                                                                    "created": 1611795112048,
+                                                                    "text": "使用纯图标按钮必须有 Tooltip 提示按钮含义"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udlxxutc00",
+                                                            "created": 1611794906284,
+                                                            "text": "⑤ 在按钮中添加图标"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udoui1z800",
+                                                                    "created": 1611795133891,
+                                                                    "text": "用于对按钮含义补充解释，提高按钮识别效率"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8udiu7bjrs0",
+                                                    "created": 1611794663057,
+                                                    "text": "按钮强调"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udpe77e5c0",
+                                                            "created": 1611795176771,
+                                                            "text": "常规按钮类型呈现出不同的强调程度，使用者可以据此变化出合适的按钮类型"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8udptuy2gg0",
+                                                                    "created": 1611795210858,
+                                                                    "text": "高强调、中强调、弱强调、不强调"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8udiweodnk0",
+                                                    "created": 1611794667856,
+                                                    "text": "Do&Don't"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udqgdsp7c0",
+                                                            "created": 1611795259887,
+                                                            "text": "1、强调一个主要操作；\n2、操作无主次，次按钮是最安全的选择。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udqk4oz4g0",
+                                                            "created": 1611795268044,
+                                                            "text": "不要在一个按钮区放置超过一个主按钮。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udqmw5k7c0",
+                                                            "created": 1611795274058,
+                                                            "text": "不要在按钮中放置两个图标。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udqs8xqow0",
+                                                            "created": 1611795285715,
+                                                            "text": "1、1按照主次展示全部操作。\n2、将次要操作收纳至右侧下拉按钮中。"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8udizosbag0",
+                                                    "created": 1611794674997,
+                                                    "text": "特殊按钮"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udr1v0nio0",
+                                                            "created": 1611795306641,
+                                                            "text": "虚线按钮（Dashed button）"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v80erz0yw0",
+                                                                    "created": 1611880673330,
+                                                                    "text": "用于引导用户在一个区域中添加内容"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8udr3y0n680",
+                                                            "created": 1611795311176,
+                                                            "text": "危险按钮（Danger button）"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v80s3nyb40",
+                                                                    "created": 1611880702335,
+                                                                    "text": "警示用户该操作存在危险。"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v821n66zk0",
+                                                            "created": 1611880801469,
+                                                            "text": "幽灵按钮 （Ghost button）"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v82aoaey80",
+                                                                    "created": 1611880821128,
+                                                                    "text": "置于复杂或较深的背景中，避免按钮突兀地破坏背景的整体性。该场景下可灵活定制样式。"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v84gcp5eo0",
+                                                            "created": 1611880990216,
+                                                            "text": "行动号按钮 Call to action"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v84la42hs0",
+                                                                    "created": 1611881000944,
+                                                                    "text": "经常独立出现，行动号召按钮就像是电脑在对用户大声说：“跟我来吧”，有点命令用户点击的意味，通常出现于 landing page 或者一些引导性场景。"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v85vdmezk0",
+                                                                    "created": 1611881101288,
+                                                                    "text": "最大可以将按钮放宽到与父区域等宽。一个屏幕空间中，建议只有一个行动号召按钮。"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udh75n8dc0",
+                                            "created": 1611794534526,
+                                            "text": "位置"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udh807qzk0",
+                                            "created": 1611794536374,
+                                            "text": "按钮顺序"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8udh9cqgv40",
+                                            "created": 1611794539308,
+                                            "text": "文案"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8v89ebksmg0",
+                                                    "created": 1611881377616,
+                                                    "text": "必须使用动词（下拉按钮除外）"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -857,15 +2189,474 @@
                             "created": 1611191740917,
                             "text": "模版文档"
                         },
-                        "children": []
-                    },
-                    {
-                        "data": {
-                            "id": "c8oftiedpeo0",
-                            "created": 1611191781848,
-                            "text": "topic"
-                        },
-                        "children": []
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8udhd5r7ew0",
+                                    "created": 1611794547593,
+                                    "text": "数据可视化页",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c8v8a1jm10g0",
+                                            "created": 1611881428167,
+                                            "text": "数据可视化类的页面通过一系列图表展现及辅助解读，用户通过浏览和操作数据图表，来实现特定分析目的，制定数据驱动型决策。"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8v8bixd1bs0",
+                                            "created": 1611881544368,
+                                            "text": "设计原则"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8v8bsdqajk0",
+                                                    "created": 1611881564949,
+                                                    "text": "Do&Don't"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v8bwkwpxk0",
+                                                            "created": 1611881574090,
+                                                            "text": "在对数据进行高度概括时，展示指示卡 + 数值，让图表更直接。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v8cfqhkc00",
+                                                            "created": 1611881615787,
+                                                            "text": "尽量在一屏中突出核心指示，将总模块数量控制在 5-9 个，避免信息过载。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v8cuehidc0",
+                                                            "created": 1611881647713,
+                                                            "text": "善于使用筛选、过滤功能，可以让用户在观察全局的同时，还可以查看数据细节，用户在有疑问时能够快速得到方向。"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c8v8bnettmg0",
+                                            "created": 1611881554132,
+                                            "text": "典型模版",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c8v8ido2mq80",
+                                                    "created": 1611882081473,
+                                                    "text": "概览",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v8g4c3l400",
+                                                            "created": 1611881904429,
+                                                            "text": "模版 - 监控"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v8gzhl4yo0",
+                                                                    "created": 1611881972241,
+                                                                    "text": "什么时候用"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c8v8h6o7vsw0",
+                                                                            "created": 1611881987879,
+                                                                            "text": "决策层用户用来监控全局数据，通常是围绕着一个主题，展现多个维度的关键指标，并帮助用户快速发现异常。"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v8hsrhctc0",
+                                                                    "created": 1611882035966,
+                                                                    "text": "涉及哪些功能"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c8v8hufatdc0",
+                                                                            "created": 1611882039583,
+                                                                            "text": "核心数据；指标卡模块；图表区；地图；仪表盘"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c8v8dkx5hxk0",
+                                                            "created": 1611881705438,
+                                                            "text": "模版 - 指标大盘 "
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v8gcir25k0",
+                                                                    "created": 1611881922245,
+                                                                    "text": "什么时候用"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c8v8gdstcyo0",
+                                                                            "created": 1611881925030,
+                                                                            "text": "决策层用户用来监控全局数据，并附带图表来辅助解读"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c8v8gnrfru00",
+                                                                    "created": 1611881946715,
+                                                                    "text": "涉及哪些功能"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c8v8gqrg14o0",
+                                                                            "created": 1611881953246,
+                                                                            "text": "核心数据；指标卡模块；筛选器；图表区"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8v8igmlf540",
+                                                    "created": 1611882087913,
+                                                    "text": "分析"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ihs5p61k0",
+                                                            "created": 1612519605488,
+                                                            "text": "将数据分析类型页面拆解为多个部分，通常为“总-分”的结构，多维度地展示数据的全貌，帮助使用者发现当前问题。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91iirddlio0",
+                                                            "created": 1612519682139,
+                                                            "text": "模版-多维分析"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ik8p3oaw0",
+                                                                    "created": 1612519798218,
+                                                                    "text": "什么时候用"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c91ikc2q5oo0",
+                                                                            "created": 1612519805572,
+                                                                            "text": "针对同一主题的多个维度分析"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ikujjv4w0",
+                                                                    "created": 1612519845771,
+                                                                    "text": "涉及哪些模块"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c91ikwjctlk0",
+                                                                            "created": 1612519850113,
+                                                                            "text": "核心数据；指标卡模块；筛选器；图表区"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c8v8iobmqu00",
+                                                    "created": 1611882104664,
+                                                    "text": "明细"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ili15ucg0",
+                                                            "created": 1612519896902,
+                                                            "text": "数据明细用来展示单个指标总览和明细。常用于数据报表细节信息的展示，根据业务诉求可配置文本、列表、可视化图表等。"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91imsjo6zs0",
+                                                            "created": 1612519998153,
+                                                            "text": "模版-数据明细"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91imvbsvog0",
+                                                                    "created": 1612520004208,
+                                                                    "text": "什么时候用"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c91imx12am80",
+                                                                            "created": 1612520007912,
+                                                                            "text": "常用于数据报表细节信息的展示"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91in453y2o0",
+                                                                    "created": 1612520023394,
+                                                                    "text": "涉及哪些模块"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c91in6c055s0",
+                                                                            "created": 1612520028165,
+                                                                            "text": "筛选器；图表区；数据明细表"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ip9fimqw0",
+                                                    "created": 1612520191636,
+                                                    "text": "设计建议"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91iq46h6e80",
+                                                            "created": 1612520258569,
+                                                            "text": "串联分析思路",
+                                                            "expandState": "expand"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ipcztc0w0",
+                                                                    "created": 1612520199393,
+                                                                    "text": "针对执行者，可以选择有更多分析功能的分析、详情页面。"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ipczt5q80",
+                                                                    "created": 1612520199393,
+                                                                    "text": "针对决策者，可以选择描述型的指标结果页面；"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91iqbgd4lk0",
+                                                            "created": 1612520274405,
+                                                            "text": "卡片的组合方式"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91iqgk4k6w0",
+                                                                    "created": 1612520285516,
+                                                                    "text": "一个卡片放置一个主题内容"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91iql3a2aw0",
+                                                                    "created": 1612520295381,
+                                                                    "text": "也可将相关性高的数据组合呈现在一个卡片中，并使用通栏分割线区隔。"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "c8udhf6vegw0",
+                                    "created": 1611794552014,
+                                    "text": "详情页",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c928xrs7zgo0",
+                                            "created": 1612594207357,
+                                            "text": "设计目标",
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c928wjqzrxc0",
+                                                    "created": 1612594111504,
+                                                    "text": "详情页向用户展示一个对象的完整信息，主要用与信息浏览，允许对该对象发起编辑等操作。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c928xzkwwy00",
+                                            "created": 1612594224329,
+                                            "text": "设计原则"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c928y0vz7cw0",
+                                                    "created": 1612594227175,
+                                                    "text": "直截了当"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c928y3ypwl40",
+                                                    "created": 1612594233871,
+                                                    "text": "层次分明"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c928y67w0f40",
+                                                    "created": 1612594238779,
+                                                    "text": "化繁为简"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c928xukv0800",
+                                            "created": 1612594213442,
+                                            "text": "如何设计"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c928yd9lovs0",
+                                                    "created": 1612594254120,
+                                                    "text": "基础布局"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c928ywqobq80",
+                                                            "created": 1612594296511,
+                                                            "text": "模版-基础详情"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c928yze4d000",
+                                                            "created": 1612594302283,
+                                                            "text": "模版-单据详情"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c928yetjqzk0",
+                                                    "created": 1612594257503,
+                                                    "text": "复杂布局"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c928zb6n3vk0",
+                                                            "created": 1612594327952,
+                                                            "text": "模版-高级详情"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c928zi7nnyg0",
+                                                            "created": 1612594343251,
+                                                            "text": "模版-发布流程"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -875,8 +2666,8 @@
                     "created": 1611191785830,
                     "text": "设计模式-探索",
                     "layout_bottom_offset": {
-                        "x": -167,
-                        "y": 2
+                        "x": -278,
+                        "y": -9
                     }
                 },
                 "children": [
@@ -893,7 +2684,254 @@
                                     "created": 1611191852112,
                                     "text": "导航"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c9291ngfoz40",
+                                            "created": 1612594511394,
+                                            "text": "设计建议"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c9291tj8v2g0",
+                                                    "created": 1612594524624,
+                                                    "text": "信息架构"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c9291y29aa80",
+                                                            "created": 1612594534481,
+                                                            "text": "按主题"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9291z3z9bs0",
+                                                            "created": 1612594536762,
+                                                            "text": "按受众群体"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9292283onc0",
+                                                            "created": 1612594543542,
+                                                            "text": "按任务"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c9291rxtw4w0",
+                                                    "created": 1612594521153,
+                                                    "text": "导航路径"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c92924vl8d40",
+                                                            "created": 1612594549315,
+                                                            "text": "A-平移：同层级跳转"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9292db1x4w0",
+                                                            "created": 1612594567665,
+                                                            "text": "B-下钻：进入低层级的内容"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9292hsothk0",
+                                                            "created": 1612594577438,
+                                                            "text": "C-返回：返回浏览历史或高层级内容"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9292qmanxk0",
+                                                            "created": 1612594596643,
+                                                            "text": "D-联想导航：根据相关性导航至内容"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c9291qas4o00",
+                                            "created": 1612594517582,
+                                            "text": "类型"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c92937dhcns0",
+                                                    "created": 1612594633115,
+                                                    "text": "1.全局导航"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c9295d41pdk0",
+                                                            "created": 1612594802333,
+                                                            "text": "侧边导航"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9295pwk2l40",
+                                                            "created": 1612594830179,
+                                                            "text": "顶部导航"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9295tzw6js0",
+                                                            "created": 1612594839088,
+                                                            "text": "弹出式导航"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c9296llxou80",
+                                                            "created": 1612594899194,
+                                                            "text": "实用工具"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c929741bxnc0",
+                                                                    "created": 1612594939307,
+                                                                    "text": "通常放在网站的右上角，是一种习惯用法，用户习惯在这个位置找到这些内容。"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297xdzowo0",
+                                                                    "created": 1612595003199,
+                                                                    "text": "不要将页面内的操作放到实用工具中。"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9296yirhbk0",
+                                                                    "created": 1612594927300,
+                                                                    "text": "全局搜索"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c92970vs2740",
+                                                                    "created": 1612594932441,
+                                                                    "text": "通知中心"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297fo22zk0",
+                                                                    "created": 1612594964625,
+                                                                    "text": "网站帮助"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297h3nfs00",
+                                                                    "created": 1612594967745,
+                                                                    "text": "客服信息、购物车"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297k8z8vk0",
+                                                                    "created": 1612594974598,
+                                                                    "text": "收藏夹"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297lnc2so0",
+                                                                    "created": 1612594977642,
+                                                                    "text": "登录工具"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c9297pdfcso0",
+                                                                    "created": 1612594985750,
+                                                                    "text": "语言切换"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c92v8xdltmo0",
+                                                    "created": 1612657145958,
+                                                    "text": "子站点导航"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c9293bisjds0",
+                                                    "created": 1612594642143,
+                                                    "text": "2.返回导航"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c9293fbwiv40",
+                                                    "created": 1612594650434,
+                                                    "text": "3.页内导航"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c9293kqyb4o0",
+                                                    "created": 1612594662228,
+                                                    "text": "4.下钻类导航"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c9293n2vs880",
+                                                    "created": 1612594667303,
+                                                    "text": "5.联想类导航"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -979,10 +3017,18 @@
                     "text": "动效"
                 },
                 "children": []
+            },
+            {
+                "data": {
+                    "id": "c9290hiw1ww0",
+                    "created": 1612594420117,
+                    "text": "图形化"
+                },
+                "children": []
             }
         ]
     },
-    "template": "filetree",
+    "template": "right",
     "theme": "fresh-blue",
     "version": "1.4.43"
 }

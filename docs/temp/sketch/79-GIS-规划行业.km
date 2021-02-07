@@ -1,0 +1,110 @@
+{
+    "root": {
+        "data": {
+            "id": "c8s5dbm32280",
+            "created": 1611568541978,
+            "text": "规划行业"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8s5f42ldrc0",
+                    "created": 1611568682290,
+                    "text": "0曾经的空间类规划"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5fausrrc0",
+                    "created": 1611568697056,
+                    "text": "1从多规合一到国土空间规划"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5flciu140",
+                    "created": 1611568719896,
+                    "text": "2五级三类"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5fospnkw0",
+                    "created": 1611568727405,
+                    "text": "3.国土空间规划的主要内容"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5fwjzuow0",
+                    "created": 1611568744292,
+                    "text": "4.国土空间规划的编制流程"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5g12xff40",
+                    "created": 1611568754144,
+                    "text": "5.双评价"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5g3209rs0",
+                    "created": 1611568758442,
+                    "text": "6. 基于双评价体系的三区划定"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5gawhx6g0",
+                    "created": 1611568775523,
+                    "text": "7.三区三线位置关系"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5gf07vxc0",
+                    "created": 1611568784455,
+                    "text": "8. 空间规划信息平台"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5gij0e2g0",
+                    "created": 1611568792122,
+                    "text": "9. 生态文明体制下的四梁八柱"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5gnai5wo0",
+                    "created": 1611568802491,
+                    "text": "10. 国土空间开发保护现状评估步骤"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8s5gtqu1io0",
+                    "created": 1611568816539,
+                    "text": "11. 国土综合整治与生态修复"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

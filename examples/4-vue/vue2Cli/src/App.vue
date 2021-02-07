@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HelloWorld :msg="msg"/>
+    <label>改变标题<input v-model="msg" /></label>
   </div>
 </template>
 
@@ -12,6 +13,9 @@ export default {
   name: 'App',
   components: {
     HelloWorld
+  },
+  data() {
+    msg: "Welcome to Your Vue.js App"
   }
 }
 </script>

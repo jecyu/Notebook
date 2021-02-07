@@ -1,0 +1,187 @@
+{
+    "root": {
+        "data": {
+            "id": "c8q7b7yn4rs0",
+            "created": 1611370899608,
+            "text": "实现可视化卷帘功能这样做"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8q7czgcbrk0",
+                    "created": 1611371037815,
+                    "text": "前言"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "c8q7c3fz3680",
+                    "created": 1611370968136,
+                    "text": "需求分析：什么是卷帘功能"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8q7i6rfuzs0",
+                            "created": 1611371445545,
+                            "text": "骨架一致"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7qd56ve80",
+                            "created": 1611372086350,
+                            "text": "有差别"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8q7qqledg00",
+                                    "created": 1611372115628,
+                                    "text": "比如颜色"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8q7caoksbk0",
+                    "created": 1611370983894,
+                    "text": "设计和实现：如何实现卷帘功能",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8q7jsydypc0",
+                            "created": 1611371572218,
+                            "text": "基本实现",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8q7jigxkgw0",
+                                    "created": 1611371549395,
+                                    "text": "主副对比"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7ncbmgco0",
+                            "created": 1611371849470,
+                            "text": "滚屏多图对比",
+                            "layout_filetree-down_offset": {
+                                "x": -1,
+                                "y": 150
+                            }
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7i5xnewg0",
+                            "created": 1611371443744,
+                            "text": "动态可交互",
+                            "layout_filetree-down_offset": {
+                                "x": 2,
+                                "y": -39
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8q7kcsrmuw0",
+                                    "created": 1611371615414,
+                                    "text": "鼠标交互视图同步（需要监听进行移动）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8q7kf7bys00",
+                                    "created": 1611371620648,
+                                    "text": "动态换素材 "
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8q7cfeiio00",
+                    "created": 1611370994169,
+                    "text": "卷帘功能在地图中的应用",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8q7iqfzkfs0",
+                            "created": 1611371488388,
+                            "text": "二维/三维",
+                            "expandState": "expand"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7r9rkm5s0",
+                            "created": 1611372157361,
+                            "text": "地图遇到的难点"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c8q7ir6wqo00",
+                    "created": 1611371490016,
+                    "text": "小结（复盘）",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8q7r4cjcf40",
+                            "created": 1611372145568,
+                            "text": "回顾背景"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7s23bok00",
+                            "created": 1611372219021,
+                            "text": "回顾知识点",
+                            "expandState": "expand"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8q7uwj304w0",
+                            "created": 1611372442006,
+                            "text": "卷帘 Vue 组件实现（可以放到后续）"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

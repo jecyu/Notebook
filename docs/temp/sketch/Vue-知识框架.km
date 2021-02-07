@@ -1,0 +1,119 @@
+{
+    "root": {
+        "data": {
+            "id": "c8w68oodh680",
+            "created": 1611977239530,
+            "text": "Vue"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8w68rkzxlc0",
+                    "created": 1611977245856,
+                    "text": "性能优化",
+                    "hyperlink": "https://juejin.cn",
+                    "hyperlinkTitle": "https://juejin.cn/post/6922641008106668045?utm_source=gold_browser_extension#heading-1"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8w68uxiq600",
+                            "created": 1611977253144,
+                            "text": "Functional components 函数式组件 ",
+                            "hyperlink": "https://vue-9-perf-secrets.netlify.app/bench/functional",
+                            "hyperlinkTitle": "https://vue-9-perf-secrets.netlify.app/bench/functional"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w693cddk00",
+                            "created": 1611977271456,
+                            "text": "Child componet splitting 子组件拆分 "
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w69a8s7ag0",
+                            "created": 1611977286476,
+                            "text": "Local variables 局部变量"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w69dnnelc0",
+                            "created": 1611977293906,
+                            "text": "Reuse Dom with v-show 使用 v-show 复用 DOM "
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w69vkqv280",
+                            "created": 1611977332912,
+                            "text": "KeepAlive 使用 KeepAlive 组件缓存 DOM"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w69xmdl3s0",
+                            "created": 1611977337364,
+                            "text": "Deferred features 使用 Deferred 组件延时分批渲染组件",
+                            "background": "#ffc000"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c8w6am9uxso0",
+                            "created": 1611977391027,
+                            "text": "Time slicing 使用 Time slicing 时间片切割技术",
+                            "background": "#ffc000"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8w6rcc7dbs0",
+                                    "created": 1611978701592,
+                                    "text": "使用 Time slicing 技术可以避免页面卡死"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8w6ao0k7rs0",
+                            "created": 1611977394818,
+                            "text": "Non-reactive data 非响应式数据"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8w6s3vwroo0",
+                                    "created": 1611978761556,
+                                    "text": "把一些非必要响应式数据可以放到生命周期 created 声明，绕过响应式"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "c8w6asbu1nk0",
+                            "created": 1611977404207,
+                            "text": "Vitual scrollingr 虚拟滚动组件"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
