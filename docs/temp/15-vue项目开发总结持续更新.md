@@ -828,7 +828,7 @@ function initMixin(Vue) {
     initRender(vm);
     callHook(vm, "beforeCreate");
     initInjections(vm); // resolve injections before data/props
-    initState(vm);
+    initState(vm); // 初始化状态
     initProvide(vm); // resolve provide after data/props
     callHook(vm, "created");
     // ...
@@ -840,25 +840,6 @@ function initMixin(Vue) {
 ```
 
 初始化之后调用 `$mount` 会挂载组件，如果是运行时编译，即不存在 render function 但是存在 template 的情况，需要进行 「**编译**」步骤。
-
-#### 编译
-
-compile 可以编译为 `parse`、`optimize` 与 `generate` 三个阶段，最终需要得到 render function。
-
-![](../.vuepress/public/images/2020-12-28-22-12-06.png)
-
-##### parse
-
-`parse` 会用正则等方式解析 tempalte 模板中的指令、class、style 等数据，形成 AST。
-
-##### optimize 
-
-`optimize` 的主要作用是标记 static 静态节点，这是 Vue 在编译过程中的一处优化，后面当 `update` 更新界面时，会有一个 `patch` 的过程，diff 算法会直接跳过静态节点，从而减少了比较的过程，优化了 `patch` 的性能。
-##### generate 
-
-`generate` 是将 AST 转化为 render function 字符串的过程，得到结果是 render 的字符串以及 staticRenderFns 字符串。
-
-在经历 `parse`、`optimize` 与 `generate` 三个阶段以后，组件中就会存在渲染 VNode 所需的 render function。
 
 ```js
 Vue.prototype.$mount = function(el, hydrating) {
@@ -931,6 +912,27 @@ Vue.prototype.$mount = function(el, hydrating) {
   return mount.call(this, el, hydrating);
 };
 ```
+
+#### 编译
+
+compile 可以编译为 `parse`、`optimize` 与 `generate` 三个阶段，最终需要得到 render function。
+
+![](../.vuepress/public/images/2020-12-28-22-12-06.png)
+
+##### parse
+
+`parse` 会用正则等方式解析 tempalte 模板中的指令、class、style 等数据，形成 AST。
+
+##### optimize 
+
+`optimize` 的主要作用是标记 static 静态节点，这是 Vue 在编译过程中的一处优化，后面当 `update` 更新界面时，会有一个 `patch` 的过程，diff 算法会直接跳过静态节点，从而减少了比较的过程，优化了 `patch` 的性能。
+##### generate 
+
+`generate` 是将 AST 转化为 render function 字符串的过程，得到结果是 render 的字符串以及 staticRenderFns 字符串。
+
+在经历 `parse`、`optimize` 与 `generate` 三个阶段以后，组件中就会存在渲染 VNode 所需的 render function。
+
+
 
 > 渲染库的核心大致就是，compile，render，diff，对应的语法系统。之后往上就是开发应用层，angular 几乎将所有能用的模式都抽象了。
 
@@ -1086,11 +1088,667 @@ let o = new Vue({
 o._data.test = "hello, world"; // 视图更新啦
 ```
 
-#### 响应式系统的依赖收集追踪原理 
+#### 结合源码
 
-结合 vue Vue.js v2.6.11 源码过程。
+在 Vue 的初始化阶段，`_init` 方法执行的时候，会执行 `ininState(vm)` 方法。
+```js
+function initState (vm) {
+    vm._watchers = [];
+    var opts = vm.$options;
+    if (opts.props) { initProps(vm, opts.props); }
+    if (opts.methods) { initMethods(vm, opts.methods); }
+    if (opts.data) { // 如果 data 有值，则执行响应式处理
+      initData(vm);
+    } else {
+      observe(vm._data = {}, true /* asRootData */);
+    }
+    if (opts.computed) { initComputed(vm, opts.computed); }
+    if (opts.watch && opts.watch !== nativeWatch) {
+      initWatch(vm, opts.watch);
+    }
+  }
+```
+
+<!-- initProps
+```js
+
+  function initProps (vm, propsOptions) {
+    var propsData = vm.$options.propsData || {};
+    var props = vm._props = {};
+    // cache prop keys so that future props updates can iterate using Array
+    // instead of dynamic object key enumeration.
+    var keys = vm.$options._propKeys = [];
+    var isRoot = !vm.$parent;
+    // root instance props should be converted
+    if (!isRoot) {
+      toggleObserving(false);
+    }
+    var loop = function ( key ) {
+      keys.push(key);
+      var value = validateProp(key, propsOptions, propsData, vm);
+      /* istanbul ignore else */
+      {
+        var hyphenatedKey = hyphenate(key);
+        if (isReservedAttribute(hyphenatedKey) ||
+            config.isReservedAttr(hyphenatedKey)) {
+          warn(
+            ("\"" + hyphenatedKey + "\" is a reserved attribute and cannot be used as component prop."),
+            vm
+          );
+        }
+        defineReactive$$1(props, key, value, function () {
+          if (!isRoot && !isUpdatingChildComponent) {
+            warn(
+              "Avoid mutating a prop directly since the value will be " +
+              "overwritten whenever the parent component re-renders. " +
+              "Instead, use a data or computed property based on the prop's " +
+              "value. Prop being mutated: \"" + key + "\"",
+              vm
+            );
+          }
+        });
+      }
+      // static props are already proxied on the component's prototype
+      // during Vue.extend(). We only need to proxy props defined at
+      // instantiation here.
+      if (!(key in vm)) {
+        proxy(vm, "_props", key);
+      }
+    };
+
+    for (var key in propsOptions) loop( key );
+    toggleObserving(true);
+  }
+``` -->
+
+其中会执行 `initData()`来对 data 数据进行初始化。
+
+```js
+  function initData (vm) {
+    var data = vm.$options.data;
+    data = vm._data = typeof data === 'function'
+      ? getData(data, vm)
+      : data || {};
+    if (!isPlainObject(data)) {
+      data = {};
+      warn(
+        'data functions should return an object:\n' +
+        'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+        vm
+      );
+    }
+    // proxy data on instance
+    var keys = Object.keys(data);
+    var props = vm.$options.props;
+    var methods = vm.$options.methods;
+    var i = keys.length;
+    while (i--) {
+      var key = keys[i];
+      {
+        if (methods && hasOwn(methods, key)) {
+          warn(
+            ("Method \"" + key + "\" has already been defined as a data property."),
+            vm
+          );
+        }
+      }
+      if (props && hasOwn(props, key)) {
+        warn(
+          "The data property \"" + key + "\" is already declared as a prop. " +
+          "Use prop default value instead.",
+          vm
+        );
+      } else if (!isReserved(key)) {
+        proxy(vm, "_data", key);
+      }
+    }
+    // observe data
+    observe(data, true /* asRootData */);
+  }
+```
+
+data 的初始化过程调用了 `observe(data, true)` 方法观测整个 `data` 的变化，把 `data` 变成响应式。
+
+```js
+ /**
+   * Attempt to create an observer instance for a value,
+   * returns the new observer if successfully observed,
+   * or the existing observer if the value already has one.
+   */
+  function observe (value, asRootData) {
+    if (!isObject(value) || value instanceof VNode) {
+      return
+    }
+    var ob;
+    if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+      ob = value.__ob__;
+    } else if (
+      shouldObserve &&
+      !isServerRendering() &&
+      (Array.isArray(value) || isPlainObject(value)) &&
+      Object.isExtensible(value) &&
+      !value._isVue
+    ) {
+      ob = new Observer(value);
+    }
+    if (asRootData && ob) {
+      ob.vmCount++;
+    }
+    return ob
+  }
+
+   /**
+   * Observer class that is attached to each observed
+   * object. Once attached, the observer converts the target
+   * object's property keys into getter/setters that
+   * collect dependencies and dispatch updates.
+   */
+  var Observer = function Observer (value) {
+    this.value = value;
+    this.dep = new Dep();
+    this.vmCount = 0;
+    def(value, '__ob__', this);
+    if (Array.isArray(value)) {
+      if (hasProto) {
+        protoAugment(value, arrayMethods);
+      } else {
+        copyAugment(value, arrayMethods, arrayKeys);
+      }
+      this.observeArray(value);
+    } else {
+      this.walk(value);
+    }
+  };
+
+  /**
+   * Walk through all properties and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  Observer.prototype.walk = function walk (obj) {
+    var keys = Object.keys(obj);
+    for (var i = 0; i < keys.length; i++) {
+      defineReactive$$1(obj, keys[i]);
+    }
+  };
+```
+
+最终会跑到 `defineReactive$$1` 方法，分别对对象的每个数据进行响应式处理。
+
+```js
+/**
+   * Define a reactive property on an Object.
+   */
+  function defineReactive$$1 (
+    obj,
+    key,
+    val,
+    customSetter,
+    shallow
+  ) {
+    var dep = new Dep();
+
+    var property = Object.getOwnPropertyDescriptor(obj, key);
+    if (property && property.configurable === false) {
+      return
+    }
+
+    // cater for pre-defined getter/setters
+    var getter = property && property.get;
+    var setter = property && property.set;
+    if ((!getter || setter) && arguments.length === 2) {
+      val = obj[key];
+    }
+
+    var childOb = !shallow && observe(val);
+    Object.defineProperty(obj, key, {
+      enumerable: true,
+      configurable: true,
+      get: function reactiveGetter () {
+        var value = getter ? getter.call(obj) : val;
+        if (Dep.target) {
+          dep.depend();
+          if (childOb) {
+            childOb.dep.depend();
+            if (Array.isArray(value)) {
+              dependArray(value);
+            }
+          }
+        }
+        return value
+      },
+      set: function reactiveSetter (newVal) {
+        var value = getter ? getter.call(obj) : val;
+        /* eslint-disable no-self-compare */
+        if (newVal === value || (newVal !== newVal && value !== value)) {
+          return
+        }
+        /* eslint-enable no-self-compare */
+        if (customSetter) {
+          customSetter();
+        }
+        // #7981: for accessor properties without setter
+        if (getter && !setter) { return }
+        if (setter) {
+          setter.call(obj, newVal);
+        } else {
+          val = newVal;
+        }
+        childOb = !shallow && observe(newVal);
+        dep.notify();
+      }
+    });
+  }
+```
+
+### 响应式系统的依赖收集追踪原理 
+#### 为什么要依赖收集
+
+先举个例子
+
+```js
+new Vue({
+    template: 
+        `<div>
+            <span>{{text1}}</span> 
+            <span>{{text2}}</span> 
+        <div>`,
+    data: {
+        text1: 'text1',
+        text2: 'text2',
+        text3: 'text3'
+    }
+});
+```
+
+然后我们做了这么一个操作
+
+```js
+this.text3 = 'modify text3';
+```
+
+我们修改了 `data` 的 `text3` 的数据，但是因为视图中并不需要用到 `text3`，所以我们并不需要触发上一章所讲的 `cb` 函数来更新视图，调用 `cb` 显然是不正确的。
+
+再来举一个例子：
+
+```js
+let globalObj = {
+    text1: 'text1'
+};
+
+let o1 = new Vue({
+    template:
+        `<div>
+            <span>{{text1}}</span> 
+        <div>`,
+    data: globalObj
+});
+
+let o2 = new Vue({
+    template:
+        `<div>
+            <span>{{text1}}</span> 
+        <div>`,
+    data: globalObj
+});
+```
+
+这个时候，我们执行了如下操作。
+
+```js
+globalObj.text1 = 'hello,text';
+```
+
+我们应该需要通知 `o1` 和 `o2` 两个 vm 实例进行视图的更新，「依赖收集」会让 `text1` 这个数据知道“哦～有两个地方依赖我的数据，我变化的时候需要通知它们～”。
+
+最终会形成数据与视图的一种对应关系，如下图。
+
+![](../.vuepress/public/images/2021-02-10-23-17-43.png)
+
+接下来，我们来介绍一下「依赖收集」是如何实现的。
+
+#### 订阅者 Dep
+
+首先我们来实现一个订阅者 Dep，
+```js
+class Dep {
+    constructor () {
+        /* 用来存放Watcher对象的数组 */
+        this.subs = [];
+    }
+
+    /* 在subs中添加一个Watcher对象 */
+    addSub (sub) {
+        this.subs.push(sub);
+    }
+
+    /* 通知所有Watcher对象更新视图 */
+    notify () {
+        this.subs.forEach((sub) => {
+            sub.update();
+        })
+    }
+}
+```
+
+为了方便理解我们只实现了添加的部分代码，主要是两件事：
+
+1. 用 `addSub` 方法可以在目前的 `Dep` 对象中增加一个 `Watcher` 的订阅操作。
+2. `notify` 方法通知目前 `Dep` 对象的 `subs` 中所有的 `Watcher` 对象触发更新操作。
+
+#### 观察者 Watcher
+
+```js
+class Watcher {
+    constructor () {
+        /* 在new一个Watcher对象时将该对象赋值给Dep.target，在get中会用到 */
+        Dep.target = this;
+    }
+
+    /* 更新视图的方法 */
+    update () {
+        console.log("视图更新啦～");
+    }
+}
+
+Dep.target = null;
+```
+#### 依赖收集
+
+接下来我们修改一下 `defineReactive` 以及 Vue 的构造函数，来完成依赖收集。
+
+我们在闭包中增加了一个 Dep 类的对象，用来收集 `Watcher` 对象。在对象被「读」的时候，会触发 `reactiveGetter` 函数把当前的 `Watcher` 对象（存放在 Dep.target 中）收集到 `Dep` 类中去。之后如果当该对象被「写」的时候，则会触发 `reactiveSetter` 方法，通知 `Dep` 类调用 `notify` 来触发所有 `Watcher` 对象的 `update` 方法更新对应视图。
+
+```js
+
+function defineReactive (obj, key, val) {
+    /* 一个Dep类对象 */
+    const dep = new Dep();
+    
+    Object.defineProperty(obj, key, {
+        enumerable: true,
+        configurable: true,
+        get: function reactiveGetter () {
+            /* 将Dep.target（即当前的Watcher对象存入dep的subs中） */
+            dep.addSub(Dep.target);
+            return val;         
+        },
+        set: function reactiveSetter (newVal) {
+            if (newVal === val) return;
+            /* 在set的时候触发dep的notify来通知所有的Watcher对象更新视图 */
+            dep.notify();
+        }
+    });
+}
+
+function observer(value) {
+  if (!value || typeof value !== 'object') {
+    return;
+  }
+
+  Object.keys(value).forEach((key) => {
+    defineReactive(value, key, value[key]);
+  })
+}
+
+class Vue {
+    constructor(options) {
+        this._data = options.data;
+        observer(this._data);
+        /* 新建一个Watcher观察者对象，这时候Dep.target会指向这个Watcher对象 */
+        new Watcher();
+        /* 在这里模拟render的过程，为了触发test属性的get函数 */
+        console.log('render~', this._data.test);
+    }
+}
+```
+
+#### 小结
+
+总结一下。
+
+首先在 `observer` 的过程中会注册 `get` 方法，该方法用来进行「**依赖收集**」。在它的闭包中会有一个 `Dep` 对象，这个对象用来存放 Watcher 对象的实例。其实「**依赖收集**」就是把 `Watcher` 实例存放在对应的 `Dep` 对象中去。`get` 方法可以让当前的 `Watcher` 对象（Dep.target）存放在它的 subs 中（`addSub`）方法，在数据变化时，`set` 会调用 `Dep` 对象的 `notify` 方法通知它内部所有的 `Watcher` 对象进行视图更新。
+
+这是 `Object.defineProperty` 的 `set/get` 方法处理的事情，那么「**依赖收集**」的前提条件还有两个：
+1. 触发 `get` 方法；
+2. 新建一个 Watcher 对象。
+
+这个我们在 Vue 的构造类处理。新建一个 `Watcher` 对象只需要 new 出来，这时候 `Dep.target` 已经指向了这个 new 出来的 `Watcher` 对象。而触发 `get` 也很简单，实际上只要把 render function 进行渲染，那么其中依赖的对象都会被「读取」，这里我们通过打印模拟这个过程，读取 test 来触发 `get` 进行「依赖收集」。
+
+![](../.vuepress/public/images/2021-02-11-11-00-09.png)
+#### 结合 vue Vue.js v2.6.11 源码过程。
+
+什么时候会新建一个 Watcher 对象呢？Vue mount 的过程就是通过调用 `mountComponent()` 方法的，里面实例化渲染了一个 `Watcher`。
+
+```js
+function mountComponent (
+    vm,
+    el,
+    hydrating
+  ) {
+    //...
+
+    // we set this to vm._watcher inside the watcher's constructor
+    // since the watcher's initial patch may call $forceUpdate (e.g. inside child
+    // component's mounted hook), which relies on vm._watcher being already defined
+    new Watcher(vm, updateComponent, noop, {
+      before: function before () {
+        if (vm._isMounted && !vm._isDestroyed) {
+          callHook(vm, 'beforeUpdate');
+        }
+      }
+    }, true /* isRenderWatcher */);
+    hydrating = false;
+
+    // manually mounted instance, call mounted on self
+    // mounted is called for render-created child components in its inserted hook
+    if (vm.$vnode == null) {
+      vm._isMounted = true;
+      callHook(vm, 'mounted');
+    }
+    return vm
+  }
+```
+
+会进入 Watcher 的构造函数逻辑：
+```js
+/**
+   * A watcher parses an expression, collects dependencies,
+   * and fires callback when the expression value changes.
+   * This is used for both the $watch() api and directives.
+   */
+  var Watcher = function Watcher (
+    vm,
+    expOrFn,
+    cb,
+    options,
+    isRenderWatcher
+  ) {
+    this.vm = vm;
+    if (isRenderWatcher) {
+      vm._watcher = this;
+    }
+    vm._watchers.push(this);
+    // options
+    if (options) {
+      this.deep = !!options.deep;
+      this.user = !!options.user;
+      this.lazy = !!options.lazy;
+      this.sync = !!options.sync;
+      this.before = options.before;
+    } else {
+      this.deep = this.user = this.lazy = this.sync = false;
+    }
+    this.cb = cb;
+    this.id = ++uid$2; // uid for batching
+    this.active = true;
+    this.dirty = this.lazy; // for lazy watchers
+    this.deps = [];
+    this.newDeps = [];
+    this.depIds = new _Set();
+    this.newDepIds = new _Set();
+    this.expression = expOrFn.toString();
+    // parse expression for getter
+    if (typeof expOrFn === 'function') {
+      this.getter = expOrFn;
+    } else {
+      this.getter = parsePath(expOrFn);
+      if (!this.getter) {
+        this.getter = noop;
+        warn(
+          "Failed watching path: \"" + expOrFn + "\" " +
+          'Watcher only accepts simple dot-delimited paths. ' +
+          'For full control, use a function instead.',
+          vm
+        );
+      }
+    }
+    this.value = this.lazy
+      ? undefined
+      : this.get();
+  };
+```
+
+然后调用了 `this.get()`，其中调用了 `pushTarget()` 记录 `VNode`，以及调用 `this.getter.call(vm, vm);` 进行渲染 组件为 VNode，进行数据对象的访问，从而触发收集依赖。
+
+```js
+  /**
+   * Evaluate the getter, and re-collect dependencies.
+   */
+  Watcher.prototype.get = function get () {
+    pushTarget(this); // 
+    var value;
+    var vm = this.vm;
+    try {
+      // 触发 getter 方法
+      value = this.getter.call(vm, vm);
+    } catch (e) {
+      if (this.user) {
+        handleError(e, vm, ("getter for watcher \"" + (this.expression) + "\""));
+      } else {
+        throw e
+      }
+    } finally {
+      // "touch" every property so they are all tracked as
+      // dependencies for deep watching
+      if (this.deep) {
+        traverse(value);
+      }
+      popTarget();
+      this.cleanupDeps();
+    }
+    return value
+  };
+
+```
+
+`pushTarget(this)` 这个方法会把当前的 `Watcher` 实例添加到 `Dep.target` 中：
+
+```js
+  // The current target watcher being evaluated.
+  // This is globally unique because only one watcher
+  // can be evaluated at a time.
+  Dep.target = null;
+  var targetStack = [];
+
+  function pushTarget (target) {
+    targetStack.push(target);
+    Dep.target = target;
+  }
+
+```
+
+调用完 `this.getter.call()` 后，会调用 `updateComponent()` 方法：
+```js
+updateComponent = function () {
+ vm._update(vm._render(), hydrating);
+};
+```
+
+### 实现 Virtual DOM 下的一个 VNode
+#### 什么是 VNode
+
+#### 实现一个 Vnode
+#### 结合 Vue 2.0 源码
+
+在 `updateComponent()` 方法中，会调用了 `vm._render()`。
+
+```js
+updateComponent = function () {
+ vm._update(vm._render(), hydrating);
+};
+```
+
+它把实例生成了 VNode 供渲染所用，关键代码是 ` vnode = render.call(vm._renderProxy, vm.$createElement);`
+
+```js 
+Vue.prototype._render = function () {
+      var vm = this;
+      var ref = vm.$options;
+      var render = ref.render;
+      var _parentVnode = ref._parentVnode;
+
+      if (_parentVnode) {
+        vm.$scopedSlots = normalizeScopedSlots(
+          _parentVnode.data.scopedSlots,
+          vm.$slots,
+          vm.$scopedSlots
+        );
+      }
+
+      // set parent vnode. this allows render functions to have access
+      // to the data on the placeholder node.
+      vm.$vnode = _parentVnode;
+      // render self
+      var vnode;
+      try {
+        // There's no need to maintain a stack because all render fns are called
+        // separately from one another. Nested component's render fns are called
+        // when parent component is patched.
+        currentRenderingInstance = vm;
+        vnode = render.call(vm._renderProxy, vm.$createElement);
+      } catch (e) {
+        handleError(e, vm, "render");
+        // return error render result,
+        // or previous vnode to prevent render error causing blank component
+        /* istanbul ignore else */
+        if (vm.$options.renderError) {
+          try {
+            vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
+          } catch (e) {
+            handleError(e, vm, "renderError");
+            vnode = vm._vnode;
+          }
+        } else {
+          vnode = vm._vnode;
+        }
+      } finally {
+        currentRenderingInstance = null;
+      }
+      // if the returned array contains only a single node, allow it
+      if (Array.isArray(vnode) && vnode.length === 1) {
+        vnode = vnode[0];
+      }
+      // return empty vnode in case the render function errored out
+      if (!(vnode instanceof VNode)) {
+        if (Array.isArray(vnode)) {
+          warn(
+            'Multiple root nodes returned from render function. Render function ' +
+            'should return a single root node.',
+            vm
+          );
+        }
+        vnode = createEmptyVNode();
+      }
+      // set parent
+      vnode.parent = _parentVnode;
+      return vnode
+    };
+  }
+```
 ## 参考资料
 
+- awesome vue
 - [Vue 项目里戳中你痛点的问题及解决办法（更新）](https://juejin.cn/post/6844903632815521799#heading-26)
 - 原理：
   - 入门教程：使用 CDN 快速调试源码，结合 深入了解 vue.js 内部运行机制小册

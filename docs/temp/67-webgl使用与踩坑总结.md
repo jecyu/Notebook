@@ -38,9 +38,21 @@
 
 ## 入门（小白）
 
+- WebGL 是一组图形 API，允许我们使用 JavaScript 控制 GPU 渲染过程，进行 3D 绘图。
+- WebGL 应用由 JavaScript 程序和着色器程序构成。
+- WebGL 如何将 3D 模型数据显示在 2D 平面上。
+- WebGL 编程要素：开发者需要针对 CPU 和 GPU 进行编程，CPU 部分是 JavaScript 程序，GPU 部分是着色器程序。
+### 什么是 WebGL
+
+WebGL 是一组基于 JavaScript 语言的图形规范，浏览器厂商按照这组规范进行实现，为 Web 开发者提供一套 `3D 图形`相关的 API。那么，这些 API 能够帮助开发者做些什么呢？
+
+这些 API 能够让 Web 开发者使用 JavaScript 语言直接和显卡（GPU）进行通信。
+
 ![](../.vuepress/public/images/2021-01-20-18-38-14.png)
 
-### 什么是 WebGL
+### WegGL 的工作原理
+
+![](../.vuepress/public/images/2021-02-10-12-19-39.png)
 
 WebGL 程序的工作流程可以总结如下：
 
@@ -127,14 +139,13 @@ Each attribute, uniform and varying must be declared before main() in the shader
 #### 向量
 
 物理专业学习的视角
-
-![](../.vuepress/public/images/2021-01-22-10-20-28.png)
+<!-- ![](../.vuepress/public/images/2021-01-22-10-20-28.png)
 
 ![](../.vuepress/public/images/2021-01-22-10-21-23.png)
 
 ![](../.vuepress/public/images/2021-01-22-10-21-39.png)
 
-![](../.vuepress/public/images/2021-01-22-10-24-05.png)
+![](../.vuepress/public/images/2021-01-22-10-24-05.png) -->
 
 - 向量是数字数组，它可以表示空间中的点（顶点），也可以表示方向（偏移）。
 - 当它代表一个点时，它是一个坐标列表。
@@ -144,25 +155,25 @@ Each attribute, uniform and varying must be declared before main() in the shader
 - 与顶点相反，方向向量没有位置。它们仅代表一个偏移量，并且该偏移量可以从任何位置开始。
   - 你可以像这样构建向量 AB（从 A 点到 B 点）：AB = [xB - xA, yB - yA, zB - zA]。
 
-![](../.vuepress/public/images/2020-12-17-23-13-23.png)
+<!-- ![](../.vuepress/public/images/2020-12-17-23-13-23.png)
 
 ![](../.vuepress/public/images/2021-01-22-10-37-10.png)
 
 ![](../.vuepress/public/images/2021-01-22-10-38-54.png)
 
-![](../.vuepress/public/images/2021-01-22-10-40-57.png)
+![](../.vuepress/public/images/2021-01-22-10-40-57.png) -->
 
 #### 操作向量
 
 > 相加、相乘
 
 - 将两个向量相加，就是将它们的项一一相加：`V + W = [xV + xW，yV + yW，zV + zW]。`
-  - ![](../.vuepress/public/images/2021-01-22-10-43-04.png)
+  <!-- - ![](../.vuepress/public/images/2021-01-22-10-43-04.png)
   - ![](../.vuepress/public/images/2021-01-22-10-44-32.png)
-  - ![](../.vuepress/public/images/2021-01-22-10-44-41.png)
+  - ![](../.vuepress/public/images/2021-01-22-10-44-41.png) -->
 - 缩放向量包括将所有项乘以给定的量：`V * n = [xV * n, yV * n, zV * n]。`
-  - ![](../.vuepress/public/images/2021-01-22-10-50-34.png)
-  - ![](../.vuepress/public/images/2021-01-22-10-51-29.png)
+  <!-- - ![](../.vuepress/public/images/2021-01-22-10-50-34.png)
+  - ![](../.vuepress/public/images/2021-01-22-10-51-29.png) -->
 - 测量向量的长度（或大小）类似于使用毕达哥拉斯测量两点之间的距离：`|| V || = sqrt（xV²+yV²+zV²）`
 - 对向量进行归一化包括将其长度调整为 1 个单位，而不改变其方向。等效于按 `1 / || V ||` 进行缩放。
 - 可以使用**点积**计算两个归一化向量 V 和 W 之间的相对角度（方向差）：`V.W = xV * xW + yV * yW + zV * zW。`
@@ -832,8 +843,6 @@ gl.drawArrays(gl.TRIANGLES, 0, n);
 
 ![](../.vuepress/public/images/2021-02-05-10-14-34.png)
 
-- identify
-
 ```html
 <canvas id="canvas" width="400" height="400"></canvas>
 <script src="../../lib/webgl.js"></script>
@@ -979,6 +988,9 @@ identity = () => {
     0, 0, 0, 1
   ]);
 };
+
+// Compute the multiplication of two mat4 (c = a x b)
+
 ```
 
 ##### How to change the pivot point

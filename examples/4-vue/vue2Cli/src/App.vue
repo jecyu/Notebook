@@ -1,23 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld :msg="msg"/>
-    <label>改变标题<input v-model="msg" /></label>
+    <img alt="Vue logo" src="./assets/logo.png" />
+    <HelloWorld :msg="msg" />
+    <label>改变标题<input v-model="msg"/></label>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    HelloWorld,
   },
   data() {
-    msg: "Welcome to Your Vue.js App"
-  }
-}
+    return {
+      msg: "Welcome to Your Vue.js App",
+    };
+  },
+  watch: {
+    msg() {
+      console.log("msg ->", this.msg);
+    },
+  },
+};
 </script>
 
 <style>
