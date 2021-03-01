@@ -1,10 +1,10 @@
-# TypeScript
+# TypeScript 入门到实践
 
 <!-- <TOC /> -->
 
 [[toc]]
 
-## 前言
+## 0. 前言
 
 TypeScript 在这两年间一直很火，看看下面的语言趋势图。
 

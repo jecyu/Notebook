@@ -39,14 +39,23 @@
                                 "data": {
                                     "id": "c8nmi3dy03k0",
                                     "created": 1611109074977,
-                                    "text": "地图展示原理"
+                                    "text": "地图展示原理",
+                                    "expandState": "expand"
                                 },
                                 "children": [
                                     {
                                         "data": {
                                             "id": "c8nmidz4w2g0",
                                             "created": 1611109098026,
-                                            "text": "二维 Canvas"
+                                            "text": "Canvas"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c9cf0b1nvz40",
+                                            "created": 1613626932241,
+                                            "text": "Svg"
                                         },
                                         "children": []
                                     }
@@ -54,17 +63,9 @@
                             },
                             {
                                 "data": {
-                                    "id": "c8nmsrid3so0",
-                                    "created": 1611109911129,
-                                    "text": "二维地图应用"
-                                },
-                                "children": []
-                            },
-                            {
-                                "data": {
                                     "id": "c8nmuv6jm0o0",
                                     "created": 1611110075849,
-                                    "text": "GIS 坐标系"
+                                    "text": "二维坐标系"
                                 },
                                 "children": []
                             }
@@ -90,7 +91,7 @@
                                 "data": {
                                     "id": "c8nmih0sv3c0",
                                     "created": 1611109104657,
-                                    "text": "地图展示原理：三维 WebGL"
+                                    "text": "地图展示原理：WebGL"
                                 },
                                 "children": []
                             },
@@ -106,7 +107,7 @@
                                 "data": {
                                     "id": "c8nmi7jbam00",
                                     "created": 1611109084009,
-                                    "text": "GIS 坐标系"
+                                    "text": "三维坐标系"
                                 },
                                 "children": []
                             }
@@ -208,15 +209,15 @@
                             "id": "c8nmmgt7vog0",
                             "created": 1611109417655,
                             "text": "需要实现的效果",
-                            "expandState": "expand"
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
                                 "data": {
                                     "id": "c8nmd6os0xc0",
                                     "created": 1611108690342,
-                                    "text": "地图工具的二三维同时支持",
-                                    "expandState": "expand"
+                                    "text": "什么是二三维一体化",
+                                    "expandState": "collapse"
                                 },
                                 "children": [
                                     {
@@ -306,7 +307,7 @@
                                     "id": "c8nmcywr8s80",
                                     "created": 1611108673410,
                                     "text": "二三维数据同步",
-                                    "expandState": "expand"
+                                    "expandState": "collapse"
                                 },
                                 "children": [
                                     {
@@ -374,7 +375,7 @@
                                     "id": "c8nmcx1xfyo0",
                                     "created": 1611108669369,
                                     "text": "视图点同步",
-                                    "expandState": "expand"
+                                    "expandState": "collapse"
                                 },
                                 "children": [
                                     {
@@ -394,7 +395,7 @@
                             "id": "c8nmxbixpy00",
                             "created": 1611110268156,
                             "text": "需要考虑的问题",
-                            "expandState": "expand"
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -544,7 +545,8 @@
                         "data": {
                             "id": "c8nmah96a2g0",
                             "created": 1611108478250,
-                            "text": "基础纯展示版本"
+                            "text": "基础纯展示版本",
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -561,7 +563,8 @@
                         "data": {
                             "id": "c8nmjik6j680",
                             "created": 1611109186370,
-                            "text": "高级复杂操作版本"
+                            "text": "高级复杂操作版本",
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -579,7 +582,7 @@
                             "id": "c8nmpnwzeco0",
                             "created": 1611109668213,
                             "text": "实现方案",
-                            "expandState": "expand"
+                            "expandState": "collapse"
                         },
                         "children": [
                             {

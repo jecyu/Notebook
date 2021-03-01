@@ -9097,18 +9097,19 @@
     var match, index, tokenValue;
     while ((match = tagRE.exec(text))) {
       index = match.index;
-      // push text token
+      // push text token // 先把变量 {{ 前边的文本添加到 token 中
       if (index > lastIndex) {
         rawTokens.push(tokenValue = text.slice(lastIndex, index));
         tokens.push(JSON.stringify(tokenValue));
       }
-      // tag token
+      // tag token   
       var exp = parseFilters(match[1].trim());
-      tokens.push(("_s(" + exp + ")"));
+      tokens.push(("_s(" + exp + ")")); // 把变量改成 _s(x) 这样的形式也添加到数组中
       rawTokens.push({ '@binding': exp });
-      lastIndex = index + match[0].length;
+      lastIndex = index + match[0].length; // 设置 lastIndex 保证下一轮循环时，正则表达式不再重复匹配已经解析过的文本
     }
-    if (lastIndex < text.length) {
+    // 当所有变量都处理完毕后，如果最后一个变量右边还有文本，就将文本添加到数组中
+    if (lastIndex < text.length) { 
       rawTokens.push(tokenValue = text.slice(lastIndex));
       tokens.push(JSON.stringify(tokenValue));
     }
@@ -9418,6 +9419,7 @@
 
     function parseStartTag () {
       var start = html.match(startTagOpen);
+      // 解析标签名，判断模版是否满足开始标签的特征
       if (start) {
         var match = {
           tagName: start[1],
@@ -9426,12 +9428,14 @@
         };
         advance(start[0].length);
         var end, attr;
+        // 解析标签属性
         while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
           attr.start = index;
           advance(attr[0].length);
           attr.end = index;
           match.attrs.push(attr);
         }
+        // 判断该标签是否是自闭合标签
         if (end) {
           match.unarySlash = end[1];
           advance(end[0].length);
@@ -10619,9 +10623,9 @@
     if (!root) { return }
     isStaticKey = genStaticKeysCached(options.staticKeys || '');
     isPlatformReservedTag = options.isReservedTag || no;
-    // first pass: mark all non-static nodes.
+    // first pass: mark all non-static nodes. 标记所有静态节点
     markStatic$1(root);
-    // second pass: mark static roots.
+    // second pass: mark static roots. 标记所有静态根节点
     markStaticRoots(root, false);
   }
 

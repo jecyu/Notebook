@@ -1,6 +1,6 @@
 # Vue 项目开发总结（持续更新）
 
-## 头脑风暴
+## 0. 前言
 
 <!-- 有些别人踩坑、有些是自己踩的坑 -->
 
@@ -15,6 +15,10 @@ JWT
 这个更新到 Vuex 内存状态管理页面。
 
 Vue 应用状态管理。
+
+## 1. 实战
+
+
 
 ## Vue 项目
 
@@ -644,6 +648,121 @@ vuejs，如何在父组件调用子组件的方法？
 - `$attrs与$listeners`
 - localStorage/sessionStorage 浏览器缓存
 
+#### EventBus
+
+##### 创建 EventBus
+
+在一个单独的文件里，输入以下代码：
+```js
+import Vue from "vue";
+export default new Vue;
+```
+
+在 main.js 入口文件导入 eventBus，然后把它挂载到 vue 的原型上，这样就可以全局使用了。
+
+```js
+import bus from "./utils/eventBus";
+Vue.prototype.bus = bus;
+```
+##### 目前发现项目使用方式好几种
+
+1. 直接使用原型上的方法
+```js
+// 发送事件
+this.bus.$emit(xxxx)
+// 接收事件
+this.bus.$on(xxxx)
+```
+
+2. 没有定义原型上的方法，直接导入前面声明的 EventBus
+
+A 组件
+```js
+import EventBus from "@/utils/eventBus"
+EventBus.$emit(xxxx);
+```
+
+B 组件
+```js
+import EventBus from "@/utils/eventBus"
+EventBus.$on(xxxx);
+```
+
+这种方式，EventBus 不是同一个的？不应该是每次导入都使用了新的实例了吗？第 3 种的使用方式也是这样，通过直接 `import EventBus from "@/utils/eventBus"` 这里的。
+
+3. 通过 props 获取父组件/祖先 的 eventBus 实例。
+
+eyemap-map
+```js
+export default {
+  props: {
+    // 事件管理
+    eventBus: {
+      type: Object,
+      default: () => new Vue()
+    },
+// 这里如果不传入 EventBus，则新建 Vue 实例，那么就跟其他的组件不是使用同一个事件管理总线了。
+  },
+  methods: {
+    foo() {
+      this.eventBus.$emit(xxxx);
+    }
+  }
+}
+
+```
+
+```html
+<template>
+<!-- 传入 eventBus -->
+<eyemap-map :eventBus="eventBus"></eyemap-map>
+</template>
+<script>
+import EventBus from "@/utils/EventBus";
+export default {
+  name: "EvaMapContainer",
+  data() {
+    return {
+      eventBus: EventBus,
+    }
+  }
+}
+</script>
+
+```
+
+
+4. 或者是直接把 this.eventBus 丢给 widget 的实例属性的，这种做法很不规范，容易产生 bug。
+
+```js
+ async createLegend(map, mapView) {
+      const { Expand } = await loadModules("esri/widgets/Expand");
+      let legendMount = document.createElement("div");
+      let legendContainer = document.createElement("div");
+      legendContainer.appendChild(legendMount);
+      const scrLegend = Vue.extend(screenLegend);
+      const instance = new scrLegend();
+      this.legendInst = instance;
+      instance.eventBus = this.eventBus;
+      instance.$mount(legendMount);
+      const bgExpand = new Expand({
+        view: mapView,
+        mode: "floating",
+        content: legendContainer,
+        collapseIconClass: "esri-icon-overview-arrow-bottom-right",
+        collapseTooltip: "隐藏图例",
+        expandIconClass: "esri-icon-media",
+        expandTooltip: "显示图例"
+      });
+      return bgExpand;
+    },
+```
+
+**思考**：**这些 EventBus 的指向是否有问题，是否会混乱，如何改善？**
+
+##### 常见的坑
+
+
 #### provide/inject
 
 ```html
@@ -758,9 +877,11 @@ export default {
 };
 ```
 
-## 原理
+## 2. 原理
 
 ### 快速调试源码
+
+> 参考 vue-analysis 和 vue 深入浅出、vue 掘金小册
 
 大型项目的构建流程较为复杂，如果只是想简单了解源码，不需要去了解这些复杂的东西。直接到 CDN 上下载官方编译好了的开发版源码（cdn.jsdelivr.net/npm/react@1…），中间的版本号可以替换成任何想看的版本。
 
@@ -1159,11 +1280,11 @@ function initState (vm) {
     for (var key in propsOptions) loop( key );
     toggleObserving(true);
   }
-``` -->
+​``` -->
 
 其中会执行 `initData()`来对 data 数据进行初始化。
 
-```js
+​```js
   function initData (vm) {
     var data = vm.$options.data;
     data = vm._data = typeof data === 'function'
@@ -1668,7 +1789,127 @@ updateComponent = function () {
 ### 实现 Virtual DOM 下的一个 VNode
 #### 什么是 VNode
 
-#### 实现一个 Vnode
+我们知道，render function 会被转化成 VNode 节点。Virtual DOM 其实就是一颗以 JavaScript 对象（VNode 节点）作为基础的树，用对象属性来描述节点，实际上它只是一层对真实 DOM 的抽象。最终可以通过一系列操作使这棵树映射到真实环境上。由于 Virtual DOM 是以 JavaScript 对象为基础而不依赖真实平台环境，所以它具有了跨平台的能力，比如说浏览器平台、Weex、Node 等。
+
+#### 实现一个 VNode
+
+VNode 归根结底就是一个 JavaScript 对象，只要这个类的一些属性可以正确直观地描述清楚当前节点的信息即可。我们来实现一个简单的 `VNode` 类，加入一些基本属性，为了方便理解，我们先不考虑复杂的情况。
+
+```js
+class VNode {
+  constructor (tag, data, children, text, elm) {
+    // 当前节点的标签名
+    this.tag = tag;
+    // 当前节点的一些数据信息，比如 props、attrs 等数据
+    this.data = data;
+    // 当前节点的子节点，是一个数组
+    this.children = children;
+    // 当前节点的文本
+    this.text = text;
+    // 当前虚拟节点对应的真实 DOM 节点
+    this.elm = elm;
+  }
+}
+```
+
+比如我目前有这么一个 Vue 组件。
+
+```js
+<template>
+  <span class="demo" v-show="isShow">
+    This is a span.
+  </span>
+</template>
+```
+
+用 JavaScript 代码形式就是这样的。
+
+```js
+function render() {
+  return new VNode(
+    'span',
+    {
+      // 指令集合数组
+      directives: [
+        // v-show 指令
+        rawName: 'v-show',
+        expression: 'isShow',
+        name: 'show',
+        value: true
+      ],
+      // 静态 class
+      staticClass: 'demo'
+    },
+    [new VNode(undefined, undefined, undefined, 'This is a span.') ]
+  )
+}
+```
+
+看看转换成 VNode 以后的情况。
+
+```js
+{
+  tag: 'span',
+  data: {
+    // 指令集合数组
+    directives: [
+      // v-show 指令
+      rawName: 'v-show',
+      expression: 'isShow',
+      name: 'show',
+      value: true
+    ]
+  },
+  text: 'undefined',
+  children: [
+    // 子节点是一个文本 VNode 节点
+    {
+      tag: undefined,
+      data: undefined,
+      text: 'This is a span.',
+      children: undefined
+    }
+  ]
+}
+```
+
+然后我们可以将 VNode 进一步封装下，可以产生一些常用 VNode 的方法。
+
+- 创建一个空节点
+
+```js
+function createEmptyVNode() {
+  const node = new VNode();
+  node.text = '';
+  return node;
+}
+```
+
+- 创建一个文本节点
+
+```js
+function createTextVNode(val) {
+  return new VNode(undefined, undefined, undefined, String(val));
+}
+```
+
+- 克隆一个 VNode 节点
+
+```js
+function cloneVNode (node) {
+  const cloneVNode = new VNode(
+    node.tag,
+    node.data,
+    node.children,
+    node.text,
+    node.elm
+  );
+  return cloneVnode;
+}
+```
+
+总的来说，VNode 就是一个 JavaScript 对象，用 JavaScript 对象的属性来描述当前节点的一些状态，用 VNode 节点的形式来模拟一课 Virtual DOM 树。
+
 #### 结合 Vue 2.0 源码
 
 在 `updateComponent()` 方法中，会调用了 `vm._render()`。
@@ -1746,6 +1987,893 @@ Vue.prototype._render = function () {
     };
   }
 ```
+
+### template 模版是怎样通过 Compile 编译的
+
+![](../.vuepress/public/images/2021-02-13-11-48-25.png)
+
+
+
+模版编译在整个渲染过程中的位置如下图：
+
+![](../.vuepress/public/images/2021-02-21-22-30-05.png)
+
+模版编译的主要目标就是生成渲染函数，而渲染函数的作用是每次执行它，它就会使用当前最新的状态生成一份新的 vnode，然后使用这个 vnode 进行渲染。
+
+将模版编译成渲染函数可以分为两个步骤，先将模版解析成 AST（Abstract Syntax Tree，抽象语法树），然后使用 AST 生成渲染函数。但是由于静态节点不需要总是重新渲染，所以在生成 AST 之后、生成渲染函数之前这个阶段，需要做一个操作，那就是遍历一遍 AST，给所有静态节点做一个标记，这样就在虚拟 DOM 中更新节点时，如果发现节点有这个标记，就不会重新渲染它。
+
+所以，在大体逻辑上，模版编译分三部分内容：
+
+- 将模版解析为 AST
+- 遍历 AST 标记静态节点
+- 使用 AST 生成渲染函数
+
+在 Vue 源码中，对应抽象出三个模块来实现各自的功能，分别是：
+
+- 解析器
+- 优化器
+- 代码生成器，将 AST 转换成渲染函数中的内容，这个内容可以称为“代码字符串”。
+
+![](../.vuepress/public/images/2021-02-22-22-51-04.png)
+
+#### 结合源码分析
+
+举个例子如下：
+
+模版文件：
+
+```html
+    <div id="app">
+      <p>
+        <span>{{ message }}</span>
+      </p>
+      <p>
+        <input type="text" v-model="message" />
+      </p>
+    </div>
+```
+
+逻辑文件：
+```js
+const app = new Vue({
+  data: {
+    message: "Hello Vue!",
+  },
+});
+app.$mount("#app");
+```
+
+1. 在初始化 `new Vue()`处理好响应式数据后，开始调用 `app.$mount("#app")` 挂载函数，把 template 传入 `compileToFunctions()` 进行编译。
+
+```js
+Vue.prototype.$mount = function (
+    el,
+    hydrating
+  ) {
+    el = el && query(el);
+		// ...
+    var options = this.$options;
+     // 如果不提供 render 选项，则读取 template 或 el 的模版，再转换为 render 函数，进行挂载
+    // resolve template/el and convert to render function
+    if (!options.render) {
+      var template = options.template;
+      if (template) {
+				// ...
+      } else if (el) {
+        template = getOuterHTML(el);
+      }
+      if (template) {
+				// ...
+        var ref = compileToFunctions(template, {
+          outputSourceRange: "development" !== 'production',
+          shouldDecodeNewlines: shouldDecodeNewlines,
+          shouldDecodeNewlinesForHref: shouldDecodeNewlinesForHref,
+          delimiters: options.delimiters,
+          comments: options.comments
+        }, this);
+        var render = ref.render; // 获得 render 函数
+        var staticRenderFns = ref.staticRenderFns;
+        options.render = render;
+        options.staticRenderFns = staticRenderFns;
+        // ...
+      }
+    }
+    return mount.call(this, el, hydrating)
+  };
+```
+
+2. 进入 `compileToFunctions()` 后，调用了 `compile(template, options)`。
+
+```js
+ function createCompileToFunctionFn (compile) {
+    var cache = Object.create(null);
+
+    return function compileToFunctions (
+      template,
+      options,
+      vm
+    ) {
+      // ...
+      // compile
+      var compiled = compile(template, options);
+
+     // ...
+
+      return (cache[key] = res)
+    }
+  }
+```
+
+3. 进入 `compile()`后，再调用 `baseCompile(template.trim(), finalOptions);`
+
+```js
+  function createCompilerCreator (baseCompile) {
+    return function createCompiler (baseOptions) {
+      function compile (
+        template,
+        options
+      ) {
+       // ...
+
+        var compiled = baseCompile(template.trim(), finalOptions);
+        {
+          detectErrors(compiled.ast, warn);
+        }
+        compiled.errors = errors;
+        compiled.tips = tips;
+        return compiled
+      }
+
+      return {
+        compile: compile,
+        compileToFunctions: createCompileToFunctionFn(compile)
+      }
+    }
+  }
+```
+
+4. 进入`baseCompile()` 后，这里就首先调用 `parse(template.trim(), options)`获得了 ast，然后调用 `optimize(ast, options)` 标记静态节点，最后使用 `generate(ast, options)` 生成了渲染函数代码字符串。
+
+```js
+  // `createCompilerCreator` allows creating compilers that use alternative
+  // parser/optimizer/codegen, e.g the SSR optimizing compiler.
+  // Here we just export a default compiler using the default parts.
+  var createCompiler = createCompilerCreator(function baseCompile (
+    template,
+    options
+  ) {
+    var ast = parse(template.trim(), options);
+    if (options.optimize !== false) {
+      optimize(ast, options);
+    }
+    var code = generate(ast, options);
+    return {
+      ast: ast,
+      render: code.render,
+      staticRenderFns: code.staticRenderFns
+    }
+  });
+```
+
+接下来分别解析上述解析器、优化器和生成器的具体过程：
+
+#### 解析器
+
+经过 `parse(template.trim(), options)` 解析出来的 AST 如下所示：
+
+##### AST
+
+```js
+{
+  type: 1,
+  tag: "div",
+  attrsList: [
+    {
+      name: "id",
+      value: "app",
+      start: 5,
+      end: 13,
+    },
+  ],
+  attrsMap: {
+    id: "app",
+  },
+  rawAttrsMap: {
+    id: {
+      name: "id",
+      value: "app",
+      start: 5,
+      end: 13,
+    },
+  },
+  parent: undefined,
+  children: [
+    {
+      type: 1,
+      tag: "p",
+      attrsList: [
+      ],
+      attrsMap: {
+      },
+      rawAttrsMap: {
+      },
+      parent: [Circular],
+      children: [
+        {
+          type: 1,
+          tag: "span",
+          attrsList: [
+          ],
+          attrsMap: {
+          },
+          rawAttrsMap: {
+          },
+          parent: [Circular],
+          children: [
+            {
+              type: 2,
+              expression: "_s(message)",
+              tokens: [
+                {
+                  "@binding": "message",
+                },
+              ],
+              text: "{{ message }}",
+              start: 39,
+              end: 52,
+            },
+          ],
+          start: 33,
+          end: 59,
+          plain: true,
+        },
+      ],
+      start: 21,
+      end: 70,
+      plain: true,
+    },
+    {
+      type: 3,
+      text: " ",
+      start: 70,
+      end: 77,
+    },
+    {
+      type: 1,
+      tag: "p",
+      attrsList: [
+      ],
+      attrsMap: {
+      },
+      rawAttrsMap: {
+      },
+      parent: [Circular],
+      children: [
+        {
+          type: 1,
+          tag: "input",
+          attrsList: [
+            {
+              name: "type",
+              value: "text",
+              start: 96,
+              end: 107,
+            },
+            {
+              name: "v-model",
+              value: "message",
+              start: 108,
+              end: 125,
+            },
+          ],
+          attrsMap: {
+            type: "text",
+            "v-model": "message",
+          },
+          rawAttrsMap: {
+            type: {
+              name: "type",
+              value: "text",
+              start: 96,
+              end: 107,
+            },
+            "v-model": {
+              name: "v-model",
+              value: "message",
+              start: 108,
+              end: 125,
+            },
+          },
+          parent: [Circular],
+          children: [
+          ],
+          start: 89,
+          end: 126,
+          plain: false,
+          attrs: [
+            {
+              name: "type",
+              value: "\"text\"",
+              dynamic: undefined,
+              start: 96,
+              end: 107,
+            },
+          ],
+          hasBindings: true,
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: "message",
+              arg: null,
+              isDynamicArg: false,
+              modifiers: undefined,
+              start: 108,
+              end: 125,
+            },
+          ],
+        },
+      ],
+      start: 77,
+      end: 137,
+      plain: true,
+    },
+  ],
+  start: 0,
+  end: 148,
+  plain: false,
+  attrs: [
+    {
+      name: "id",
+      value: "\"app\"",
+      dynamic: undefined,
+      start: 5,
+      end: 13,
+    },
+  ],
+}
+```
+
+其实 AST 并不是什么很神奇的东西，不要被它的名字吓倒。它只是用 JavaScript 中的对象来描述一个节点，一个对象表示一个节点，对对象中的属性用来保存节点所需的各种数据。比如，parent 属性保存了父节点的描述对象，children 属性是一个数组，里面保存了一些子节点的描述对象。再比如，type 属性表示一个节点的类型等。当很多个独立的节点通过 parent 属性和 childrent 属性连在一起时，就变成了一个树，而这样一个用对象描述的节点树其实就是 AST。
+
+##### 内部运行原理
+
+事实上，解析器内部也分了好几个子解析器，比如 HTML 解析器、文本解析器以及过滤器解析器，其中最主要的是 HTML 解析器。它在解析 HTML 的过程中会不断触发各种钩子函数。
+
+```js
+/**
+   * Convert HTML string to AST.
+   */
+  function parse (
+    template,
+    options
+  ) {
+    // ...
+    parseHTML(template, {
+      // ...
+      start: function start (tag, attrs, unary, start$1, end) {
+        // 每当解析道标签的开始位置时，触发该函数
+        // ... 
+      },
+
+      end: function end (tag, start, end$1) {
+        // 每当解析到标签的结束位置时，触发该函数
+       // ...
+      },
+
+      chars: function chars (text, start, end) {
+        // 每当解析道文本时，触发该函数
+          // ...
+      },
+      comment: function comment (text, start, end) {
+        // 每当解析到注释时，触发该函数
+         // ...
+      }
+    });
+    return root
+  }
+```
+
+```html
+<div>
+	<p>
+    我是 Berwin
+  </p>
+</div>
+```
+
+解析器时从前向后解析的，节点是被拉平的，没有层级关系。因此，我们需要一套逻辑来实现层级关系，让每一个 AST 节点都能找到它的父级。构建 AST 层级可以通过维护一个栈（stack），用栈来记录层级关系，这个层级关系可以理解为 DOM 的深度。
+
+![](../.vuepress/public/images/2021-02-26-15-41-54.png)
+
+先把 div 入栈，之后是 p，因为此时栈顶只有 div 标签，因此 p 的父标签为 div 标签。接着继续解析 span 标签，发现栈顶标签为 p，则把 span 标签放到 p 的子节点里。
+
+HTML 解析器的运行原理：解析 HTML 的过程就是循环的过程，简单来说就是用 HTML 模版字符串来循环，每轮循环都从 HTML 模版种截取一小段字符串，然后重复以上过程，直到 HTML 模版被截成一个空字符串时结束循环。
+
+```js
+ function parseHTML (html, options) {
+    var stack = [];
+    var expectHTML = options.expectHTML;
+    var isUnaryTag$$1 = options.isUnaryTag || no;
+    var canBeLeftOpenTag$$1 = options.canBeLeftOpenTag || no;
+    var index = 0;
+    var last, lastTag;
+    while (html) {
+      last = html;
+      // Make sure we're not in a plaintext content element like script/style
+      if (!lastTag || !isPlainTextElement(lastTag)) {
+        var textEnd = html.indexOf('<');
+        if (textEnd === 0) {
+          // Comment: 截取注释
+          if (comment.test(html)) {
+            var commentEnd = html.indexOf('-->');
+
+            if (commentEnd >= 0) {
+              if (options.shouldKeepComment) {
+                options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3);
+              }
+              advance(commentEnd + 3);
+              continue
+            }
+          }
+
+          // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+          // 截取条件注释
+          if (conditionalComment.test(html)) {
+            var conditionalEnd = html.indexOf(']>');
+
+            if (conditionalEnd >= 0) {
+              advance(conditionalEnd + 2);
+              continue
+            }
+          }
+
+          // Doctype: // 截取 DOCTYPE
+          var doctypeMatch = html.match(doctype);
+          if (doctypeMatch) {
+            advance(doctypeMatch[0].length);
+            continue
+          }
+
+          // End tag: 截取结束标签
+          var endTagMatch = html.match(endTag);
+          if (endTagMatch) {
+            var curIndex = index;
+            advance(endTagMatch[0].length);
+            parseEndTag(endTagMatch[1], curIndex, index);
+            continue
+          }
+
+          // Start tag: 截取开始标签
+          var startTagMatch = parseStartTag();
+          if (startTagMatch) {
+            handleStartTag(startTagMatch);
+            if (shouldIgnoreFirstNewline(startTagMatch.tagName, html)) {
+              advance(1);
+            }
+            continue
+          }
+        }
+
+        // 截取文本
+        var text = (void 0), rest = (void 0), next = (void 0);
+        if (textEnd >= 0) {
+          rest = html.slice(textEnd);
+          while (
+            !endTag.test(rest) &&
+            !startTagOpen.test(rest) &&
+            !comment.test(rest) &&
+            !conditionalComment.test(rest)
+          ) {
+            // < in plain text, be forgiving and treat it as text
+            next = rest.indexOf('<', 1);
+            if (next < 0) { break }
+            textEnd += next;
+            rest = html.slice(textEnd);
+          }
+          text = html.substring(0, textEnd);
+        }
+
+        if (textEnd < 0) {
+          text = html;
+        }
+				
+        if (text) {
+          advance(text.length);
+        }
+				// 处理文本
+        if (options.chars && text) {
+          options.chars(text, index - text.length, index);
+        }
+      } else {
+        //纯文本内容元素处理，script、style 和 textarea 这三种元素
+        var endTagLength = 0;
+        var stackedTag = lastTag.toLowerCase();
+        var reStackedTag = reCache[stackedTag] || (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'));
+        var rest$1 = html.replace(reStackedTag, function (all, text, endTag) {
+          endTagLength = endTag.length;
+          if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
+            text = text
+              .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
+              .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
+          }
+          if (shouldIgnoreFirstNewline(stackedTag, text)) {
+            text = text.slice(1);
+          }
+          if (options.chars) {
+            options.chars(text);
+          }
+          return ''
+        });
+        index += html.length - rest$1.length;
+        html = rest$1;
+        parseEndTag(stackedTag, index - endTagLength, index);
+      }
+
+      if (html === last) {
+        options.chars && options.chars(html);
+        if (!stack.length && options.warn) {
+          options.warn(("Mal-formatted tag at end of template: \"" + html + "\""), { start: index + html.length });
+        }
+        break
+      }
+    }
+
+    // Clean up any remaining tags
+    parseEndTag();
+
+    function advance (n) {
+      index += n;
+      html = html.substring(n);
+    }
+
+    function parseStartTag () {
+      // ..
+    }
+
+    function handleStartTag (match) {
+      // ..
+    }
+
+    function parseEndTag (tagName, start, end) {
+      // ...
+    }
+  }
+
+```
+
+#### 优化器
+
+解析器的作用是将 HTML 模版解析成 AST，而优化器的作用是在 AST 中找出静态子树冰打上标记。
+
+标记静态子树有两点好处：
+
+- 每次重新渲染时，不需要为静态子树创建新节点；
+- 在虚拟 DOM 中打补丁（patching）的过程可以跳过。
+
+##### AST 静态子树标记处理后
+
+接上之前的例子：
+
+```html
+ <div id="app">
+  <p>
+    <span>{{ message }}</span>
+  </p>
+  <p>
+    <input type="text" v-model="message" />
+  </p>
+</div>
+```
+
+它会添加上静态根节点`staticRoot` 和静态节点 `static` 两个属性，因为 div 下有变量 message，因此它不是静态根节点，也不是静态节点。
+
+```js
+{
+  static:false
+  parent:undefined
+  end:148
+  children:(3) [{…}, {…}, {…}]
+  attrsMap:{id: 'app'}
+  attrsList:(1) [{…}]
+  attrs:(1) [{…}]
+  staticRoot:false
+  tag:'div'
+  type:1
+}
+```
+
+##### 内部运行原理
+
+优化器的内部主要分为两个步骤：
+
+1. 找出所有静态节点并标记（递归执行）
+2. 找出所有静态根节点并标记（递归执行）
+
+```js
+ /**
+   * Goal of the optimizer: walk the generated template AST tree
+   * and detect sub-trees that are purely static, i.e. parts of
+   * the DOM that never needs to change.
+   *
+   * Once we detect these sub-trees, we can:
+   *
+   * 1. Hoist them into constants, so that we no longer need to
+   *    create fresh nodes for them on each re-render;
+   * 2. Completely skip them in the patching process.
+   */
+  function optimize (root, options) {
+    if (!root) { return }
+    isStaticKey = genStaticKeysCached(options.staticKeys || '');
+    isPlatformReservedTag = options.isReservedTag || no;
+    // first pass: mark all non-static nodes. 标记所有静态节点
+    markStatic$1(root);
+    // second pass: mark static roots. 标记所有静态根节点
+    markStaticRoots(root, false);
+  }
+```
+
+找出所有静态节点并标记，通过执行 `isStatic(node)`  进行判断
+
+```js
+function markStatic$1 (node) {
+    node.static = isStatic(node);
+    if (node.type === 1) {
+      // do not make component slot content static. this avoids
+      // 1. components not able to mutate slot nodes
+      // 2. static slot content fails for hot-reloading
+      if (
+        !isPlatformReservedTag(node.tag) &&
+        node.tag !== 'slot' &&
+        node.attrsMap['inline-template'] == null
+      ) {
+        return
+      }
+      for (var i = 0, l = node.children.length; i < l; i++) {
+        var child = node.children[i];
+        markStatic$1(child);
+        if (!child.static) {
+          node.static = false;
+        }
+      }
+      if (node.ifConditions) {
+        for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+          var block = node.ifConditions[i$1].block;
+          markStatic$1(block);
+          if (!block.static) {
+            node.static = false;
+          }
+        }
+      }
+    }
+  }
+```
+
+判断一个节点是否是静态节点：
+
+```js
+  function isStatic (node) {
+    if (node.type === 2) { // expression
+      return false
+    }
+    if (node.type === 3) { // text
+      return true
+    }
+    return !!(node.pre || (
+      !node.hasBindings && // no dynamic bindings 不能使用动态绑定语法
+      !node.if && !node.for && // not v-if or v-for or v-else 
+      !isBuiltInTag(node.tag) && // not a built-in  不能是内置标签，也就是说标签名不能是 slot 或 component
+      isPlatformReservedTag(node.tag) && // not a component 不能是组件，即标签名必须是保留标签
+      !isDirectChildOfTemplateFor(node) &&  // 当前标签不能是带 v-for 指令的标签
+      Object.keys(node).every(isStaticKey)
+    ))
+  }
+```
+
+找出静态根节点的过程与找出静态节点的类似，都是从根节点开始向下一层层递归去找。不一样的是，如果一个节点被判定为静态根节点，那么将不会继续向它的子级继续寻找。因为静态子树肯定只有一个根，就是最上面的那个静态节点。
+
+```js
+function markStaticRoots (node, isInFor) {
+    if (node.type === 1) {
+      if (node.static || node.once) {
+        node.staticInFor = isInFor;
+      }
+      // For a node to qualify as a static root, it should have children that
+      // are not just static text. Otherwise the cost of hoisting out will
+      // outweigh the benefits and it's better off to just always render it fresh.
+      if (node.static && node.children.length && !(
+        node.children.length === 1 && // 排除只有一个文本类型的节点
+        node.children[0].type === 3 // 文本类型
+      )) {
+        node.staticRoot = true;
+        return // 当前节点是静态节点，就充分说明该节点的子节点也是静态节点，直接跳出
+      } else { // 只有当前节点不是静态根节点时，才会继续向子节点中查找静态根节点
+        node.staticRoot = false;
+      }
+      if (node.children) {
+        for (var i = 0, l = node.children.length; i < l; i++) {
+          markStaticRoots(node.children[i], isInFor || !!node.for);
+        }
+      }
+      if (node.ifConditions) {
+        for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+          markStaticRoots(node.ifConditions[i$1].block, isInFor);
+        }
+      }
+    }
+  }
+
+```
+
+
+
+#### 生成器
+
+代码生成器是模版编译的最后一步，它的作用是将 AST 转换成渲染函数中的内容，这个内容可以称为代码字符串。
+
+代码字符串可以被包装在函数中执行，这个函数就是我们通常所说的渲染函数。
+
+渲染函数被执行之后，可以生成一份 VNode，而虚拟 DOM 可以通过这个 VNode 来渲染视图。
+
+ ##### 生成代码字符串
+
+最初的模版文件为：
+
+```html
+<div id="app">
+  <p>
+    <span>{{ message }}</span>
+  </p>
+  <p>
+    <input type="text" v-model="message" />
+  </p>
+</div>
+```
+
+先生成 AST，然后经过优化标记后，
+
+```js
+{
+  static:false
+  parent:undefined
+  end:148
+  children:(3) [{…}, {…}, {…}]
+  attrsMap:{id: 'app'}
+  attrsList:(1) [{…}]
+  attrs:(1) [{…}]
+  staticRoot:false
+  tag:'div'
+  type:1
+  // ....
+}
+```
+
+最终生成的 render 函数字符串：
+
+```js
+'with(this){return _c('div',{attrs:{"id":"app"}},[_c('p',[_c('span',[_v(_s(message))])]),_v(" "),_c('p',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(message),expression:"message"}],attrs:{"type":"text"},domProps:{"value":(message)},on:{"input":function($event){if($event.target.composing)return;message=$event.target.value}}})])])}'
+```
+
+格式后如下：
+
+```js
+with(this){ 
+  return _c(
+    'div',
+    {attrs:{"id":"app"}},
+    [_c('p',
+        [_c('span',[_v(_s(message))])]),
+     _v(" "),
+     _c('p',
+        [_c('input',
+         {
+          directives:
+             [
+               {name:"model",
+                rawName:"v-model",
+                value:(message),
+                expression:"message"}
+             ],
+           attrs:{"type":"text"},
+           domProps:{"value":(message)},
+           on:{"input":function($event){if($event.target.composing)return;message=$event.target.value}}}
+           )
+        ]
+       )
+    ]
+  )
+}
+```
+
+代码中的 _c 代表 createElement，`_v()` 代表 VNode()。通过 template 生成的 render 函数跟直接写在 render 的展现方式几乎一样。如果直接写在 options.render 为 JSX 的话，需要被编译。
+
+```js
+createElement(
+  'anchored-heading', {
+    props: {
+      level: 1
+    }
+  }, [
+    createElement('span', 'Hello'),
+    ' world!'
+  ]
+)
+```
+
+
+
+##### 内部实现
+
+<!-- 大概了解流程，细节上先不深入。 -->
+
+这里会调用 `genElement()` 函数：
+
+```js
+function generate (
+    ast,
+    options
+  ) {
+    var state = new CodegenState(options);
+    var code = ast ? genElement(ast, state) : '_c("div")';
+    return {
+      render: ("with(this){return " + code + "}"),
+      staticRenderFns: state.staticRenderFns
+    }
+  }
+```
+
+而代码生成器其实就是字符串拼接的过程，分别生成元素节点、文本节点和注释节点。
+
+```js
+function genElement (el, state) {
+    // ...
+    if (el.staticRoot && !el.staticProcessed) {
+      return genStatic(el, state)
+    } else if (el.once && !el.onceProcessed) {
+      return genOnce(el, state)
+    } else if (el.for && !el.forProcessed) {
+      return genFor(el, state)
+    } else if (el.if && !el.ifProcessed) {
+      return genIf(el, state)
+    } else if (el.tag === 'template' && !el.slotTarget && !state.pre) {
+      return genChildren(el, state) || 'void 0'
+    } else if (el.tag === 'slot') {
+      return genSlot(el, state)
+    } else {
+      // component or element 针对组件和元素节点
+      var code;
+      if (el.component) {
+        code = genComponent(el.component, el, state);
+      } else {
+        var data;
+        // 如果 el.plain 是 true，则说明节点没有属性
+        if (!el.plain || (el.pre && state.maybeComponent(el))) {
+          data = genData$2(el, state);
+        }
+
+        var children = el.inlineTemplate ? null : genChildren(el, state, true);
+        code = "_c('" + (el.tag) + "'" + (data ? ("," + data) : '') + (children ? ("," + children) : '') + ")";
+      }
+      // module transforms
+      for (var i = 0; i < state.transforms.length; i++) {
+        code = state.transforms[i](el, code);
+      }
+      return code
+    }
+  }
+```
+
+通过 `genData()` 和 `genChildren()` 分别获取 data 和 children，然后将它们分别拼到字符串中指定的位置。
+
+### 数据状态更新时的差异 diff 及 patch
+
+主要搞懂两个问题：
+
+1. 首次渲染时，是如何通过 patch 进行视图更新的？
+2. 数据更改时，又是如何通过 pathc 进行视图更新的？
+
+触发更新
+
 ## 参考资料
 
 - awesome vue

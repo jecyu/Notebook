@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>动态绘制基本三角形</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      a {
+        color: #fff;
+      }
+      .operation-container {
+        position: absolute;
+        right: 20px;
+        top: 30px;
+        color: #fff;
+      }
+      .operation-container > div {
+        margin-bottom: 10px;
+      }
+      .operation-container label {
+        width: 30px;
+        display: inline-block;
+        vertical-align: top;
+      }
+      .operation-container span {
+        width: 150px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: right;
+      }
+      .range {
+        opacity: 0.9;
+        width: 180px;
+        border-radius: 10px; /*è¿™ä¸ªå±žæ€§è®¾ç½®ä½¿å¡«å……è¿›åº¦æ¡æ—¶çš„å›¾å½¢ä¸ºåœ†è§’*/
+        background-color: #fff;
+        vertical-align: top;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        -webkit-box-shadow: 0 0 2px; /*è®¾ç½®æ»‘å—çš„é˜´å½±*/
+        width: 2.6rem;
+        height: 1.6rem;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 15px;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .animate {
+        display: block;
+        text-decoration: none;
+      }
+      .hint {
+        border-radius: 5px;
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        z-index: 2;
+        max-width: 150px;
+        text-align: center;
+        font-size: 14px;
+        padding: 8px;
+        background: darkorchid;
+        color: #fff;
+      }
+      button {
+        outline: 0;
+        color: #ff4d4f;
+        background-color: transparent;
+        border-color: #ff4d4f;
+        text-shadow: none;
+        border-width: 2px;
+        height: 32px;
+        padding: 0 15px;
+        font-size: 14px;
+        border-radius: 4px;
+        border-style: outset;
+        -webkit-appearance: button;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../../utils/webgl-helper.js"></script>
+    <!-- 顶点着色器源码 -->
+    <script type="shader-source" id="vertexShader">
+      //浮点数设置为中等精度
+      precision mediump float;
+      //接收 JavaScript 传递过来的点的坐标（X, Y）
+      attribute vec2 a_Position;
+      // 接收canvas的尺寸。
+      attribute vec2 a_Screen_Size;
+      void main(){
+        // 将 canvas 的坐标值 转换为 [-1.0, 1.0]的范围。
+        vec2 position = (a_Position/ a_Screen_Size) * 2.0 - 1.0;
+        // canvas的 Y 轴坐标方向和 设备坐标系的相反。
+        position = position * vec2(1.0, -1.0);
+        // 最终的顶点坐标。
+        gl_Position = vec4(position, 0.0, 1.0);
+        // 点的大小 
+        gl_PointSize = 10.0;
+      }
+    </script>
+    <!-- 片元着色器源码 -->
+    <script type="shader-source" id="fragmentShader">
+      //浮点数设置为中等精度
+      precision mediump float;
+      //全局变量，用来接收 JavaScript传递过来的颜色。
+      uniform vec4 u_Color;
+      void main(){
+        // 将颜色处理成 GLSL 允许的范围[0， 1]。
+        vec4 color = u_Color / vec4(255, 255, 255, 1);
+        // 点的最终颜色。
+        gl_FragColor = color;
+      }
+    </script>
+    <canvas id="canvas"></canvas>
+    <script>
+      var cavas = document.querySelector("#canvas");
+      var gl =
+        cavas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+      // 创建顶点着色器源码
+      var vertexShaderSource = document.querySelector("#vertexShader")
+        .innerHTML;
+      // 创建顶点着色器对象
+      var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+      // 将源码分配给顶点着色器对象
+      gl.shaderSource(vertexShader, vertexShaderSource);
+      // 编译顶点着色器程序
+      gl.compileShader(vertexShader);
+
+      // 获取片元着色器源码
+      var fragmentShaderSource = document.querySelector("#fragmentShader")
+        .innerHTML;
+      // 创建片元着色器程序
+      var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      // 将源码分配给片元着色器对象
+      gl.shaderSource(fragmentShader, fragmentShaderSource);
+      // 编译片元着色器
+      gl.compileShader(fragmentShader);
+
+      // 创建着色器程序
+      var program = gl.createProgram();
+      // 将顶点着色器挂载在着色器程序上
+      gl.attachShader(program, vertexShader);
+      // 将片元着色器挂载在着色器程序上
+      gl.attachShader(program, fragmentShader);
+      // 链接着色器程序
+      gl.linkProgram(program);
+      // 使用刚创建好的着色器程序
+      gl.useProgram(program);
+
+      /* 动态绘制点的逻辑 */
+      // 找到顶点着色器中的变量 a_Position
+      var a_Position = gl.getAttribLocation(program, "a_Position");
+      // 找到顶点着色器中的变量 a_Screen_Size
+      var a_Screen_Size = gl.getAttribLocation(program, "a_Screen_Size");
+      // 找到片元着色器中的变量 u_Color
+      var u_Color = gl.getUniformLocation(program, "u_Color");
+      // 为顶点着色器中的 a_Screen_Size 传递 canvas 的宽高信息
+      gl.vertexAttrib2f(a_Screen_Size, canvas.width, canvas.height);
+
+      // 创建一个缓冲区，以便向着色器传递多个顶点数据
+      var buffer = gl.createBuffer();
+      // 绑定缓冲区为 WebGL 当前缓冲区 gl.ARRAY_BUFFER，对缓冲区绑定点的任何操作都会基于该缓冲区进行
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      // 启用对应属性
+      gl.enableVertexAttribArray(a_Position);
+      // 从缓冲区中取数据
+      // 每次取两个数据
+      var size = 2;
+      // 每个数据的类型是 32 位浮点型
+      var type = gl.FLOAT;
+      // //我们自己在着色器中进行的归一化处理，所以此处设置为false
+      var normalize = false;
+      // 每次迭代运行需要移动数据数 * 每个数据所占内存 到下一个数据开始点
+      var stride = 0;
+      // 从缓冲起始位置开始读取
+      var offset = 0;
+      // 将 a_Position 变量获取数据的缓冲区指向当前绑定的 buffer
+      // 顶点如何从 buffer 中取数据。
+      gl.vertexAttribPointer(a_Position, size, type, normalize, stride, offset);
+
+      // 定义三角形的三个顶点
+      var positions = [];
+      canvas.addEventListener("mouseup", (e) => {
+        // 鼠标点击 canvas，存储点击位置的坐标
+        positions.push(e.pageX, e.pageY);
+
+        // 每点击三次时，再执行绘制命令。因为三个顶点组成一个三角形，我们要保证当前顶点个数是 3 的整数倍，再执行绘制操作。
+        if (positions.length % 6 === 0) {
+          // 往当前缓冲区中写入数据
+          gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array(positions),
+            gl.STATIC_DRAW
+          ); // Float32Array 定型数组，着色器程序变量需要强类型，需要转化
+          // gl.STATIC_DRAW 性能优化所用，表示不会频繁改变缓冲区的数据
+          let color = randomColor();
+          gl.uniform4f(u_Color, color.r, color.g, color.b, color.a);
+
+          // 重新渲染
+          render(gl);
+        }
+      });
+
+      // 设置清空画布颜色为黑色
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      function render(gl) {
+        // 用上一步设置的清空画布颜色清空画布
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        // 绘制图元设置为三角形
+        var primitiveType = gl.TRIANGLES;
+        // 从顶点数组的开始位置取顶点数据
+        var offset = 0;
+        // 因为我们要绘制 N 个点，所以执行 N 次顶点绘制操作
+        if (positions.length > 0) {
+          gl.drawArrays(primitiveType, offset, positions.length / 2);
+        }
+      }
+      render(gl);
+    </script>
+  </body>
+</html>

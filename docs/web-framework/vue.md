@@ -671,25 +671,26 @@ async created() {
 
 ### 组件通信方式
 
-- props/\$emit
+- `props/\$emit`
   - 父传子 props
   - 子传父 \$emit 触发事件
 - 兄弟组件 通过父组件当桥
-- $children/$parent
-- provide/inject
+- `$children/$parent`
+- `provide/inject`
   - 祖先组件和其子孙组件通信
   - provide/inject,允许一个祖先组件向其所有子孙后代注入一个依赖,不论组件层次有多深,并在起上下文关系成立的时间里始终生效
-- ref
-- eventBus
+- `ref`
+- `eventBus`
   - 没有任何关系的组件通信，通过中央事件总线来进行通信
   - 通过新建一个 Vue 事件的 bus 对象，然后通过`bus.$emit来触发事件`，`bus.$on` 监听触发的事件。使用中央事件总线时，需要在手动清除它，不然它会一直存在，原本只执行一次的操作,将会执行多次。一般在 `beforeMounted` 中进行监听，在 `beforeDestroyed` 进行销毁。
 - Vuex 状态管理模式
-- $dispatch/$broadcast（Vue 1.0 api，Vue 2.0 已经废弃，）
-  - \$dispatch 向上派发
-  - \$broadcast 向下广播
-- $attrs与$listeners
-- localStorage/sessionStorage 浏览器缓存
+- `$dispatch/$broadcast`（Vue 1.0 api，Vue 2.0 已经废弃，）
+  - `$dispatch` 向上派发
+  - `$broadcast` 向下广播
+- `$attrs` 与 `$listeners`
+- `localStorage` / `sessionStorage` 浏览器缓存
 
+Vuex 状态整理
 ### eventBus
 
 #### 适用
