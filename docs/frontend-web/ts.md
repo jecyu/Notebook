@@ -1,6 +1,4 @@
-# TypeScript 入门到实践
-
-<!-- <TOC /> -->
+# TypeScript 项目总结（持续更新）
 
 [[toc]]
 
@@ -96,7 +94,7 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
 
 虽然 allowJS 没开启，但是只要 include 进来，一样会进行编译。
 
-## 基础入门
+## 1. 基础入门
 
 ### 一、基本类型和扩展类型
 
@@ -1361,7 +1359,7 @@ vue add typescript
 使用了 vuecli3/4 的项目情况下，在已创建的项目中安装，https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-typescript/README.md
 ```ts
 vue add @vue/typescript
-``` -->
+​``` -->
 <!-- 测试报错，找不到 Home.vue -->
 
 ##### 手动创建
@@ -1372,7 +1370,7 @@ vue add @vue/typescript
 
 2. 使 webpack 支持 ts，要安装 `ts-loader`，编写 loader 规则。
 
-```js
+​```js
 // vue.config.js
 module.exports = {
   chainWebpack: (config) => {

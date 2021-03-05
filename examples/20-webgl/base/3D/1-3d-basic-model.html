@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      初级入门 --- 绘制立方体、球体、椎体：如何用基本图形构建规则形体
+    </title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      a {
+        color: #fff;
+      }
+      .operation-container {
+        position: absolute;
+        right: 20px;
+        top: 30px;
+        color: #fff;
+      }
+      .operation-container > div {
+        margin-bottom: 10px;
+      }
+      .operation-container label {
+        width: 30px;
+        display: inline-block;
+        vertical-align: top;
+      }
+      .operation-container span {
+        width: 150px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: right;
+      }
+      .range {
+        opacity: 0.9;
+        width: 180px;
+        border-radius: 10px; /*è¿™ä¸ªå±žæ€§è®¾ç½®ä½¿å¡«å……è¿›åº¦æ¡æ—¶çš„å›¾å½¢ä¸ºåœ†è§’*/
+        background-color: #fff;
+        vertical-align: top;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        -webkit-box-shadow: 0 0 2px; /*è®¾ç½®æ»‘å—çš„é˜´å½±*/
+        width: 2.6rem;
+        height: 1.6rem;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 15px;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .animate {
+        display: block;
+        text-decoration: none;
+      }
+      .hint {
+        border-radius: 5px;
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        z-index: 2;
+        max-width: 150px;
+        text-align: center;
+        font-size: 14px;
+        padding: 8px;
+        background: darkorchid;
+        color: #fff;
+      }
+      button {
+        outline: 0;
+        color: #ff4d4f;
+        background-color: transparent;
+        border-color: #ff4d4f;
+        text-shadow: none;
+        border-width: 2px;
+        height: 32px;
+        padding: 0 15px;
+        font-size: 14px;
+        border-radius: 4px;
+        border-style: outset;
+        -webkit-appearance: button;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../../utils/webgl-helper.js"></script>
+    <!-- 顶点着色器源码 -->
+    <script type="shader-source" id="vertexShader">
+
+      precision mediump float; // 浮点数设置为中等精度
+      attribute vec3 a_Position; // 接收 JavaScript 传递过来的点的坐标（X, Y, Z）
+      attribute vec4 a_Color; // 接收 JavaScript 传递的顶点颜色
+      varying vec4 v_Color; // 传往片元着色器的颜色
+
+      void main() {
+        gl_Position = a_Position; // 最终的顶点坐标。
+        v_Color = a_Color;
+      }
+    </script>
+    <!-- 片元着色器源码 -->
+    <script type="shader-source" id="fragmentShader">
+      // 浮点数设置为中等精度
+      precision mediump float;
+      // 全局变量，用来接收 JavaScript传递过来的颜色值。
+      varying vec4 v_Color; // 用来接收插值后的颜色
+      void main(){
+        // 将颜色处理成 GLSL 允许的范围[0， 1]。
+        vec4 color = v_Color / vec4(255, 255, 255, 1);
+        // 点的最终颜色。
+        gl_FragColor = color;
+      }
+    </script>
+    <canvas id="canvas"></canvas>
+    <script>
+      var cavas = document.querySelector("#canvas");
+      //设置canvas尺寸为满屏
+      resizeCanvas(canvas);
+      var gl =
+        cavas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+      const program = createSimpleProgramFromScript(
+        gl,
+        "vertexShader",
+        "fragmentShader"
+      );
+      // 使用刚创建好的着色器程序
+      gl.useProgram(program);
+      // 找到顶点着色器中的变量 a_Position
+      var a_Position = gl.getAttribLocation(program, "a_Position");
+      var a_Color = gl.getAttribLocation(program, "a_Color");
+
+      function createCude(width, height, depth) {
+        //正方体 8 个顶点的坐标信息
+        let zeroX = width / 2;
+        let zeroY = height / 2;
+        let zeroZ = depth / 2;
+
+        let cornerPositions = [
+          [-zeroX, -zeroY, zeroZ], //V0
+          [zeroX, -zeroY, zeroZ], //V1
+          [zeroX, zeroY, zeroZ], //V2
+          [-zeroX, zeroY, zeroZ], //V3
+          [-zeroX, -zeroY, -zeroZ], //V4
+          [-zeroX, zeroY, -zeroZ], //V5
+          [zeroX, zeroY, -zeroZ], //V6
+          [zeroX, -zeroY, -zeroZ], //V7
+        ];
+
+        const CUBE_FACE_INDICES = [
+          [0, 1, 2, 3], //前面
+          [4, 5, 6, 7], //后面
+          [0, 3, 5, 4], //左面
+          [1, 7, 6, 2], //右面
+          [3, 2, 6, 5], //上面
+          [0, 4, 7, 1], // 下面
+        ];
+
+        let colorInput = [
+          [255, 0, 0, 1], // 前面，红色
+          [0, 255, 0, 1], // 后面，绿色
+          [0, 0, 255, 1], // 左面，蓝色
+          [255, 255, 0, 1], // 右面，黄色
+          [0, 255, 255, 1], // 上面，品色
+          [255, 0, 255, 1], // 下面，青色
+        ];
+
+        let colors = [];
+        let positions = [];
+        let indices = [];
+        for (let f = 0; f < 6; ++f) {
+          let fadeIndices = CUBE_FACE_INDICES[f];
+          let color = colorInput[f];
+          for (let v = 0; v < 4; ++v) {
+            // 分别求出对应的一维数组：colors 和 positions
+            let positions = cornerPositions[fadeIndices[v]];
+            positions = positions.concat(color);
+            colors = colors.concat(color);
+          }
+          // 4 * 6 = 24 个索引
+          let offset = 4 * f; // 每个正方形体的一个正方形面由两个三角形组成，以下是它们的索引
+          // 建模的时候是顶点是逆时针的，
+          // 0， 1， 2和0， 2， 3刚好可以拼成一个正方形
+          indices.push(offset + 0, offset + 1, offset + 2);
+          indices.push(offset + 0, offset + 2, offset + 3);
+        }
+        indices = new Uint16Array(indices);
+        positions = new Float32Array(positions);
+        colors = new Float32Array(colors);
+        return {
+          positions,
+          indices,
+          colors,
+        };
+      }
+      var cube = createCude(1, 1, 1);
+
+      // 创建顶点索引的数组
+      var indicesBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, cube.indices, gl.STATIC_DRAW);
+
+      // 往当前缓冲区中写入数据
+      // 创建顶点索引的数组
+      var positionsBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, positionsBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, cube.positions, gl.STATIC_DRAW);
+      // 启用对应属性
+      gl.enableVertexAttribArray(a_Position);
+      gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 28, 0);
+
+      var colorsBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorsBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, cube.colors, gl.STATIC_DRAW);
+      // 启用对应属性
+      gl.enableVertexAttribArray(a_Color);
+      // 颜色如何从 buffer 中取数据。
+      gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 28, 12);
+
+      // 设置清空画布颜色为黑色
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      function render(gl) {
+        // 用上一步设置的清空画布颜色清空画布
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        if (positions.length <= 0) {
+          return;
+        }
+        // 绘制图元设置为三角形
+        var primitiveType = gl.TRIANGLES;
+        // 从顶点数组的开始位置取顶点数据
+        // 因为我们要绘制 N 个点，所以执行 N 次顶点绘制操作
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+      }
+      render(gl);
+    </script>
+  </body>
+</html>
