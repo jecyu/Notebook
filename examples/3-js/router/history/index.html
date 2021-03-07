@@ -1,0 +1,57 @@
+<!--
+ * @Author: Jecyu
+ * @Date: 2021-03-07 08:32:30
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2021-03-07 09:10:27
+ * @FilePath: /examples/3-js/router/history/index.html
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>history 模式</title>
+  </head>
+  <body>
+    <div>
+      <h3>history 模式路由跳转</h3>
+      <ul class="tab">
+        <!-- 定义路由 -->
+        <li><a href="/home">a 标签点击跳转 home</a></li>
+        <li><a href="/about">a 标签点击跳转 about</a></li>
+      </ul>
+      <!-- JS 动态改变 URL 值，实现跳转 -->
+      <button id="handlePush">JS 动态 pushState 跳转 list</button>
+      <button id="handleReplace">JS 动态 replaceState 跳转 item</button>
+
+      <!-- 渲染路由对应的 UI -->
+      <div id="routeViewHistory" class="routerView"></div>
+    </div>
+    <script type="module" src="./history.js"></script>
+    <script type="module">
+      import JSHistoryRouter from "./history.js";
+      let routerView = document.getElementById("routeViewHistory");
+      // HashRouter 实例化
+      let historyRouter = new JSHistoryRouter(routerView);
+      historyRouter.init();
+
+      // JS 动态改变 URL 值
+      document.getElementById("handlePush").addEventListener(
+        "click",
+        function() {
+          historyRouter.push("/list");
+        },
+        false
+      );
+      document.getElementById("handleReplace").addEventListener(
+        "click",
+        function() {
+          historyRouter.replace("/item");
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

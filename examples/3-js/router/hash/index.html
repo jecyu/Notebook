@@ -1,0 +1,49 @@
+<!--
+ * @Author: Jecyu
+ * @Date: 2021-03-07 08:32:30
+ * @LastEditors: Jecyu
+ * @LastEditTime: 2021-03-07 08:48:41
+ * @FilePath: /examples/3-js/router/hash/index.html
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <h3>hash 模式路由跳转</h3>
+      <ul class="tab">
+        <!-- 定义路由 -->
+        <li><a href="#/home">a 标签点击跳转 home</a></li>
+        <li><a href="#/about">a 标签点击跳转 about</a></li>
+      </ul>
+      <!-- JS 动态改变 hash 值，实现跳转 -->
+      <button id="handleToCart">JS 动态点击跳转 cart</button>
+      <!-- 渲染路由对应的 UI -->
+      <div id="routeViewHash" class="routerView"></div>
+    </div>
+    <script type="module" src="./hash.js"></script>
+    <script type="module">
+      import JSHashRouter from "./hash.js";
+      let routerView = document.getElementById("routeViewHash");
+      // HashRouter 实例化
+      let hashRouter = new JSHashRouter(routerView);
+      hashRouter.init();
+
+      // 点击 handleToCart，JS 动态改变 hash 值
+      var handleToCart = document.getElementById("handleToCart");
+      handleToCart.addEventListener(
+        "click",
+        function() {
+          hashRouter.push("/cart");
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
