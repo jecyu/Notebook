@@ -74,7 +74,7 @@ GPU 渲染管线的主要处理过程如下：
 
 用一句话来说：着色器程序允许我们通过编程来控制 GPU 的渲染。
 
-![](../.vuepress/public/images/2021-02-10-12-19-39.png)
+<img src="../.vuepress/public/images/2021-02-10-12-19-39.png" style="zoom:50%;" />
 
 上图简单演示了 WebGL 对一个红色三角形的渲染过程，绿色部分为开发者可以通过编程的部分：
 - JavaScript 程序

@@ -245,7 +245,7 @@ module.exports = {
 - [x] 自动加载全局组件，并可在 Demo 页面查看 &vuex modules
 - [ ] eventBus 解决方案
 - [ ] rem（自动处理响应式系统），这块需要另外研究下，如何更加好的适应。
-- [ ] svg 图标
+- [x] svg 图标
 - [x] 生产环境与正式环境配置文件自动切换
 - [x] hjson
 - [ ] ie 11
@@ -255,6 +255,11 @@ module.exports = {
 - [ ] 性能优化
   - [x] TS 编译
   - [ ] gzip
+  - [ ] 更进一步优化自己的 svg
+
+### 1.0.1
+
+- [ ] .vscode 调试配置
 
 ## 2. 架构设计与实现
 
@@ -308,7 +313,17 @@ module.exports = {
 
 ## 3. 需求逐个实现
 
-#### 使用 Vuex 4.x
+### Svg 支持
+
+```html
+  <i :class="['svg-icon', `svg-icon-${name}`]" :style="svgStyle">
+    <svg fill="currentColor" aria-hidden="true" :width="width" :height="height">
+      <use :xlink:href="iconName" />
+    </svg>
+  </i>
+```
+
+### 使用 Vuex 4.x
 
  新版 devtool-beta 目前没支持 vuex
 
@@ -456,6 +471,9 @@ init();
   - 南宁项目
   - default 模版
   - vue-vben-admin-main
+
+- [手摸手，带你优雅的使用 icon](https://juejin.cn/post/6844903517564436493#heading-10)
+
 - [ TypeScript 牵手 Babel：一场美丽的婚姻](https://juejin.cn/post/6844903792865984520)
 - 参考 vue3-admin 的开源库是如何组织的，可以放进去。
 - [Vite 原理浅析](https://juejin.cn/post/6844904146915573773#heading-4) 整体思路解析。

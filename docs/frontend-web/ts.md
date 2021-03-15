@@ -321,6 +321,8 @@ private padLeft(value: string, padding: string | number) {
 
 在 `C#` 和 `Java` 中，可以使用"泛型"来创建可复用的组件，并且组件可支持多种数据类型。这样便可以让用户根据自己的数据类型来使用组件。
 
+比如数组队列，在强类型中，显然` Arrary<T>` 比 `Array[int] `适应性更强。
+
 #### 1. 泛型方法
 
 在 TypeScript 里，声明泛型方法有以下两种方式：
@@ -1324,7 +1326,33 @@ interface Window {
 
 ## 项目实战
 
-### ts + vue 2.0 项目开发指南
+### TypeScript + Vue 3.0 项目开发
+
+Render 中的类型报错问题处理：
+
+```js
+  render() {
+    const { SvgIcon } = this.$options.components; 
+    /*  类型报错，找不到对应的类型
+    const SvgIcon: any
+    Property 'SvgIcon' does not exist on type 'Record<string, Component<any, any, any, ComputedOptions, MethodOptions>> | undefined'.Vetur(2339)*/
+    return (
+      <div class="icon-view">
+        <p>点一点图标就能取代码</p>
+        {icons.map(iconName => (
+          <div class="icon" on-click={() => this.handleIconClick(iconName)}>
+            <SvgIcon name={iconName} />
+            <span class="icon-name">{iconName}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+```
+
+
+
+### TypScript + vue 2.0 项目开发
 
 在 Vue 里面使用 TS 有很多种方式。一种是通过 import 默认引入 Vue 的声明文件。一种是使用它的 class 风格。还有一种是最常见的，通过 Vue 的插件 Vetur 自动匹配它的声明文件。
 
@@ -2106,6 +2134,7 @@ import ReactDOM from "react-dom";
 ## 最佳实践
 
 虽然 typeScript 提供了编译时的检查，但是不代表运行时的检查就不必要。只不过 ts 可以让我们减少更多的运行时错误。
+## 总结
 
 ## 参考资料
 

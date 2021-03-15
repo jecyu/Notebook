@@ -2,7 +2,7 @@
  * @Author: Jecyu
  * @Date: 2021-02-19 14:35:07
  * @LastEditors: Jecyu
- * @LastEditTime: 2021-03-02 10:33:29
+ * @LastEditTime: 2021-03-08 10:14:48
  * @FilePath: /examples/20-webgl/utils/webgl-helper.js
  * @Description:
  */
@@ -179,3 +179,25 @@ function loadTexture(gl, src, attribute, callback) {
   };
   img.src = src;
 }
+
+
+// 返回一个单位矩阵
+function identity() {
+
+}
+
+// 计算两个矩阵的乘积，返回新的矩阵
+function multiply(matrixLeft, matrixRight) {
+
+} 
+
+// 绕 X 轴旋转一定角度，返回新的矩阵
+function rotationX(angle) {
+
+}
+
+// 绕 Y 轴旋转一定角度，返回新的矩阵
+function rotationY(angle) {} 
+
+// 正交投影，返回新的矩阵
+function ortho(left, right, bottom, top, near, far, target) {}

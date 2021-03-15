@@ -1,11 +1,4 @@
-<!--
- * @Author: Jecyu
- * @Date: 2021-01-06 10:20:15
- * @LastEditors: Jecyu
- * @LastEditTime: 2021-01-07 12:18:18
- * @FilePath: /Notebook/docs/temp/77-echart-踩坑总结.md
- * @Description:
--->
+# Echart 项目总结
 
 ### 扇形图
 

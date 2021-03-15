@@ -103,7 +103,7 @@
       varying vec4 v_Color; // 传往片元着色器的颜色
 
       void main() {
-        gl_Position = a_Position; // 最终的顶点坐标。
+        gl_Position = vec4(a_Position, 1.0); // 最终的顶点坐标。
         v_Color = a_Color;
       }
     </script>
@@ -173,10 +173,12 @@
           [0, 255, 255, 1], // 上面，品色
           [255, 0, 255, 1], // 下面，青色
         ];
+        
 
         let colors = [];
         let positions = [];
         let indices = [];
+
         for (let f = 0; f < 6; ++f) {
           let fadeIndices = CUBE_FACE_INDICES[f];
           let color = colorInput[f];
@@ -189,7 +191,7 @@
           // 4 * 6 = 24 个索引
           let offset = 4 * f; // 每个正方形体的一个正方形面由两个三角形组成，以下是它们的索引
           // 建模的时候是顶点是逆时针的，
-          // 0， 1， 2和0， 2， 3刚好可以拼成一个正方形
+          // 0， 1， 2和 0， 2， 3 刚好可以拼成一个正方形
           indices.push(offset + 0, offset + 1, offset + 2);
           indices.push(offset + 0, offset + 2, offset + 3);
         }
@@ -212,14 +214,14 @@
       // 往当前缓冲区中写入数据
       // 创建顶点索引的数组
       var positionsBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, positionsBuffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionsBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, cube.positions, gl.STATIC_DRAW);
       // 启用对应属性
       gl.enableVertexAttribArray(a_Position);
       gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 28, 0);
 
       var colorsBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorsBuffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER, colorsBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, cube.colors, gl.STATIC_DRAW);
       // 启用对应属性
       gl.enableVertexAttribArray(a_Color);
@@ -231,14 +233,12 @@
       function render(gl) {
         // 用上一步设置的清空画布颜色清空画布
         gl.clear(gl.COLOR_BUFFER_BIT);
-        if (positions.length <= 0) {
+        if (cube.positions.length <= 0) {
           return;
         }
-        // 绘制图元设置为三角形
-        var primitiveType = gl.TRIANGLES;
         // 从顶点数组的开始位置取顶点数据
         // 因为我们要绘制 N 个点，所以执行 N 次顶点绘制操作
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_SHORT, 0);
       }
       render(gl);
     </script>
