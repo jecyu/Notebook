@@ -1,5 +1,7 @@
 # React
 
+<!-- 最好的方式，记录 React/Vue，就是创建一个相似的轮子出来。 -->
+
 - React 核心
   - JSX
   - 虚拟 DOM
@@ -21,7 +23,7 @@ npx create-react-app comment-app
 
 [[toc]]
 
-## 入门
+## 1. 入门
 
 ### 前端组件化（一）：从一个简单的例子讲起
 
@@ -400,7 +402,7 @@ mount(new RedBlueButton(), wrapper);
 
 接下来我们开始正式进行进入主题，开始正式介绍 React.js 。
 
-## 基础
+## 2. 基础
 
 ### React.js 基本环境安装
 
@@ -1284,6 +1286,7 @@ const NewComponent = higherOrderComponent(OldComponent);
 ```
 
 ```js
+
 ```
 
 #### 总结
@@ -1310,7 +1313,7 @@ import PropTypes from "prop-types";
 import "./App.css";
 
 class Index extends Component {
-  static childContextTypes = {
+  static childContextTypes = { // 验证 getChildContext 返回的对象
     themeColor: PropTypes.string,
   };
 
@@ -1399,13 +1402,15 @@ context 打破了组件和组件之间通过 `props` 传递数据的规范，极
 
 ### 动手实现 Redux（一）：优雅地修改共享状态
 
-要注意的是，Redux 和 React-redux 并不是同一个东西。Redux 是一种架构模式（Flux 架构的一种变种），它不关注你到底用什么库，你可以把它应用到 React 和 Vue，甚至跟 jQuery 结合都没有问题。而 React-redux 就是把 Redux 这种架构模式和 React.js 结合起来的一个库，就是 Redux 架构在 React.js 中的体现。
+要注意的是，Redux 和 React-redux 并不是同一个东西。**Redux 是一种架构模式（Flux 架构的一种变种），它不关注你到底用什么库，你可以把它应用到 React 和 Vue，甚至跟 jQuery 结合都没有问题**。**而 React-redux 就是把 Redux 这种架构模式和 React.js 结合起来的一个库，就是 Redux 架构在 React.js 中的体现。**
 
-![](../.vuepress/public/images/2020-09-29-23-41-23-make-redux.png)
+
+
+<img src="../.vuepress/public/images/2020-09-29-23-41-23-make-redux.png" style="zoom:50%;" />
 
 我们很难把控每一根指向 `appState` 的箭头，`appState` 里面的东西就无法把控。但现在我们必须通过一个“中间人”——`dispatch`，所有的数据修改必须通过它，并且你必须用 `action` 大声告诉它要修改什么，只有它允许的才能修改：
 
-![](../.vuepress/public/images/2020-09-29-23-41-40-make-redux.png)
+<img src="../.vuepress/public/images/2020-09-29-23-41-40-make-redux.png" style="zoom:50%;" />
 
 我们再也不用担心共享数据状态的修改的问题，我们只要把控了 `dispatch`，所有的对 `appState` 的修改就无所遁形，毕竟只有一根箭头指向 `appState` 了。
 
@@ -2171,6 +2176,7 @@ export default ThemeSwitch;
 我们要把 context 相关的代码从所有业务组件中清除出去，现在的代码里面还有一个地方是被污染的。那就是 `src/index.js` 里面的 `Index：
 
 ```js
+
 ```
 
 其实它要用 `context` 就是因为要把 `store` 存放到里面，好让子组件 `connect` 的时候能够取到 `store`。我们可以额外构建一个组件来做这种脏活，然后让这个组件成为组件树的根节点，那么它的子组件都可以获取 context 了。
@@ -2213,7 +2219,7 @@ React.js 除了状态提升以外并没有更好的办法帮助我们解决组�
 
 ### 使用真正的 Redux 和 React-redux
 
-![](../.vuepress/public/images/2020-10-01-19-06-32-redux.png)
+<img src="../.vuepress/public/images/2020-10-01-19-06-32-redux.png" style="zoom:70%;" />
 
 在工程目录下使用 npm 安装 Redux 和 React-redux 模块：
 
@@ -2235,6 +2241,8 @@ import { connect } from "react-redux";
 
 也就是本来从本地 ./react-redux 导入的 connect 改成从第三方 react-redux 模块中导入。
 
+### Dva
+
 ### 性能优化
 
 ### 通信
@@ -2247,7 +2255,100 @@ import { connect } from "react-redux";
 
 #### 任意组件
 
-## 进阶活用
+### React 状态管理
+
+## 3. 项目实战
+
+ React 开发总结持续更新
+
+目标读者：
+
+reactjs 怎么实现监听数据对象
+https://github.com/ant-design/ant-design/issues/26890
+
+### React 后台运维管理系统
+
+1. 运维系统由于历史原因，采用的是 react 技术栈。本周在实现用户同步时，遇到一个 modal 的显示/隐藏问题，因为习惯了 vue 的写法，以为传入 visible 后，不需要手动改变 visible 的值，点击关闭 close 即可实现，让组件内部进行更改 visible 的属性。但是 react 不允许这样做，必须让调用者显式使用 `setState({ vsible: false })`，才能关闭。如下图，必须要给 onCancel 填入回调函数，即使你没有取消的按钮。因为 close icon 也会调用。
+
+  ![](../.vuepress/public/images/2021-03-22-13-08-57.png)
+
+​    这是因为 react 中并没有实现双向绑定，而 vue 实现了双向绑定，但是这并不是他们的设计区别，因为双向绑定只不过是 value 的单向绑定 + onChange 事件侦听的一个语法糖，在组件 modal 内部更新了 visible 的值，而 vue 是响应式的，这是会重新渲染视图。而因为 React 的目标不是让开发者写更少的代码，二是让代码结构更加清晰易于维护，因此需要你手动调用 setState 明确告诉它来重新刷行。vue 双向绑定有时候加大状态的维护调试成本，但是对于基础组件来说双向绑定却挺好用。
+
+2. 运维前端应用依赖的状态管理库。本周在实现运维用户加载优化时专门去研究运维的状态工具 react-redux、dva（dva是对（redux + react-router + redux-sage）的轻量封装），实现一个简单的 react-redux，发现它们跟 vuex 挺类似，都是使用 flux 数据流思想。（redux-vuex）
+
+<img src="../.vuepress/public/images/2021-03-22-13-11-33.png" style="zoom:70%;" />
+
+### 单向数据流与双向绑定
+
+在实现 NrSlidePanelNew，就使用了 v-model 双向绑定，但是这样违反了 react 的原则，它只是一个视图层，render 函数的接收应该遵循输入与输出一致，内部不应该改变外部的 prop 状态，应该是无副作用的。
+
+这个不是正常行为吗，不改变 visible 的状态怎么控制 Modal 的打开和关闭，具体就是不能双向绑定了。但是逻辑清晰。
+[react 不实现双向绑定的原因是什么呢，提高用户动手能力？](https://www.zhihu.com/question/300849926)
+
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+import "antd/dist/antd.css";
+import "./index.css";
+import { Modal, Button } from "antd";
+
+class App extends React.Component {
+  state = { visible: false };
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
+  // react 需要手动设置 setState 回调，不能在组件内部更新 visible 吗？
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
+  render() {
+    return (
+      <>
+        <Button type="primary" onClick={this.showModal}>
+          Open Modal
+        </Button>
+        <Modal
+          title="Basic Modal"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          // onCancel={this.handleCancel}
+          footer={null}
+        >
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
+      </>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("container"));
+```
+
+connect 状态。
+
+## 参考资料
+
+- [reactjs 怎么实现监听数据对象](reactjs怎么实现监听数据对象)
+### React 后台管理系统
+
+#### Dva 状态管理
 
 ## 底层原理
 
@@ -2335,7 +2436,7 @@ Redux 有很多的 Reducer，对于大型应用来说，State 必然十分庞大
 <!-- 
 ```js
 
-``` -->
+​``` -->
 
 ### 中间件
 
@@ -2354,3 +2455,5 @@ Dva 的研究使用
 - [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
 - [Vue 与 React 的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
 - [Vue 进阶必学之高阶组件 HOC](https://juejin.im/post/6844904116603486221?utm_source=gold_browser_extension#heading-4)
+
+```

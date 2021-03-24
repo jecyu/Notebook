@@ -1,0 +1,542 @@
+{
+    "root": {
+        "data": {
+            "id": "ca2lxbvbltc0",
+            "created": 1616287005585,
+            "text": "数据类型"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c8tq2n1acvk0",
+                    "created": 1611728508100,
+                    "text": "转换 ",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ca2m3fzzme80",
+                            "created": 1616287484759,
+                            "text": "强制转换"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ca2m3hog1so0",
+                            "created": 1616287488415,
+                            "text": "隐式转换"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ca2lxoe95fs0",
+                    "created": 1616287032851,
+                    "text": "种类"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ca2ly4zo42g0",
+                            "created": 1616287068974,
+                            "text": "基本类型",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8zzvvbpsw80",
+                                    "created": 1612365548435,
+                                    "text": "Undefined"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8zzvxdbiko0",
+                                    "created": 1612365552886,
+                                    "text": "Null",
+                                    "expandState": "expand"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8zzvzli8o80",
+                                    "created": 1612365557734,
+                                    "text": "String"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8zzw0mtjts0",
+                                    "created": 1612365559991,
+                                    "text": "Boolean"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8zzw2eit9s0",
+                                    "created": 1612365563842,
+                                    "text": "Number"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "c8zzw9s1u2w0",
+                                    "created": 1612365579898,
+                                    "text": "Symbol"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ca2ly6dtbe80",
+                            "created": 1616287072006,
+                            "text": "引用类型",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "c8zzw777vkw0",
+                                    "created": 1612365574285,
+                                    "text": "Object",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "c91of2gpq9s0",
+                                            "created": 1612536319488,
+                                            "text": "基本引用类型",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c91ofbd53cg0",
+                                                    "created": 1612536338863,
+                                                    "text": "Date"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ofdj8mkg0",
+                                                    "created": 1612536343586,
+                                                    "text": "RegExp"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ofg2by8w0",
+                                                    "created": 1612536349094,
+                                                    "text": "原始值包装类型"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ofjazrvs0",
+                                                            "created": 1612536356148,
+                                                            "text": "Boolean"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ofkhnnio0",
+                                                            "created": 1612536358727,
+                                                            "text": "Number"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91oflwg88g0",
+                                                            "created": 1612536361799,
+                                                            "text": "String"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ofp5m2io0",
+                                                    "created": 1612536368883,
+                                                    "text": "单例内置对象"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ofs13a0g0",
+                                                            "created": 1612536375140,
+                                                            "text": "Global"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91oftett2o0",
+                                                            "created": 1612536378147,
+                                                            "text": "Math"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "c91of6dtaso0",
+                                            "created": 1612536328020,
+                                            "text": "集合引用类型",
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "c91ofvw5dnk0",
+                                                    "created": 1612536383548,
+                                                    "text": "Object"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ofx0zxgg0",
+                                                    "created": 1612536386018,
+                                                    "text": "Array"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ogaz9v3c0",
+                                                            "created": 1612536416389,
+                                                            "text": "栈方法"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ogfcr1i80",
+                                                                    "created": 1612536425911,
+                                                                    "text": "push()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oggy18e80",
+                                                                    "created": 1612536429375,
+                                                                    "text": "pop()"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ogkihlvs0",
+                                                            "created": 1612536437142,
+                                                            "text": "队列方法"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ogyq83ug0",
+                                                                    "created": 1612536468085,
+                                                                    "text": "shift()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oh4579z40",
+                                                                    "created": 1612536479874,
+                                                                    "text": "push()"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ogu7itrs0",
+                                                            "created": 1612536458247,
+                                                            "text": "排序方法"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oh6p25oo0",
+                                                                    "created": 1612536485428,
+                                                                    "text": "soft()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oh96338g0",
+                                                                    "created": 1612536490812,
+                                                                    "text": "reverse()"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ohfn7cts0",
+                                                            "created": 1612536504907,
+                                                            "text": "搜素和位置方法"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ohizmtts0",
+                                                                    "created": 1612536512189,
+                                                                    "text": "indexOf()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ohnzarog0",
+                                                                    "created": 1612536523053,
+                                                                    "text": "lastIndexOf()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91ohrksjbs0",
+                                                                    "created": 1612536530883,
+                                                                    "text": "includes()"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ohxnrmgg0",
+                                                            "created": 1612536544123,
+                                                            "text": "归并方法"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oi0hv5kw0",
+                                                                    "created": 1612536550297,
+                                                                    "text": "reduce()"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91oi210txs0",
+                                                                    "created": 1612536553632,
+                                                                    "text": "reduceRight()"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91ofyxr5s00",
+                                                    "created": 1612536390176,
+                                                    "text": "定型数组"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91oiq5hvzs0",
+                                                            "created": 1612536606145,
+                                                            "text": "Float32Array"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91oiwp8tk80",
+                                                            "created": 1612536620400,
+                                                            "text": "ArrayBuffer"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "c91oje4hk4w0",
+                                                            "created": 1612536658327,
+                                                            "text": "DataView"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91os1j62z40",
+                                                    "created": 1612537336194,
+                                                    "text": "Map"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91os28ad2w0",
+                                                    "created": 1612537337713,
+                                                    "text": "WeakMap",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91os6tje8o0",
+                                                            "created": 1612537347705,
+                                                            "text": "工作应用"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91osbn273k0",
+                                                                    "created": 1612537358197,
+                                                                    "text": "关联元数据，DOM 元数据"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91os3euml40",
+                                                    "created": 1612537340287,
+                                                    "text": "Set"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "c91os45u6wo0",
+                                                    "created": 1612537341918,
+                                                    "text": "WeakSet"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "c91ote7ln7k0",
+                                                            "created": 1612537442157,
+                                                            "text": "工作应用"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "c91otfnh5400",
+                                                                    "created": 1612537445294,
+                                                                    "text": "给对象打标签"
+                                                                },
+                                                                "children": [
+                                                                    {
+                                                                        "data": {
+                                                                            "id": "c91otrob32w0",
+                                                                            "created": 1612537471465,
+                                                                            "text": "比如三维视图剔除某些类型"
+                                                                        },
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ca2lxtvnhmo0",
+                    "created": 1616287044787,
+                    "text": "判断",
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c8zzzf58hrs0",
+                            "created": 1612365826671,
+                            "text": "typeof"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c91oesmbko00",
+                            "created": 1612536298060,
+                            "text": "instanceof"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ca2lzo2znvk0",
+                            "created": 1616287188898,
+                            "text": "Object.prototype.toString()"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ca2lxw132o00",
+                    "created": 1616287049469,
+                    "text": "存储"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ca2m1bbevbc0",
+                            "created": 1616287317838,
+                            "text": "堆"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ca2m1cvczx40",
+                            "created": 1616287321220,
+                            "text": "栈"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "classic-compact",
+    "version": "1.4.43"
+}

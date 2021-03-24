@@ -110,6 +110,8 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
 - Never
 - Object
 
+很多 TypeScript 的原始类型比如 boolean、number、string等等，在JavaScript中都有类似的关键字 Boolean、Number、String，后者是 JavaScript 的构造函数，比如我们用 Number 用于数字类型转化或者构造 Number 对象用的，而 TypeScript 中的 number 类型仅仅是表示类型，两者完全不同。
+
 #### 1. 基本类型合集
 
 ```ts
@@ -997,7 +999,7 @@ declare global {
 
 普通文件与文件的组织也是以模块（以前是命名空间）的形式进行的。对于正常的 ts 文件，它也是采用 ES6 模式进行 import/export 的
 
-而对于类型声明文件来说，就使用到了 declare 和 namespace，module，无论是 `declare namespace` 还是 `declare module` 只要写了 export，都是声明在局部模块内的，也就是别的模块需要使用的话，则需要 import 进来。否则，就是声明在全局命名空间下的。
+而对于类型声明文件来说，就使用到了 declare 和 namespace，module，无论是 `declare namespace` 还是 `declare module` 只要写了 **export，都是声明在局部模块内的，也就是别的模块需要使用的话，则需要 import 进来**。**否则，就是声明在全局命名空间下的**。
 
 因此，要看你写的 ts 普通文件要在哪个场景下使用，es6 还是 umd 否则是全局变量 `<script>` 引入，然后编写不同的类型声明文件。
 
@@ -1046,6 +1048,8 @@ declare module "*.scss" {
   export default content;
 }
 ```
+
+新增模块声明，需要重新编译。
 
 - 全局声明
   - `declare var` 声明全局变量
@@ -1328,6 +1332,23 @@ interface Window {
 
 ### TypeScript + Vue 3.0 项目开发
 
+#### 类型报错
+
+##### DOM 元素类型
+
+需要这样声明，否则报 style 下这些的错误。
+
+```js
+ const $html: HTMLElement | null = document.querySelector("html");
+        const $body: HTMLElement | null = document.querySelector("body");
+if ($html && $body) {
+      $html.style.fontSize = scale * 16 + "px";
+      $html.style.opacity = "1";
+    }
+```
+
+
+
 Render 中的类型报错问题处理：
 
 ```js
@@ -1349,6 +1370,78 @@ Render 中的类型报错问题处理：
     );
   }
 ```
+
+解决：添加类型声明的处理
+
+```tsx
+<script lang="tsx">
+import SvgIcon from "@/components/SvgIcon.vue";
+import { defineComponent } from "vue";
+export default defineComponent({
+  components: { SvgIcon },
+  name: "SvgViewer",
+  setup() {
+    // methods
+    const handleIconClick = async (iconName: string) => { // =1 这里一直会报错，说冒号这里要写为逗号
+      await navigator.clipboard.writeText(`<SvgIcon name='${iconName}'/>`);
+      alert(`${iconName}图标代码已复制到剪切板`);
+    };
+    return {
+      handleIconClick
+    };
+  },
+  render() {
+    const { SvgIcon } = this.$options.components as any; // 2.
+    return (
+      <div class="icon-view">
+        <p>点一点图标就能取代码</p>
+        {icons.map(iconName => (
+          <div class="icon" on-click={() => this.handleIconClick(iconName)}>
+            <SvgIcon name={iconName} />
+            <span class="icon-name">{iconName}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+});
+</script>
+```
+
+由于存在上述标注 1 的报错，后来把改文件从` .vue` 改为 `.tsx` 文件后，即可正常运行。应该是原来的单文件组件的类型检查有问题，所以如果使用 tsx 的话，最好就使用单独的 tsx 文件。具体可以参考：[为什么我推荐使用JSX开发Vue3](https://juejin.cn/post/6911175470255964174#heading-0) 
+
+> 注意：在 Template 中的变量，是不会收到 TypeScript 的类型检查的，除非编写为 `render()` 函数。
+
+#### 如何给第三方模块添加类型声明（模块和命名空间）
+
+如要使用`qqmap`这个js库，直接在`src`文件夹的任意地方创建一个`qqmap.d.ts`文件（不过还是推荐放到`@types`文件夹中）。
+
+然后在`qqmap.d.ts`文件中编写声明：
+
+```text
+declare module "qqmap";
+```
+
+好的，这些就大工告成了，直接ts文件中使用
+
+```text
+import qqmap from "qqmap";
+```
+
+就可以引入这个第三方JavaScript库。
+
+### TSX 如何引入 Vue scoped 样式
+
+**CSS Module**
+
+>  [CSS Modules](https://github.com/css-modules/css-modules) 它不是将 CSS 改造成编程语言，而是功能很单纯，只加入了局部作用域和模块依赖，这恰恰是网页组件最急需的功能。http://www.ruanyifeng.com/blog/2016/06/css_modules.html
+
+Vue 默认是 scoped 方式引入css ，防止样式污染 ，通过vue模板使用也很方便。实际CSS 选择器使用 scoped 这种方式效率低于 CSS Module，使用TSX渲染时样式也只能通过 CSS Module 这样方式引用。
+
+如何让 Vue 3.x 项目支持 CSS Module 呢？
+
+1. VueCLI 生成的项目，默认支持了 CSS Module 。
+2. 编写
 
 
 

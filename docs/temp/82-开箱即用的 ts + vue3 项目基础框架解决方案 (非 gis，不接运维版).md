@@ -1,5 +1,4 @@
 # 构建一个 TS + Vue3 项目基础框架解决方案
-
 ## 0. 前言
 
 为了紧跟上技术的发展，以及更好地帮助开发者维护软件，并提升协作的效率。xcli 新增一个 TS + Vue3 的项目基础框架，为后续新项目基于新技术的快速开展提供帮助。
@@ -267,9 +266,25 @@ module.exports = {
 
 ### 基于 xcli4 搭建开发环境
 
-#### 解决 vue cli 使用 typescript 后打包巨慢的问题（使用 babel 编译）
+#### 使用 babel 编译 TypeScript ，解决 vue cli 使用 typescript 后打包巨慢的问题
 
 参考：https://juejin.cn/post/6844903955638517773#comment
+
+@babel/preset-typescript
+
+This preset is recommended if you use [TypeScript](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html), a typed superset of JavaScript. It includes the following plugins:[@babel/plugin-transform-typescript](https://babeljs.io/docs/en/babel-plugin-transform-typescript)You will need to specify `--extensions ".ts"` for `@babel/cli` & `@babel/node` cli's to handle `.ts` files. 这里 vuecli 已经配置了相关的 babel-loader 针对 ts、tsx 的识别。
+
+@babel/plugin-transform-typescript
+
+This plugin adds support for the syntax used by the [TypeScript programming language](https://www.typescriptlang.org/). However, this plugin does not add the ability to type-check the JavaScript passed to it. For that, you will need to install and set up TypeScript.
+
+1. 安装上述两个任意一个文件：
+
+```
+yarn add @babel/preset-typescript --dev
+```
+
+2. 去掉 ts-loader 的处理
 
 ```js
 module.exports = {
@@ -280,21 +295,7 @@ module.exports = {
 }
 ```
 
-@babel/preset-typescript
-
-This preset is recommended if you use [TypeScript](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html), a typed superset of JavaScript. It includes the following plugins:[@babel/plugin-transform-typescript](https://babeljs.io/docs/en/babel-plugin-transform-typescript)You will need to specify `--extensions ".ts"` for `@babel/cli` & `@babel/node` cli's to handle `.ts` files. 这里 vuecli 已经配置了相关的 babel-loader 针对 ts、tsx 的识别。
-
-@babel/plugin-transform-typescript
-
-This plugin adds support for the syntax used by the [TypeScript programming language](https://www.typescriptlang.org/). However, this plugin does not add the ability to type-check the JavaScript passed to it. For that, you will need to install and set up TypeScript.
-
-安装上述两个任意一个文件：
-
-```
-yarn add @babel/preset-typescript --dev
-```
-
-在 babel.config.js 配置：
+3. 在 babel.config.js 配置：
 
 ```js
 module.exports = {
@@ -303,13 +304,44 @@ module.exports = {
 
 ```
 
+4. TypeScript 支持 vue 文件
 
+```sh
+ERROR in src/main.ts:2:17
+TS2307: Cannot find module './App.vue' or its corresponding type declarations.
+    1 | import { createApp } from 'vue'
+  > 2 | import App from './App.vue'
+      |                 ^^^^^^^^^^^
+    3 | 
+    4 | createApp(App).mount('#app')
+    5 | 
+```
+
+
+新建 shims-vue.d.ts，放到 types 文件夹下：
+
+```ts
+declare module '*.vue' {
+  import { defineComponent } from 'vue';
+  const component: ReturnType<typeof defineComponent>;
+  export default component;
+}
+
+```
+
+5. 让 vue 文件里的 `<script lang="ts">` 通过 vue-loader 中转到 babel 上来
+
+   设置 `allExtensions: true` （将每个文件都作为 TS 或 TSX （取决于 `isTSX` 参数）进行解析）和 `isTSX: true`。
+
+```js
+["@babel/preset-typescript", { allExtensions: true, isTSX: true }] 
+```
+
+强制开启 `jsx` 解析。否则，尖括号将被视为 typescript 的类型断言。会出现，`.vue` 文件中一些 ts 代码的语法报错。（这块具体要看下 webpack 的整体，使用 webpack 搭建一个。再来区分 vue-cli 的处理。）
 
 #### 提交规范
 
 ### 手动搭建
-
-
 
 ## 3. 需求逐个实现
 
@@ -366,7 +398,7 @@ xcli 4.5.0 生成支持 vue3 的基础版本。     **"vue": "^3.0.0"**。
     "typescript": "^4.1.3"
   },
 ```
-#### 支持 TypeScript
+#### 支持 TypeScript（TS、TSX）
 
 类型编译与类型检查分离，大大提升编译速度。
 
@@ -415,6 +447,8 @@ declare module '*.vue' {
 }
 
 ```
+
+
 
 ### UI 组件库引入
 

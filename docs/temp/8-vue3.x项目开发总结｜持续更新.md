@@ -100,6 +100,10 @@ Vite
 
 import API
 
+TypeScript
+
+
+
 ## 参考资料
 
 - [vue 3官方文档]( https://vue3js.cn/docs/zh/guide/migration/introduction.html#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
