@@ -26,6 +26,7 @@
     "@vuepress/plugin-back-to-top": "^1.0.0-alpha.0",
     "doctoc": "^1.4.0",
     "husky": "^1.0.0-rc.13",
+    "markdown-it-disable-url-encode": "^1.0.1",
     "webpack-dev-server": "^3.11.0"
   },
   "husky": {

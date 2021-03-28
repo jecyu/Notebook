@@ -131,6 +131,55 @@ body {
 
 ## 2. 项目实战
 
+### CSS Module
+
+- Vue scoped 属性解决样式命名冲突的问题
+
+没有使用嵌套选择器来处理，跟 vue scoped 很不同，不太习惯。需要一定的编写规范。
+
+只会对类名和 id 进行 hash 转换。
+
+css module 本身就是扁平化的处理，不需要通过嵌套来解决命名冲突的问题。
+
+- 解决全局命名冲突问题 css modules 只关心组件本身 命名唯一
+- 模块化 可以使用 composes 来引入自身模块中的样式以及另一个模块的样式
+- 解决嵌套层次过深的问题 使用扁平化的类名
+
+不需要像 Vue scoped 那样嵌套，Vue scoped 通过添加 data 属性来处理。
+
+**1）css预处理器（less/sass） 支持模块引入**
+
+```
+存在问题：不能解决全局样式冲突问题
+```
+
+**（2）BEM（Block Element Modifier）解决命名冲突以及更好的语义化**
+
+- Block：逻辑和页面功能都独立的页面组件，是一个可复用单元，特点如下：
+  - 可以随意嵌套组合
+  - 可以放在任意页面的任何位置，不影响功能和外观
+  - 可复用，界面可以有任意多个相同Block的实例
+- Element：Block的组成部分，依赖Block存在（出了Block就不能用）
+- [可选]定义Block和Element的外观及行为，就像HTML属性一样，能让同一种Block看起来不一样
+
+------
+
+- **存在问题：对于嵌套过深的层次在命名上会给需要语义化体现的元素造成很大的困难 对于多人协作上，需要统一命名规范，这同样也会造成额外的effort**
+
+Vue scope，里面子元素还是需要嵌套来区分应用范围。也就是进一步的处理。
+
+```scss
+<style lang="scss" scoped>
+.svg-icon {
+  vertical-align: -0.125em;
+  line-height: 0;
+  display: inline-block;
+}
+</style>
+```
+
+需要探索 Buttons 的元子处理。
+
 ## 3. 底层原理
 
 4. 最佳实践

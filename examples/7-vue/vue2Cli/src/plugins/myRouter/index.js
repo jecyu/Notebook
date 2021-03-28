@@ -1,9 +1,9 @@
 /*
  * @Author: Jecyu
  * @Date: 2021-03-10 21:50:31
- * @LastEditors: Jecyu
- * @LastEditTime: 2021-03-22 22:20:41
- * @FilePath: /examples/7-vue/vue2Cli/src/plugins/myRouter/index.js
+ * @LastEditors: naluduo233
+ * @LastEditTime: 2021-03-28 13:51:16
+ * @FilePath: /vue2Cli/src/plugins/myRouter/index.js
  * @Description:
  */
 import link from "./my-router-link";
@@ -106,13 +106,19 @@ MyRouter.install = function(Vue, options) {
           return this._router;
         },
       });
-
+      // console.log("this.$myRouter ->", this.$myRouter);
       // 为当前实例添加 $route 属性
       Object.defineProperty(this, "$myRoute", {
         get() {
-          return this._router.current;
+          return this._router && this._router.current;
         },
       });
+
+      // 利用 Vue defineReactive 监听当前路由的变化，重新渲染 my-router-view
+      if (this._router) {
+        Vue.util.defineReactive(this._router, "current");
+      }
+      // console.log("this.$myRoute ->", this.$myRoute);
 
       // 注册全局组件
       Vue.component("my-router-link", link);

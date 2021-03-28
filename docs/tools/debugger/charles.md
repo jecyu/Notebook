@@ -26,7 +26,7 @@
 
 以 charles 为例，即使在浏览器中途进行了取消请求，只是在浏览器层面取消了请求，它是不会影响经过 charles 应用发送的请求的。相当于浏览器与 charles 断开了连接。
 
-![](../.vuepress/public/images/capture-packet-principle.png)
+<!-- ![](../.vuepress/public/images/capture-packet-principle.png) -->
 
 ## 参考资料
 

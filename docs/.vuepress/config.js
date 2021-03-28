@@ -1,6 +1,9 @@
 module.exports = {
   markdown: {
     lineNumbers: true,
+    // extendMarkdown: (md) => {
+    //   md.use(require("markdown-it-disable-url-encode"),);
+    // },
   },
   plugins: [
     "vuepress-plugin-zooming",
@@ -75,19 +78,20 @@ module.exports = {
           },
           {
             text: "英语学习",
-            link: "https://jecyu.github.io/language-learning/",
+            link: "https://naluduo233.github.io/language-learning/",
           },
           {
             text: "前端自动化测试",
-            link: "https://jecyu.github.io/Fe-Auto-Testing/",
+            link: "https://naluduo233.github.io/Fe-Auto-Testing/",
           },
           {
             text: "JS 事件循环机制",
-            link: "https://jecyu.github.io/JS-Event-Loop/",
+            link: "https://naluduo233.github.io/JS-Event-Loop/",
           },
           {
             text: "微谈 Web 前端性能优化",
-            link: "https://jecyu.github.io/Web-Performance-Optimization/reference/",
+            link:
+              "https://naluduo233.github.io/Web-Performance-Optimization/reference/",
           },
         ],
       },

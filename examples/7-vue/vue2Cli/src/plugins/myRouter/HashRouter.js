@@ -1,9 +1,9 @@
 /*
  * @Author: Jecyu
  * @Date: 2021-03-16 11:16:36
- * @LastEditors: Jecyu
- * @LastEditTime: 2021-03-22 22:05:08
- * @FilePath: /examples/7-vue/vue2Cli/src/plugins/myRouter/HashRouter.js
+ * @LastEditors: naluduo233
+ * @LastEditTime: 2021-03-28 13:51:04
+ * @FilePath: /vue2Cli/src/plugins/myRouter/HashRouter.js
  * @Description:
  */
 // import { getProperty } from "./Utils";
@@ -34,6 +34,7 @@ export default class HashRouter {
       fullPath: location.href,
       component: route.component, // 路由组件
     };
+    // console.log('this.router.current ->', this.router.current);
   }
 
   push(params) {

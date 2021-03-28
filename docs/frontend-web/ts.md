@@ -1,4 +1,4 @@
-# TypeScript 项目总结（持续更新）
+#  TypeScript 项目总结（持续更新）
 
 [[toc]]
 
@@ -41,6 +41,17 @@ tsc hello.ts
 打开 vscode -> setting -> 输入 check 即可看到 TypeScript 的检查配置，这样在你编辑代码的时候即可实时看到提示。
 
 ### ts 编译配置
+
+```json
+{
+  "files": [],
+  "include": [],
+  "exclude": [],
+  "compileOnSave": false,
+  "extends": "",
+  "compilerOptions": {}
+}
+```
 
 TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 `allowJs` 选项，那 `.js` 和 `.jsx` 文件也属于 TS 文件。
 
@@ -1418,17 +1429,34 @@ export default defineComponent({
 
 然后在`qqmap.d.ts`文件中编写声明：
 
-```text
+```ts
 declare module "qqmap";
 ```
 
 好的，这些就大工告成了，直接ts文件中使用
 
-```text
+```js
 import qqmap from "qqmap";
 ```
 
 就可以引入这个第三方JavaScript库。
+
+#### Vue3 插件编写类型
+
+```js
+import { App, Plugin } from 'vue';
+import Map from "./Map";
+export const install = (app: App, options = {}) => {
+  app.component("b-map", Map);
+}
+
+const plugin:Plugin = { install }
+export default plugin;
+```
+
+
+
+
 
 ### TSX 如何引入 Vue scoped 样式
 

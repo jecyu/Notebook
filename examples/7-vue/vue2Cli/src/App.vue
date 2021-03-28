@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      msg: 33,
+      msg: "33",
     };
   },
   watch: {
@@ -33,8 +33,8 @@ export default {
   },
   mounted() {
     // console.log('this.$router', this.$myRouter)
-    console.log("this.$router", this.$router);
-    console.log("this.$route ->", this.$route);
+    // console.log("this.$router", this.$router);
+    // console.log("this.$route ->", this.$route);
   },
 };
 </script>

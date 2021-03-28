@@ -148,9 +148,6 @@ Each attribute, uniform and varying must be declared before main() in the shader
 ### 刚刚够的数学知识
 
 > 线性代数：关键是理解几何直观和数值计算的关系
-
-[](./78-线性代数的本质%20-%20系列合集文章.md)
-
 #### 几何基础
 
 - 2D 点具有两个空间坐标系（水平 X，垂直 Y）
