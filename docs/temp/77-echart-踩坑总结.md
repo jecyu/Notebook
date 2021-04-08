@@ -1,4 +1,317 @@
-# Echart 项目总结
+# Echart 5.x 项目总结
+
+## Echart 5.x
+
+dataSet，https://echarts.apache.org/en/tutorial.html#Dataset
+
+series 一个 series 代表一种图形的显示，
+
+x轴 和 y 轴的类型
+
+'catogery' 分类
+
+### 圆环图
+
+https://echarts.apache.org/zh/option.html#series-pie.encode
+
+```js
+ const pieOption: any = ref({
+      legend: {
+        show: true,
+        data: ["旱地", "水田", "水浇地"],
+        orient: "vertical",
+        top: 0,
+        right: 0,
+        textStyle: {
+          color: "#fff"
+        }
+      },
+      dataset: {
+        dimensions: ["type", "area", "radio"],
+        source: [
+          {
+            type: "旱地",
+            area: "271444.47",
+            radio: "56.22%"
+          },
+          {
+            type: "水田",
+            area: "209667.39",
+            radio: "43.42%"
+          },
+          {
+            type: "水浇地",
+            area: "1752.29",
+            radio: "0.36%"
+          }
+        ]
+      },
+      series: [
+        {
+          type: "pie",
+          radius: ["50%", "70%"],
+          encode: {
+            itemName: "type",
+            value: "area"
+          },
+          label: {
+            color: '#fff',
+            formatter: '{d}%'
+          },
+        }
+      ]
+    });
+```
+
+### 柱状图
+
+```js
+const barChartOption = ref({
+      textStyle: {
+        color: "#fff",
+        overflow: "break"
+      },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+          crossStyle: {
+            color: "#fff"
+          }
+        }
+      },
+      dataset: {
+        dimensions: ["regionName", "gdxzmj", "gdbyl", "gdhbzy"],
+        source: [
+          {
+            regionName: "兴宁区",
+            gdxzmj: "117.976087",
+            gdbyl: "119.226999 ",
+            gdhbzy: "50.845294 "
+          },
+          {
+            regionName: "青秀区",
+            gdxzmj: "197.803053",
+            gdbyl: "199.900379 ",
+            gdhbzy: "85.249092 "
+          },
+          {
+            regionName: "江南区",
+            gdxzmj: "338.247211",
+            gdbyl: "341.833680 ",
+            gdhbzy: "145.777667 "
+          },
+          {
+            regionName: "西乡塘区",
+            gdxzmj: "343.955377",
+            gdbyl: "347.602370 ",
+            gdhbzy: "148.237771 "
+          },
+          {
+            regionName: "良庆区",
+            gdxzmj: "244.661483",
+            gdbyl: "247.255653 ",
+            gdhbzy: "105.444122 "
+          },
+          {
+            regionName: "邕宁区",
+            gdxzmj: "370.91938",
+            gdbyl: "374.852275 ",
+            gdhbzy: "159.858708 "
+          },
+          {
+            regionName: "武鸣区",
+            gdxzmj: "770.157316",
+            gdbyl: "778.323371 ",
+            gdhbzy: "331.922137 "
+          },
+          {
+            regionName: "隆安县",
+            gdxzmj: "509.074562",
+            gdbyl: "514.472330 ",
+            gdhbzy: "219.400781 "
+          },
+          {
+            regionName: "马山县",
+            gdxzmj: "411.334123",
+            gdbyl: "415.695540 ",
+            gdhbzy: "177.276640 "
+          },
+          {
+            regionName: "上林县",
+            gdxzmj: "406.021628",
+            gdbyl: "410.326716 ",
+            gdhbzy: "174.987062 "
+          },
+          {
+            regionName: "宾阳县",
+            gdxzmj: "747.364887",
+            gdbyl: "755.289272 ",
+            gdhbzy: "322.099064 "
+          },
+          {
+            regionName: "横县",
+            gdxzmj: "891.043591",
+            gdbyl: "900.491415 ",
+            gdhbzy: "384.021662 "
+          }
+        ]
+      },
+      xAxis: { type: "category", nameTextStyle: { overflow: "truncate" } },
+      yAxis: {
+        show: false
+      },
+      series: [
+        {
+          type: "bar",
+          encode: {
+            x: "regionName",
+            y: "gdxzmj"
+          },
+          barWidth: "25%",
+          itemStyle: {
+            borderRadius: 25
+          }
+        },
+        {
+          type: "line",
+          encode: {
+            // Map dimension "regionName" to the X axis.
+            x: "regionName",
+            // Map dimension "gdxzmj" to the Y axis.
+            y: "gdxzmj"
+          }
+        }
+      ]
+    });
+```
+
+## Echart 3.x/4.x 写法
+
+###  圆环图
+
+```js
+  tooltip: {
+        trigger: "item"
+      },
+      legend: {
+        bottom: "5%"
+      },
+      series: [
+        {
+          name: "耕地类别",
+          type: "pie",
+          radius: ["40%", "70%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: "center"
+          },
+          emphasis: {
+            label: {
+              show: true
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: [
+            { value: 1048, name: "搜索引擎" },
+            { value: 735, name: "直接访问" },
+            { value: 580, name: "邮件营销" }
+          ]
+        }
+      ]
+```
+
+### 柱状图
+
+```js
+  textStyle: {
+        color: "#fff",
+        overflow: "break"
+      },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+          crossStyle: {
+            color: "#fff"
+          }
+        }
+      },
+      toolbox: {
+        feature: {
+          dataView: { show: true, readOnly: false },
+          magicType: { show: true, type: ["line", "bar"] },
+          restore: { show: true },
+          saveAsImage: { show: true }
+        }
+      },
+      legend: {
+        data: ["蒸发量", "降水量", "平均温度"]
+      },
+      xAxis: [
+        {
+          type: "category",
+          data: [
+            "青秀区",
+            "兴宁区",
+            "江南区",
+            "良庆区",
+            "邕宁区",
+            "西乡塘区",
+            "横县",
+            "隆安县",
+            "武鸣县"
+          ],
+          axisPointer: {
+            type: "shadow"
+          }
+        }
+      ],
+      yAxis: [
+        {
+          type: "value",
+          name: "全市耕地现状面积 5348.56 ⬆",
+          show: false,
+          min: 0,
+          max: 500,
+          interval: 50,
+          axisLabel: {
+            formatter: "{value} ml"
+          }
+        }
+      ],
+      series: [
+        {
+          name: "耕地现状面积",
+          type: "bar",
+          data: [
+            472.0,
+            474.9,
+            477.0,
+            4123.2,
+            4125.6,
+            476.7,
+            435.6,
+            462.2,
+            432.6
+          ],
+          barWidth: "25%",
+          itemStyle: {
+            borderRadius: 25
+          }
+        },
+        {
+          name: "耕地现状面积",
+          type: "line",
+          data: [472.0, 474.9, 477.0, 423.2, 425.6, 476.7, 435.6, 462.2, 432.6]
+        }
+      ]
+```
+
+
 
 ### 扇形图
 

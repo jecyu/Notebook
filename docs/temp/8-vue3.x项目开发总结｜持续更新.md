@@ -4,6 +4,10 @@
 
 ### 使用
 
+### Setup 文件组织
+
+
+
 ### 响应式 API
 
 #### ref，reactive，toRef，toRefs 的区别使用
@@ -104,9 +108,108 @@ import API
 
 TypeScript
 
+## 项目实战问题
 
+### v-on Listeners  移除
+
+TSX 可以写在 Render 函数中，也可以写在 Setup 返回中
+
+先直接使用 d2-map
+
+
+
+### Arcgis 的响应式原理以及与 Vue 的冲突问题
+
+![](../.vuepress/public/images/2021-04-03-14-33-09.png)
+#### 重现步骤
+
+1. 在 setup 内声明一个变量，该变量的值是通过 ref/reactive 包装
+
+```js
+const origin = {
+  mapObj: null
+}
+const state = reactive(origin);
+```
+
+2. 使用 Arcgis 4.12 API For JS，实例化一个地图对象
+
+```js
+const map = new Map({});
+```
+
+3. 把 map 对象赋予给 mapObj
+
+```js
+state.mapObj = map;
+```
+
+4. 添加图层
+
+```js
+const newLayer = new MapImageLayer({
+  visible: true,
+  url: server.url
+});
+state.mapObj.add(newLayer);  //  这样会报错误的关键代码
+// let mapObj = ref({});  这样就不会报错，addLayer 时
+// mapObj.add(newLayer); 
+```
+
+5. 在执行 state.mapObj.add(newLayer) 这行代码后，就会报以上的错误。
+
+init.js:377 Uncaught (in promise) TypeError: 'get' on proxy: property '`__accessor__`' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '#<a>' but got '[object Object]')
+
+#### 问题分析
+
+首先是错误的分析，我们知道 Proxy 有这么一个特性：如果要访问的目标属性是不可写以及不可配置的，则返回的值必须与该目标属性的值相同。
+
+否则就会出现以下 错误：
+
+![](../.vuepress/public/images/2021-04-03-14-45-31.png)
+
+可以发现这个错误跟我们的错误报错几乎一样。
+
+我们来重新分析重新步骤的代码：
+
+```js
+const origin = {
+  mapObj: null
+}
+const state = reactive(origin); // 对 origin 响应式处理，内部使用了 Proxy
+const map = new Map({});
+state.mapObj = map; // 把 map 指针赋予给 state.mapObj
+const newLayer = new MapImageLayer({ // 新建图层
+  visible: true,
+  url: server.url
+});
+state.mapObj.add(newLayer);  // 添加图层
+```
+
+mapObj.add 的这个操作会引起 arcgis 内部的` __accessor__` 访问器冲突操作，应该是 vue 的 reactive 改变了 mapObj 的一些东西导致的错误。
+
+这块还需要深入研究下，看了 Esri 社区也有人遇到这个问题，官方回应会在最新的版本进行发布。https://community.esri.com/t5/arcgis-api-for-javascript/arcgis-js-api-4-x-not-supported-with-vuejs-3-0/m-p/1010906。
+
+风险评估：
+
+- 考虑到后续还要 vuex，而官方还没提供相关的工具，先把大屏项目转回 vue2。
+- 上述的错误
+
+#### 解决方案
+
+So I think there are some issues here in the patterns being used. One of the nice things about the Composition API and Vue3 in general is you can explicitly choose what is reactive and what isn't. In my opinion, I don't think you want to make your **view** and **layer** reactive.
+
+map 对象不需要响应式，还有就是图层对象也不需要响应式。至于问题是怎样的，
+
+先切回 vue2 分之，vue3 这个作为研究分支，保留着用吧。为什么会出现这个问题，还有待研究。
+
+## 问题总结
+
+异步请求的数据，如何放到 Setup 声明的数据里，再进行渲染。
 
 ## 参考资料
+
+- [Vue3.0 新特性以及使用变更总结(实际工作用到的)](https://blog.csdn.net/qiwoo_weekly/article/details/115339575)
 
 - [vue 3官方文档]( https://vue3js.cn/docs/zh/guide/migration/introduction.html#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
 - [https://github.com/blacksonic/awesome-vue-3](https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88)

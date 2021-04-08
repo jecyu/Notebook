@@ -1,3 +1,5 @@
+
+
 # React
 
 <!-- 最好的方式，记录 React/Vue，就是创建一个相似的轮子出来。 -->
@@ -1400,7 +1402,9 @@ context 打破了组件和组件之间通过 `props` 传递数据的规范，极
 
 但是这种机制对于前端应用状态管理来说是很有帮助，因为毕竟很多状态都会在组件之间共享，context 会给我们带来很大的方便。一些第三方的前端应用状态管理的库（例如 Redux）就是充分地利用了这种机制给我们提供便利的状态管理服务。但我们一般不需要手动写 context，也不要用它，只需要用好这些第三方的应用状态管理库就行了。
 
-### 动手实现 Redux（一）：优雅地修改共享状态
+### 动手实现 Redux
+
+#### 动手实现 Redux（一）：优雅地修改共享状态
 
 要注意的是，Redux 和 React-redux 并不是同一个东西。**Redux 是一种架构模式（Flux 架构的一种变种），它不关注你到底用什么库，你可以把它应用到 React 和 Vue，甚至跟 jQuery 结合都没有问题**。**而 React-redux 就是把 Redux 这种架构模式和 React.js 结合起来的一个库，就是 Redux 架构在 React.js 中的体现。**
 
@@ -1462,7 +1466,7 @@ dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜色
 renderApp(appState); // 把新的数据渲染到页面上
 ```
 
-### 动手实现 Redux（二）：抽离 store 和监控数据变化
+#### 动手实现 Redux（二）：抽离 store 和监控数据变化
 
 #### 抽离 store
 
@@ -1623,7 +1627,7 @@ store.dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜
 
 现在我们有了一个比较通用 `createStore`，它可以产生一种我们新定义的数据类型 `store`，通过 `store.getState` 我们获取共享状态，而且我们约定只能通过 `store.dispatch` 修改共享状态。`store` 也允许我们通过 `store.subscribe` 监听数据状态被修改了，并且进行后续的例如重新渲染页面的操作。
 
-### 动手实现 Redux（三）：纯函数（Pure Function）简介
+#### 动手实现 Redux（三）：纯函数（Pure Function）简介
 
 简单来说，**一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用，我们就把这个函数叫做纯函数。**
 
@@ -1669,7 +1673,7 @@ const foo = (b) => {
 
 为什么要煞费苦心地构建纯函数？因为纯函数非常“靠谱”，执行一个纯函数你不用担心它会干什么坏事，它不会产生不可预料的行为，也不会对外部产生影响。不过何时何地，你给它什么它就会乖乖地吐出什么。如果你的应用程序大多数函数都是由纯函数组成，那么你的程序测试、调试起来非常方便。
 
-### 动手实现 Redux（四）：共享结构的对象提高性能
+#### 动手实现 Redux（四）：共享结构的对象提高性能
 
 ```js
 state.title.text = action.text;
@@ -1781,7 +1785,65 @@ store.dispatch({ type: "UPDATE_TITLE_COLOR", color: "blue" }); //修改标题颜
 
 并不需要担心每次修改都新建共享结构对象会有性能、内存问题，因为构建对象的成本非常低，而且我们最多保存两个对象引用 `oldState` 和 `newState` ，其余旧的对象都会被垃圾回收掉。
 
-### 动手实现 Redux（五）：不要问为什么的 reducer
+#### 动手实现 Redux（五）：不要问为什么的 reducer
+
+stateChanger 现在既充当了获取初始化数据的功能，也充当了生成更新数据的功能。如果有传入 state 就生成更新数据，否则就是初始化数据。
+
+```js
+function stateChanger(state, action) {
+  if (!state) {
+    return {
+      title: {
+        text: "React.js 小书",
+        color: "red",
+      },
+      content: {
+        text: "React.js 小书内容",
+        color: "blue",
+      },
+    }
+  }
+  switch (action.type) {
+    case "UPDATE_TITLE_TEXT":
+      return { // 构建新的对象并返回
+        ...state,
+        title: {
+          ...state.title,
+          color: action.color
+        }
+      }
+    case "UPDATE_TITLE_COLOR":
+      return { // 构建新的对象并且返回
+        ...state,
+        title: {
+          ...state.title,
+          color: action.color
+        }
+      }
+    default:
+      return state; // 没有修改，返回原来的对象
+  }
+}
+```
+
+更改 createStore
+
+```js
+function createStore(stateChanger) {
+  let state = null;
+  const listeners = [];
+  const subscribe = (listener) => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    state = stateChanger(state, action);
+    listeners.forEach((listener) => listener());
+  };
+  dispatch({}); // 初始化 state
+  return { getState, dispatch, subscribe };
+}
+```
+
+更改 stateChanger 为 reducer
 
 #### reducer
 
@@ -1824,12 +1886,61 @@ function themeReducer(state, action) {
 const store = createStore(themeReducer);
 ```
 
-### 动手实现 Redux（六）：Redux 总结
+#### 动手实现 Redux（六）：Redux 总结
 
-1. 解决共享的状态被任意修改
+createStore 创建状态管理库
+
+> flux 架构之 Redux 模式
+
+- 参数：
+
+  - reducer：初始化和计算新的 `state`
+
+    - ```js
+      function themeReducer(state, action) {
+        if (!state)
+          return {
+            themeName: "Red Theme",
+            themeColor: "red",
+          };
+        switch (action.type) {
+          case "UPATE_THEME_NAME":
+            return { ...state, themeName: action.themeName };
+          case "UPATE_THEME_COLOR":
+            return { ...state, themeColor: action.themeColor };
+          default:
+            return state;
+        }
+      }
+      ```
+
+- 返回值：
+
+  - dispatch：更新 state（核心）
+
+    -  ```js
+      const dispatch = (action) => {
+          state = reducer(state, action);
+          listeners.forEach((listener) => listener());
+      };
+      ```
+
+  - getState（获取状态）
+
+    - ```js
+      const getState = () => state;
+      ```
+
+  - subscribe（订阅者）
+
+    - ```js
+      const subscribe = (listener) => listeners.push(listener);
+      ```
+
+1. 解决共享的状态被任意修改，必须通过 `dispatch` 执行某些允许的修改操作，而且必须大张旗鼓的在 `action`里声明。
 2. 抽离 createStore 模式
-3. 使用 store.subscribe 订阅数据，解决手动渲染
-4. 引入“共享结构的对象”解决重新渲染性能问题
+   3. 使用 store.subscribe 订阅数据，解决手动渲染
+   2. 引入“共享结构的对象”解决重新渲染性能问题
 
 ```js
 // 定义一个 reducer
@@ -1850,19 +1961,23 @@ renderApp(store.getState())
 store.dispatch(...)
 ```
 
-### 动手实现 React-redux（一）：初始化工程
+### 动手实现 React-redux
+
+#### 动手实现 React-redux（一）：初始化工程
 
 前端中应用的状态存在的问题：一个状态可能被多个组件**依赖**或者**影响**，而 React.js 并没有提供好的解决方案，我们只能把状态提升到**依赖**或者**影响**，而 React.js 并没有提供好的解决方案，我们只能把状态提升到**依赖**或者**影响**这个状态的所有组件的公共父组件上，我们把这种行为叫做状态提升。但是需求不停变化，共享状态没完没了地提升也不是办法。
 
 后面我们在 React.js 的 context 中提升出，我们可用把共享状态放到父组件的 context 上，这个父组件下所有的组件都可以从 context 中直接获取到状态而不需要一层层地进行传递了。但是直接从 context 里面存放，获取数据增强了组件的耦合性；并且所有组件都可以修改 context 里面的状态就像谁都可以修改共享状态一样，导致程序运行的不可预料。
 
-既然这样，为什么不把 context 和 store 结合起来？毕竟 store 的数据不是谁都能修改，而是约定只能通过 `dispatch` 来进行修改，这样的话每个组件既可以去 context 里面获取 store 从而获取状态，又不用担心它们乱改数据了。
+既然这样，为什么不**把 context 和 store 结合起来**？毕竟 store 的数据不是谁都能修改，而是约定只能通过 `dispatch` 来进行修改，这样的话每个组件既可以去 context 里面获取 store 从而获取状态，又不用担心它们乱改数据了。
 
 （在 Vue 一些基础组件虽然没有使用 prodive/inject 或 vuex，但是同样使用了 redux 这样的思想）
 
 ![](../.vuepress/public/images/2020-09-30-13-42-20-react-redux.png)
 
-### 动手实现 React-redux （二）：结合 context 和 store
+#### 动手实现 React-redux （二）：结合 context 和 store
+
+1. 父组件初始化 store，并通过 context 向下传递
 
 ```js
 import React, { Component } from "react";
@@ -1928,6 +2043,8 @@ function App() {
 export default App;
 ```
 
+2. 子组件通过 contextTypes 声明接收：
+
 ```js
 import React, { Component } from "react";
 import Protypes from "prop-types";
@@ -1962,14 +2079,95 @@ class Header extends Component {
 export default Header;
 ```
 
-### 动手实现 React-redux（三）：connect 和 mapStateToProps
+3. store 数据更改：
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+class ThemeSwitch extends Component {
+  static contextTypes = {
+    store: PropTypes.object,
+  };
+
+  constructor() {
+    super();
+    this.state = {
+      themeColor: "",
+    };
+  }
+
+  componentWillMount() {
+    const { store } = this.context;
+    this._updateThemeColor();
+    store.subscribe(() => this._updateThemeColor()); // 更新 state，重新渲染数据
+  }
+
+  _updateThemeColor() {
+    const { store } = this.context;
+    const state = store.getState();
+    this.setState({ themeColor: state.themeColor });
+  }
+
+  // dispatch action 去改变颜色
+  handleSwitchColor(color) {
+    const { store } = this.context;
+    store.dispatch({  // 更改数据
+      type: "CHANGE_COLOR",
+      themeColor: color,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <button
+          style={{ color: this.state.themeColor }}
+          onClick={this.handleSwitchColor.bind(this, "red")}
+        >
+          Red
+        </button>
+        <button
+          style={{ color: this.state.themeColor }}
+          onClick={this.handleSwitchColor.bind(this, "blue")}
+        >
+          Blue
+        </button>
+      </div>
+    );
+  }
+}
+
+export default ThemeSwitch;
+```
+
+
+
+#### 动手实现 React-redux（三）：connect 和 mapStateToProps
 
 我们来观察一下刚写的这几个组件，可以轻易地发现它们有两个重大的问题：
 
 1. **有大量重复的逻辑**：
-2. **对 context 依赖性过强**：
+2. **对 context 依赖性过强**：（connect 解决）
 
 ![](../.vuepress/public/images/2020-09-30-14-46-13-dumb-component.png)
+
+
+
+```js
+export const connect = (WrappedComponent) => {
+  class Connect extends Component {
+    static contextTypes = {
+      store: PropTypes.object,
+    };
+		// TODO：如何从 store 获取数据
+    render() {
+      return <WrappedComponent />;
+    }
+  }
+  return Connect;
+};
+```
 
 `connect` 函数接受一个组件 `WrappedComponent` 作为参数，把这个组件包含在一个新的组件 `Connect` 里面，`Connect` 会去 `context` 里面取出 store。现在要把 store 里面的数据取出来通过 `props` 传给 `WrappedComponent`。
 
@@ -2000,13 +2198,53 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 };
 ```
 
-添加事件监听
+使用:
+
+```js
+import React, { Component } from "react";
+import Protypes from "prop-types";
+import { connect } from "./react-redux";
+
+class Header extends Component {
+  static propsTypes = {
+    themeColor: Protypes.string,
+  };
+	// 删除大部分关于 context 的代码
+  //   componentWillMount() {
+  //     const { store } = this.context;
+  //     this._updateThemeColor();
+  //     store.subscribe(() => this._updateThemeColor())
+  //   }
+
+  //   _updateThemeColor() {
+  //     const { store } = this.context;
+  //     const state = store.getState();
+  //     this.setState({ themeColor: state.themeColor });
+  //   }
+
+  render() {
+    return <h1 style={{ color: this.props.themeColor }}>React.js 小书</h1>;
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    themeColor: state.themeColor,
+  };
+};
+
+Header = connect(mapStateToProps)(Header);
+
+export default Header;
+```
+
+给 connect 增加事件监听数据变化：
 
 ```js
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-export const connect = (mapStateToProps) => (WrappedComponent) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponent) => {
   class Connect extends Component {
     static contextTypes = {
       store: PropTypes.object,
@@ -2014,18 +2252,19 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
     constructor() {
       super();
-      this.state = { allProps: {} };
+      this.state = { allProps: {} }; // 1.用来保存需要传给被包装组件的所有的参数
     }
 
     componentWillMount() {
       const { store } = this.context;
-      this._updateProps();
-      store.subscribe(() => this._updateProps());
+      this._updateProps(); // 初始化 Props
+      store.subscribe(() => this._updateProps()); // 2.监听数据变化，重新调用 _updateProps
     }
 
     _updateProps() {
       const { store } = this.context;
-      let stateProps = mapStateToProps(store.getState(), this.props); // 额外传入 props，让获取数据更加灵活方便
+      // 3. 可以把传给 Connect 组件的 props 参数也传给它，props + state 生成被包装组件的参数
+      let stateProps = mapStateToProps ? mapStateToProps(store.getState(), this.props) : {}; // 防止 mapStateToProps 没有传入
       this.setState({
         allProps: {
           // 整合普通的 props 和从 state 生成的 props
@@ -2036,14 +2275,16 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
     }
 
     render() {
-      return <WrappedComponent {...this.state.allProps} />;
+      // 传递 props 数据
+      return <WrappedComponent {...this.state.allProps} />; 
     }
   }
   return Connect;
 };
+
 ```
 
-### 动手实现 React-redux（四）：mapDispatch
+#### 动手实现 React-redux（四）：mapDispatch
 
 既然可以通过 `connect` 函数传入 `mapStateProps` 来告诉它如何获取，我们也可以想到，可以给它传入另外一个参数来告诉它我们的组件需要如何触发 `dispatch`。我们把这个参数叫 `mapDispatchToProps`：
 
@@ -2057,7 +2298,7 @@ const mapDispatchProps = (dispatch) => {
 };
 ```
 
-connect
+现在我们 改造 connect 组件，以接收 mapDispatchToProps 参数。
 
 ```js
 import React, { Component } from "react";
@@ -2101,12 +2342,15 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (
     }
 
     render() {
-      return <WrappedComponent {...this.state.allProps} />;
+      // 在 render 中传递出去
+      return <WrappedComponent {...this.state.allProps} />; 
     }
   }
   return Connect;
 };
 ```
+
+改造 ThemeSwitch 组件
 
 ```js
 import React, { Component } from "react";
@@ -2160,7 +2404,7 @@ const mapStateProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
   return {
-    onSwitchColor: (color) => {
+    onSwitchSwolor: (color) => {
       dispatch({ type: "CHANGE_COLOR", themeColor: color });
     },
   };
@@ -2171,19 +2415,44 @@ ThemeSwitch = connect(mapStateProps, mapDispatchProps)(ThemeSwitch);
 export default ThemeSwitch;
 ```
 
-### 动手实现 React-redux（五）：Provider
+React-redux 与直接在 vuex 声明 action 不同，它可以按需传递 mapDispatchToProps的。比 vue 组件直接依赖 vuex 灵活干净，光看 ThemeSwitch 内部，是非常清爽干净的，只依赖外界传进来的 `themeColor` 和 `onSwitchColor`。**但 `ThemeSwitch`内部并不知道这两个参数其实都是我们去 `store` 里面取的**，它是 Dumb 的。这时候三个组件的重构都已经完成了，代码大大减少、不依赖 context，并且功能和原来一样。
+
+#### 动手实现 React-redux（五）：Provider
 
 我们要把 context 相关的代码从所有业务组件中清除出去，现在的代码里面还有一个地方是被污染的。那就是 `src/index.js` 里面的 `Index：
 
 ```js
+class Index extends Component {
+  static childContextTypes = {
+    store: PropTypes.object,
+  };
 
+  getChildContext() {
+    return {
+      store,
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <Content />
+      </div>
+    );
+  }
+}
 ```
 
 其实它要用 `context` 就是因为要把 `store` 存放到里面，好让子组件 `connect` 的时候能够取到 `store`。我们可以额外构建一个组件来做这种脏活，然后让这个组件成为组件树的根节点，那么它的子组件都可以获取 context 了。
 
 我们把这个组件叫 `Provider`，因为它提供（provide）了 `store`：
 
+
+
 ![](../.vuepress/public/images/2020-09-30-16-12-26-redux.png)
+
+Provider 做的事情也很大简单，它就是一个容器组件，会把嵌套的内容原封不动作为自己的子组件渲染出来。它还会把外界传给它的 `props.store` 放到 context，这样子组件 `connect` 的时候都可以获取到。
 
 ```js
 export class Provider extends Component {
@@ -2208,16 +2477,28 @@ export class Provider extends Component {
 }
 ```
 
-### 动手实现 React-redux（六）：React-redux 总结
+使用：
 
-React.js 除了状态提升以外并没有更好的办法帮助我们解决组件之间共享状态的问题。
+```js
+ReactDOM.render(
+    <Provider store={store}> // 把 Provider 做诶组件树的根节点
+      <Index />
+    </Provider>,
+	document.getElementById('root')
+)
+
+```
+
+#### 动手实现 React-redux（六）：React-redux 总结
+
+React.js 除了状态提升以外并没有更好的办法帮助我们解决组件之间共享状态的问题，而使用 context 全局变量让程序变得不可预测。通过 Redux 的章节，我们知道 store 里面的内容是不可以随意修改的，而是通过 dispatch 才能变更里面的 state。所以我们尝试把 store 和 context 结合起来使用，可以**兼顾组件之间共享状态问题和共享状态可能被任意修改**的问题。
 
 1. store + context
 2. connect + context
 3. contect：mapStateToProps + mapDispatchProps
 4. Provider
 
-### 使用真正的 Redux 和 React-redux
+#### 使用真正的 Redux 和 React-redux
 
 <img src="../.vuepress/public/images/2020-10-01-19-06-32-redux.png" style="zoom:70%;" />
 
@@ -2240,6 +2521,8 @@ import { connect } from "react-redux";
 ```
 
 也就是本来从本地 ./react-redux 导入的 connect 改成从第三方 react-redux 模块中导入。
+
+### React-Redux vs Vuex
 
 ### Dva
 
@@ -2266,6 +2549,8 @@ import { connect } from "react-redux";
 reactjs 怎么实现监听数据对象
 https://github.com/ant-design/ant-design/issues/26890
 
+### 个人博客系统
+
 ### React 后台运维管理系统
 
 1. 运维系统由于历史原因，采用的是 react 技术栈。本周在实现用户同步时，遇到一个 modal 的显示/隐藏问题，因为习惯了 vue 的写法，以为传入 visible 后，不需要手动改变 visible 的值，点击关闭 close 即可实现，让组件内部进行更改 visible 的属性。但是 react 不允许这样做，必须让调用者显式使用 `setState({ vsible: false })`，才能关闭。如下图，必须要给 onCancel 填入回调函数，即使你没有取消的按钮。因为 close icon 也会调用。
@@ -2278,7 +2563,7 @@ https://github.com/ant-design/ant-design/issues/26890
 
 <img src="../.vuepress/public/images/2021-03-22-13-11-33.png" style="zoom:70%;" />
 
-### 单向数据流与双向绑定
+#### 单向数据流与双向绑定
 
 在实现 NrSlidePanelNew，就使用了 v-model 双向绑定，但是这样违反了 react 的原则，它只是一个视图层，render 函数的接收应该遵循输入与输出一致，内部不应该改变外部的 prop 状态，应该是无副作用的。
 
@@ -2343,14 +2628,9 @@ ReactDOM.render(<App />, document.getElementById("container"));
 
 connect 状态。
 
-## 参考资料
-
-- [reactjs 怎么实现监听数据对象](reactjs怎么实现监听数据对象)
-### React 后台管理系统
-
 #### Dva 状态管理
 
-## 底层原理
+## 4. 底层原理
 
 ## 常见问题
 
@@ -2433,10 +2713,6 @@ export default Item;
 ```
 
 Redux 有很多的 Reducer，对于大型应用来说，State 必然十分庞大，导致 Reducer 函数也十分庞大，所以需要做拆分。Redux 里每一个 Reducer 负责维护 State 树里面的一部分数据，多个 Reducer 可以通过 combineReducers 方法合成一个根 Reducer，这个根 Reducer 负责维护整个 State。
-<!-- 
-```js
-
-​``` -->
 
 ### 中间件
 
@@ -2446,14 +2722,14 @@ Redux
 
 Dva 的研究使用
 
-### Dva
+## 5. 小结
 
 ## 参考资料
+
+- [reactjs 怎么实现监听数据对象](reactjs怎么实现监听数据对象)
 
 - 手动实现 redux，再阅读：[前端状态管理 Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://mp.weixin.qq.com/s/T3UeN2-RjSNP0mGjJr0PDw)，效果棒棒
 - [深入 JSX](https://zh-hans.reactjs.org/docs/jsx-in-depth.html#___gatsby)
 - [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
 - [Vue 与 React 的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
 - [Vue 进阶必学之高阶组件 HOC](https://juejin.im/post/6844904116603486221?utm_source=gold_browser_extension#heading-4)
-
-```

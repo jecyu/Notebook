@@ -24,7 +24,7 @@ module.exports = {
     "vuepress-plugin-table-of-contents",
   ],
   base: "/Notebook/",
-  title: "Jecyu's Notebook",
+  title: "Naluduo's Notebook",
   description: "📝每天记录一点点",
   head: [["link", { rel: "icon", href: "/images/logo.jpeg" }]],
   themeConfig: {

@@ -9,17 +9,18 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponen
 
     constructor() {
       super();
-      this.state = { allProps: {} };
+      this.state = { allProps: {} }; // 用来保存需要传给被包装组件的所有的参数
     }
 
     componentWillMount() {
       const { store } = this.context;
-      this._updateProps();
-      store.subscribe(() => this._updateProps());
+      this._updateProps(); // 初始化 Props
+      store.subscribe(() => this._updateProps()); // 监听数据变化，重新调用 _updateProps
     }
 
     _updateProps() {
       const { store } = this.context;
+      // 可以把传给 Connect 组件的 props 参数也传给它，props + state 生成被包装组件的参数
       let stateProps = mapStateToProps ? mapStateToProps(store.getState(), this.props) : {}; // 防止 mapStateToProps 没有传入
       let dispatchProps = mapDispatchToProps ? mapDispatchToProps(store.dispatch, this.props) : {}; // 防止 mapDispatchProps 没有传入
       this.setState({

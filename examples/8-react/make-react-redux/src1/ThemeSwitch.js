@@ -16,7 +16,7 @@ class ThemeSwitch extends Component {
   componentWillMount() {
     const { store } = this.context;
     this._updateThemeColor();
-    store.subscribe(() => this._updateThemeColor());
+    store.subscribe(() => this._updateThemeColor()); // 更新 state，重新渲染数据
   }
 
   _updateThemeColor() {
@@ -28,7 +28,7 @@ class ThemeSwitch extends Component {
   // dispatch action 去改变颜色
   handleSwitchColor(color) {
     const { store } = this.context;
-    store.dispatch({
+    store.dispatch({  // 更改数据
       type: "CHANGE_COLOR",
       themeColor: color,
     });

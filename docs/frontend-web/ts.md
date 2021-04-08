@@ -827,6 +827,10 @@ let c2: C.a = C.a; // C.a 枚举类型只能被赋值为自身 C.a
 
 ### 装饰器
 
+### 类
+
+
+
 ### 函数
 
 #### 函数表达式
@@ -1261,6 +1265,24 @@ let tom: Person = {
   name: "Tom",
   age: 25,
 };
+```
+
+
+
+可索引类型
+
+```ts
+interface Phone {
+    [name: string]: string // 可索引类型
+}
+
+interface User {
+    name: string
+    age?: number
+    readonly isMale: boolean
+    say: () => string
+    phone: Phone
+}
 ```
 
 
@@ -2251,6 +2273,38 @@ import ReactDOM from "react-dom";
 ```
 
 ## 底层原理
+
+## 项目实战
+
+### vue 项目
+
+模块声明，模块的声明顺序是否会对 TypeScript 类型产生，比如 声明 vue 模块和 扩展 vue 模块，这两个是否必须先扩展 vue 模块类型。
+
+```js
+import vue from "vue/types/vue";
+// 扩展 node_modules/vue/types/vue 模块
+declare module "vue/types/vue" {
+  interface Vue {
+    $lodash: any;
+    $eyeMapApiPromiseLazy: any;
+  }
+}
+```
+
+再声明整个 vue 模块，需要单独一个文件 shim-vue.d.ts 放置
+
+```js
+declare module "*.vue" {
+  import Vue from "vue";
+  export default Vue; // 模块内声明
+}
+```
+
+否则会出现错误。
+
+### 可选链
+
+
 
 ## 最佳实践
 
