@@ -1,12 +1,87 @@
 # webpack
 
-## 使用
+## 0. 前言
+
+## 1. 应用维度
+
+### 基础
+
+使用 webpack4，因为抽离了 webpack-cli，所以至少需要安装 `webpack` 和 `webpack cli`。
+
+webpack 支持 `es6`，`CommonJS`，`AMD`。
+
+#### 打包 JS
+
+如何运行 webpack？
+
+##### 第一步：创建配置文件
+
+首先需要创建一个 webpack.config.js 的文件，添加基础配置
+
+```js
+// webpack.config.js
+const path = require('path');
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js', // 以当前目录为根目录，入口文件
+  output: { // 输出文件
+    path: path.join(__dirname, './dist'),
+    filename: 'bundle.js'
+  },
+  // 引入loader 和 plugin 处理相关文件
+  module: {
+    rules: [
+      {
+        test: 正则表达式,
+        use: [对应的 loader]
+      }
+    ]
+  },
+  plugin: {}
+}
+```
+
+`module.exports` 就是导出一个模块包，符合 CommonJS 规范
+
+配置说明：
+
+- `entry`：代表入口文件，webpack 回你找到该文件进行解析
+- `output`：代表输出文件配置
+- `module`：打包规则，不同后缀的文件用不同的包处理
+- `plugin`：实现一些功能需要用到的插件
+
+#### 第二步：配置 package.json
+
+安装 webpack 后，找到 package.json 文件，增加
+
+```json
+"scripts":{ "build": "webpack ./webpack.config.js"}
+```
+
+webpack 4 版本以上 直接运行 `npx webpack` 命令就能打包文件。
+命令行敲 `yarn build` 就能打包初我们需要的 bundle.js 文件了。
+
+#### 检验 webpack 规范支持
+
+`webpack` 支持 `es6`，`CommonJS`，`AMD`。
+
+通过不同的模块引入方式进行测试。
+
+### 编译 ES6
+
+### 多页面解决方案——提取公共代码
+
+### Webpack 环境配置
+
+## 2. 设计维度
+
+### 热更新原理
 
 ### Externals （用于调试/性能优化等）
 
 排除打包。
 
-## 构建工具
+### 构建工具
 
 前端的发展中，不断产生各种可以**提高开发效率的新思想和框架被发明**。但是这些东西都有一个共同点：**源代码无法直接运行，必须通过转换后才可以正常运行。**
 
@@ -88,74 +163,7 @@ Rollup 是一个和 Webpack 很类似但专注于 ES6 的模块打包工具。
 
 ![](../.vuepress/public/images/webpack-learn-route.jpeg)
 
-## 基础
-
-使用 webpack4，因为抽离了 webpack-cli，所以至少需要安装 `webpack` 和 `webpack cli`。
-
-webpack 支持 `es6`，`CommonJS`，`AMD`。
-
-### 打包 JS
-
-如何运行 webpack？
-
-#### 第一步：创建配置文件
-
-首先需要创建一个 webpack.config.js 的文件，添加基础配置
-
-```js
-// webpack.config.js
-const path = require('path');
-module.exports = {
-  mode: 'development',
-  entry: './src/index.js', // 以当前目录为根目录，入口文件
-  output: { // 输出文件
-    path: path.join(__dirname, './dist'),
-    filename: 'bundle.js'
-  },
-  // 引入loader 和 plugin 处理相关文件
-  module: {
-    rules: [
-      {
-        test: 正则表达式,
-        use: [对应的 loader]
-      }
-    ]
-  },
-  plugin: {}
-}
-```
-
-`module.exports` 就是导出一个模块包，符合 CommonJS 规范
-
-配置说明：
-
-- `entry`：代表入口文件，webpack 回你找到该文件进行解析
-- `output`：代表输出文件配置
-- `module`：打包规则，不同后缀的文件用不同的包处理
-- `plugin`：实现一些功能需要用到的插件
-
-#### 第二步：配置 package.json
-
-安装 webpack 后，找到 package.json 文件，增加
-
-```json
-"scripts":{ "build": "webpack ./webpack.config.js"}
-```
-
-webpack 4 版本以上 直接运行 `npx webpack` 命令就能打包文件。
-命令行敲 `yarn build` 就能打包初我们需要的 bundle.js 文件了。
-
-#### 检验 webpack 规范支持
-
-`webpack` 支持 `es6`，`CommonJS`，`AMD`。
-
-通过不同的模块引入方式进行测试。
-
-### 编译 ES6
-
-### 多页面解决方案——提取公共代码
-
-### Webpack 环境配置
+### 
 
 ## 进阶
 
@@ -647,7 +655,7 @@ vuecli3 如何处理。
 
 ### 长缓存优化
 
-## 实战
+## 项目实战
 
 ### 使用 webpack 打包一个 npm 包，并发布到 npm 上
 
@@ -707,6 +715,10 @@ VueCLI 内部使用了 PostCSS 并默认开启了 `autoprefixer`。
 ### Webpack 插件开发
 
 ## 原理
+
+### 构建流程
+
+### 热更新原理
 
 ### 输出文件分析
 
@@ -933,8 +945,6 @@ import React from "react";
 输出的文件，同时支持多种模块化方案引入。
 
 #### 整个文件模块封装分析
-
-## 最佳实践
 
 ## 参考资料
 

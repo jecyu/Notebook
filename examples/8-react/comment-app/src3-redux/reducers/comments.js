@@ -2,8 +2,8 @@
  * @Author: naluduo233
  * @Date: 2021-04-08 13:13:02
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-08 13:36:37
- * @FilePath: /comment-app/src/reducers/commentReducer.js
+ * @LastEditTime: 2021-04-10 14:28:44
+ * @FilePath: /comment-app/src/reducers/comments.js
  * @Description:
  */
 
@@ -31,7 +31,7 @@ export default function(state, action) {
     case DELETE_COMMENT:
       return {
         comments: [
-          ...state.comments.slice(0, action.commentIndex), // 不直接操作原数组 splice
+          ...state.comments.slice(0, action.commentIndex), // 不直接操作原数组 splice state，而是返回新的 state 
           ...state.comments.slice(action.commentIndex + 1),
         ],
       };

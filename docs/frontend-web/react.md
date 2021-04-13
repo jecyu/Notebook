@@ -1679,6 +1679,12 @@ const foo = (b) => {
 state.title.text = action.text;
 ```
 
+##### 共享结构的对象
+
+##### 优化性能
+
+修改 `stateChanger` ，让它修改数据的时候，并不会直接修改原来的数据 `state` ，而是产生上述的共享结构的对象
+
 取而代之，我们新建一个 `appState`，新建 `appState.title` ，新建 `appState.title.text`：
 
 ```js
@@ -2522,9 +2528,15 @@ import { connect } from "react-redux";
 
 也就是本来从本地 ./react-redux 导入的 connect 改成从第三方 react-redux 模块中导入。
 
+实战分析
+
 ### React-Redux vs Vuex
 
 ### Dva
+
+Dva = React + React-Router + React-Saga
+
+
 
 ### 性能优化
 
@@ -2727,9 +2739,10 @@ Dva 的研究使用
 ## 参考资料
 
 - [reactjs 怎么实现监听数据对象](reactjs怎么实现监听数据对象)
-
 - 手动实现 redux，再阅读：[前端状态管理 Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://mp.weixin.qq.com/s/T3UeN2-RjSNP0mGjJr0PDw)，效果棒棒
 - [深入 JSX](https://zh-hans.reactjs.org/docs/jsx-in-depth.html#___gatsby)
 - [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
 - [Vue 与 React 的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
 - [Vue 进阶必学之高阶组件 HOC](https://juejin.im/post/6844904116603486221?utm_source=gold_browser_extension#heading-4)
+- [「React进阶」 React全部api解读+基础实践大全(夯实基础2万字总结)
+  https://juejin.cn/post/6950063294270930980?utm_source=gold_browser_extension#heading-43]

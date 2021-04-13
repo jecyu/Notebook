@@ -175,6 +175,7 @@ module.exports = {
             "react",
             "regex",
             "",
+            "webgl",
             "architecture",
             "authentication",
             "chrome",
