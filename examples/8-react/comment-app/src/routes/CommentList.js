@@ -2,7 +2,7 @@
  * @Author: naluduo233
  * @Date: 2021-04-08 13:59:53
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-13 15:11:46
+ * @LastEditTime: 2021-04-15 15:05:14
  * @FilePath: /Notebook/examples/8-react/comment-app/src/routes/CommentList.js
  * @Description:
  */
@@ -13,13 +13,13 @@ import CommentList from "../components/CommentList";
 // import { initComments, deleteComment } from "../reducers/comments";
 
 import { connect } from "dva";
-import { initComments, deleteComment } from "../models/comment";
+import { initComments, deleteComment } from "../models/comments";
 
 // 一个 Smart 组件，负责评论列表数据的加载、初始化、删除评论
 // 沟通 CommentList 和 state
 class CommentListContainer extends Component {
   static propTypes = {
-    comments: PropTypes.array,
+    comments: PropTypes.object, //
     initComments: PropTypes.func,
     onDeleteComment: PropTypes.func,
   };
@@ -37,7 +37,7 @@ class CommentListContainer extends Component {
   }
 
   handleDeleteComment(index) {
-    const { comments } = this.props;
+    const { comments } = this.props.comments; // 注意有 namespace 命名空间
     // props 是不能变的，所以这里新建一个删除了特定下标的评论列表
     const newComments = [
       ...comments.slice(0, index),
@@ -55,7 +55,7 @@ class CommentListContainer extends Component {
   render() {
     return (
       <CommentList
-        comments={this.props.comments} // TODO 这里拿不到
+        comments={this.props.comments.comments} 
         onDeleteComment={this.handleDeleteComment.bind(this)}
       ></CommentList>
     );
@@ -63,9 +63,9 @@ class CommentListContainer extends Component {
 }
 
 // 评论列表从 state.comments 中获取
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ comments }) => {
   return {
-    comments: state.comments,
+    comments,
   };
 };
 

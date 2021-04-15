@@ -1,0 +1,10 @@
+{
+  "name": "raw-loader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "devDependencies": {
+    "loader-runner": "^4.2.0"
+  }
+}

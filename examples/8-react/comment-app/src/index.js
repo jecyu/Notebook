@@ -13,10 +13,10 @@ import * as serviceWorker from "./serviceWorker";
 
 import dva from "dva";
 import router from "./router";
-import comment from "./models/comment";
+import comments from "./models/comments";
 const app = dva();
 
-app.model(comment);
+app.model(comments);
 app.router(router);
 app.start("#root");
 

@@ -2,8 +2,8 @@
  * @Author: naluduo233
  * @Date: 2021-04-04 11:57:44
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-04 11:59:06
- * @FilePath: /examples/5-js/async/promise/设计维度/实现原理/NaluduoPromise1.js
+ * @LastEditTime: 2021-04-13 17:02:27
+ * @FilePath: /Notebook/examples/5-js/async/promise/设计维度/实现原理/v2/NaluduoPromise1.js
  * @Description: 
  */
 // 三个状态
@@ -52,3 +52,20 @@ class NaluduoPromise {
   }
 }
 module.exports = NaluduoPromise;
+
+// it("Promise-支持同步操作，核心逻辑实现", () => {});
+
+// it("Promise——支持异步操作", () => {});
+
+// it("Promise——then 的链式调用&值穿透", () => {});
+
+// it("Promise.resolve", () => {});
+
+// it("Promise.reject", () => {});
+
+// it("Promise.prototype.catch", () => {});
+
+// it("Promise.prototype.finally", () => {});
+
+// it("Promise.all", () => {});
+// it("Promise.race", () => {});

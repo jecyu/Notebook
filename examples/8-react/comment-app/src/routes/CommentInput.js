@@ -2,7 +2,7 @@
  * @Author: naluduo233
  * @Date: 2021-04-09 13:41:45
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-13 14:54:26
+ * @LastEditTime: 2021-04-15 14:57:01
  * @FilePath: /Notebook/examples/8-react/comment-app/src/routes/CommentInput.js
  * @Description:
  */
@@ -13,14 +13,14 @@ import CommentInput from "../components/CommentInput";
 // import { addComment } from "../reducers/comments";
 
 import { connect } from "dva";
-import { addComment } from "../models/comment";
+import { addComment } from "../models/comments";
 
 
 // CommentInputContainer
 // 负责用户名的加载、保存，评论的发布
 class CommentInputContainer extends Component {
   static propTypes = {
-    comments: PropTypes.array,
+    comments: PropTypes.object,
     onSubmit: PropTypes.func,
   };
 
@@ -55,7 +55,7 @@ class CommentInputContainer extends Component {
     if (!comment.content) return alert("请输入评论内容");
 
     // 新增评论保存到 LocalStorage 中
-    const { comments } = this.props;
+    const { comments } = this.props.comments;
     const newComments = [...comments, comment];
     localStorage.setItem("comments", JSON.stringify(newComments));
     // this.props.onSubmit 是 connect 传进来的

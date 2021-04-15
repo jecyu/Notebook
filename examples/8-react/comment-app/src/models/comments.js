@@ -2,8 +2,8 @@
  * @Author: naluduo233
  * @Date: 2021-04-10 14:56:59
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-13 15:10:09
- * @FilePath: /Notebook/examples/8-react/comment-app/src/models/comment.js
+ * @LastEditTime: 2021-04-15 15:03:19
+ * @FilePath: /Notebook/examples/8-react/comment-app/src/models/comments.js
  * @Description:
  */
 // action Types
@@ -40,7 +40,7 @@ const DELETE_COMMENT = "DELETE_COMMENT";
 // }
 
 export default {
-  namespace: "comment",
+  namespace: "comments",
   state: { comments: [] },
   reducers: {
     [INIT_COMMENTS](state, { payload: comments }) {
@@ -73,13 +73,13 @@ export default {
 
 // action creators
 export const initComments = (comments) => {
-  return { type: `comment/${INIT_COMMENTS}`, payload: comments };
+  return { type: `comments/${INIT_COMMENTS}`, payload: comments };
 };
 
 export const addComment = (comment) => {
-  return { type: ADD_COMMENT, payload: comment };
+  return { type: `comments/${ADD_COMMENT}`, payload: comment };
 };
 
 export const deleteComment = (commentIndex) => {
-  return { type: DELETE_COMMENT, payload: commentIndex };
+  return { type: `comments/${DELETE_COMMENT}`, payload: commentIndex };
 };
