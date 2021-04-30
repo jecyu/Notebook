@@ -1,26 +1,33 @@
 <script>
 // import React, { Component } from "react";
-// import Comment from "./Comment";
+import Comment from "./comment.vue";
 
 export default {
   name: "CommentList",
+  components: {
+    Comment,
+  },
   props: {
     comments: {
       type: Array,
       default: () => {},
     },
   },
+  methods: {
+    handleDeleteComment(index) {
+      this.$emit("onDeleteComment", index);
+    },
+  },
   render() {
     return (
       <div>
         {this.comments.map((comment, i) => (
-          <div>{comment}, {i}</div>
-          // <Comment
-          //   comment={comment}
-          //   index={i}
-          //   key={i}
-          //   ononDeleteComment={this.handleDeleteComment.bind(this)}
-          // />
+          <Comment
+            comment={comment}
+            index={i}
+            key={i}
+            ononDeleteComment={this.handleDeleteComment.bind(this)}
+          />
         ))}
       </div>
     );

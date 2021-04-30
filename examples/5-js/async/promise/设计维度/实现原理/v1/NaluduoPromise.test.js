@@ -2,7 +2,7 @@
  * @Author: naluduo233
  * @Date: 2021-03-19 14:34:37
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-14 11:33:38
+ * @LastEditTime: 2021-04-19 15:58:31
  * @FilePath: /examples/5-js/async/promise/设计维度/实现原理/v1/NaluduoPromise.test.js
  * @Description: 基础实现
  */
@@ -22,13 +22,6 @@ describe("手写 Promise", () => {
       }
       _reject() {}
     }
-
-    const p = new Promise((resolve) => {
-      console.log("同步执行");
-      resolve("同步执行");
-    })
-      .then()
-      .then();
 
     //Promise应用
     const executor = (resolve) => {
@@ -150,7 +143,8 @@ describe("手写 Promise", () => {
       then(onFulfilled) {
         if (this.state === "pending") {
           this.callbacks.push(onFulfilled); // 2. 延迟绑定，添加回调函数到数组中
-        } else {
+        }
+        if (this.state === "fulfilled") {
           onFulfilled(this.value); // resolve 直接执行回调
         }
         return this;
@@ -190,3 +184,4 @@ describe("手写 Promise", () => {
     });
   });
 });
+

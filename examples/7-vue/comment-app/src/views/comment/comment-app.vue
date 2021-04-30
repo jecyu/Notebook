@@ -13,7 +13,7 @@ export default {
   methods: {},
   render() {
     return (
-      <div className="wrapper">
+      <div class="wrapper">
         <CommentInputContainer />
         <CommentListContainer />
       </div>

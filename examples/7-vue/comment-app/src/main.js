@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import Vuex from "vuex";
 import users from "@/stores/users";
+import "@/styles/global.css"
 
 Vue.config.productionTip = false;
 
