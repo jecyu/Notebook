@@ -2,8 +2,8 @@
  * @Autyield 后可以不带任何表达式，返回的 value 为 undefinedor: naluduo233
  * @Date: 2021-03-19 14:51:18
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-03-28 14:36:59
- * @FilePath: /examples/5-js/async/generator/demo01.test.js
+ * @LastEditTime: 2021-05-18 16:14:44
+ * @FilePath: /Notebook/examples/5-js/async/generator/demo01.test.js
  * @Description: 生成器的基本语法
  */
 describe("在生成器函数内部，通过 yield 或 yield* ，将当前生成器函数的控制权移交给外部，外部通过调用生成器的 next 或 throw 或 return 方法将控制权返还给生成器函数，并且还能够向其传递数据。", () => {
@@ -206,10 +206,10 @@ describe("生成器的异步应用", () => {
   it("should ", () => {
     // 使用同步的方式编写异步代码
     function* foo() {
-      let response1 = yield fetch(
+      yield fetch(
         "https://api.github.com/repos/naluduo233/naluduo233.github.io/issues"
       );
-      let response2 = yield fetch(
+      yield fetch(
         "https://api.github.com/repos/naluduo233/naluduo233.github.io/issues/7"
       );
     }

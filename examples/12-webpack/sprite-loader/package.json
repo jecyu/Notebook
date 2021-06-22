@@ -1,0 +1,13 @@
+{
+  "name": "sprite-loader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "spritesmith": "^3.4.0"
+  },
+  "devDependencies": {
+    "loader-runner": "^4.2.0"
+  }
+}

@@ -1,0 +1,90 @@
+2021-05-24 08:24:20,910 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1435530ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 08:54:18,922 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1777314ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 09:01:24,355 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 425428ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-26 23:25:11,573 ERROR 13133 [-/127.0.0.1/-/10ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:13:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 13133
+hostname: KaydeMacBook-Pro.local
+
+2021-05-26 23:26:35,251 ERROR 13295 [-/127.0.0.1/-/7ms GET /news] nodejs.TypeError: Cannot read property 'list' of undefined
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:13:52)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 13295
+hostname: KaydeMacBook-Pro.local
+
+2021-05-26 23:28:05,829 ERROR 13343 [-/127.0.0.1/-/11ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:15:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 13343
+hostname: KaydeMacBook-Pro.local
+
+2021-05-26 23:28:07,089 ERROR 13343 [-/127.0.0.1/-/2ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:15:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 13343
+hostname: KaydeMacBook-Pro.local
+

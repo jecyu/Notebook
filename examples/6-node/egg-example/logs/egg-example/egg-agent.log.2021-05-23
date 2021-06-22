@@ -1,0 +1,81 @@
+2021-05-23 23:26:07,061 INFO 28257 [egg:logger] init all loggers with options: {"dir":"/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example","encoding":"utf8","env":"local","level":"INFO","consoleLevel":"INFO","disableConsoleAfterReady":false,"outputJSON":false,"buffer":true,"appLogName":"egg-example-web.log","coreLogName":"egg-web.log","agentLogName":"egg-agent.log","errorLogName":"common-error.log","coreLogger":{"consoleLevel":"WARN"},"allowDebugAtProd":false,"type":"agent"}
+2021-05-23 23:26:07,073 INFO 28257 [egg:core] dump config after load, 5ms
+2021-05-23 23:26:07,112 INFO 28257 [egg-watcher] Start watching: ["/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks_proxy","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app.js"]
+2021-05-23 23:26:07,112 INFO 28257 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app"
+2021-05-23 23:26:07,112 INFO 28257 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config"
+2021-05-23 23:26:07,113 INFO 28257 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks"
+2021-05-23 23:26:07,113 INFO 28257 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks_proxy"
+2021-05-23 23:26:07,113 INFO 28257 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app.js"
+2021-05-23 23:26:07,113 INFO 28257 [egg-watcher:agent] watcher start success
+2021-05-23 23:26:07,120 INFO 28257 [egg:core] dump config after ready, 3ms
+2021-05-23 23:29:10,661 INFO 28536 [egg:logger] init all loggers with options: {"dir":"/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example","encoding":"utf8","env":"local","level":"INFO","consoleLevel":"INFO","disableConsoleAfterReady":false,"outputJSON":false,"buffer":true,"appLogName":"egg-example-web.log","coreLogName":"egg-web.log","agentLogName":"egg-agent.log","errorLogName":"common-error.log","coreLogger":{"consoleLevel":"WARN"},"allowDebugAtProd":false,"type":"agent"}
+2021-05-23 23:29:10,671 INFO 28536 [egg:core] dump config after load, 4ms
+2021-05-23 23:29:10,714 INFO 28536 [egg-watcher] Start watching: ["/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks_proxy","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app.js"]
+2021-05-23 23:29:10,714 INFO 28536 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app"
+2021-05-23 23:29:10,715 INFO 28536 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config"
+2021-05-23 23:29:10,715 INFO 28536 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks"
+2021-05-23 23:29:10,715 INFO 28536 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/mocks_proxy"
+2021-05-23 23:29:10,715 INFO 28536 [egg-watcher] Start watching: "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app.js"
+2021-05-23 23:29:10,715 INFO 28536 [egg-watcher:agent] watcher start success
+2021-05-23 23:29:10,727 INFO 28536 [egg:core] dump config after ready, 3ms
+2021-05-23 23:29:11,419 INFO 28536 [egg-watcher] Received a change event from eventSource: {"event":"rename","path":"/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/public","stat":{"dev":16777221,"mode":16877,"nlink":2,"uid":501,"gid":20,"rdev":0,"blksize":4096,"ino":65141164,"size":64,"blocks":0,"atimeMs":1621783751407.7634,"mtimeMs":1621783751407.7634,"ctimeMs":1621783751407.7634,"birthtimeMs":1621783751407.7634,"atime":"2021-05-23T15:29:11.408Z","mtime":"2021-05-23T15:29:11.408Z","ctime":"2021-05-23T15:29:11.408Z","birthtime":"2021-05-23T15:29:11.408Z"},"remove":false,"isDirectory":true,"isFile":false}
+2021-05-24 00:18:19,467 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1824663ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 02:19:36,305 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 7216109ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 04:20:33,281 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 7217070ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 04:51:39,032 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1825726ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 05:29:30,801 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 2231750ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 07:15:04,627 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 6313818ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+

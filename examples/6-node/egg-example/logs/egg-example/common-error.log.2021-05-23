@@ -1,0 +1,60 @@
+2021-05-24 00:18:19,455 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1824663ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 02:19:36,247 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 7216109ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 04:20:33,281 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 7217070ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 04:51:39,031 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 1825726ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 05:29:30,797 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 2231750ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+
+2021-05-24 07:15:04,626 ERROR 28536 nodejs.ClusterClientNoResponseError: client no response in 6313818ms exceeding maxIdleTime 60000ms, maybe the connection is close on other side.
+    at Timeout.Leader._heartbeatTimer.setInterval [as _onTimeout] (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/cluster-client/lib/leader.js:77:23)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ClusterClientNoResponseError"
+pid: 28536
+hostname: KaydeMacBook-Pro.local
+

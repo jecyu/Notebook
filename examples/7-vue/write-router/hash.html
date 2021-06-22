@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hash 模式</title>
+  </head>
+  <body>
+    <div>
+      <ul>
+        <li><a href="#/page1">page1</a></li>
+        <li><a href="#/page2">page2</a></li>
+      </ul>
+      <!-- 渲染对应组件的地方 -->
+      <div id="route-view"></div>
+      <!-- 编程式调用前进后退 -->
+      <div>
+        <button id="backbtn">后退</button>
+      </div>
+    </div>
+    <script>
+      class Router {
+        constructor() {
+          this.routeMap = new Map(); // 存储路由逻辑与路由URL 的映射关系
+          this.currentUrl = "";
+          this.historyStack = []; // 历史记录栈，可用于前进后退
+          this.isBack = false;
+          window.addEventListener("load", () => this.render()); // 第一次加载的时候，不会执行 hashchange 监听事件，默认执行一次
+          window.addEventListener("hashchange", () => this.render()); // 执行渲染
+        }
+
+        route(path, cb = function() {}) {
+          this.routeMap.set(path, cb);
+        }
+
+        render() {
+          if (this.isBack) {
+            // 是否回退
+            this.isBack = false;
+            return;
+          }
+          console.log(" location.hash->", location.hash);
+          this.currentUrl = location.hash.slice(1) || "/";
+          this.historyStack.push(this.currentUrl); // 入栈
+          this.routeMap.get(this.currentUrl)();
+        }
+
+        // 调用 push
+        push(path) {
+          window.location.hash = path;
+        }
+
+        // 调用 back
+        back() {
+          this.historyStack.pop();
+
+          const { length } = this.historyStack;
+          if (!length) return;
+
+          this.isBack = true;
+
+          const prev = this.historyStack[length - 1];
+          location.hash = `#${prev}`;
+
+          this.currentUrl = prev;
+          this.routeMap.get(prev)();
+        }
+      }
+
+      const router = new Router();
+      const routeView = document.getElementById("route-view");
+      const changeContent = (content) => (routeView.innerHTML = content);
+      router.route("/", () => changeContent("默认页面"));
+      router.route("/page1", () => changeContent("page1"));
+      router.route("/page2", () => changeContent("page2"));
+
+      const BtnDom = document.querySelector('#backbtn');
+      BtnDom.addEventListener('click', router.back.bind(router), false);
+    </script>
+  </body>
+</html>

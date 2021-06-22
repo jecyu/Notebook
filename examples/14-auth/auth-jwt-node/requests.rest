@@ -6,6 +6,7 @@
 # {
 #   "username": "Jecyu"
 # }
+
 ### server1
 GET http://localhost:3000/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVjeXUiLCJpYXQiOjE1OTU5MTU3OTZ9.PFExw9ZcKzviqf41Hrk0CS15bnx73i30AImidN5GFGo

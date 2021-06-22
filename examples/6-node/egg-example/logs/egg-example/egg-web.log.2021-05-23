@@ -1,0 +1,38 @@
+2021-05-23 23:26:07,654 INFO 28262 [egg:logger] init all loggers with options: {"dir":"/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example","encoding":"utf8","env":"local","level":"INFO","consoleLevel":"INFO","disableConsoleAfterReady":false,"outputJSON":false,"buffer":true,"appLogName":"egg-example-web.log","coreLogName":"egg-web.log","agentLogName":"egg-agent.log","errorLogName":"common-error.log","coreLogger":{"consoleLevel":"WARN"},"allowDebugAtProd":false,"type":"application"}
+2021-05-23 23:26:07,678 INFO 28262 [egg-multipart] stream mode enable
+2021-05-23 23:26:07,757 INFO 28262 [egg-static] starting static serve /public/ -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/public
+2021-05-23 23:26:07,759 INFO 28262 [egg-security] use csrf middleware
+2021-05-23 23:26:07,760 INFO 28262 [egg-security] use methodnoallow middleware
+2021-05-23 23:26:07,761 INFO 28262 [egg-security] use noopen middleware
+2021-05-23 23:26:07,761 INFO 28262 [egg-security] use nosniff middleware
+2021-05-23 23:26:07,762 INFO 28262 [egg-security] use xssProtection middleware
+2021-05-23 23:26:07,762 INFO 28262 [egg-security] use xframe middleware
+2021-05-23 23:26:07,763 INFO 28262 [egg-security] use dta middleware
+2021-05-23 23:26:07,763 INFO 28262 [egg-security] compose 7 middlewares into one security middleware
+2021-05-23 23:26:07,767 INFO 28262 [egg:core] dump config after load, 4ms
+2021-05-23 23:26:07,780 INFO 28262 [egg-watcher:application] watcher start success
+2021-05-23 23:26:07,788 INFO 28262 [egg:core] dump config after ready, 6ms
+2021-05-23 23:29:11,291 INFO 28542 [egg:logger] init all loggers with options: {"dir":"/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example","encoding":"utf8","env":"local","level":"INFO","consoleLevel":"INFO","disableConsoleAfterReady":false,"outputJSON":false,"buffer":true,"appLogName":"egg-example-web.log","coreLogName":"egg-web.log","agentLogName":"egg-agent.log","errorLogName":"common-error.log","coreLogger":{"consoleLevel":"WARN"},"allowDebugAtProd":false,"type":"application"}
+2021-05-23 23:29:11,318 INFO 28542 [egg-multipart] stream mode enable
+2021-05-23 23:29:11,407 INFO 28542 [egg-static] starting static serve /public/ -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/public
+2021-05-23 23:29:11,410 INFO 28542 [egg-security] use csrf middleware
+2021-05-23 23:29:11,410 INFO 28542 [egg-security] use methodnoallow middleware
+2021-05-23 23:29:11,411 INFO 28542 [egg-security] use noopen middleware
+2021-05-23 23:29:11,412 INFO 28542 [egg-security] use nosniff middleware
+2021-05-23 23:29:11,412 INFO 28542 [egg-security] use xssProtection middleware
+2021-05-23 23:29:11,413 INFO 28542 [egg-security] use xframe middleware
+2021-05-23 23:29:11,413 INFO 28542 [egg-security] use dta middleware
+2021-05-23 23:29:11,413 INFO 28542 [egg-security] compose 7 middlewares into one security middleware
+2021-05-23 23:29:11,424 INFO 28542 [egg:core] dump config after load, 6ms
+2021-05-23 23:29:11,435 INFO 28542 [egg-watcher:application] watcher start success
+2021-05-23 23:29:11,439 INFO 28542 [egg:core] dump config after ready, 2ms
+2021-05-24 00:18:19,438 WARN 28542 [TCPBase] socket is closed by other side while there were still unhandled data in the socket buffer
+2021-05-24 00:18:19,474 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 02:19:36,246 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 04:20:33,281 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 04:51:39,031 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 05:29:30,795 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 07:15:04,626 WARN 28542 [ClusterClient:Watcher] follower closed, and try to init it again
+2021-05-24 07:22:13,303 INFO 28542 [egg-logrotator] clean all log before 31 days
+2021-05-24 07:22:14,121 INFO 28542 [egg-logrotator] broadcast log-reload
+2021-05-24 07:22:14,122 INFO 28542 [egg-logrotator] rotate files success by DayRotator, files ["/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/common-error.log -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/common-error.log.2021-05-23","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-example-web.log -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-example-web.log.2021-05-23","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-web.log -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-web.log.2021-05-23","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-schedule.log -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-schedule.log.2021-05-23","/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-agent.log -> /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/logs/egg-example/egg-agent.log.2021-05-23"]

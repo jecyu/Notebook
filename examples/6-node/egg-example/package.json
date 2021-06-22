@@ -1,0 +1,19 @@
+{
+  "name": "egg-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "egg-bin dev"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "egg": "^2.29.4",
+    "egg-view-nunjucks": "^2.3.0"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.16.2",
+    "egg-development-proxyagent": "^1.0.0"
+  }
+}

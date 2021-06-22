@@ -1,0 +1,659 @@
+2021-05-27 21:16:21,850 ERROR 26459 [-/127.0.0.1/-/8ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:15:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26459
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:25:41,753 ERROR 26884 [-/127.0.0.1/-/11ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26884
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:25:54,175 ERROR 26895 [-/127.0.0.1/-/11ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26895
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:26:47,284 ERROR 26910 [-/127.0.0.1/-/12ms GET /news] nodejs.TypeError: ctx.service.news is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:40)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26910
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:26:55,379 ERROR 26910 [-/127.0.0.1/-/2ms GET /news] nodejs.TypeError: ctx.service.news is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:40)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26910
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:00,115 ERROR 26929 [-/127.0.0.1/-/11ms GET /news] nodejs.TypeError: ctx.service is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:32)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26929
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:17,438 ERROR 26952 [-/127.0.0.1/-/12ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26952
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:18,440 ERROR 26952 [-/127.0.0.1/-/1ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26952
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:50,572 ERROR 26964 [-/127.0.0.1/-/12ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:53,050 ERROR 26964 [-/127.0.0.1/-/2ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:53,615 ERROR 26964 [-/127.0.0.1/-/0ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:54,096 ERROR 26964 [-/127.0.0.1/-/1ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:54,514 ERROR 26964 [-/127.0.0.1/-/0ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:27:55,070 ERROR 26964 [-/127.0.0.1/-/1ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:28:58,622 ERROR 26964 [-/127.0.0.1/-/2ms GET /news] nodejs.TypeError: ctx.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:45)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 26964
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:30:32,577 ERROR 27006 [-/127.0.0.1/-/12ms GET /news] nodejs.TypeError: this.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:46)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 27006
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:30:34,662 ERROR 27006 [-/127.0.0.1/-/2ms GET /news] nodejs.TypeError: this.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:46)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 27006
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:30:36,054 ERROR 27006 [-/127.0.0.1/-/0ms GET /news] nodejs.TypeError: this.service.news.list is not a function
+    at NewsController.list (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/app/controller/news.js:8:46)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/utils/index.js:44:21)
+    at Object.classControllerMiddleware (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-core/lib/loader/mixin/controller.js:87:20)
+    at Object.callFn (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/utils.js:12:21)
+    at wrappedController (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/egg_router.js:322:18)
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at next (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:45:18)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/lib/router.js:190:18
+    at dispatch (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:44:32)
+    at /Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/@eggjs/router/node_modules/koa-compose/index.js:36:12
+
+pid: 27006
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:32:39,244 ERROR 27076 [-/127.0.0.1/-/5031ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5022,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27076
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:33:07,268 ERROR 27115 [-/127.0.0.1/-/5037ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5025,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27115
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:34:55,518 ERROR 27136 [-/127.0.0.1/-/5032ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5023,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27136
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:36:06,387 ERROR 27136 [-/127.0.0.1/-/5008ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":2,"createSocketErrorCount":0,"closeSocketCount":2,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 2
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5007,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27136
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:50:27,198 ERROR 27234 [-/127.0.0.1/-/5030ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5021,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27234
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:51:56,718 ERROR 27269 [-/127.0.0.1/-/5032ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5020,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27269
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 21:53:00,197 ERROR 27286 [-/127.0.0.1/-/5031ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5020,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27286
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:01:59,693 ERROR 27504 [-/127.0.0.1/-/169ms GET /news] nodejs.RequestError: connect ECONNREFUSED 127.0.0.1:8888, GET https://hacker-news.firebaseio.com/v0/topstories.json -1 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1106:14)
+errno: "ECONNREFUSED"
+code: "ECONNREFUSED"
+syscall: "connect"
+address: "127.0.0.1"
+port: 8888
+name: "RequestError"
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -1
+headers: {}
+res: {"status":-1,"statusCode":-1,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":163,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27504
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:03:05,662 ERROR 27504 [-/127.0.0.1/-/5009ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 2
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5008,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27504
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:04:18,430 ERROR 27504 [-/127.0.0.1/-/5001ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 3
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5000,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27504
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:09:54,670 ERROR 27662 [-/undefined/-/5162ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 1
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5152,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+headerSent: true
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:09:55,741 ERROR 27662 [-/127.0.0.1/-/5005ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 2
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5003,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:10:13,683 ERROR 27662 [-/127.0.0.1/-/5003ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 3
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5003,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:12:46,349 ERROR 27662 [-/127.0.0.1/-/5002ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 4
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5001,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:12:55,590 ERROR 27662 [-/127.0.0.1/-/1ms GET /news] nodejs.RequestError: connect ECONNREFUSED 127.0.0.1:8888, GET https://hacker-news.firebaseio.com/v0/topstories.json -1 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1106:14)
+errno: "ECONNREFUSED"
+code: "ECONNREFUSED"
+syscall: "connect"
+address: "127.0.0.1"
+port: 8888
+name: "RequestError"
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -1
+headers: {}
+res: {"status":-1,"statusCode":-1,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":1,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:13:22,199 ERROR 27662 [-/127.0.0.1/-/5005ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 6
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5004,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:20:27,869 ERROR 27662 [-/127.0.0.1/-/5009ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 7
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5006,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:20:39,826 ERROR 27662 [-/127.0.0.1/-/5006ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 8
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5005,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:21:03,878 ERROR 27662 [-/127.0.0.1/-/5004ms GET /news] nodejs.SocketAssignTimeoutError: Connect timeout for 5000ms, working sockets is full, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, socketHandledRequests: 0, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "SocketAssignTimeoutError"
+requestId: 9
+noSocket: true
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5003,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"","remotePort":"","socketHandledRequests":0,"socketHandledResponses":0}
+pid: 27662
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:25:01,256 ERROR 27886 [-/127.0.0.1/-/5044ms GET /news] nodejs.ConnectionTimeoutError: Connect timeout for 5000ms, GET https://hacker-news.firebaseio.com/v0/topstories.json -2 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"createSocketErrorCount":0,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}}, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:950:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ConnectionTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -2
+headers: {}
+res: {"status":-2,"statusCode":-2,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5033,"keepAliveSocket":false,"requestUrls":["https://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"35.201.97.85","remotePort":"","socketHandledRequests":1,"socketHandledResponses":0}
+pid: 27886
+hostname: KaydeMacBook-Pro.local
+
+2021-05-27 22:31:32,198 ERROR 28070 [-/127.0.0.1/-/5188ms GET /news] nodejs.ResponseTimeoutError: Response timeout for 5000ms, GET http://hacker-news.firebaseio.com/v0/topstories.json -1 (connected: true, keepalive socket: true, socketHandledRequests: 1, socketHandledResponses: 0)
+headers: {}
+headers: {}
+    at Timeout._onTimeout (/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/urllib/lib/urllib.js:964:15)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+name: "ResponseTimeoutError"
+requestId: 1
+data: undefined
+path: "/v0/topstories.json?orderBy=%22%24key%22&startAt=%220%22&endAt=%224%22"
+status: -1
+headers: {}
+res: {"status":-1,"statusCode":-1,"statusMessage":null,"headers":{},"size":0,"aborted":false,"rt":5178,"keepAliveSocket":true,"requestUrls":["http://hacker-news.firebaseio.com/v0/topstories.json"],"timing":null,"remoteAddress":"127.0.0.1","remotePort":8888,"socketHandledRequests":1,"socketHandledResponses":0}
+pid: 28070
+hostname: KaydeMacBook-Pro.local
+

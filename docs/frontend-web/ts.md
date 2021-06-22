@@ -18,6 +18,19 @@ const mySum = function(x: number, y: number): number {
 
 这样的好处是，很多有关于类型的 bug 都可以在编译时发现并解决。TypeScript 工作原理是通过 typescript 命令行工具，把 TypeScript 代码编译成 javaScript，从而支持在浏览器运行。听过 TypeScript 很久了，让笔者下决心上车的是这几个月发现很多 github 上的仓库都用了 ts 重构，这些想看下源码都很困难。还有就是尤大大对 vue 3.0 也采用了 ts 全面重构，还在观望的 vue 小伙伴赶紧上车了。
 
+### [TypeScript是否有必要再次检查输入参数的类型？](https://segmentfault.com/q/1010000004333008)
+
+TypeScript的主要目的，我想这个语言本身的名字已经说得很清楚了 “Type Script“。就是 javascript强类型版，它主要的工作在编译时检查，而不是运行时，因为它编译后的代码也只是普通的js代码。
+
+其实ts的最大优势就在于 不用所有组内合作者都写ts。
+ts本身就是js的超集，不会ts的人直接在.ts文件内写js代码就可以。会ts的可以用上ts自己的类型。
+
+所以
+
+- 解决方案1：如果你要向下兼容（兼容不写强类型的人）那就只能及写类型，又在代码里再用js检查类型一遍。
+
+- 解决方案2：最简单的方法还是直接让你们组内所有人都用上就可以了。
+
 ## 开发环境
 
 ### 安装 TypeScript
@@ -105,7 +118,69 @@ TS 文件指拓展名为 `.ts`、`.tsx` 或 `.d.ts` 的文件。如果开启了 
 
 虽然 allowJS 没开启，但是只要 include 进来，一样会进行编译。
 
+### 选择 TypeScript 的理由
+
+#### TypeScript 想要解决的问题？实现目标？
+
+- 为 JavaScript 提供可选的类型系统。
+- 兼容当前及未来的 JavaScript 的特性。
+
+#### 为什么使用 TypeScript ？
+
+
+
 ## 1. 基础入门
+
+### 索引签名
+
+#### 声明一个索引签名
+
+```tsx
+interface ArrStr {
+  [key: string]: string | number; // 必须包括所有成员的类型
+  [index: number]: string; // 字符串索引类型的子集
+}
+```
+
+
+
+```js
+`const obj: { [index: string]: number }` = {
+    y: date.getFullYear(), // year，note: use getFullYear
+    M: date.getMonth() + 1, // month，from 0 - 11
+    d: date.getDate(), // date
+    q: Math.floor((date.getMonth() + 3) / 3), // season
+    w: date.getDay(), // 0 - 6
+    H: date.getHours(), // 24 hour
+    h: date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, // 12 hour
+    m: date.getMinutes(),
+    s: date.getSeconds(),
+    S: date.getMilliseconds()
+  }
+
+for (var i in obj) {
+    fmt = fmt.replace(new RegExp(i + '+', 'g'), function(m) {
+      `let val = obj[i] + '' `
+      if (i == 'w') return (m.length > 2 ? '星期' : '周') + week[Number(val)]
+
+      // padded zeros in front of the value such as month, day.
+      for (let j = 0; j < m.length - val.length; j++) {
+        val = '0' + val
+      }
+
+      // handle "yy -- 2019 --> 19"
+      return m.length == 1 ? val : val.substring(val.length - m.length)
+    })
+  }
+```
+
+
+
+#### 使用一组有限的字符串字面量
+
+### 类型推断
+
+`ReturnType<typeof setTimeout>`
 
 ### 一、基本类型和扩展类型
 
@@ -2311,6 +2386,64 @@ declare module "*.vue" {
 ## 最佳实践
 
 虽然 typeScript 提供了编译时的检查，但是不代表运行时的检查就不必要。只不过 ts 可以让我们减少更多的运行时错误。
+## 🔥常见 TypeScript 类型声明问题
+
+## 与 Java 对比
+
+在 Java 中，所有的类型声明几乎都有显示的声明，可以通过 import xxx 查看。而 TypeScript 一些类型，比如 setTimeout 的返回值，需要像下面 这种处理 `ReturnType<typeof setTimeout>`，见文档 https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype
+
+ ```js
+ export default class PollingAction {
+   private running: boolean = false
+   private time: number // interval
+   private immediate: boolean
+   private callback: Function
+  `private timer!: ReturnType<typeof setTimeout>`
+   constructor(callback: Function, time: number = 100, immediate: boolean = false) {
+     // run status
+     this.running = false
+     this.time = time
+     this.immediate = immediate
+     if (callback) {
+       this.callback = callback
+     } else {
+       this.callback = () => {}
+     }
+   }
+ 
+   start() {
+     if (this.immediate) {
+       this.callback && this.callback()
+     }
+     this.running = true
+     const onAction = () => {
+       this.timer = setTimeout(() => {
+         if (this.running) {
+           try {
+             this.callback && this.callback()
+           } catch (error) {
+             console.log(error)
+             this.cancel()
+           }
+           return onAction() // invoke the function recursively
+         } else {
+           return
+         }
+       }, this.time)
+     }
+     return onAction()
+   }
+ 
+   cancel() {
+     this.running = false
+     this.timer && clearTimeout(this.timer)
+   }
+ }
+ 
+ ```
+
+
+
 ## 总结
 
 ## 参考资料

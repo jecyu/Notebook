@@ -131,3 +131,23 @@ code {
   background: #f9f9f9;
   padding: 0px 2px;
 }
+
+
+.say-field-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.say-field-button button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  color: #00a3cf;
+  background: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.say-field-button button:active {
+  background: #13c1f1;
+}

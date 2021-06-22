@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History 模式</title>
+  </head>
+  <body>
+    <div>
+      <ul>
+        <li><a href="/page1">page1</a></li>
+        <li><a href="/page2">page2</a></li>
+      </ul>
+      <!-- 渲染对应组件的地方 -->
+      <div id="route-view"></div>
+    </div>
+    <script>
+      class Router {
+        constructor() {
+          this.routeMap = new Map(); // 存储路由逻辑与路由URL 的映射关系
+          this.currentUrl = "";
+          this.isBack = false;
+          window.addEventListener("load", () => {
+            const that = this;
+            that.render(); // 第一次加载的时候，不会执行 popchange 监听事件，默认执行一次
+            // 获取所有带 href 属性的 a 标签节点
+            const aList = document.querySelectorAll("a[href]");
+            // 遍历 a 标签节点数组，阻止默认时间，添加点击事件回调函数
+            aList.forEach((aNode) =>
+              aNode.addEventListener(
+                "click",
+                function(e) {
+                  e.preventDefault(); // 阻止 a 标签的默认事件
+                  const href = aNode.getAttribute("href");
+                  // 手动改变浏览器 URL
+                  history.pushState(null, "", href);
+                  // 通过 history.pushState 手动修改地址
+                  // popstate 是监听不到地址栏的变化，所以此处需要手动执行回调函数
+                  that.render();
+                },
+                false
+              )
+            );
+          });
+          window.addEventListener("popstate", () => this.render()); // 执行渲染
+        }
+
+        route(path, cb = function() {}) {
+          this.routeMap.set(path, cb);
+        }
+
+        render() {
+          console.log("location.pathname->", location.pathname);
+          this.currentUrl = location.pathname || "/";
+          this.routeMap.get(this.currentUrl)();
+        }
+      }
+
+      const router = new Router();
+      const routeView = document.getElementById("route-view");
+      const changeContent = (content) => (routeView.innerHTML = content);
+      router.route("/history.html", () => changeContent("默认页面"));
+      router.route("/page1", () => changeContent("page1"));
+      router.route("/page2", () => changeContent("page2"));
+    </script>
+  </body>
+</html>

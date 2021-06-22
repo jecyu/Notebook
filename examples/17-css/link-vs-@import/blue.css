@@ -1,0 +1,6 @@
+div {
+  @import url("green.css");
+}
+div {
+  background-color: blue;
+}

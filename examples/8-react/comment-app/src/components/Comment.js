@@ -2,11 +2,12 @@
  * @Author: naluduo233
  * @Date: 2021-04-05 11:41:13
  * @LastEditors: naluduo233
- * @LastEditTime: 2021-04-07 13:51:28
- * @FilePath: /comment-app/src/Comment.js
+ * @LastEditTime: 2021-06-03 23:33:51
+ * @FilePath: /Notebook/examples/8-react/comment-app/src/components/Comment.js
  * @Description:
  */
 import React, { Component } from "react";
+import Say from "./Say";
 
 class Comment extends Component {
   constructor() {
@@ -68,6 +69,7 @@ class Comment extends Component {
         >
           删除
         </span>
+        <Say textMsg={this.props.comment.content}></Say>
       </div>
     );
   }

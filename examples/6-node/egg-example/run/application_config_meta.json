@@ -1,0 +1,285 @@
+{
+  "keys": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.default.js",
+  "view": {
+    "defaultViewEngine": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.default.js",
+    "mapping": {
+      ".tpl": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.default.js"
+    },
+    "root": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view/config/config.default.js",
+    "cache": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view/config/config.local.js",
+    "defaultExtension": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view/config/config.default.js"
+  },
+  "news": {
+    "pageSize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.default.js",
+    "serverUrl": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.default.js"
+  },
+  "httpclient": {
+    "request": {
+      "enableProxy": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.local.js",
+      "rejectUnauthorized": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/config/config.local.js",
+      "timeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    },
+    "enableDNSCache": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "dnsCacheLookupInterval": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "dnsCacheMaxLength": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "httpAgent": {
+      "keepAlive": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "freeSocketTimeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "maxSockets": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "maxFreeSockets": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    },
+    "httpsAgent": {
+      "keepAlive": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "freeSocketTimeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "maxSockets": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "maxFreeSockets": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    }
+  },
+  "session": {
+    "maxAge": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-session/config/config.default.js",
+    "key": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-session/config/config.default.js",
+    "httpOnly": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-session/config/config.default.js",
+    "encrypt": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-session/config/config.default.js",
+    "logValue": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-session/config/config.default.js"
+  },
+  "security": {
+    "domainWhiteList": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+    "protocolWhiteList": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+    "defaultMiddleware": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+    "csrf": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "type": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "ignoreJSON": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "useSession": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "cookieName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "sessionName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "headerName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "bodyName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "queryName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "refererWhiteList": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "xframe": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "hsts": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.local.js",
+      "maxAge": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "includeSubdomains": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "dta": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "methodnoallow": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "noopen": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "nosniff": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "referrerPolicy": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "xssProtection": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "csp": {
+      "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "policy": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    },
+    "ssrf": {
+      "ipBlackList": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "ipExceptionList": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js",
+      "checkAddress": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+    }
+  },
+  "helper": {
+    "shtml": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-security/config/config.default.js"
+  },
+  "jsonp": {
+    "limit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-jsonp/config/config.default.js",
+    "callback": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-jsonp/config/config.default.js",
+    "csrf": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-jsonp/config/config.default.js"
+  },
+  "onerror": {
+    "errorPageUrl": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-onerror/config/config.default.js",
+    "appErrorFilter": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-onerror/config/config.default.js",
+    "templatePath": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-onerror/config/config.default.js"
+  },
+  "i18n": {
+    "defaultLocale": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js",
+    "dirs": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js",
+    "queryField": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js",
+    "cookieField": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js",
+    "cookieDomain": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js",
+    "cookieMaxAge": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-i18n/config/config.default.js"
+  },
+  "watcher": {
+    "type": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-watcher/config/config.local.js",
+    "eventSources": {
+      "default": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-watcher/config/config.default.js",
+      "development": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-watcher/config/config.default.js"
+    }
+  },
+  "customLogger": {
+    "scheduleLogger": {
+      "consoleLevel": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-schedule/config/config.default.js",
+      "file": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-schedule/config/config.default.js"
+    }
+  },
+  "schedule": {
+    "directory": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-schedule/config/config.default.js"
+  },
+  "multipart": {
+    "mode": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "autoFields": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "defaultCharset": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "fieldNameSize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "fieldSize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "fields": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "fileSize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "files": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "fileExtensions": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "whitelist": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "allowArrayField": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "tmpdir": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+    "cleanSchedule": {
+      "cron": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js",
+      "disable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-multipart/config/config.default.js"
+    }
+  },
+  "development": {
+    "watchDirs": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js",
+    "ignoreDirs": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js",
+    "fastReady": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js",
+    "reloadOnDebug": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js",
+    "overrideDefault": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js",
+    "overrideIgnore": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-development/config/config.default.js"
+  },
+  "logrotator": {
+    "filesRotateByHour": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "hourDelimiter": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "filesRotateBySize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "maxFileSize": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "maxFiles": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "rotateDuration": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js",
+    "maxDays": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-logrotator/config/config.default.js"
+  },
+  "static": {
+    "prefix": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js",
+    "dir": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js",
+    "dynamic": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js",
+    "preload": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js",
+    "buffer": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js",
+    "maxFiles": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-static/config/config.default.js"
+  },
+  "nunjucks": {
+    "autoescape": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view-nunjucks/config/config.default.js",
+    "throwOnUndefined": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view-nunjucks/config/config.default.js",
+    "trimBlocks": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view-nunjucks/config/config.default.js",
+    "lstripBlocks": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view-nunjucks/config/config.default.js",
+    "cache": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg-view-nunjucks/config/config.local.js"
+  },
+  "env": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "name": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "cookies": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "proxy": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "maxIpsCount": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "maxProxyCount": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "protocolHeaders": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "ipHeaders": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "hostHeaders": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "pkg": {
+    "name": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "version": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "description": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "main": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "scripts": {
+      "dev": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    },
+    "author": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "license": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "dependencies": {
+      "egg": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "egg-view-nunjucks": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    },
+    "devDependencies": {
+      "egg-bin": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "egg-development-proxyagent": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    }
+  },
+  "baseDir": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "HOME": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "rundir": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "dump": {
+    "ignore": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "confusedConfigurations": {
+    "bodyparser": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "notFound": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "sitefile": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "middlewares": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "httpClient": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "notfound": {
+    "pageUrl": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "siteFile": {
+    "/favicon.ico": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "bodyParser": {
+    "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "encoding": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "formLimit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "jsonLimit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "textLimit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "strict": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "queryString": {
+      "arrayLimit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "depth": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "parameterLimit": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    },
+    "onerror": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "logger": {
+    "dir": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "encoding": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "env": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "level": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "consoleLevel": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "disableConsoleAfterReady": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "outputJSON": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "buffer": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "appLogName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "coreLogName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "agentLogName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "errorLogName": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "coreLogger": {
+      "consoleLevel": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.local.js"
+    },
+    "allowDebugAtProd": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "meta": {
+    "enable": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "logging": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "coreMiddleware": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "workerStartTimeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "serverTimeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+  "cluster": {
+    "listen": {
+      "path": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "port": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+      "hostname": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+    }
+  },
+  "clusterClient": {
+    "maxWaitTime": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js",
+    "responseTimeout": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+  },
+  "onClientError": "/Users/kayliang/Documents/linjy/Frontend/Notebook/examples/6-node/egg-example/node_modules/egg/config/config.default.js"
+}
