@@ -2705,8 +2705,6 @@ function markStaticRoots (node, isInFor) {
 
 ```
 
-
-
 #### 生成器
 
 代码生成器是模版编译的最后一步，它的作用是将 AST 转换成渲染函数中的内容，这个内容可以称为代码字符串。

@@ -70,6 +70,8 @@
 
 ### 单系统登录
 
+视频：https://www.bilibili.com/video/BV1f54y1W7E6/?spm_id_from=333.788.recommend_more_video.12
+
 session 是另一种记录客户状态的机制，与 cookie 保存在客户端浏览器不同，session 保存在服务器当中；
 当客户端访问服务器时，服务器会生成一个 session 对象，对象中保存的是 key:value 值，同时服务器会将 key 传回给客户端的 cookie 当中；当用户第二次访问服务器时，就会把 cookie 当中的 key 传回到服务器中，最后服务器会吧 value 值返回给客户端。
 因此上面的 key 则是全局唯一的标识，客户端和服务端依靠这个全局唯一的标识来访问会话信息数据。

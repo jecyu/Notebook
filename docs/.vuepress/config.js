@@ -172,6 +172,7 @@ module.exports = {
             "js",
             "es6",
             "ts",
+            "vue2",
             "react",
             "regex",
             "",
