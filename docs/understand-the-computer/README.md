@@ -1,5 +1,8 @@
 # 计算机概论
 
+- 实践出真知：如何从零开始实现一个小型 OS 内核 https://mp.weixin.qq.com/s?__biz=MzU4NTIxODYwMQ==&mid=2247486783&idx=1&sn=a7293a390f7f2c045de3c51c00e08f39&chksm=fd8ca279cafb2b6ff2f2d4050dbdc5a53fb6e803d6e6393b67bd00b05db8fb52436240664d5e&token=29281815&lang=zh_CN#rd
+- http://web.stanford.edu/~ouster/cgi-bin/cs140-spring20/lectures.php
+
 所谓电脑就是一种计算机，所谓计算机其实是：「接受使用者输入指令与资料，经由中央处理器的数学与逻辑单元运算处理后，以产生或储存」
 
 ## 计算机概论

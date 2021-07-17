@@ -26,6 +26,28 @@ Git 是一个“分布式版本管理工具”，简单的理解版本管理工�
 
 ## 基本操作
 
+### git 设置和取消代理解决 push 和 clone 无法进行的问题
+
+```sh
+# 设置ss
+git config --global http.proxy 'socks5://127.0.0.1:1080'
+
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+
+# 设置代理
+git config --global http.proxy http://127.0.0.1:1080
+
+git config --global https.proxy https://127.0.0.1:1080
+
+# 取消代理
+git config --global --unset http.proxy
+
+git config --global --unset https.proxy
+
+# 有时候上面的取消代理不起作用，可以使用
+git config --global --unset remote.origin.proxy
+```
+
 ### Github 进行 fork 后如何与原仓库同步
 
 1. 查看远程仓库

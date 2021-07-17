@@ -36,8 +36,8 @@ class ConsoleLogger implements Loggable {
 }
 
 var jim = extend(new Person('Jim'), new ConsoleLogger())
-var n = jim.name
-jim.log()
+var n = jim.name // 包含了 Person 属性
+jim.log() // 包含了 ConsoleLogger 成员
 ```
 
 ## 联合类型
@@ -77,7 +77,7 @@ let indentedString = padLeft('Hello world', true) // 编译阶段报错
 
 联合类型表示一个值可以是几种类型之一。我们用竖线（`|`）分隔每个类型，所以 `number | string` 表示一个值可以是 `number` 或 `string`。
 
-如果一个值是联合类型，我们只能访问此联合类型的所有类型里共有的成员。
+如果一个值是联合类型，我们只能访问此联合类型的所有类型里`共有的成员`。
 
 ```typescript
 interface Bird {
@@ -132,7 +132,7 @@ if ((pet as Fish).swim) {
 
 这里可以注意到我们不得不多次使用类型断言。如果我们一旦检查过类型，就能在之后的每个分支里清楚地知道 `pet` 的类型的话就好了。
 
-TypeScript 里的*类型保护*机制让它成为了现实。 类型保护就是一些表达式，它们会在运行时检查以确保在某个作用域里的类型。定义一个类型保护，我们只要简单地定义一个函数，它的返回值是一个*类型谓词*：
+TypeScript 里的*类型保护*机制让它成为了现实。 <u>类型保护就是一些表达式，它们会在运行时检查以确保在某个作用域里的类型</u>。定义一个类型保护，我们只要简单地定义一个函数，它的返回值是一个*类型谓词*：
 
 ```typescript
 function isFish(pet: Fish | Bird): pet is Fish {
@@ -170,7 +170,7 @@ function isString (x: any): x is string {
 
 function padLeft (value: string, padding: string | number) {
   if (isNumber(padding)) {
-    return Array(padding + 1).join(' ') + value
+    return Array(padding + 1).join(' ') + value // 这样在里面 padding 都是 number
   }
   if (isString(padding)) {
     return padding + value
@@ -312,7 +312,7 @@ function broken(name: string | null): string {
   function postfix(epithet: string) {
     return name.charAt(0) + '.  the ' + epithet // error, 'name' 可能为 null
   }
-  name = name || 'Bob'
+  name = name || 'Bob' // 编译器无法得知 name 不为 null 的情况
   return postfix('great')
 }
 

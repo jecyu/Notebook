@@ -31,10 +31,12 @@ module.exports = {
     nav: [
       { text: "📝日常记录", link: "/dailyRecord/" },
       { text: "📖文章合集", link: "/blogs/" },
+      // { text: "后端知识体系", link: "/blogs/" },
       {
-        text: "开发者",
+        text: "前端知识体系",
         items: [
-          { text: "💻大前端", link: "/frontend-web/" },
+          { text: "基础知识", link: "/frontend-web/" },
+          // { text: "框架与原理", link: "/fe-framework-deep" },
           { text: "🐂web 框架", link: "/web-framework/" },
           { text: "🤔复盘", link: "/rethink/" },
           {
@@ -67,14 +69,14 @@ module.exports = {
       },
       {
         text: "🔧个人博客",
-        link: "http://www.jecyu.com/",
+        link: "https://naluduo.vip/",
       },
       {
         text: "🔗Github",
         items: [
           {
             text: "Jecyu github",
-            link: "https://github.com/Jecyu",
+            link: "https://github.com/naluduo233",
           },
           {
             text: "英语学习",
@@ -164,7 +166,7 @@ module.exports = {
       ],
       "/frontend-web/": [
         {
-          title: "前端",
+          title: "基础知识",
           collapsable: false,
           children: [
             "browser",
@@ -187,6 +189,7 @@ module.exports = {
           ],
         },
       ],
+      // "framework-deep": [],
       "/game-development/": [
         {
           title: "游戏开发",
