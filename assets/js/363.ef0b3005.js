@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[363],{1694:function(t,e,n){"use strict";n.r(e);var s=n(44),l=Object(s.a)({},(function(){var t=this.$createElement,e=this._self._c||t;return e("ContentSlotsDistributor",{attrs:{"slot-key":this.$parent.slotKey}},[e("p",[this._v("网关都可以转发分组。")])])}),[],!1,null,null,null);e.default=l.exports}}]);
