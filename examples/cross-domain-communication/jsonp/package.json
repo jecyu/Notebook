@@ -1,0 +1,14 @@
+{
+  "name": "jsonp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "scripts": {
+    "dev:fe": "node fe-server.js",
+    "dev:be": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

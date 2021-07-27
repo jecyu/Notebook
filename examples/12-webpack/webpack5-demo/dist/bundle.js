@@ -1,0 +1,1 @@
+(()=>{"use strict";var e={};(e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})})(e),console.log("Util unused"),Array.prototype.hello=()=>"hello";let o=(0,e.hello)();(0,e.bye)(),console.log(o)})();

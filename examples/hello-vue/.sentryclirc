@@ -1,0 +1,7 @@
+[defaults]
+url=http://localhost:9000
+org=naluduo
+project=hello-vue
+
+[auth]
+token=e2c12bbfeddd4f2e8a5ce2cdf1b7885d4b18320f09f247c1a774fc45b1c94914

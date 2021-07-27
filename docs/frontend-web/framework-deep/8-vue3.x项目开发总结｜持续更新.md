@@ -119,7 +119,7 @@ TSX 可以写在 Render 函数中，也可以写在 Setup 返回中
 
 ### Arcgis 的响应式原理以及与 Vue 的冲突问题
 
-![](../.vuepress/public/images/2021-04-03-14-33-09.png)
+<!-- ![](../.vuepress/public/images/2021-04-03-14-33-09.png) -->
 #### 重现步骤
 
 1. 在 setup 内声明一个变量，该变量的值是通过 ref/reactive 包装
@@ -165,7 +165,7 @@ init.js:377 Uncaught (in promise) TypeError: 'get' on proxy: property '`__access
 
 否则就会出现以下 错误：
 
-![](../.vuepress/public/images/2021-04-03-14-45-31.png)
+<!-- ![](../.vuepress/public/images/2021-04-03-14-45-31.png) -->
 
 可以发现这个错误跟我们的错误报错几乎一样。
 

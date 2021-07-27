@@ -12,6 +12,7 @@
   "dependencies": {
     "create-react-app": "^4.0.3",
     "csv": "^5.5.0",
+    "protocol-buffers": "^4.2.0",
     "webpack-obfuscator": "^3.1.0"
   }
 }

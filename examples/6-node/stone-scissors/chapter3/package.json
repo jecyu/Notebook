@@ -1,0 +1,16 @@
+{
+  "name": "chapter3",
+  "version": "1.0.0",
+  "description": "1. 先跑 npm run microservice 2. 再跑 npm run bff 3. 访问 demo 页   - http://localhost:3000/download/   - http://localhost:3000/detail/?columnid=233   - http://localhost:3000/play/   - http://localhost:3000/list/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.13.1",
+    "koa-mount": "^4.0.0",
+    "koa-static": "^5.0.0"
+  }
+}

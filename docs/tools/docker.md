@@ -25,7 +25,7 @@
 ```bash
 # docker exec -it mysql bash
 docker exec -it `容器名` bash
-``` 
+```
 
 ### 退出容器
 
@@ -67,8 +67,29 @@ https://blog.csdn.net/zhydream77/article/details/81909706
 
 ![](../.vuepress/public/images/2020-07-29-16-05-38-docker.png)
 
+## Docker compose
+
+部署应用，通过声明式文件管理容器
+
+## 卷与持久化数据
+
+数据主要分为两类，持久化的与非持久化的。
+
+持久化数据是需要保存的数据。例如客户信息、财务、预定、审计日志以及某些应用日志数据。非持久化数据是不需要保存的那些数据。
+
+每个 Docker 容器都有自己的非持久化存储。非持久化存储自动创建，从属于容器，生命周期与容器相同。这意味着删除容器也会删除全部非持久化数据。
+
+如果希望自己的容器数据保留下来（持久化），则需要将数据存储在**卷**上。卷与容器是解耦的，从而可以独立地创建并管理卷，并且卷饼未与任意容器生命周期绑定。最终效果即用户可以删除一个关联了卷的容器，但是卷并不会被删除。
+
+### 容器与非持久数据
+
+每个容器都被自己分配了本地存储。默认情况下，这是容器全部文件和文件系统保存的地方。非持久存储输入容器的一部分，并且与容器的生命周期一致——容器创建时时会创建非持久化存储，同时该存储也会随容器的删除而删除。
+
+在 Linux 系统中，该存储的目录在 `/var/lib/docker/<storage-driver>/` 之下，是容器的一部分。在 `Windows` 系统中位于 `C\ProgramData\Docker\windowfiler\` 目录之下。 
+
 ## 参考资料
 
 - 《Docker——从入门到实践》
 - [Docker的持久化存储和数据共享（四）](https://juejin.im/post/5b6d4439f265da0f800e0d5a#heading-2)
 - [从零搭建docker+jenkins+node.js自动化部署环境](https://juejin.im/post/5b8ddb70e51d45389153f288#heading-7)
+- 《深入浅出 Docker》

@@ -14,6 +14,7 @@ Vue 3 使用
 
 而 Vue 3.0 新增的 setup 方法，也是以选项的形式出现在抛出的对象中，但是诸如上述代码中的 watch、computed 等属性，都变成 hook 函数的形式，通过 vue 解构出来，在 setup 方法中使用
 
+```js
 // Composition API
 import { watch, computed } from 'vue'
 export default {
@@ -29,6 +30,7 @@ export default {
     })
   }
 }
+```
 
 
 setup 存在的意义，就是为了让你能够使用新增的组合 API。并且这些组合 API 只能在 setup 函数内使用
@@ -37,6 +39,7 @@ setup 调用的时机是创建组件实例，然后初始化 props，紧接着
 
 ### template 模版中使用 setup
 
+```html
 <template>
   <div>{{ count }} {{ object.foo }}</div>
 </template>
@@ -62,12 +65,13 @@ export default {
   },
 };
 </script>
-
+```
 
 ### h 渲染函数中使用 setup
 
 setup 也可以返回一个函数，函数中也能使用当前 setup 函数作用域中的响应式数据
 
+```html
 <script>
 import { ref, reactive, h } from "vue";
 export default {
@@ -79,7 +83,7 @@ export default {
   },
 };
 </script>
-
+```
 
 ### Setup 如何接受参数
 
@@ -89,6 +93,7 @@ setup 函数接收两个参数，第一个是 props 对象，第二个是 co
 
 src/App.vue
 
+```html
 <template>
   <Test :count="count"></Test>
 </template>
@@ -111,9 +116,11 @@ export default {
   },
 };
 </script>
+```
 
 src/components/Test.vue
 
+```html
 <template>
   <div>{{ count }}</div>
 </template>
@@ -132,6 +139,7 @@ export default {
   },
 };
 </script>
+```
 
 注意 props 不要进行解构，如 setup(...props)，这样会让 props 失去响应式。
 
@@ -148,8 +156,8 @@ attrs 为我们提供了最新传入的数据，有人会问这里为什么不�
 * 将 props 独立出来作为第一个参数，可以让 TypeScript 对 props 单独做类型推导，不会和上下文中的其他属性相混淆。这也使得 setup、render 和其他使用了 TSX 的函数式组件的签名保持一致。
 这里也有一个注意点，在使用 attrs 时候，相同的变量不能在 options 中声明 props ，否则 attrs 取不到变量
 
-
-App.vue
+```html
+<!-- App.vue -->
 <template>
   <Test :count="count" @add="add"></Test>
 </template>
@@ -171,9 +179,10 @@ export default {
   },
 };
 </script>
-
+```
 
 子 vue，子组件接收的方法，需要通过 emits 在 options 中注册，否则会报警告。通过上下文 ctx.emit 触发传进来的方法以及返回相应的回调参数，结果如下所示
+```html
 <template>
   <div>{{ attrs.count }}</div>
   <button @click="add">++++</button>
@@ -198,11 +207,12 @@ export default {
   },
 };
 </script>
-
+```
 ## 响应式系统 API
 
 ### reactive
 
+```html
 const state = reactive({
       title: '十三'
     })
@@ -213,6 +223,7 @@ reactive 参数必须是对象
 reactive 方法接受一个对象（json 或 Array）
 
 reactive 返回的代理后的对象，内部的二级三级属性，都会被赋予响应式的能力，所以官方建议，使用 reactive 返回的值，而不要去使用原始值
+```
 
 ### ref
 
@@ -231,6 +242,7 @@ ref(0) => reactive({ value: 0 })
 在 Vue 2.0 中，我们可以通过给元素添加 ref="xxx" 属性，然后在逻辑代码中通过 this.$refs.xxx 获取到对应的元素。
 到了 Vue 3.0 后，setup 函数内没有 this 上下文，因此我们可以通过 ref 方法去获取，并且还需要在页面挂载以后才能拿到元素。
 
+```html
 <template>
   <div ref='shisanRef'>十三</div>
 </template>
@@ -248,11 +260,13 @@ export default{
   }
 }
 </script>
+```
 
 ### computed
 
 Vue 2.0 时代，computed 作为选项出现在页面中，而到了 Vue 3.0 时代，它将会以钩子函数的形式出现
 
+```html
 <template>
   <p>{{ text }}</p>
 </template>
@@ -282,11 +296,13 @@ export default {
   }
 }
 </script>
+```
 
 ### readonly
 
 readonly 顾名思义，用于创建一个只读的数据，并且所有的内容都是只读，不可修改
 
+```js
 const original = reactive({ count: 0 })
 
 const copy = readonly(original)
@@ -302,10 +318,12 @@ original.count++
 // mutating the copy will fail and result in a warning
 copy.count++ // warning!
 1
+```
 ### watchEffect
 
 首先 watchEffect 会追踪响应式数据的变化，并且还会在第一次渲染的时候立即执行
 
+```html
 <template>
   <div>
     <h1>{{ state.search }}</h1>
@@ -336,6 +354,7 @@ export default {
   }
 }
 </script>
+```
 
 watchEffect 函数返回一个新的函数，我们可以通过执行这个函数或者当组件被卸载的时候，来停止监听行为。
 
@@ -344,6 +363,7 @@ watchEffect 的回调方法内有一个很重要的方法，用于清除副作�
 
 那么要它何用呢？用处非常大。举个例子，我们需要监听 search 的变化，去请求接口数据，此时接口是异步返回的，每当我改变 search 都会去请求一次接口，那么有可能 search 改变的很频繁，那就会频繁的去请求接口，导致服务端压力倍增。我们可以通过这个特性去降低服务端的压力，具体逻辑如下：
 
+```html
 <template>
   <h1>{{ state.search }}</h1>
   <button @click="handleSearch">改变查询字段</button>
@@ -379,13 +399,14 @@ export default {
   },
 };
 </script>
-
+```
 
 在 watchEffect 回调函数内，我用 setTimeout 的形式去模拟响应时间为 3 秒的异步请求，上面代码可以理解为 3 秒之内如果你不去改变 search 变量，那么页面就成功返回接口数据，如果在 3 秒之内你再次点击按钮改变了 search 变量，onInvalidate 将会被触发，从而清理掉上一次的接口请求，然后根据新的 search 变量去执行新的请求
 ### watch
 
 watch 的功能和之前的 Vue 2.0 的 watch 是一样的。和 watchEffect 相比较，区别在 watch 必须制定一个特定的变量，并且不会默认执行回调函数，而是等到监听的变量改变了，才会执行。并且你可以拿到改变前和改变后的值
 
+```html
 <template>
   <div>
     <h1>{{ state.search }}</h1>
@@ -420,6 +441,7 @@ export default {
   }
 }
 </script>
+```
 
 ## 生命周期钩子函数、提供/注入（provide/inject）
 
@@ -437,6 +459,8 @@ export default {
 * errorCaptured -> onErrorCaptured。
 
 我们来看看在 Vue 3.0 中生命周期运行顺序和使用情况，通过 Vite 新建文件，修改 App.vue 文件：
+
+```html
 <!--App.vue-->
 <template>
   <div>
@@ -500,8 +524,9 @@ export default {
   }
 }
 </script>
+```
 
-
+```html
 <!--src/components/Test.vue-->
 <template>
   <div>我是子组件</div>
@@ -522,6 +547,7 @@ export default {
   }
 }
 </script>
+```
 
 首先是页面渲染前执行 onBeforeMount，紧接着是 onMounted。当组件有变量更新导致页面变化的时候，先执行 onBeforeUpdate，但是没有马上执行 onUpdated，而是先执行了子组件的销毁生命周期钩子 onBeforeUnmount 和 onUnmounted，这是因为子组件在父组件中渲染，在页面变化没有完全结束前，是不会执行父组件的 onUpdated 生命周期钩子函数
 
@@ -532,11 +558,9 @@ onMounted(async () => {
 从这可以看出，写过 Vue 2.0 的同学，只要对照着生命周期，就能很轻松的将 Vue 2.0 的项目升级至 Vue 3.0。
 
 ### 提供/注入（provide/inject）
-
-￼
-
 #### Vue 2.0 写法
 
+```html
 <template>
   <div>
     <h1>提供/注入</h1>
@@ -557,8 +581,11 @@ export default {
   }
 }
 </script>
+```
 
 在 src/components 文件夹新建两个文件 Father.vue 和 Son.vue 如下：
+
+```html
 <!--Father.vue-->
 <template>
   <div>我是父亲</div>
@@ -585,6 +612,7 @@ export default {
   inject: ['name']   // 注入
 }
 </script>
+```
 
 上述的写法 options API Vue3 也是兼容的。（后续可能慢慢就不兼容 optionAPI了，现在只是给予一个过渡升级）
 
@@ -592,6 +620,7 @@ export default {
 
 之前说过 Vue 3.0 作出最大的改动就是将 options 的书写形式改成了 hooks 的钩子函数形式。privide/inject 也不例外，我们使用它们需要通过 vue 去解构出来，
 
+```html
 <!--App.vue-->
 <template>
   <div>
@@ -618,7 +647,9 @@ export default {
   }
 }
 </script>
+```
 
+```html
 <!--Son.vue-->
 <template>
   <div>我是儿子，{{ name }}</div>
@@ -641,9 +672,11 @@ export default {
   }
 }
 </script>
+```
 
 当我们需要修改传入的数据时，Vue 不建议我们直接在接收数据的页面修改数据源，用上述的例子就是不建议在 Son.vue 组件内去修改数据源，我们可以在 App.vue 组件内通过 provide 传递一个修改数据的方法给 Son.vue，通过在 Son.vue 内调用该方法去改变值。我们将代码做如下修改：
 
+```html
 <!--App.vue-->
 <template>
   <div>
@@ -677,7 +710,9 @@ export default {
   }
 }
 </script>
+```
 
+```html
 <!--Son.vue-->
 <template>
   <div>我是儿子，{{ name }}</div>
@@ -703,6 +738,7 @@ export default {
   }
 }
 </script>
+```
 
 这里解释一下，在 Son.vue 组件中，你可以直接修改 inject 传进来的 name 值。但是你细想，数据源存在于 App.vue 中，你在 Son.vue 中私自修改了数据源传进来的值，那两边的值就会产生紊乱，上述业务逻辑属于简单的，当你在公司正式项目中这样做的时候，数据源就会变得杂乱无章，页面组件变得难以维护。综上所述，一定要控制好数据源，保持单一数据流。
 
@@ -715,10 +751,13 @@ export default {
 #### PatchFlag（静态标记）
 
 Vue 2.0 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，新增了静态标记（PatchFlag）。在更新前的节点进行对比的时候，只会去对比带有静态标记的节点。并且 PatchFlag 枚举定义了十几种类型，用以更精确的定位需要对比节点的类型。下面我们通过图文实例分析这个对比的过程。假设我们有下面一段代码：
+```html
 <div>
   <p>老八食堂</p>
   <p>{{ message }}</p>
 </div>
+```
+
 在 Vue 2.0 的全量对比模式下，如下图所示：
 ￼
 通过上图，我们发现，Vue 2.0 的 diff 算法将每个标签都比较了一次，最后发现带有 {{ message }} 变量的标签是需要被更新的标签，显然这还有优化的空间。
@@ -728,6 +767,8 @@ Vue 2.0 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开�
 我们再通过把模板代码转译成虚拟 DOM，来验证我们上述的分析是否正确。我们可以打开模板转化网站，对上述代码进行转译：
 ￼
 上图蓝色框内为转译后的虚拟 DOM 节点，第一个 p 标签为写死的静态文字，而第二个 p 标签则为绑定的变量，所以打上了 1 标签，代表的是 TEXT（文字），标记枚举类型如下：
+
+```js
 export const enum PatchFlags {
   
   TEXT = 1,// 动态的文本节点
@@ -744,10 +785,13 @@ export const enum PatchFlags {
   HOISTED = -1,  // 特殊标志是负整数表示永远不会用作 diff
   BAIL = -2 // 一个特殊的标志，指代差异算法
 }
+```
 
 #### hoistStatic（静态提升）
 
 我们平时在开发过程中写函数的时候，定义一些写死的变量时，都会将变量提升出去定义，如下所示：
+
+```js
 const PAGE_SIZE = 10
 function getData () {
 	$.get('/data', {
@@ -757,6 +801,8 @@ function getData () {
     ...
   })
 }
+```
+
 诸如上述代码，如果将 PAGE_SIZE = 10 写在 getData 方法内，每次调用 getData 都会重新定义一次变量。
 Vue 3.0 在这方面也做了同样的优化，继续用我们上一个例子写的代码，观察编译之后的虚拟 DOM 结构，如下所示。
 没有做静态提升前：
@@ -770,22 +816,22 @@ Vue 3.0 在这方面也做了同样的优化，继续用我们上一个例子�
 #### cacheHandler（事件监听缓存）
 
 默认情况下 @click 事件被认为是动态变量，所以每次更新视图的时候都会追踪它的变化。但是正常情况下，我们的 @click 事件在视图渲染前和渲染后，都是同一个事件，基本上不需要去追踪它的变化，所以 Vue 3.0 对此作出了相应的优化叫 事件监听缓存，我们在上述代码中加一段：
+
+```html
 <div>
   <p @click="handleClick">屋里一giao</p>
 </div>
+```
+
 编译后如下图所示（还未开启 cacheHandler）：
 ￼
 在未开启 事件监听缓存 的情况下，我们看到这串代码编译后被静态标记为 8，之前讲解过被静态标记的标签就会被拉去做比较，而静态标记 8 对应的是“动态属性，不包括类名和样式”。 @click 被认为是动态属性，所以我们需要开启 Options 下的 cacheHandler 属性，如下图所示：
 ￼
 细心的同学又会发现，开启 cacheHandler 之后，编译后的代码已经没有静态标记（PatchFlag），也就表明图中 p 标签不再被追踪比较变化，进而提升了 Vue 的性能。
 
-
 #### SSR 服务端渲染
 
 当你在开发中使用 SSR 开发时，Vue 3.0 会将静态标签直接转化为文本，相比 React 先将 jsx 转化为虚拟 DOM，再将虚拟 DOM 转化为 HTML，Vue 3.0 已经赢了。
-￼
-
-
 #### StaticNode（静态节点）
 
 上述 SSR 服务端渲染，会将静态标签直接转化为文本。在客户端渲染的时候，只要标签嵌套得足够多，编译时也会将其转化为 HTML 字符串，如下图所示：
@@ -797,6 +843,8 @@ Vue 3.0 在这方面也做了同样的优化，继续用我们上一个例子�
 说到 Tree-shaking 这个属于，官方的解释用大白话说就是，没有被应用到的代码，编译后自动将其剔除。
 我个人是这么记住 Tree-shaking 的，翻译成中文就是 摇树，树上有枯叶和绿叶，我摇动树干，枯叶掉了，新叶留着。这里的枯叶就是指没用到的代码，新叶指被应用到的代码，这么记就完全可以技术这个技术点。
 在 Vue 2.0 中，无论有没有用到全部的功能，这些功能的代码都会被打包到生产环境中。究其原因，主要还是怪 Vue 2.0 生成实例是单例，这样打包的时候就无法检测到实例中的各个方法是否被引用到。如下：
+
+```js
 import Vue from 'vue'
 
 Vue.nextTick(() => {})
@@ -804,11 +852,15 @@ Vue.nextTick(() => {})
 import { nextTick, onMounted } from 'vue'
 
 nextTick(() => {})
+```
+
 nextTick 方法会被打进生产包，而 onMounted 在代码里没有用到，最终不会出现在编译后的代码里。
 Tree-shaking 做了两件事：
 * 编译阶段利用 ES 的模块化判断有哪些模块已经加载。
 * 判断哪些模块和变量，没有被使用或者引用到，从而删除对应的代码。
 光看文字没有说服力，我们通过代码实例来演示一遍，通过 Vue CLI 启动一个 Vue 2.0 的项目，修改 App.vue 如下所示：
+
+```html
 <template>
   <div>{{ test }}</div>
 </template>
@@ -821,9 +873,13 @@ Tree-shaking 做了两件事：
     }
   }
 </script>
+```
+
 运行打包指令 npm run build，打完包后体积如下：
 ￼
 我们再加一个 Option，如下所示：
+
+```html
 <template>
   <div>{{ test }}</div>
 </template>
@@ -841,11 +897,14 @@ Tree-shaking 做了两件事：
     }
   }
 </script>
+```
+
 再次运行 npm run build，如下所示：
 ￼
 业务代码从 2.04 -> 2.10，而工具包还是 89.66。由此可见，增减代码，并不会影响工具包的打包大小。
 我们再来看看 Vue 3.0 的表现，通过 Vue CLI 启动一个 Vue 0.0 的项目，App.vue 作如下修改：
 
+```html
 <template>
   <div>{{ test }}</div>
 </template>
@@ -863,9 +922,13 @@ import { reactive, toRefs } from 'vue'
     }
   }
 </script>
+```
+
 运行 npm run build，打包后，体积如下：
 ￼
 我们加一个添加一个 computed 方法，如下所示：
+
+```html
 <template>
   <div>{{ test }}</div>
 </template>
@@ -888,7 +951,8 @@ import { reactive, toRefs, computed } from 'vue'
     }
   }
 </script>
-￼
+```
+
 添加了 computed 之后，可以看到，工具包的大小从 87.35 -> 87.39，变大了。也就是说，之前没有用到 computed，它是不会被打包到生产环境的工具包里的。
 综上所述，Vue 3.0 的 Tree-shaking 为我们带来了一下几个升级：
 * 减少打包后的静态资源体积
@@ -915,6 +979,7 @@ ES module 是 Vite 的核心，我们先来看看 ES module 的浏览器支
 </script>
 
 上述代码运行时，浏览器会发起 http 请求，请求 http server 托管的 foo.js，在 foo.js 内，我们可以使用 export 导出模块：
+```js
 // foo.js
 export const name = 'Nick'
 ￼
@@ -927,6 +992,7 @@ import { createApp } from '/node_modules/.vite/vue.js?v=5f7bc028'
 import App from '/src/App.vue'
 
 createApp(App).mount('#app')
+```
 从上述代码我们可以得到一些信息：
 1. createApp 方法是从 http://localhost:3001/node_modules/.vite/vue.js?v=5f7bc028 中获取的。
 2. 入口页面 App.vue 是从 http://localhost:3001/src/App.vue 中获取的。
@@ -943,6 +1009,7 @@ createApp 是 Vue 3.0 新增的 API，它用于创建应用。Vue 2.0 时�
 #### plugins
 
 插件配置，接收一个数组，在数组内执行需要的插件。插件能帮助我们完成很多事情，比如 Vite 2.0 默认通过 @vitejs/plugin-vue 支持 vue，书写形式如下所示：
+```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -950,6 +1017,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()]  
 })
+```
 插件分为两个类型，一个是官方的，一个是社区的：
 官方插件	社区插件
 在线地址	在线地址
@@ -957,6 +1025,7 @@ export default defineConfig({
 #### base
 
 base 配置项在开发或生产环境服务的 公共基础路径，打完包后在 /dist/index.html 中体现。默认值是 /，我们不妨把值设置成 ./，如下所示：
+```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -965,6 +1034,7 @@ export default defineConfig({
   plugins: [vue()]  
   base: './'
 })
+```
 尝试着运行 npm run build，得到打包后的文件如下所示：
 ￼
 静态资源的引入形式如上图所示，如果不加 ./ 路径，则在 index.html 内，引入的路径就会是绝对路径 /xxx/xxx 的形式。通过启动 web 服务的形式将 index.html 启动，如下所示：
@@ -974,6 +1044,7 @@ export default defineConfig({
 #### resolve.alias
 
 此配置想必大家也不陌生，就是为了方便在组件内部引用文件时，方便书写。配置如下所示：
+```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
@@ -989,11 +1060,13 @@ export default defineConfig({
     }
   }
 })
+```
 Vite 1.0 是需要用 /@/ ，加斜杠的形式，Vite 2.0 后，便优化了。
 
 #### resolve.extensions
 
 导入文件时，需要省略的扩展名列表，不过官方建议是尽量不要将 .vue 给省略了。配置如下：
+```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -1009,11 +1082,13 @@ export default defineConfig({
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'] // 默认值
   }
 })
-
+```
 
 #### server
 
 该配置内置多种开发时常用的选项，我们通过代码来分析：
+
+```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -1045,6 +1120,7 @@ export default defineConfig({
     }
   }
 })
+```
 和 webpack-dev-server 的配置相差不大，同学们几乎可以无缝对接。
 
 
@@ -1057,6 +1133,7 @@ export default defineConfig({
 通过 Vite 初始化一个空项目，运行指令：
 npm init @vitejs/app vue3-vite --template vue
 创建两个页面，用于路由切换，在 src 目录下新建 views 目录，添加 Home.vue 和 About.vue 文件，如下所示：
+```html
 <!--Home.vue-->
 <template>
   Home
@@ -1077,7 +1154,11 @@ export default {
   name: 'About'
 }
 </script>
+```
+
 然后通过 npm install vue-router@next 下载最新的路由插件。成功之后，在 src 目录下新建 router/index.js，添加如下代码：
+
+```js
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
@@ -1100,15 +1181,17 @@ const router = createRouter({
 })
 
 export default router
-
+```
 
 完成上述操作之后，我们来到 main.js 把上述通过 export default router 抛出的路由实例引入 Vue 生成的实例，代码如下所示：
 
-// App.vue
+```html
+ <!-- App.vue -->
 <template>
   <router-view></router-view>
 </template>
 
+<script>
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '../src/router'
@@ -1119,6 +1202,9 @@ const app = createApp(App)
 app.use(router)
 // 将实例挂载到 #app 节点上。
 app.mount('#app')
+</script>
+```
+
 通过指令 npm run dev 运行项目，浏览器展示如下所示表示成功：
 ￼
 如上图所示，/ 匹配到了 Home 组件；/about 匹配到了 About 组件。
@@ -1128,6 +1214,7 @@ app.mount('#app')
 #### 组件形式跳转
 
 我们可以使用 vue-router 为我们提供的全局组件 router-link。修改 Home.vue 如下所示：
+```html
 <template>
   <router-link to='/about'>Home</router-link>
 </template>
@@ -1137,10 +1224,11 @@ export default {
   name: 'Home'
 }
 </script>
-
+```
 #### 方法形式跳转
 
 我们也可以通过调用方法的形式，实现路由的跳转，修改 Home.vue 如下所示：
+```html
 <template>
   <button @click="linkTo">Home</button>
 </template>
@@ -1163,6 +1251,7 @@ export default {
   }
 }
 </script>
+```
 通过 useRouter 生成路由实例 router，其内部都是路由相关的方法，如跳转方法、路由守卫、返回方法等等。可以通过打印 router 查看内部的一些属性方法。
 
 ### 参数传递
@@ -1318,7 +1407,7 @@ export default {
 
 ### 路由原理浅析
 
-端路由 会根据浏览器地址栏 pathname 的变化，去匹配相应的页面组件。然后将其通过创建 DOM 节点的形式，塞入根节点 <div id="root"></div> 。这就达到了无刷新页面切换的效果，从侧面也能说明正因为无刷新，所以 React、Vue、Angular 等现代框架在创建页面组件的时候，每个组件都有自己的 生命周期 。
+端路由 会根据浏览器地址栏 pathname 的变化，去匹配相应的页面组件。然后将其通过创建 DOM 节点的形式，塞入根节点 `<div id="root"></div>` 。这就达到了无刷新页面切换的效果，从侧面也能说明正因为无刷新，所以 React、Vue、Angular 等现代框架在创建页面组件的时候，每个组件都有自己的 生命周期 。
 
 ## Vue 3.0 实战项目启动篇
 
