@@ -1,0 +1,17 @@
+{
+  "name": "10.-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^15.5.1",
+    "koa": "^2.13.1",
+    "koa-graphql": "^0.9.0",
+    "koa-mount": "^4.0.0"
+  }
+}

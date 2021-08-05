@@ -32,6 +32,23 @@
 
 ### 工厂模式-简单工厂
 
+#### Vue SSR 工厂函数
+
+```js
+import Vue from 'vue'
+import App from './App.vue'
+
+// export a factory function for creating fresh app, router and store
+// instances
+export function createApp () {
+  const app = new Vue({
+    // the root instance simply renders the App component.
+    render: h => h(App)
+  })
+  return { app }
+}
+```
+
 ### 原型模式—谈 prototype 无小事
 
 在原型模式下，当我们想要创建一个对象时，会先找到一个对象作为原型，然后通过**克隆原型**的方式来创建一个与原型一样（共享一套数据/方法）的对象。
@@ -52,12 +69,293 @@
 - 分层分级代理和跨域代理
 ### 装饰者模式——对象装上它，就像开了挂
 
-### 基本示例
+（60s）
 
-- 用一两句话来说明问题。
-- 用一两句话解释最简单的可能的解决方案。
-- 显示一小段代码示例。
-- 用一句话解释它完成了什么。
+1. **装饰器**是一个围绕改变函数行为的包装器，主要工作仍由该函数来完成。
+2. 装饰器的特点：
+   - 从外部代码来看，包装的函数执行的仍然是之前相同的操作，只是在行为上添加了某些功能。
+   - 包装逻辑是独立的，它没有增加被包装者本身的复杂性。
+   - 如果需要，我们可以组合多个装饰器。
+   - 通常，用装饰的函数替换一个函数或一个方法是安全的。如果原始函数有属性，例如 `func.calledCount` 或其他，则装饰后的函数将不再提供这些属性。如果有人使用它们，那么就需要小心。可以使用 Proxy 和 Reflect 包装保留这些函数属性。
+
+3. 创建一个装饰器，返回一个包装器，通常会使用到 apply、call 和 arguments 手段进行函数传参和调用，需要考虑：
+   - 类和方法装饰器的参数
+   - 装饰器函数调用的时机
+
+4. 装饰器的应用场景有高阶组件、高阶函数（函数）。
+
+JavaScript 在处理函数时非常灵活，它们可以被传递，用作对象，现在我们将看到如何在它们之间**转发（forward）**调用并**装饰（decorate）**它们。
+
+#### 透明缓存
+
+假设我们有一个 CPU 重负载的函数 `slow(x)`，但它的结果是稳定的。换句话说，对于相同的 `x`，它总是返回相同的结果。
+
+如果经常调用该函数，我们可能希望将结果缓存（记住）下来，以避免在重新计算上花费额外的时间。
+
+但是我们不是将这个功能添加到 `slow()` 中，而是创建一个包装器（wrapper）函数，该函数增加了缓存功能。正如我们将要看到的，这样做有很多好处。
+
+```js
+function slow(x) {
+  // 这里可能会有重负载的 CPU 密集型工作
+  alert(`Called with ${x}`);
+  return x;
+}
+
+function cachingDecorator(func) {
+  let cache = new Map();
+
+  return function() {
+    let key = hash(arguments);
+    if (cache.has(key)) {    // 如果缓存中有对应的结果
+      return cache.get(key); // 从缓存中读取结果
+    }
+
+    let result = func.call(this, ...arguments);  // 否则就调用 func，使用 call 避免保证上下文对象正确性
+
+    cache.set(key, result);  // 然后将结果缓存（记住）下来
+    return result;
+  };
+}
+
+function hash(args) {
+  return Array.from(args).join();
+}
+
+slow = cachingDecorator(slow);
+
+alert( slow(1) ); // slow(1) 被缓存下来了
+alert( "Again: " + slow(1) ); // 一样的
+
+alert( slow(2) ); // slow(2) 被缓存下来了
+alert( "Again: " + slow(2) ); // 和前面一行结果相同
+```
+
+在上面的代码中，`cachingDecorator` 是一个**装饰器（decorator）**：一个特殊的函数，它接受另一个函数并改变它的行为。通过将缓存与主函数代码分开，我们可以使主函数的代码变得简单。
+
+`cachingDecorator(func)` 的结果是一个“包装器”：也就是返回的函数`function(x)`，它将 `func(x)` 的调用“包装”到缓存逻辑中 `let result = func(x)` 。
+
+**知识点**
+
+参考资料：
+
+- https://zh.javascript.info/call-apply-decorators
+
+#### 间谍装饰器
+
+**题目描述**
+
+创建一个装饰器 `spy(func)` ，它应该返回一个包装器，该包装器将所有函数的调用保存在其 `calls` 属性中。
+
+每个调用都保存为一个参数数组。
+
+例如：
+
+```js
+
+function work(a, b) {
+  alert( a + b ); // work 是一个任意的函数或方法
+}
+
+work = spy(work);
+
+work(1, 2); // 3
+work(4, 5); // 9
+
+for (let args of work.calls) {
+  alert( 'call:' + args.join() ); // "call:1,2", "call:4,5"
+}
+```
+
+**思路分析**
+
+1. 给 wrapper 添加属性 calls
+2.  每次调用都把 `args` 参数数组添加进 calls 数组，使用 `apply` 执行 `func` 函数。
+3. 返回 wrapper
+
+**编码实现**
+
+```js
+function spy(func) {
+  function wrapper(...args) { // args 被转为数组
+    wrapper.calls.push(args); // // using ...args instead of arguments to store "real" array in wrapper.calls
+    return func.apply(this, args); // 执行 func 
+  }
+  wrapper.calls = [];
+  return wrapper;
+} 
+```
+
+#### 延时装饰器
+
+**题目描述**
+
+创建一个装饰器 `delay(f, ms)`，该装饰器将 `f` 的每次调用延时 `ms` 毫秒。
+
+例如:
+
+```js
+function f(x) {
+  alert(x);
+}
+
+// create wrappers
+let f1000 = delay(f, 1000);
+let f1500 = delay(f, 1500);
+
+f1000("test"); // 在 1000ms 后显示 "test"
+f1500("test"); // 在 1500ms 后显示 "test"
+```
+
+**思路分析**
+
+1. 返回一个 wrapper，wrapper 内部通过 setTimeout 延迟执行 f，通过闭包记录了延迟时间参数 ms。
+2. 使用 apply 保证执行上下文一致，通过 `...args` 获取参数数组。
+
+**编码实现**
+
+```js
+function delay(f, ms) {
+  return function(...args) {
+    setTimeout(() => {
+      f.apply(this, args);
+    }, ms)
+  }
+}
+```
+
+#### 防抖装饰器
+
+**题目描述**
+
+`debounce(f, ms)` 装饰器的结果是一个包装器，该包装器将暂停对 `f` 的调用，直到经过 `ms` 毫秒的非活动状态（没有函数调用，“冷却期”），然后使用最新的参数调用 `f` 一次。
+
+举个例子，我们有一个函数 `f`，并将其替换为 `f= debounce(f, 1000)`。
+
+然后，如果包装函数分别在 0ms、200ms 和 500ms 时被调用了，之后再没有其他调用，那么实际的 `f` 只会在 1500ms 时被调用一次。也就是说：从最后一次调用开始经过 1000ms 的冷却期之后。
+
+```js
+let f = _.debounce(alert, 1000); // 使用 lodash 库
+
+f("a");
+setTimeout( () => f("b"), 200);
+setTimeout( () => f("c"), 500);
+// 防抖函数从最后一次函数调用以后等待 1000ms，然后执行：alert("c")
+```
+
+**思路分析**
+
+1. 返回一个 wrapper，wrapper 内部通过 setTimeout 延迟执行 f，通过闭包记录了延迟时间参数 ms。
+2. 使用 apply 保证执行上下文一致，通过 `...args` 获取参数数组。
+3. 通过加锁模式，使用一个变量记录定时器，每次调用包装函数时都检查当前是否存在定时器，如果存在则清除掉，保证只会在 ms 后调用一次 f。
+
+**编码实现**
+
+```js
+function debounce(f, ms) {
+  let timer = null;
+  return function(...args) {
+    timer && clearTimeout(timer); // 取消之前的调用
+    timer = setTimeout(() => {
+      f.apply(this, args);
+    }, ms);
+  }
+}
+```
+
+调用 `debounce` 后会返回一个包装器。当它被调用时，它会安排在一个给定的 `ms` 之后对原始函数的调用，并取消之前的此类超时。
+
+#### 节流装饰器🌟
+
+**题目描述**
+
+创建一个“节流”装饰器 `throttle(f, ms)` 返回一个包装器。
+
+当被多次调用时，它会在每 `ms` 毫秒最多将调用传递给 `f` 一次。
+
+与去抖不同是，它是完全不同的策略：
+
+- `debounce` 会在冷却期后运行函数一次。适用于处理最终结果。
+- `throttle` 运行函数的频率不会大于所给定的时间 `ms` 毫秒。适用于不应该经常进行的定期更新。
+
+**例如，我们想要跟踪鼠标移动。**
+
+在浏览器中，我们可以设置一个函数，使其在每次鼠标移动时运行，并获取鼠标移动时的指针位置。在使用鼠标的过程中，此函数通常会执行地非常频繁，大概每秒 100 次（每 10 毫秒）。
+
+**我们想要在鼠标指针移动时，更新网页上的某些信息。**
+
+……但是更新函数 `update()` 太重了，无法在每个微小移动上都执行。高于每 100ms 更新一次的更新频次也没有意义。
+
+因此，我们将其包装到装饰器中：使用 `throttle(update, 100)` 作为在每次鼠标移动时运行的函数，而不是原始的 `update()`。装饰器会被频繁地调用，但是最多每 100ms 将调用转发给 `update()` 一次。
+
+在视觉上，它看起来像这样：
+
+1. 对于第一个鼠标移动，装饰的变体立即将调用传递给 `update`。这很重要，用户会立即看到我们对其动作的反应。
+2. 然后，随着鼠标移动，直到 `100ms` 没有任何反应。装饰的变体忽略了调用。
+3. 在 `100ms` 结束时 —— 最后一个坐标又发生了一次 `update`。
+4. 然后，最后，鼠标停在某处。装饰的变体会等到 `100ms` 到期，然后用最后一个坐标运行一次 `update`。因此，非常重要的是，处理最终的鼠标坐标。
+
+```js
+function f(a) {
+  console.log(a);
+}
+
+// f1000 最多每 1000ms 将调用传递给 f 一次
+let f1000 = throttle(f, 1000);
+
+f1000(1); // 显示 1
+f1000(2); // (节流，尚未到 1000ms)
+f1000(3); // (节流，尚未到 1000ms)
+
+// 当 1000ms 时间到...
+// ...输出 3，中间值 2 被忽略
+```
+
+P.S. 参数（arguments）和传递给 `f1000` 的上下文 `this` 应该被传递给原始的 `f`。
+
+**思路分析**
+
+1. 返回一个 wrapper，wrapper 内部通过 setTimeout 延迟执行 f，通过闭包记录了延迟时间参数 ms。
+2. 使用 apply 保证执行上下文一致，并使用 isThrottled 来进行加锁，保证每一个 ms 间隔只会执行一次 f 调用。
+3. 要注意的是`输出 3，中间值 2 被忽略`这个细节，需要把参数保存下来，每次调用 wrapper 时都把这些参数记录下来，以便下一次 ms 使用。
+
+**编码实现**
+
+```js
+function throttle(func, ms) {
+
+  let isThrottled = false,
+    savedArgs,
+    savedThis;
+
+  function wrapper() {
+
+    if (isThrottled) { // (2) 在这种状态下，所有调用都记忆在 savedArgs/savedThis 中。请注意，上下文和参数（arguments）同等重要，应该被记下来。我们同时需要他们以重现调用。
+      savedArgs = arguments;
+      savedThis = this;
+      return;
+    }
+
+    func.apply(this, arguments); // (1) 在第一次调用期间，wrapper 只运行 func 并设置冷却状态
+    isThrottled = true;
+
+    setTimeout(function() {
+      isThrottled = false; // (3) 然后经过 ms 毫秒后，触发 setTimeout。冷却状态被移除（isThrottled = false），如果我们忽略了调用，则将使用最后记忆的参数和上下文执行 wrapper。
+      if (savedArgs) {
+        wrapper.apply(savedThis, savedArgs); 
+        savedArgs = savedThis = null;
+      }
+    }, ms);
+  }
+
+  return wrapper;
+}
+```
+
+**参考资料**
+
+- https://zh.javascript.info/call-apply-decorators
+
+#### UI 装饰器
 
 ```js
 // 点击打开按钮展示模态框
@@ -93,27 +391,6 @@ function changeButtonStatus() {
 }
 ```
 
-关于其价值的细节
-
-- 解决人们在看例子时可能遇到的常见问题。(最好以块引用格式呈现)
-- 显示常见错误的例子，以及如何避免它们。
-- 用非常简单的代码示例展示好模式和坏模式。
-- 讨论这个模式令人信服的理由。参考链接不是必需的，但鼓励提供。
-
-### 装饰器语法糖背后的故事
-
-#### 函数传参&调用
-
-- 类装饰器的参数
-- 方法装饰器的参数
-- 装饰器函数调用的时机
-
-定义装饰器函数，将被装饰者“交给”装饰器。
-
-#### 将“属性描述对象”交到你手里
-
-### 真实应用（实际例子）
-
 高阶函数和高阶组件其实就是装饰者模式的应用。
 
 #### React 中的装饰器：HOC
@@ -128,11 +405,11 @@ function changeButtonStatus() {
 
 #### Vue 中的装饰器
 
-### 介绍
+介绍
 
 我们玩魔兽争霸的任务关时，对 15 级乱加技能点的野生英雄普遍没有好感，<u>而是喜欢留着技能点，在游戏的进行过程中按需加技能。</u>同样，在程序开发中，<u>`许多时候都并不希望某个类天生就非常庞大，一次性包含许多职责`。那么我们就可以使用装饰者模式。装饰者可以动态地给某个对象添加一些额外的职责，而不会影响从这个类中派生的其他对象。</u>
 
-#### 主要解决
+主要解决
 
 在传统的面向对象语言中，给对象添加功能常常使用继承的方式但是继承的方式并不灵活，还会带来许多问题：<u>一方面会导致超类和子类之间存在`强耦合性`</u>，当超类改变时，子类也会随之改变；另一方面，继承这种功能复用方式通常被称为“白箱服用”，“白箱是相对可见性而言的”，<u>在继承方式中，超类的内部细节是对子类可见的，继承常常被认为破坏了封装性。</u>
 
@@ -366,7 +643,7 @@ describe("Name of the group", () => {
 - 一个对象必须通知其他对象，而并不知道这些对象是谁。
 - 需要在系统中创建一个触发链，A 对象的行为将影响 B 对象，B 对象的行为将影响 C 对象......，可以使用观察者模式创建一种链式触发机制。
 
-### 实现
+实现
 
 - 一种一对多的依赖，当一个对象的状态发生改变时，所以依赖它的对象都将得到通知
 - 关于“观察者模式”的设计模式，也是 vue 响应式实现的核心，订阅发布模式是观察者模式的升级版，dojo 的 Topic，vue 的 eventBus 这些就是用的发布订阅模式
@@ -429,11 +706,11 @@ observer.publish("foo");
 observer.publish("bar");
 ```
 
-## 单例模式
+### 单例模式
 
 单例（件）模式（Singleton）：用来创建独一无二的，只能有一个实例的对象的入场券。
 
-### 原因
+原因
 
 - 线程池（threadpool）
 - 缓存（cache）
@@ -447,7 +724,7 @@ observer.publish("bar");
 
 - 全局变量的缺点：如果将对象赋值给一个全局变量，那么你必须在程序一开始就创建好对象。万一这个对象非常耗费资源，而程序在这次的执行过程中又一直没用到它，不就形成浪费了吗？使用单例模式，可以在需要时才创建。
 
-### 实现
+实现
 
 #### 版本一
 
@@ -484,7 +761,7 @@ namespace Design.Patterns
 
 ```
 
-### 应用场景
+应用场景
 
 Unity MonoBehaviour 使用
 
@@ -508,9 +785,9 @@ public class Hero: MonoBehaviour {
 2. 因为 Hero 类只可能有一个实例，当实例被创建时 S 被分配到 `Awake()`。
 3. 因为变量 S 是公共并且静态的，通过类名 Hero.S 可以在代码任何地方引用它。
 
-## 命令模式
+### 命令模式
 
-## 适配器模式
+### 适配器模式
 
 **适配器模式的作用是解决两个软件实体间的接口不兼容的问题。使用适配器模式之后，原本由于接口不兼容而不能工作的两个软件实体可以一起工作。**
 
@@ -540,7 +817,7 @@ Mac book 电池支持的电压是 20V，我们日常生活中的交流电压一�
 
 而现在最新的 2018 mac pro 接口已经升级为了 type-c 接口，如果要外接显示器、投影仪，则需要一个适配器（type-other 集成多种设备的转接口）。
 
-### 适配器模式的应用
+适配器模式的应用
 
 如果现有的接口已经能够正常工作，那我们就永远不会用上适配器模式。<u>适配器模式是一种“亡羊补牢”的模式，没有人会在程序的设计之初就使用它。因为没有人可以完全预料到未来的事情，也许现在好好工作的接口，未来的某天却不再适用于新系统呢，那么我们用适配器模式把旧接口包装成一个新的接口，使它继续保持生命力。</u>比如在 JSON 格式流行之前，很多 cgi 返回的都是 XML 格式的数据，如果今天仍然想继续使用这些接口，显然我们可以创造一个** XML-JSON** 的适配器。
 
@@ -672,7 +949,7 @@ render( addressAdapter(getGuangdongCity));
 
 那么接下来需要做的，就是把代码中调用 `getGuangdongCity` 的地方，用经过 `addressAdapter` 适配器转换之后的新函数来代替。
 
-#### 实战
+实战
 
 这里就是一个简单适配器处理了，如果很多获取的接口数据都需要这样处理的话，就可以新增一个树的适配器处理。
 
@@ -728,7 +1005,7 @@ private async treeAdapter(fn) {
 render( treeAdapter(getArchiveTypeTree) );
 ```
 
-### 小结
+**小结**
 
 适配器模式是一对相对简单的模式。有一些设计模式跟适配器模式结构非常相似，比如装饰者模式、代理模式和外观模式。<u>这几种模式都属于“包装模式”，都是由一个对象来包装另一个对象。</u>**区别它们的关键仍然是模式的意图。**
 
