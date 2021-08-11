@@ -14,7 +14,7 @@ app.use(
   )
 );
 
-app.use(mount("/static", static(`${__dirname}/source/static`)));
+app.use(mount("/static", static(`${__dirname}/source/static`))); // localhost/play/static/analystics
 
 app.use(
   mount("/", async (ctx) => {

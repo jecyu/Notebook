@@ -26,10 +26,10 @@ schema.getQueryType().getFields().comment.resolve = () => {
   return new Promise((resolve, reject) => {
     commentClient.write(
       {
-        columnid: 0,
+        columnid: 232,
       },
       function(err, res) {
-        console.log('res ->', res);
+        console.log("res ->", res);
         err ? reject(err) : resolve(res.comments);
       }
     );
@@ -37,7 +37,16 @@ schema.getQueryType().getFields().comment.resolve = () => {
 };
 
 schema.getMutationType().getFields().praise.resolve = (arg0, { id }) => {
-  return new Promise((resolve, reject) => {});
+  return new Promise((resolve, reject) => {
+    praiseClient.write(
+      {
+        commentid: id,
+      },
+      function(err, res) {
+        err ? reject(err) : resolve(res.praiseNum);
+      }
+    );
+  });
 };
 
 module.exports = schema;

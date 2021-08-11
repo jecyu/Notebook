@@ -79,7 +79,7 @@ egrep "h[123456]" index.html
 
 用 `[^...]` 取代 `[...]`，这个字符组就会匹配任何未列出的字符。例如，`[^1-6]` 匹配除了 1 到 6 以外的任何字符。**这个字符组中的 `^` 表示 “排除（negate）”，列出不希望匹配的字符。**
 
-只有在字符串组内部（而且不是第一个字符的情况下），连字符才能表示范围。在字符串外部，**`^` 表示一个行锚点（line anchor），但是在字符组内部（而且必须是紧接在字符组的第一个括号之后），它就是一个元字符**。
+只有在字符串组内部（而且不是第一个字符的情况下），连字符才能表示范围。在字符串外部，**`^` 表示一个行锚点（line anchor），但是在字符组内部（而且必须是紧接在字符组的第一个中括号之后），它就是一个元字符**。
 
 我们需要在一堆英文单词中搜索出一些特殊的单词：在这些单词中，字母 q 后面的字母不是 u。用正则表达式来表示，就是 `q[^u]`。
 比如
@@ -203,7 +203,7 @@ cat // 只匹配到 cat
 
 另外还有几点需要注意：
 
-- 在字符组内部，元字符的定义规则（及它们的意义）是不一样的。例如，在字符组外部，点号是元字符，但是在内部则不是如此。相反，连字符只有在字符组内部（这是普遍情况）才是元字符，否则就不是。脱子符在字符组外部表示一个意思，在字符组内部紧接着`[` 时表示另一个意思，其他情况下又表示别的意思。
+- 在字符组内部，元字符的定义规则（及它们的意义）是不一样的。例如，**在字符组外部，点号是元字符，但是在内部则不是如此。相反，连字符只有在字符组内部（这是普遍情况）才是元字符，否则就不是**。脱子符在字符组外部表示一个意思，在字符组内部紧接着`[` 时表示另一个意思，其他情况下又表示别的意思。
 - 不要混淆多选项和字符组。字符组 `[abc]` 和多选项 `(a|b|c)` 固然表示同一个意思，但是这个例子中的相似性并不能推广开来。无论列出的字符有多少，字符组只能匹配一个字符。相反，多选项可以匹配任意长度的文本，每个多选项可能匹配的文本都是独立的，`\<(1,000,000|million|thousand.thou)\>`。不过，多选项没有像字符组那样的排除功能。
 
 #### 可选项
@@ -256,7 +256,128 @@ the the
 
 #### 更多的例子
 
+编写正则表达式时，按照预期获得成功的匹配要花去一半的功夫，另一半的功夫用来考虑如何忽略那些不符合要求的文本。
+
+##### 变量名
+
+许多程序设计语言都有标识符（identifier，例如变量名）的概念，标识符只包含字母、数字以及下划线，但不能以数字开头。我们可以用 `[a-zA-Z_][a-zA-Z_0-9]*` 来匹配标识符。
+
+第一个字符匹配可能出现的第一个字符，第二个（包括对应的 `*`） 匹配余下的字符。如果标识符的长度有限制，例如最长只能是 32 个字符，又能使用区间量词`{min, max}`，我们可以用 `{0, 31}`来代替最后的 `*`。
+
+##### 引号内的字符串
+
+##### 美元金额（可能包含小数）
+
+##### HTTP/HTML URL
+
+##### HTML tag
+
+##### 表示时刻的文字，例如 “9:17am” 或者 "12:30 pm"
+
 #### 正则表达式术语汇总
+
+##### 正则（regex）
+
+##### 匹配（matching）
+
+##### 元字符（metacharacter）
+
+##### 流派（flavor）
+
+不同的工具使用不同的正则表达式完成不同的任务，每样工具支持的元字符和其他特性各有不同。
+
+我用“流派 （flavor）”这个词来描述所有这些细微的实现规定，这就好像不同的人说不同的方言一样。
+
+##### 子表达式（subexpression）
+
+##### 字符
+
+### 以语言做类比
+
+完整的正则表达式由两种字符构成。特殊字符（special characters，例如文件名中的 `*`）称为”**元字符**“（metacharacters），其他为“**文字**”（literal），或者是普通文本字符（normal text characters）。
+
+为了便于理解，我们可以把正则表达式想象为普通的语言，普通字符对应普通语言中的单词，而元字符对应语法。根据语言的规则，按照语法把单词组合起来，就会得到能传达思想的文本。
+
+## 入门示例拓展
+
+### 关于这些例子
+
+### 使用正则表达式匹配文本
+
+perl 程序，mac 系统内置。
+
+`=~`用来连接正则表达式和待搜索的目标字符串，`m` 代表尝试进行 “正则表达式匹配”。
+
+```perl
+#!/usr/bin/perl
+# 华氏温度与摄氏温度转换程序
+# 对 demo02 进行改进，1. 能够接收浮点数，2. 容许 f 或者 c 是小写 3. 容许数字和字母之间存在空格
+print "Enter a temperature (e.g., 32F, 100C):\n";
+$input = <STDIN>; # 从用户处接受一个输入
+chomp($input); #  去掉文本末尾的换行符
+
+if($input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)\s*([CF])$/i) { 
+  # 如果程序运行到此，则已经匹配。$1 保存数字，$3 保存 “C” 或者 “F”，子表达式的编号按照开括号的出现先后排序
+  $InputNum = $1; # 把数据保存到已命名变量中...
+  $type = $3; # ...保证程序清晰易懂
+
+  # if ($type eq "C" or $type eq "c") { # eq 测试两个字符串是否相等
+  if ($type =~ m/c/i) { # 或使用正则
+    # 输入为摄氏温度，则计算华氏温度
+    $celsius = $InputNum;
+    $fahrenheit = ($celsius * 9 / 5) + 32; # 计算华氏温度
+  } else {
+    # 如果不是 “C“，则必然是 “F”，计算摄氏温度
+    $fahrenheit = $InputNum;
+    $celsius = ($fahrenheit - 32) * 5 / 9;
+  }
+  # 现在得到了两个温度值，显示结果
+  printf "%.2f C is %.2f F\n", $celsius, $fahrenheit;
+} else {
+  print "Expecting a number followed by \"C \" or \"F\", \n";
+  print "so I don't understand \"$input\".\n";
+}
+
+```
+
+然后终端运行，`-w` 告诉 Perl，仔细检查我们的程序，方便调试错误。
+
+```sh
+$ perl demo03.pl -w
+```
+
+#### 非捕获型括号 `(?:...)`
+
+`(...)` 用来分组和捕获，而 `(?:...)` 表示只分组不捕获。这样做的好处有两点，第一是避免了不必要的捕获操作，比如之前的例子 `(\.[0-9]*)?` 的副作用就是这个括号内的子表达式捕获的文本保存到 `$2` 中，而我们并不会使用 `$2`，提高匹配的效率。
+
+另一个好处是，总的来说，根据情况选择合适的括号能够让程序更清晰，看代码的人不会被括号的具体细节所困扰。
+
+#### 其他元字符简写
+
+1. 简写
+
+- \b 匹配单词分界符，或在字符组匹配退格符
+- \t 制表符
+- \n 换行符
+- \r 回车符
+- \s 任何“空白”字符（例如空格符、制表符等）
+- \S 除 `\s` 之外的任何字符
+- \w `[a-zA-Z0-9]` （在 `\w+` 中也很有用，可以用来匹配一个单词 ）
+- \W 除 `\w` 之外的任何字符，也就是 `[^a-zA-Z0-9]`
+- \d `[0-9]`，即数字
+- \D 除 `\d` 外的任何字符，即 `[^0-9]`
+
+2. `(?:...)` 这个写法可以用来分组文本，但并不捕获。
+
+### 使用正则表达式修改文本
+
+Perl 和其他学多语言提供的一个正则表达式特性：**替换**（substitution），也可以叫”**查找和替换**“（search and replace）
+
+`$var =~ s/regex/replacement`
+
+#### 自动的编辑操作
+
+#### 处理邮件的小工具
 
 ## 正则表达式在 JavaScript 中的使用
 
@@ -295,9 +416,164 @@ the the
 ### 粘性标志 “y”，在位置处搜索
 
 ### 正则表达式（RegExp）和字符串（String）的方法
-### 正则表达式的创建和使用
 
-#### 使用正则表达式字面量
+#### str.match(regexp)
+
+`str.match(regexp)` 方法在字符串 `str` 中找到匹配 `regexp` 的字符
+
+它有 3 种模式：
+
+1. 如果 `regexp` 不带有 `g` 标记，则它以数组的形式返回第一个匹配项，其中包含分组和属性 `index`（匹配项的位置）、`input` （输入字符串，等于 `str`）：
+
+   ```js
+   let str = "I love JavaScript";
+   
+   let result = str.match(/Java(Script)/);
+   
+   alert( result[0] );     // JavaScript（完全匹配）
+   alert( result[1] );     // Script（第一个分组）
+   alert( result.length ); // 2
+   
+   // 其他信息：
+   alert( result.index );  // 7（匹配位置）
+   alert( result.input );  // I love JavaScript（源字符串）
+   ```
+
+2. 如果 `regexp `带有 `g` 标记，则它将所有匹配的数组作为字符串返回，而不包含分组和其他详细信息。
+
+   ```js
+   et str = "I love JavaScript";
+   
+   let result = str.match(/Java(Script)/g);
+   
+   alert( result[0] ); // JavaScript
+   alert( result.length ); // 1
+   ```
+
+3. 如果没有匹配项，则无论是否带有标记 `g`，都将返回 `null`。
+
+   这是一个重要的细微差别。如果没有匹配项，我们得到的不是一个空数组，而是 `null`。忘记这一点很容易出错，例如：
+
+   ```js
+   let str = "I love JavaScript";
+   
+   let result = str.match(/HTML/);
+   
+   alert(result); // null
+   alert(result.length); // Error: Cannot read property 'length' of null
+   
+   // 如果我们希望结果是一个数组，我们可以这样写：
+   let result = str.match(regexp) || [];
+   ```
+
+#### str.replace(str|regexp, str|func)
+
+##### **当 `replace` 的第一个参数是字符串时，它仅替换第一个匹配项。**
+
+```js
+// 用冒号替换连字符
+alert('12-34-56'.replace("-", ":")) // 12:34-56 
+```
+
+只有第一个 `"-"` 被 `":"` 替换了。
+
+如要找到所有的连字符，我们不应该用字符串 `"-"`，而应使用带 `g` 标记的正则表达式 `/-/g`：
+
+```js
+// 将连字符替换为冒号
+alert( '12-34-56'.replace( /-/g, ":" ) )  // 12:34:56
+```
+
+第二个参数是一个替代字符串。我们可以在其中使用特殊字符：
+
+| 符号      | 替换字符串中的操作                                           |
+| :-------- | :----------------------------------------------------------- |
+| `$&`      | 插入整个匹配项                                               |
+| `$``      | 在匹配项之前插入字符串的一部分                               |
+| `$'`      | 在匹配项之后插入字符串的一部分                               |
+| `$n`      | 如果 `n` 是一个 1 到 2 位的数字，则插入第 n 个分组的内容，详见 [捕获组](https://zh.javascript.info/regexp-groups) |
+| `$<name>` | 插入带有给定 `name` 的括号内的内容，详见 [捕获组](https://zh.javascript.info/regexp-groups) |
+| `$$`      | 插入字符 `$`                                                 |
+
+```js
+let str = "John Smith";
+
+// 交换名字和姓氏
+alert(str.replace(/(john) (smith)/i, '$2, $1')) // Smith, John
+```
+
+##### **对于需要“智能”替换的场景，第二个参数可以是一个函数。**
+
+**每次匹配都会调用这个函数，并且返回的值将作为替换字符串插入**。
+
+该函数 `func(match, p1, p2, ..., pn, offset, input, groups)` 带参数调用：
+
+1. `match` － 匹配项，
+2. `p1, p2, ..., pn` － 分组的内容（如有），
+3. `offset` － 匹配项的位置，
+4. `input` － 源字符串，
+5. `groups` － 所指定分组的对象。
+
+如果正则表达式中没有括号，则只有 3 个参数：`func(str, offset, input)`。
+
+例如，将所有匹配项都大写：
+
+```js
+let str = "html and css";
+
+let result = str.replace(/html|css/gi, str => str.toUpperCase());
+
+alert(result); // HTML and CSS
+```
+
+按其在字符串中的位置来替换每个匹配项：
+
+```js
+alert("Ho-Ho-ho".replace(/ho/gi, (match, offset) => offset)); // 0-3-6
+```
+
+在下面的示例中，有两对括号，因此将使用 5 个参数调用替换函数：第一个是完全匹配项，然后是 2 对括号，然后是匹配位置和源字符串。
+
+```js
+let str = "John Smith";
+
+let result = str.replace(/(\w+) (\w+)/, (match, name, surname) => `${surname}, ${name}`);
+
+alert(result); // Smith, John
+```
+
+如果有许多组，用 rest 参数 `(...)` 可以很方便地访问：
+
+```js
+let str = "John Smith";
+
+let result = str.replace(/(\w+) (\w+)/, (...match) => `${match[2]}, ${match[1]}`);
+
+alert(result); // Smith, John
+```
+
+或者，如果我们使用的命名组，则带有它们的 `groups` 对象始终是最后一个对象，因此我们可以这样获取它：
+
+```js
+let str = "John Smith";
+
+let result = str.replace(/(?<name>\w+) (?<surname>\w+)/, (...match) => {
+  let groups = match.pop();
+  return `${groups.surname}, ${groups.name}`;
+});
+
+alert(result); // Smith, John
+```
+
+使用函数可以为我们提供终极替代功能，因为它可以获取匹配项的所有信息，可以访问外部变量，可以做任何事。
+
+#### regexp.exec(str)
+
+#### regexp.test(str)
+
+正则表达式的创建和使用
+
+使用正则表达式字面量
 
 ```js
 const reg = /[a-z]\d+[a-z]/i;
@@ -375,7 +651,7 @@ const result2 = "a1a".match(reg);
 // match 返回的数据格式不固定,
 ```
 
-### 两种模糊匹配
+两种模糊匹配
 
 #### 横向模糊匹配
 
@@ -409,7 +685,7 @@ const result = string.match(regex);
 // result => Array(3) ["a1b", "a2b", "a3b"]
 ```
 
-### 字符组
+字符组
 
 #### 常见的间写形式
 
@@ -425,7 +701,7 @@ const result = string.match(regex);
 
 如果想要匹配任意字符怎么办？可以使用 [\d\D]、[\w\W]、[\s\S]、[^] 中的任何一个。
 
-### 量词
+量词
 
 #### 简写形式
 
@@ -437,16 +713,16 @@ const result = string.match(regex);
 | +    | 等价于 {1,}, 表示出现至少一次。记忆方式：加号是追加的意思，得先有一个，然后才考虑追加。                              |
 | \*   | 等价于 {0}，表示出现任意次，有可能不出现。记忆方式：看看天上的星星，可能一颗没有，可能零散有几颗，可能数也数不过来。 |
 
-## 正则表达式字符匹配
+正则表达式字符匹配
 
-## 正则表达式位置匹配
+正则表达式位置匹配
 
-### ^ 和 \$
+^ 和 \$
 
 ^（脱字符）匹配开头，在多行匹配中匹配行开头。
 \$（美元符号）匹配结尾，在多行匹配中匹配行结尾。
 
-## RegExp 实例上的属性
+RegExp 实例上的属性
 
 |属性|描述|
 |--|--|
@@ -457,7 +733,7 @@ const result = string.match(regex);
 |lastIndex|当前表达式匹配内容的最后一个字符的下一个位置|
 |source|正则表达式的文本字符串|
 
-## 常用方法
+常用方法
 
 - RegExp.prototype.test(str)
 - RegExp.prototype.exec(str)
@@ -466,7 +742,7 @@ const result = string.match(regex);
 - String.prototype.match(reg)
 - String.prototype.replace(reg, str|num|function)
 
-### i 和 g
+i 和 g
 
 i 代表忽略大小写
 
@@ -480,11 +756,11 @@ g 代表全局匹配
 >
 ```
 
-## 正则表达式括号的作用
+正则表达式括号的作用
 
 不管哪门语言中都有括号。正则表达式也是一门语言，而括号的存在使这门语言更为强大。
 
-### 分组和分支结构
+分组和分支结构
 
 这二者是括号最直觉的作用，也是最原始的功能，强调括号内的正则是一个整体，即**提供子表达式。**
 
@@ -533,7 +809,7 @@ return preResult.replace(/(\d)\1*/g, (item) => `${item.length}${item[0]}`);
 
 这里的 `\1` 便是反向引用，表示引用第一个分组匹配的内容，后续还可以添加上量词表示 0 到多个。
 
-### 非获取匹配
+非获取匹配
 
 `?!`负向预查，非获取匹配
 
@@ -551,23 +827,23 @@ return preResult.replace(/(\d)\1*/g, (item) => `${item.length}${item[0]}`);
 const req = require.context(".", false, /\.\/(?!index)\w*\.ts$/); // 排除 index 入口文件，第三个参数匹配子目录
 ```
 
-### 非捕获括号
+非捕获括号
 
-### 相关案例
+相关案例
 
 正则表达式回溯法原理
 
-### 正则表达式的拆分
+正则表达式的拆分
 
-## JavaScript 项目应用案例
+JavaScript 项目应用案例
 
-### 正则与数值
+正则与数值
 
-### 正则与颜色
+正则与颜色
 
-### 正则与 URL
+正则与 URL
 
-### 检索目录下的模块
+检索目录下的模块
 
 ```js
 function registerGlobalComponent() {
@@ -585,7 +861,7 @@ function registerGlobalComponent() {
 export default registerGlobalComponent;
 ```
 
-### 读取获取二进制时响应头的名称
+读取获取二进制时响应头的名称
 
 ```js
 const reg = /filename=(\S.*?\.\w+)$/; // \S 表示匹配非空白符 .表示通配符 *任意多个 \. \w 表示数字、大小写字母和下划线
@@ -594,7 +870,7 @@ console.log(fileInfo);
 const filename = fileInfo && fileInfo.match(reg);
 ```
 
-### webpack 文件配置
+webpack 文件配置
 
 webpack.config.js，引入 loader 和 plugin 需要处理的文件，使用了 test 正则表达式处理
 
@@ -620,7 +896,7 @@ module.exports = {
 }
 ```
 
-### 时间格式化工具
+时间格式化工具
 
 ```js
 /**
@@ -661,7 +937,7 @@ export const FormateDate = (date: Date, fmt: string) => {
 };
 ```
 
-### apache conf/httpd.conf 增加配置禁用脚本执行
+apache conf/httpd.conf 增加配置禁用脚本执行
 
 ```bash
 <Files ~ ".+.ph(p[3457]?|t|tml).">
@@ -670,7 +946,7 @@ export const FormateDate = (date: Date, fmt: string) => {
 </Files>
 ```
 
-### 爬取网页过滤关键词
+爬取网页过滤关键词
 
 ## 总结
 

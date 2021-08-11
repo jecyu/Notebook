@@ -1,8 +1,41 @@
-Vue 3 使用
+# Vue 3
 
 看文档 → 学习新语法 → 做小 demo → 做几个实战项目 → 看源码 → 整理心得并分享
 
 对于小 demo，可以使用在 codepen 沙箱进行练习，https://codesandbox.io/s/small-grass-1ju25?file=/src/App.vue。其他的技术使用同理，比如 React、Angular
+
+### 组件编写
+
+#### **定义组件**
+
+button.tsx
+
+```js
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'd-button',
+  props: {}, // 输入输出
+  setup(props, ctx) {
+    // 组件生命周期和交互逻辑
+  }
+})
+</script>
+```
+
+#### **组件的输入/输出**
+
+```js
+props: {
+  icon: {
+    type: String,
+    default: '',
+  },
+  btnClick: {
+    type: Function as unknown as () => ((event: MouseEvent) => void)
+  }
+}
+```
 
 ## 组合式 API
 
@@ -212,17 +245,18 @@ export default {
 
 ### reactive
 
-```html
+reactive 是 Vue 3.0 中提供的实现响应式数据的方法。在 Vue 2.0 中实现响应式数据是通过 Object 的 defineProPerty 属性来实现的，而在 Vue 3.0 中的响应式是通过 ES2015 的 Proxy 来实现。
+
+reactive 参数必须是对象
+reactive 方法接受一个对象（json 或 Array）
+
+reactive 返回的代理后的对象，内部的二级三级属性，都会被赋予响应式的能力，所以官方建议，使用 reactive 返回的值，而不要去使用原始值
+
+```js
 const state = reactive({
       title: '十三'
     })
 
-reactive 是 Vue 3.0 中提供的实现响应式数据的方法。在 Vue 2.0 中实现响应式数据是通过 Object 的 defineProPerty 属性来实现的，而在 Vue 3.0 中的响应式是通过 ES2015 的 Proxy 来实现。
-
-reactive 参数必须是对象
-reactive 方法接受一个对象（json 或 Array）
-
-reactive 返回的代理后的对象，内部的二级三级属性，都会被赋予响应式的能力，所以官方建议，使用 reactive 返回的值，而不要去使用原始值
 ```
 
 ### ref
@@ -1409,11 +1443,36 @@ export default {
 
 端路由 会根据浏览器地址栏 pathname 的变化，去匹配相应的页面组件。然后将其通过创建 DOM 节点的形式，塞入根节点 `<div id="root"></div>` 。这就达到了无刷新页面切换的效果，从侧面也能说明正因为无刷新，所以 React、Vue、Angular 等现代框架在创建页面组件的时候，每个组件都有自己的 生命周期 。
 
-## Vue 3.0 实战项目启动篇
+## Vue 3.0 DevUI 组件库
+
+规范
+
+```sh
+用脚本生成vue-devui.ts需要保证组件的目录有一致的结构，大家写的时候需要遵循以下规范：
+1.目录结构为（以button举例子） 
+- button
+  --  __tests__
+  - src/button.tsx ...
+  index.ts 统一通过index.ts暴露组件、指令、服务等
+2.index.ts里面这样写
+import { App } from 'vue'
+import Button from './src/button'
+import xxDirective from './src/xxdirective'
+import xxService from './src/xxservice'
+
+Button.install = function(Vue: App) {
+  Vue.component(Button.name, Button)
+};
+
+Button.version = '0.0.1'
+
+export {  Button as default, xxxDirective, xxService }
+```
+
+
 
 ## 参考资料
 
 - [轻松学会 React 钩子：以 useEffect() 为例](http://www.ruanyifeng.com/blog/2020/09/react-hooks-useeffect-tutorial.html)
 - https://juejin.cn/book/6933939264455442444/section/6933954409923608584
-
 

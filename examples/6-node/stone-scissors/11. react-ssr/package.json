@@ -1,20 +1,18 @@
 {
-  "name": "vue-ssr",
+  "name": "11.-react-ssr",
   "version": "1.0.0",
-  "description": "ssr",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "ssr"
-  ],
   "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
   "license": "MIT",
   "dependencies": {
-    "koa": "^2.13.1",
-    "koa-mount": "^4.0.0",
-    "vue": "^2.6.14",
-    "vue-server-renderer": "^2.6.14"
+    "@babel/core": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/register": "^7.15.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
