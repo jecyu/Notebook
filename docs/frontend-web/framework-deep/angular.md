@@ -133,8 +133,6 @@ can be found in the LICENSE file at https://angular.io/license
 */
 ```
 
-
-
 ## 组件编写
 
 组件例子：
@@ -370,7 +368,33 @@ export class ProductListComponent {
 
 可以通过组件间共享同一服务实例来实现通信。
 
+### 组件内容嵌入
+
+内容嵌入（ng-content）是组件的一个高级功能特性，它能很好地扩充组件的功能，方便代码的复用。
+
+内容嵌入通常用来创建可复用的组件，典型的例子是模态对话框或导航栏。在 开发 Web 应用的时候，模态对话框和导航栏是使用非常频繁的 UI 组件，而内容嵌入特性提供了一种复用的方式，使得这些组件具有一致的样式，但内容又可以自定义。
+
 ### 生命周期
+
+### 其他
+
+#### ng-template、ng-content、ng-container
+
+**ng-container**
+
+这个 ng-container 既不是Component 也不是 Directive，书写时就是个html标签，但是实际页面不会生成任何元素，一般都用作逻辑处理。
+
+- 使用场景 ngFor 遍历元素时加入 ngIf 控制显示。ngFor 和 ngIf 不能同时使用这个时候就需要使用 ng-container了,例如:
+
+```html
+<ng-container *ngFor="let item of list;let i = index">
+  <div *ngIf="i % 2 == 0">
+    {{ item }} - {{i}}
+  </div>
+</ng-container>
+```
+
+
 
 ## 模板
 
@@ -469,7 +493,7 @@ export class CartComponent implements OnInit {
 
 当 model1 由 model1 变为 model2 时，view 也随之进行了变化，由 view1 变为了view2.
 
-**当监听一系列事件流并对这一系列事件流进行映射、过滤和合并等处理后，再响应整个事件流的回调，这过程便是属于面向数据流的编程**。比如 ReactiveX 的编程范式中，数据流被封装在一个叫做 Observable 的对象实例中，通过观察者模式，对数据流进行统一的订阅（Subscribe），并在中间插入像 filter() 这样的操作函数，从而对 Observable 所封装的数据流进行过滤处理。
+**当监听一系列事件流并对这一系列事件流进行映射、过滤和合并等处理后，再响应整个事件流的回调，这过程便是属于面向数据流的编程**。比如 `ReactiveX` 的编程范式中，数据流被封装在一个叫做 `Observable` 的对象实例中，通过观察者模式，对数据流进行统一的订阅（`Subscribe`），并在中间插入像 `filter()` 这样的操作函数，从而对 `Observable` 所封装的数据流进行过滤处理。
 
 ```js
 myObservable.filter(fn).subscribe(callback);
@@ -479,7 +503,59 @@ myObservable.filter(fn).subscribe(callback);
 
 #### ReactiveX
 
+##### Observable 介绍
+
+应用中产生的一步数据都需要先包装成 Observable 对象，Observable 对象的作用就是把这些一步的数据变换为数据流形式。所以生成的这些 Observable 对象相当于数据流的源头，后续的操作都是围绕着这些被转换的流动数据展开。
+
+##### Operator 介绍
+
+Operator 是 Rx 中 Observable 的操作符。在 Rx 中，每一个 Observable 对象，或者说数据流，都可以通过某个 operator 对该 Observable 对象进行变换、过滤、合并和监听等操作。同时，大多数的 operator 在对 Observable 对象处理后会返回一个新的 Observable 对象供下一个人 operator 进行处理。这样方便在各个 operator 之间通过链式调用的方式编写代码。
+
+```js
+observable.subscribe(observer)
+```
+
+##### **其他核心概念**
+
+除了 Observable 以及 Operator，Rx 中还有一些其他的核心概念，例如
+
+- Observer：对 Observable 对象发出的每个事件进行响应。
+- Subscription：Observable 对象被订阅后返回的 Subscription 实例。
+- Subject：EventEmitter 的等价数据结构，可以当作 Observable 被监听，也可以作为 Observer 发送新的事件。
+
 ### RxJS
+
+Rx 基础自响应式编程范式，已经在多种编程语言中实现，而 RxJS 就是其在 JavaScript 层面上的实现。
+
+#### 创建 Observable 对象
+
+#### 使用 RxJS 处理复杂场景
+
+用户在一个文本输入框进行输入时，需要对用户的输入
+
+#### RxJS 和 Promise 的对比
+
+能用 Promise 的场景 RxJS 都适用，RxJS 是作为 Promise 的超集存在。
+
+#### “冷”模式下的 Observable
+
+在 Rx 的理念中，Observable 通常可以实现成“热”（Hot）模式或者 “冷”（Cold）模式。在 “热”模式下，Observable 对象一旦创建，便会开始发送数据。而在“冷”模式下，Observable 对象会一直等到自己被订阅，才会开始数据流的发送。在 RxJS 中，Observable 实现的是“冷”模式。
+
+#### RxJS 中的 Operator
+
+#### Angular 中的 RxJS
+
+> 在 React/Vue 应用中部分使用 Rx 是完全没有问题的。思路上来说就是把 React/Vue 组件的 local state 当做一个『中介』，在一个 Rx Observable 的 subscribe 回调里面更新组件状态。通过简单的绑定库支持，可以完全把 component state 作为一个实现细节封装掉，实现 Observable -> view 的声明式绑定。参考：
+>
+> \- Vue + Rx: [https://github.com/vuejs/vue-rx/](https://link.zhihu.com/?target=https%3A//github.com/vuejs/vue-rx/)
+> \- React + Rx: [GitHub - belfz/fully-reactive-react-example](https://link.zhihu.com/?target=https%3A//github.com/belfz/fully-reactive-react-example)
+>
+> 我个人倾向于在适合 Rx 的地方用 Rx，但是不强求 Rx for everything。比较合适的例子就是比如**多个服务端实时消息流，通过 Rx 进行高阶处理，最后到 view 层就是很清晰的一个 Observable**，但是 view 层本身处理用户事件依然可以沿用现有的范式。
+>
+> 作者：尤雨溪
+> 链接：https://www.zhihu.com/question/40195289/answer/85338699
+> 来源：知乎
+> 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处
 
 参考资料：
 
@@ -555,6 +631,15 @@ export class AppModule { }
 ```
 
 - https://angular.io/start/start-routing
+
+## 实战 DevUI
+
+### **实现一个** **angular Splitter** **组件**
+
+angular -》 vue3 步骤：
+
+1. 从 HTML 结构入手，分析使用的 demo 基本用法，html 的结构怎么定义的，怎么使用。从这里可以分析父组件和子组件。（跟手写代码从测试用例入手很像）
+2. 
 
 ## 参考资料
 

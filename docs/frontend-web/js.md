@@ -2,23 +2,307 @@
 
 > https://github.com/stephentian/33-js-concepts#6-this-call-apply-%E5%92%8C-bind
 
-<!-- <TOC /> -->
-
 [[toc]]
-## 基础
-### 面向对象与原型
 
-![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
+## 数据类型
 
-- **proto** 与 prototype 的区别e
-- 构造器与原型的区别，两者的作用用于哪里，有哪些应用场景
-- contructor
-- 什么是原型链
-- js 构建类与其他面向对象语言的区别如 C#、java
-- 如何判断类型 typeof 与 instanceof
-- in 操作符的使用
-- 应用场景：一些库、旧项目？
-  - vue 的原型链，给 vue 原型添加方法
+### 数字类型
+
+#### toString(base)
+
+方法 `num.String(base)` 返回在给定 `base`进制数字系统中 `num` 的字符串表示形式。
+
+举个例子：
+
+```js
+let num = 255;
+
+alert( num.toString(16) );  // ff
+alert( num.toString(2) );   // 11111111
+```
+
+`base` 范围可以从 `2` 到 `36`。默认情况下是 `10`。
+
+常见的用例如下：
+
+- **base=16** 用于十六进制颜色，字符编码等，数字可以是 `0...9` 或 `A...F`。
+
+- **base=2** 主要用于调试按位操作，数字可以是 `0` 或 `1`。
+
+- **base=36** 是最大进制，数字可以是 `0...9` 或 `A...Z`。对于 `36` 进制来说，一个有趣且有用的例子是，当我们需要将一个较长的数字标识符转换成较短的时候，例如做一个短的 URL。可以简单地使用基数为 `36` 的数字系统表示：
+
+  ```js
+  alert( 123456..toString(36) ); // 2n9c
+  ```
+
+  应用例子：
+
+  ```js
+  // js 生成一个随机字符串
+  function random(n) {
+    return Math.random().toString(36).slice(2, 2 + n);
+  }
+  ```
+
+> ⚠️使用两个点来调用一个方法
+>
+> 请注意 `123456..toString(36)` 中的两个点不是打错了。如果我们想直接在一个数字上调用一个方法，比如上面例子中的 `toString`，那么我们需要在它后面放置两个点 `..`。
+>
+> 如果我们放置一个点：`123456.toString(36)` ，那么就会出现一个 error，因为 JavaScript 语法隐含了第一个点之后的部分为小数部分。如果我们再放一个点，那么 JavaScript 就知道小数部分为空，现在使用该方法。
+>
+> 也可以写成 `(123456).toString(36)`。
+
+#### parseInt 和 parseFloat
+
+使用加号 `+` 或 `Number()` 的数字转换是严格的。如果一个值不完全是一个数字，就会失败：
+
+```js
+alert( +"100px" ); // NaN
+```
+
+唯一的例外是字符串开头或结尾的空格，因为它们会被忽略。
+
+但在现实生活中，我们经常会带有单位的值，例如 CSS 中的 `100px`或 `"12pt"`。并且，在很多国家，货币符号是紧随金额之后的，所以我们有 `19€` ，并希望从中提取出一个数值。
+
+这就是 `parseInt` 和 `parseFloat` 的作用。
+
+它们可以从字符串中“读取”数组，直到无法读取为止。如果发生 error，则返回收集到数字。函数 `parseInt` 返回一个整数，而 `parseFloat` 返回一个浮点数：
+
+```js
+alert( parseInt('100px') ); // 100
+alert( parseFloat('12.5em') ); // 12.5
+
+alert( parseInt('12.3') ); // 12，只有整数部分被返回了
+alert( parseFloat('12.3.4') ); // 12.3，在第二个点出停止了读取
+```
+
+某些情况下，	`parseInt/parseFloat` 会返回 `NaN`。当没有数字可读时会发生这种情况。
+
+```js
+alert( parseInt('a123') ); // NaN，第一个符号停止了读取
+```
+
+⚠️**parseInt 的第二个参数**
+
+1. `parseInt(value, radix)` 接收两个参数：
+   
+   - 第一个为数值或数值字符串，可以看作是字符串"abcd"
+   - 第二个为基数，必须为`2～36`，如果不填或为 0 则默认为`10`
+   
+2. 如何计算`parseInt("abcd", e)` ? 
+   - **关键是从小于 e 的那一位开始计算**，从右往左比较
+   - 当 e 属于 `2~36` 时，比较 `abcd` 每位与 `e `的大小关系，有三种情况：
+     - **都小于 e** => 如 parseInt("1024", 5)  = 4X5^0+2X5^1+0X5^2+1X5^3 = 139
+     - **其中一个大于 e** => 
+       - 位于中间，则跳过大于 e 本身的数字以及它后面的数字，从小于 e 的那一位开始计算，如 parseInt("1031", 2) = 0X2^0+1X2^1 = 2
+       - 位于开头，parseInt("810", 2) => NaN, 8 大于 2 
+     - **都大于或等于 e** => 如 parseInt("8", 5) = NaN 、parseInt("5", 5) = NaN
+   
+3. 回到 [1,2,3].map(parseInt)
+
+      - [1,2,3].map 实际会传递三个参数：当前 item，当前 index 和当前数组 arr，所以 parseInt 接收 item, index 两个参数即：
+
+        ```js
+        [1,2,3].map((item, index, [1,2,3]) => {
+          return parseInt(item, index)
+        })
+        parseInt(1, 0) => 1 * 10^0 = 1   radix = 0 看作 radix = 10
+        parseInt(2, 1) => NaN
+        parseInt(3, 2) => NaN
+        ```
+
+### 字符串
+
+#### 访问字符
+
+要获取 `pos` 位置的一个字符，可以使用方括号 `[pos]` 或者调用 [str.charAt(pos)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/charAt) 方法。第一个字符从零位置开始：
+
+```js
+let str = `Hello`;
+
+// 第一个字符
+alert( str[0] ); // H
+alert( str.charAt(0) ); // H
+
+// 最后一个字符
+alert( str[str.length - 1] ); // o
+```
+
+方括号是获取字符的一种现代化方法，而 `charAt` 是历史原因才存在的。
+
+它们之间的唯一区别是，如果没有找到字符，`[]` 返回 `undefined`，而 `charAt` 返回一个空字符串：
+
+```js
+let str = `Hello`;
+
+alert( str[1000] ); // undefined
+alert( str.charAt(1000) ); // ''（空字符串）
+```
+
+我们也可以使用 `for...of` 遍历字符：
+
+```js
+for (let char of "Hello") {
+  alert(char); // H,e,l,l,o（char 变为 "H"，然后是 "e"，然后是 "l" 等）
+}
+```
+
+#### 总结
+
+还有其他几种有用的字符串方法：
+
+- `str.trim()` ——删除字符串前后的空格（“trims”）。**`trim()`** 方法会从一个字符串的两端删除空白字符。在这个上下文中的空白字符是所有的空白字符 (space, tab, no-break space 等) 以及所有行终止符字符（如 LF，CR等）。
+
+  ```js
+  const greeting = '   Hello world!   ';
+  
+  console.log(greeting); // expected output: "   Hello world!   ";
+  
+  console.log(greeting.trim()); // expected output: "Hello world!";
+  ```
+
+### 解构赋值
+
+#### 数组解构
+
+```js
+// 我们有一个存放了名字和姓氏的数组
+let arr = ["Ilya", "Kantor"]
+
+// 解构赋值
+// sets firstName = arr[0]
+// and surname = arr[1]
+let [firstName, surname] = arr;
+
+alert(firstName); // Ilya
+alert(surname);  // Kantor
+```
+
+##### 等号右侧可以是任何可迭代对象
+
+……实际上，我们可以将其与任何可迭代对象一起使用，而不仅限于数组：
+```js
+let [a, b, c] = "abc"; // ["a", "b", "c"]
+let [one, two, three] = new Set([1, 2, 3]);
+```
+
+##### 交换变量值的技巧
+
+一个用于交换变量值的典型技巧：
+```js
+let guest = "Jane";
+let admin = "Pete";
+
+// 交换值：让 guest=Pete，admin=Jane
+[guest, admin] = [admin, guest];
+
+alert(`${guest} ${admin}`); // Pete Jane(成功交换！)
+```
+
+这里我们创建了一个由两个变量组成的临时数组，并且立即以交换了的顺序对其进行了解构。
+我们可以用这种方式交换两个以上的变量。
+
+#### 对象解构
+
+### Map and Set（映射和集合）
+
+#### 总结
+
+Map ——是一个<u>键值对</u>的集合，就像一个 `Object` 一样。差别是`Map` 允许<u>任何类型</u>的键（key），比如使用对象作为键。（与对象不同，键不会被转换成字符串。）作为字典。
+
+方法和属性如下：
+
+- `new Map([iterable])`——创建 map，可选择带有 `[key, value] `对的 `iterable`（例如数组）来进行初始化
+- `map.set(key, value)` ——根据键存储值。
+- `map.get(key)` ——根据键来返回值，如果 `map` 中不存在对应的 `key`，则返回 `undefined`。
+- `map.has(key)`——如果 `key` 存在则返回 `true`，否则返回 `false`。
+- `map.delete(key)`——删除指定键的值。
+- `map.clear()`——清空 map。
+- `map.size`——返回当前元素个数。
+
+如果要在 `map` 里使用循环，可以使用以下三个方法：
+
+- `map.keys()`——遍历并返回所有的键（returns an iterable for keys）
+- `map.values`——遍历并返回所有的值（returns an iterable for values）
+- `map.entries()` ——遍历并返回所有的实体（returns an iterable for entries）`[key, value]`，`for...of` 在默认情况使用的就是这个。
+
+```js
+let recipeMap = new Map([
+  ['cucumber', 500],
+  ['tomatoes', 350],
+  ['onion',    50]
+]);
+
+// 遍历所有的键（vegetables）
+for (let vegetable of recipeMap.keys()) {
+  alert(vegetable); // cucumber, tomatoes, onion
+}
+
+// 遍历所有的值（amounts）
+for (let amount of recipeMap.values()) {
+  alert(amount); // 500, 350, 50
+}
+
+// 遍历所有的实体 [key, value]
+for (let entry of recipeMap) { // 与 recipeMap.entries() 相同
+  alert(entry); // cucumber,500 (and so on)
+}
+```
+
+除此之外，`Map` 有内置的 `forEach`方法，与 `Array` 类似
+
+```js
+// 对每个键值对 (key, value) 运行 forEach 函数
+recipeMap.forEach( (value, key, map) => {
+  alert(`${key}: ${value}`); // cucumber: 500 etc
+});
+```
+
+###  Object.keys, values, entries
+
+对于普通对象，下列这些方法是可用的：
+
+- [Object.keys(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/keys) —— 返回一个包含该对象所有的键的数组。
+- [Object.values(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/values) —— 返回一个包含该对象所有的值的数组。
+- [Object.entries(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/entries) —— 返回一个包含该对象所有 [key, value] 键值对的数组。
+
+|          | Map          | Object                                  |
+| :------- | :----------- | :-------------------------------------- |
+| 调用语法 | `map.keys()` | `Object.keys(obj)`，而不是 `obj.keys()` |
+| 返回值   | 可迭代项     | “真正的”数组                            |
+
+```javascript
+let user = {
+  name: "John",
+  age: 30
+};
+```
+
+- `Object.key(user) = ["name", "age"]`
+- `Object.values(user) = ["Jonh", 30]`
+- `Object.entries(user) = [["name", "Jonh"], ["age", 30]]`
+
+**Object.keys/values/entries 会忽略 symbol 属性**
+
+> ⚠️就像 `for..in` 循环一样，这些方法会忽略使用 `Symbol(...)` 作为键的属性。通常这很方便。但是，如果我们也想要 Symbol 类型的键，那么这儿有一个单独的方法 [Object.getOwnPropertySymbols](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols)，它会返回一个只包含 Symbol 类型的键的数组。另外，还有一种方法 [Reflect.ownKeys(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)，它会返回 **所有** 键。
+
+## Object(对象)：基础知识
+
+### 可选链 "?."
+
+### 对象——原始值转换
+
+当对象相加 `obj + obj2`，相减 `obj1 - obj2`，或者使用 `alert(obj)` 打印时会发生什么？
+
+在这种情况下，对象会被自动转换为原始值，然后执行操作。
+
+1. 所有的对象在布尔上下文（context）中均为 `true`。所以对于对象，不存在 `to-boolean` 转换，只有字符串和数值转换。
+2. 数值转换发生在对象相减或应用数学函数时。例如，`Date` 对象可以相减，`date1-date2` 的结果是两个日期之间的差值。
+3. 至于字符串转换——通常发生在我们像 `alert(obj)` 这样输出一个对象和类似的上下文中。
+
+#### toString/valueOf
+
+## 网络请求
 
 ### ajax
 
@@ -79,6 +363,65 @@ xhr.send(null);
 然后要注意的是，当你设置 ajax 的 async 为 false 时（一般是为了先获取请求后的数据，给指定变量进行赋值或执行特点函数），这个时候进行的同步操作处理。这个时候并没有启动单独的线程，还是在 js 主线程执行，所以浏览器的 `GUI 渲染线程`会被阻塞掉。因此，针对这种情况的话，只能通过回调来处理。（deferred、promise 等）
 
 ### Fetch API
+
+### URL 对象
+
+#### 创建 URL 对象
+
+#### SearchParams
+
+#### 编码（encoding）
+
+##### 编码字符串（在 URL 对象之前）
+
+- [encodeURI](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/encodeURI) —— 编码整个 URL。
+- [decodeURI](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/decodeURI) —— 解码为编码前的状态。
+- [encodeURIComponent](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) —— 编码 URL 组件，例如搜索参数，或者 hash，或者 pathname。
+- [decodeURIComponent](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) —— 解码为编码前的状态。
+
+`encodeURIComponent` 和 `encodeURI` 之间有什么区别？我们什么时候应该使用哪个？
+
+> https://site.com:8080/path/page?p1=v1&p2=v2#hash
+
+在 URL 中 `:`，`?`，`=`，`&`，`#` 这类字符是被允许的，另一方面，对于 URL 的单个组件，例如一个搜索参数，则必须对这些字符进行编码，以免破坏 URL 的格式。
+
+- `encodeURI` 仅编码 URL 中完全禁止的字符。
+- `encodeURIComponent` 也编码这类字符，此外，还编码 `#`，`$`，`&`，`+`，`,`，`/`，`:`，`;`，`=`，`?` 和 `@` 字符。
+
+所以，对于一个 URL 整体，我们可以使用 `encodeURI`：
+
+```js
+// 在 url 路径中使用西里尔字符
+let url = encodeURI('http://site.com/привет');
+
+alert(url); // http://site.com/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82
+```
+
+而对于 URL 参数，我们应该改用 `encodeURIComponent`：
+
+```js
+let music = encodeURIComponent('Rock&Roll');
+
+let url = `https://google.com/search?q=${music}`;
+alert(url); // https://google.com/search?q=Rock%26Roll
+```
+
+对于每个搜索参数，我们应该使用 `encodeURIComponent`，以将其正确地插入到 URL 字符串中。最安全的方式是对 name 和 value 都进行编码，除非我们能够绝对确保它只包含允许的字符。
+
+## 基础
+### 面向对象与原型
+
+![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
+
+- **proto** 与 prototype 的区别e
+- 构造器与原型的区别，两者的作用用于哪里，有哪些应用场景
+- contructor
+- 什么是原型链
+- js 构建类与其他面向对象语言的区别如 C#、java
+- 如何判断类型 typeof 与 instanceof
+- in 操作符的使用
+- 应用场景：一些库、旧项目？
+  - vue 的原型链，给 vue 原型添加方法
 
 ### 函数
 
@@ -1986,10 +2329,10 @@ ES6 规范/webpack/rollup 模块化处理
       counter: counter,
       incCounter: incCounter,
     };
-
+    
     // 引入模块 main.js
     var mod = require("./counter");
-
+    
     console.log(mod.counter); // 3
     mod.incCounter(); // 这里内部的值改变不会影响输出的 mod.counter 值。
     console.log(mod.counter); // 3
@@ -2003,7 +2346,7 @@ ES6 规范/webpack/rollup 模块化处理
     export function incCounter() {
       counter++;
     }
-
+    
     // main.js
     import { counter, incCounter } from "./counter";
     console.log(counter); // 3
@@ -2018,7 +2361,7 @@ ES6 规范/webpack/rollup 模块化处理
     var counter = {
       value: 3,
     };
-
+    
     function incCounter() {
       counter.value++;
     }
@@ -2028,7 +2371,7 @@ ES6 规范/webpack/rollup 模块化处理
     };
     // 引入模块 main.js
     var mod = require("./counter.js");
-
+    
     console.log(mod.counter.value); // 3
     mod.incCounter();
     console.log(mod.counter.value); // 4
@@ -2325,6 +2668,7 @@ function Random(min, max) {
 
 ## 参考资料
 
+- https://zh.javascript.info
 - 面试题  
   - [Web-interview](https://github.com/luxiangqiang/Web-interview)
   - [动画：《大前端吊打面试官系列》 之原生 JavaScript 精华篇](https://blog.csdn.net/qq_36903042/article/details/104207646)

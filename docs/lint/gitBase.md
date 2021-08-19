@@ -48,6 +48,15 @@ git config --global --unset https.proxy
 git config --global --unset remote.origin.proxy
 ```
 
+也可以临时使用：
+```sh
+# 使用socks5协议
+HTTP_PROXY="socks5://127.0.0.1:1086" HTTPS_PROXY="socks5://127.0.0.1:1086" git clone https://github.com/alexjoverm/typescript-library-starter.git ts-axios
+
+# 使用http协议
+HTTP_PROXY="http://127.0.0.1:1087" HTTPS_PROXY="http://127.0.0.1:1087" git clone https://github.com/alexjoverm/typescript-library-starter.git ts-axios
+
+```
 ### Github 进行 fork 后如何与原仓库同步
 
 1. 查看远程仓库

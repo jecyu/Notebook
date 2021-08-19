@@ -16,12 +16,129 @@ Node 组成
 
 ![](../temp/sketch/node.png)
 
+## 前言
 
-## 基础知识
+Node 能力
 
-### 版本管理-nvm
+- **开发调试**
+- **框架设计**
+- **性能优化**
+- **灾备方案**
+
+### Node 应用
+
+- Web 服务
+- 开发工作流
+- 客户端应用
+
+#### Web 服务
+
+Web 服务开发领域，BFF 层，BFF 层是一个专门为前端业务提供数据的后端程序，这类程序的特点是不需要太强的服务器运算能力，但对程序的灵活性有较高的要求。这两个特点都正好和Node.js 相吻合。
+
+在Web 服务领域搭建一个 Node BFF 层是有很大好处的
+
+- 对于 Web 业务本身来说，
+
+  - Node.js 现在是最适合用来做 BFF 层的一门技术，有一个 Node.js BFF 层，能让前端有能力自由组装后台数据，这样可以节省大量的业务沟通成本，加快业务的迭代速度。
+  - 同时，前端工程师能自主决定前端与后台通讯的方式，也能让前端工程师有了更多的能力，着手于 Web 应用的性能优化。
+
+- 对于后台和运维工程师来说，
+
+  - Node.js BFF 层，它的搭建，绝对不是一个光靠前端工程师就能完成的事情，在搭建过程中涉及到的 RPC运用、系统运维等场景，都需要后端和运维的紧密配合。
+  - 通过搭建 BFF 层，除了后续能大幅减少自己在繁重业务中的工作量之外，还可以大大提升自己在架构领域的知识经验
+
+- 对于前端工程师自身来说，
+
+  - Node.js 虽然是一门非浏览器端的技术，但是它基于 JavaScript 的环境，能让前端工程师快速上手。
+
+  - 学会一门非浏览器端的技术，对于学习计算机领域的其他知识非常有好处，我们可以经由 Node.js 涉足数据库、操作系统、人工智能等等技术领域，让前端工程师不再因为技术壁垒，将眼光局限在浏览器这一个环境内。
 
 
+## Node 安装
+
+1. 安装 nvm https://blog.jamesauble.com/install-nvm-on-mac-with-brew-adb921fb92cc
+If you don’t have Homebrew installed, install it now.
+```js
+brew uninstall --ignore-dependencies node
+brew uninstall --force node
+```
+After installing it, update the Homebrew package list and install NVM.
+```js
+brew update
+brew install nvm
+```
+Next, create a directory for NVM.
+```js
+mkdir ~/.nvm
+```
+
+Now add these lines to ~/.bash_profile ( or ~/.zshrc for macOS Catalina or later)
+```js
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+
+```
+Now either quit and reopen your Terminal, or run
+
+```js
+source ~/.bash_profile
+```
+
+Echoing $NVM_DIR should now return your NVM directory
+
+```
+jamesauble@James-MacBook-Air:$ echo $NVM_DIR
+/Users/jamesauble/.nvm
+```
+
+
+
+然后通过 nvm 安装 node
+
+
+
+NVM使用笔记(mac)
+
+- https://www.jianshu.com/p/591ca01b012e
+
+1.NVM 下载太慢的解决方法
+
+更换下载源(默认是从 http://nodejs.org/dist/ 下载的, 国外服务器, 必然很慢)：
+
+
+
+```csharp
+NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node
+
+nvm install stable #安装最新稳定版 node
+```
+
+作者：Karnaugh
+链接：https://www.jianshu.com/p/591ca01b012e
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+Nom 命令找不到
+
+```js
+rm -R ~/.npm ~/.nvm
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+nvm install node
+```
+
+
+
+https://stackoverflow.com/questions/33874049/npm-not-found-when-using-nvm
+
+
+npm 镜像源
+```shell
+1.临时使用
+npm --registry https://registry.npm.taobao.org install express
+
+2.持久使用（推荐使用）
+打开cmd使用命令：npm config set registry https://registry.npm.taobao.org// 配置后可通过下面命令来验证是否成功　npm config ls// 此时：metrics-registry = "http://registry.npm.taobao.org/"表示设置成功npm config get registry// 或npm info express
+```
 ### 阻塞与非阻塞 IO
 
 Node 采用一个长期运行的进程，共享状态的并发。在 Node 中，你需要对回调函数如何修改当前内存中的变量（状态）特别小心。除此之外，你还要特别注意对错误的处理是否会潜在地修改这些状态，从而导致了整个进程不可用。

@@ -4,6 +4,12 @@
 
 对于小 demo，可以使用在 codepen 沙箱进行练习，https://codesandbox.io/s/small-grass-1ju25?file=/src/App.vue。其他的技术使用同理，比如 React、Angular
 
+## TypeScript 支持
+
+官方文档说明
+
+- https://v3.vuejs.org/guide/typescript-support.html#project-creation
+
 ### 组件编写
 
 #### **定义组件**

@@ -1,0 +1,26 @@
+{
+  "name": "chapter3",
+  "version": "1.0.0",
+  "description": "1. 先跑 npm run microservice 2. 再跑 npm run bff 3. 访问 demo 页   - http://localhost:3000/download/   - http://localhost:3000/detail/?columnid=233   - http://localhost:3000/play/   - http://localhost:3000/list/",
+  "main": "index.js",
+  "scripts": {
+    "bff": "node entry.js",
+    "microservice": "node server.js"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/register": "^7.15.3",
+    "easy_sock": "^0.4.1",
+    "graphql": "^15.5.1",
+    "koa": "^2.13.1",
+    "koa-graphql": "^0.9.0",
+    "koa-mount": "^4.0.0",
+    "koa-static": "^5.0.0",
+    "protocol-buffers": "^4.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
