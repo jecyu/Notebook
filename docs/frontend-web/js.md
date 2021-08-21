@@ -208,7 +208,7 @@ alert(`${guest} ${admin}`); // Pete Jane(成功交换！)
 
 #### 总结
 
-Map ——是一个<u>键值对</u>的集合，就像一个 `Object` 一样。差别是`Map` 允许<u>任何类型</u>的键（key），比如使用对象作为键。（与对象不同，键不会被转换成字符串。）作为字典。
+**Map ——是一个<u>键值对</u>的集合**，就像一个 `Object` 一样。差别是`Map` 允许<u>任何类型</u>的键（key），比如使用对象作为键。（与对象不同，键不会被转换成字符串。）作为字典。
 
 方法和属性如下：
 
@@ -258,6 +258,19 @@ recipeMap.forEach( (value, key, map) => {
 });
 ```
 
+**Set ——是一组唯一值的集合**。
+
+方法和属性：
+
+- `new Set([iterable])` ——创建 set，可选择带有 `iterable` （例如数组）来进行初始化。
+- `set.add(value)`——添加一个值（如果 `value` 存在则不做任何修改），返回 set 本身。
+- `set.delete(value)`——删除值，如果 `value` 在这个方法调用的时候存在则返回 `true`，否则返回 `false`。
+- `set.has(value)`——如果 `value` 在 set 中，返回 `true` ，否则返回 `false`。
+- `set.clear()` ——清空 set。
+- `set.size`——元素的个数。
+
+在 `Map` 和 `Set` 中迭代总是按照值插入的顺序进行的，所以我们不能说这些集合是无序的，但是我们不能对元素进行重新排序，也不能直接按其编号来获取元素。
+
 ###  Object.keys, values, entries
 
 对于普通对象，下列这些方法是可用的：
@@ -301,6 +314,47 @@ let user = {
 3. 至于字符串转换——通常发生在我们像 `alert(obj)` 这样输出一个对象和类似的上下文中。
 
 #### toString/valueOf
+
+## 基础运算符，数学
+
+### 数学
+
+- 加法 `+`,
+- 减法 `-`,
+- 乘法 `*`,
+- 除法 `/`,
+- 取余 `%`,
+- 求幂 `**`.
+
+### 位运算符
+
+位运算符把运算元当做 32 位整数，并在它们的二进制表现形式上操作。
+
+这些运算符不是 JavaScript 特有的。大部分的编程语言都支持这些运算符。
+
+下面是位运算符：
+
+- 按位与（`&`）
+- 按位或 （`|`）
+- 按位异或（`^`）
+- 按位非（`~`）
+- 左移（`<<`）
+- 右移（`>>`）
+- 无符号右移（`>>>`）
+
+| Operator                                                     | Usage     | Description                                                  |
+| :----------------------------------------------------------- | :-------- | :----------------------------------------------------------- |
+| [Bitwise AND](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_AND) | `a & b`   | Returns a one in each bit position for which the corresponding bits of both operands are ones. |
+| [Bitwise OR](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR) | `a | b`   | Returns a zero in each bit position for which the corresponding bits of both operands are zeros. |
+| [Bitwise XOR](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR) | `a ^ b`   | Returns a zero in each bit position for which the corresponding bits are the same. [Returns a one in each bit position for which the corresponding bits are different.] |
+| [Bitwise NOT](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_NOT) | `~ a`     | Inverts the bits of its operand.                             |
+| [Left shift](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift) | `a << b`  | Shifts `a` in binary representation `b` bits to the left, shifting in zeros from the right.<br />将二进制表示的 a 左移 b 位，从右移零。 |
+| [Sign-propagating right shift](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift) | `a >> b`  | Shifts `a` in binary representation `b` bits to the right, discarding bits shifted off. |
+| [Zero-fill right shift](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift) | `a >>> b` | Shifts `a` in binary representation `b` bits to the right, discarding bits shifted off, and shifting in zeros from the left. |
+
+#### 左移  a << b
+
+比如 1 << 8 得到 256
 
 ## 网络请求
 

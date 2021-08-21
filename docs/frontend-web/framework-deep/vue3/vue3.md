@@ -43,6 +43,40 @@ props: {
 }
 ```
 
+## 插槽
+
+### 具名插槽
+
+```tsx
+import "./splitter.scss";
+
+import { defineComponent } from "vue";
+import { splitterProps, SplitterProps } from "./splitter-types";
+import DSplitterBar from "./splitter-bar";
+
+export default defineComponent({
+  name: "DSplitter",
+  components: {
+    DSplitterBar,
+  },
+  props: splitterProps,
+  emits: [],
+  setup(props: SplitterProps, ctx) {
+    return {};
+  },
+  render() {
+    const { $slots } = this;
+
+    return (
+      <div class="d-splitter">
+        {$slots.DSplitterPane?.()}
+        <d-splitter-bar></d-splitter-bar>
+      </div>
+    );
+  },
+});
+```
+
 ## 组合式 API
 
 子组件如何接收父组件的传值及注意事项、子组件如何触发父组件的方法
@@ -265,7 +299,18 @@ const state = reactive({
 
 ```
 
-### ref
+### Refs
+
+- 参考资料：https://juejin.cn/post/6976679225239535629
+
+#### ref
+
+- `ref` 可以生成 `值类型`（即基本数据类型） 的响应式数据；
+- `ref` 可以用于**模板**和**reactive**；
+- `ref` 通过 `.value` 来修改值（一定要记得加上 `.value` ）；
+- `ref` 不仅可以用于**响应式**，还可以用于模板的 `DOM` 元素。
+
+
 
 ref 和 reactive 一样，同样是实现响应式数据的方法。在业务开发中，我们可以使用它来定义一些简单数据，
 
@@ -274,6 +319,7 @@ ref 和 reactive 一样，同样是实现响应式数据的方法。在业务
 ref(0) => reactive({ value: 0 })
 
 所以 count 相当于 reactive 返回的一个值，根据 reactive 修改值的方式，就可以理解为什么 ref 返回的值是通过 .value 的形式修改值了。
+
 还有一点需要注意，当 ref 作为渲染上下文的属性返回（即在 setup() 返回的对象中）并在模板中使用时，它会自动解套，无需在模板内额外书写 .value。之所以会自动解套，是因为 template 模板在被解析的时候，Vue 3.0 内部通过判断模板内的变量是否是 ref 类型。如果是，那就加上 .value，如果不是则为 reactive 创建的响应集代理数据。
 
 ￼
@@ -301,6 +347,78 @@ export default{
 }
 </script>
 ```
+#### toRef
+
+- `toRef` 可以响应对象 `Object` ，其针对的是某一个响应式对象（ `reactive` 封装）的属性`prop` 。
+
+- `toRef` 和对象 `Object` 两者**保持引用关系**，即一个改完另外一个也跟着改。
+
+- `toRef` 如果用于普通对象（非响应式对象），产出的结果不具备响应式。
+
+我们通过 `reactive` 来创建一个**响应式对象**，之后呢，如果只单独要对响应式对象里面的**某一个属性**进行响应式，那么使用`toRef` 来解决。用 `toRef(Object, prop)` 的形式来传**对象名**和**具体的属性名**，达到某个属性数据响应式的效果
+
+
+
+`toRef` is useful when you want to pass the ref of a prop to a composition function:
+
+```js
+export default {
+  setup(props) {
+    useSomeFeature(toRef(props, 'foo'))
+  }
+}
+```
+
+#### toRefs
+
+- 与 `toRef` 不一样的是， `toRefs` 是针对整个对象的所有属性，目标在于将响应式对象（ `reactive` 封装）转换为普通对象
+
+- 普通对象里的每一个属性 `prop` 都对应一个 `ref`
+
+- `toRefs` 和对象 `Object` 两者**保持引用关系**，即一个改完另外一个也跟着改。
+
+面对使用对象多个属性进行模版渲染时，如果直接解构 `reactive` ，那么解构出来的对象会直接失去响应式。这时候就可以使用 toRefs 进行处理。
+
+
+
+另外合成函数返回响应式对象也可以使用 toRefs 处理，这样也不怕被进行解构。
+
+`toRefs` is useful when returning a reactive object from a composition function so that the consuming component can destructure/spread the returned object without losing reactivity:
+
+```js
+function useFeatureX() {
+  const state = reactive({
+    foo: 1,
+    bar: 2
+  })
+
+  // logic operating on state
+
+  // convert to refs when returning
+  return toRefs(state)
+}
+
+export default {
+  setup() {
+    // can destructure without losing reactivity
+    const { foo, bar } = useFeatureX()
+
+    return {
+      foo,
+      bar
+    }
+  }
+}
+```
+
+#### 最佳使用方式
+
+**通过上面的演示可以得出以下几点结论：**
+
+- 用 `reactive` 做对象的**响应式**，用 `ref` 做**值类型**的响应式。
+- `setup` 中返回 `toRefs(state)` ，或者 `toRef(state, 'xxx')` 。
+- 为了防止误会产生， `ref` 的变量命名尽量都用 `xxxRef` ，这样在使用的时候会更清楚明了。
+- **合成函数**返回**响应式对象**时，使用 `toRefs`
 
 ### computed
 

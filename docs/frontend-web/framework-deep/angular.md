@@ -376,6 +376,42 @@ export class ProductListComponent {
 
 ### 生命周期
 
+组件的生命周期由 Angular 内部管理，从组件的创建、渲染，到数据变动事件的触发，再到组件从 DOM 中移除，Angular 都提供了一系列的钩子。
+
+开发者可以实现一个或者多个生命周期钩子（接口），从而在生命周期的各阶段作出适当的处理。这些钩子接口包含在 @angular/core 中。每个接口都对应一个名为 “ng + 接口名” 的方法，例如 OnInit 接口有一个叫 ngOnInit 的钩子方法，示例代码如下：
+
+```tsx
+class ExampleInitHook implements OnInit {
+  constructor() {}
+  ngOnInit() {
+    console.log('OnInit');
+  }
+}
+```
+
+以下是组件常用的生命周期钩子方法，Angular 会按以下的顺序依次调用钩子方法：
+
+- **ngOnChanges**
+- ngOnInit
+- ngDoCheck
+- **ngAfterContentInit**
+- ngAfterContentChecked
+- ngAfterViewInit
+- ngAfterViewChecked
+- **ngOnDestroy**
+
+除此之外，有的组件还提供了自己特有的生命周期钩子，例如路由有 routerOnActiveate 钩子。
+
+#### ngOnChanges
+
+#### ngAfterContentInit
+
+在组件使用 `<ng-content>` 将外部内容嵌入到组件视图后就会调用 `ngAfterContentInit`，它在第一次 `ngDoCheck` 执行后调用，且只执行一次。
+
+#### ngOnDestroy
+
+`ngOnDestroy` 在销毁指令/组件之前触发。那些不会被垃圾回收器自动回收的资源（比如已订阅的观察者事件、绑定过的 DOM 事件、通过 setTimeout 或 setInterval 设置过的计时器，等等）都应当在`ngOnDestroy` 中手动销毁掉，从而避免发生内存泄漏等问题。
+
 ### 其他
 
 #### ng-template、ng-content、ng-container
@@ -394,7 +430,11 @@ export class ProductListComponent {
 </ng-container>
 ```
 
+**ng-content**
 
+内容嵌入（ng-content）是组件的一个高级功能特性，它能很好地扩充组件的功能，方便代码的复用。
+
+内容嵌入通常用来创建可复用的组件，典型的例子是模态对话框或导航栏。在 开发 Web 应用的时候，模态对话框和导航栏是使用非常频繁的 UI 组件，而内容嵌入特性提供了一种复用的方式，使得这些组件具有一致的样式，但内容又可以自定义。
 
 ## 模板
 
