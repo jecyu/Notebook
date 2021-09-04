@@ -167,9 +167,53 @@ export class HelloWorldComponent {
 
 ### **组件的输入/输出**
 
+Angular 提供了输入 （@Input）和输出（@Ouput）语法来处理组件数据的流入流出。
+
 ```js
-@Input() icon: string; // 输入，相当于 Vue 的 prop
-@Output() btnClick = new EventEmitter<any>(); // 输出
+@Input() product: Product | undefined; // 输入，相当于 Vue 的 prop
+@Output() notify = new EventEmitter<any>(); // 输出
+```
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { Input } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
+import { Product } from '../products';
+
+@Component({
+  selector: 'app-product-alerts',
+  templateUrl: './product-alerts.component.html',
+  styleUrls: ['./product-alerts.component.css']
+})
+export class ProductAlertsComponent implements OnInit {
+  @Input() product: Product | undefined;
+  @Output() notify = new EventEmitter();
+  constructor() {}
+
+  ngOnInit() {}
+}
+```
+
+父组件
+
+```html
+<h2>Products</h2>
+
+<div *ngFor="let product of products">
+  <h3>
+    <a [title]="product.name + ' details'" [routerLink]="['/products', product.id]">
+      {{ product.name }}
+    </a>
+  </h3>
+
+  <p *ngIf="product.description">
+    Description: {{ product.description }}
+  </p>
+
+  <button (click)="share()">Share</button>
+
+  <app-product-alerts [product]="product" (notify)="onNotify()"></app-product-alerts>
+</div>
 ```
 
 ### 模版
@@ -402,7 +446,50 @@ class ExampleInitHook implements OnInit {
 
 除此之外，有的组件还提供了自己特有的生命周期钩子，例如路由有 routerOnActiveate 钩子。
 
+#### ngOnInit
+
+ngOnInit 钩子用于数据绑定输入属性之后初始化组件。该钩子方法会在第一次 ngOnChanges 之后被调用。
+
+使用 ngOnInit 有以下两个重要的原因：
+
+- 组件构造后不久就要进行复杂的初始化。
+- 需要在输入属性设置完成之后才构建组件。
+
+在组件中，经常会使用 ngOnInit 获取数据。为什么不在组件构造函数中获取数据呢？首先，构造函数做的事，例如成员变量初始化，应该尽可能简单，这对于有经验的开发人员来说，已经是一种共识。
+
+另外，这对于 Angular 自动化测试的一些场景也有非常重要的作用，把业务相关的初始化代码放到 ngOnInit 里可以很容易进行 Hook 操作，而构造函数不能被显式调用，因此无法进行 Hook 操作。
+
+例子
+
+```tsx
+// splitter-bar.component.ts
+ngOnInit(): void {
+    let state;
+    const resizeListener = this.resize.pressEvent
+      .pipe(
+        tap(this.stopPropagation),
+        filter(() => this.splitter.isResizable(this.index)),
+        tap(() => state = this.splitter.dragState(this.index)),
+        switchMap(this.moveStream(this.resize))
+      )
+      .subscribe(({ pageX, pageY, originalX, originalY }) => {
+        let distance;
+        if (this.orientation === 'vertical') {
+          distance = pageY - originalY;
+        } else {
+          distance = pageX - originalX;
+        }
+        this.splitter.setSize(state, distance);
+      });
+    this.subscriptions.add(resizeListener);
+  }
+```
+
 #### ngOnChanges
+
+用来响应组件输入值发生变化的事件。该方法接收一个 SimpleChange 对象，包含当前值和变化前的值。该方法在 ngOnInit 之前，或者当数据绑定输入属性的值发生变化时触发。
+
+需要注意的是，ngOnChanges 当且仅当组件输入数据变化时被调用，这里的 “输入数据”指的是通过 @Input 装饰器显式指定的那些变量。
 
 #### ngAfterContentInit
 
@@ -411,6 +498,79 @@ class ExampleInitHook implements OnInit {
 #### ngOnDestroy
 
 `ngOnDestroy` 在销毁指令/组件之前触发。那些不会被垃圾回收器自动回收的资源（比如已订阅的观察者事件、绑定过的 DOM 事件、通过 setTimeout 或 setInterval 设置过的计时器，等等）都应当在`ngOnDestroy` 中手动销毁掉，从而避免发生内存泄漏等问题。
+
+### 操作DOM：渲染器 Renderer
+
+> https://angular.io/api/core/Renderer2
+
+渲染器是 Angular 为我们提供的一种内置服务，用于执行 UI 渲染操作。在浏览器中，渲染是将模型映射到视图的过程。模型的值可以是 JavaScript 中的原始数据类型、对象、数组或其它的数据对象。然而视图可以是页面中的段落、表单、按钮等其他元素，这些页面元素内部使用 DOM
+
+```js
+export abstract class Renderer2 {
+  abstract createElement(name: string, namespace?: string|null): any;
+  abstract createComment(value: string): any;
+  abstract createText(value: string): any;
+  abstract setAttribute(el: any, name: string, value: string,
+    namespace?: string|null): void;
+  abstract removeAttribute(el: any, name: string, namespace?: string|null): void;
+  abstract addClass(el: any, name: string): void;
+  abstract removeClass(el: any, name: string): void;
+  abstract setStyle(el: any, style: string, value: any, 
+    flags?: RendererStyleFlags2): void;
+  abstract removeStyle(el: any, style: string, flags?: RendererStyleFlags2): void;
+  abstract setProperty(el: any, name: string, value: any): void;
+  abstract setValue(node: any, value: string): void;
+  abstract listen(
+      target: 'window'|'document'|'body'|any, eventName: string,
+      callback: (event: any) => boolean | void): () => void;
+}
+```
+
+需要注意的是在 Angular 6 版本，我们使用 `Renderer2` 替代 `Renderer`。通过观察 `Renderer` 相关的抽象类 (`Renderer`、`Renderer2`)，我们发现抽象类中定义了很多抽象方法，用来创建元素、文本、设置属性、添加样式和设置事件监听等。
+
+#### 使用 Renderer
+
+```ts
+@Component({
+  selector: 'exe-renderer',
+  template: `
+    <h3>Renderer Component</h3>
+  `
+})
+export class ExeComponent {
+  constructor(private renderer: Renderer2, el: ElementRef) {
+    this.renderer.setProperty(el.nativeElement, 'author', 'danwang');
+  }
+}
+```
+
+#### 实例
+
+- 一个给angular中组件移除`class`的方法
+
+```ts
+private removeClass(el: HTMLElement, classMap: object, renderer: Renderer2): void {
+    for (const i in classMap) {
+      if (classMap.hasOwnProperty(i)) {
+        renderer.removeClass(el, i);
+      }
+    }
+  }
+```
+
+- 添加`class`方法
+
+```ts
+private addClass(el: HTMLElement, classMap: object, renderer: Renderer2): void {
+    for (const i in classMap) {
+      if (classMap.hasOwnProperty(i)) {
+        if (classMap[ i ]) {
+          renderer.addClass(el, i);
+        }
+      }
+    }
+  }
+```
 
 ### 其他
 
@@ -441,6 +601,161 @@ class ExampleInitHook implements OnInit {
 ### 表单
 
 ## 指令
+
+在 Angular 中，指令是一个重要的概念，它作用在特定的 DOM 元素上，可以扩展这个元素的功能，为元素增加新的行为。
+
+指令的使用并不复杂，它与 HTML 元素属性的使用方式一致。不同的是，HTML 语法标准为 HTML 元素预定义了特定的属性，浏览器遵循这一语法标准，实现了这些属性的内置行为。语法标准预定义的属性是有限的、不可扩展的。
+
+而 Angular 中的指令是可自定义的、可任意扩展的，这在一定程度上弥补了标准 HTML 元素属性功能的不足。
+
+指令分类，**属性指令、结构指令和组件**。
+
+
+
+```js
+// Directive
+@Directive({
+  selector: 'myHelloWorld'
+})
+class HelloWorldDirective {
+  //...
+}
+```
+
+组件与指令的基本结构非常相似，**差别在于组件中包含了模版**。组件作为指令的一个子类，它的部分生命周期钩子与指令的相同。
+
+| 钩子方法    | 作用                                                         |
+| ----------- | ------------------------------------------------------------ |
+| ngOninit    | 在 Angular 完成初始化输入属性的数据绑定后，初始化指令/组件   |
+| ngOnChanges | 在 Angular 初始化输入属性的数据绑定前响应一次，之后当检测到数据绑定发生变化后就会被调用，这个方法接收一个包含当前和之前数据的 SimpleChanges 对象 |
+| ngDoCheck   | 用于变化监测，该钩子方法会在每次变化监测发生时被调用         |
+| ngOnDestroy | 在 Angular 销毁指令/组件之前执行清理工作，此时应注销观察者对象或者解绑事件处理器以避免内存泄漏 |
+
+#### 内置指令
+
+- 通用指令
+- 路由指令
+- 表单指令
+
+### 自定义属性指令
+
+#### 实现属性指令
+
+#### 为指令绑定输入
+
+#### 响应用户操作
+
+```js
+import { Directive, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+
+@Directive({
+  selector: '[dResize]'
+})
+export class ResizeDirective implements OnInit, OnDestroy {
+  // 是否允许拖动
+  @Input() enableResize = true;
+  // 按下事件，mousedown，touchstart等
+  @Output() pressEvent = new EventEmitter<any>();
+  // 拖动中事件，mousemove，touchmove等
+  @Output() dragEvent = new EventEmitter<any>();
+ // 释放事件，mouseup，touchend等
+  @Output() releaseEvent = new EventEmitter<any>();
+  constructor(private el: ElementRef, private ngZone: NgZone) {}
+
+  ngOnInit() {
+    if (this.enableResize) {
+      this.ngZone.runOutsideAngular(() => {
+        this.bindEvent();
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.enableResize) {
+      this.unbind(this.el.nativeElement, 'mousedown', this.mousedown);
+      this.unbind(this.el.nativeElement, 'touchstart', this.touchstart);
+    }
+  }
+
+  bind = (el, event, callback) => el.addEventListener && el.addEventListener(event, callback);
+
+  unbind = (el, event, callback) => el && el.removeEventListener && el.removeEventListener(event, callback);
+
+  bindEvent() {
+    const element = this.el.nativeElement;
+    // 绑定mousedown事件
+    this.bind(element, 'mousedown', this.mousedown);
+    // 绑定触屏事件
+    this.bind(element, 'touchstart', this.touchstart);
+  }
+
+  mousedown = (e) => {
+    this.bind(document, 'mousemove', this.mousemove);
+    this.bind(document, 'mouseup', this.mouseup);
+    this.pressEvent.emit(this.normalizeEvent(e));
+  }
+
+  mousemove = (e) => {
+    this.dragEvent.emit(this.normalizeEvent(e));
+  }
+
+  mouseup = (e) => {
+    this.unbind(document, 'mousemove', this.mousemove);
+    this.unbind(document, 'mouseup', this.mouseup);
+    this.releaseEvent.emit(this.normalizeEvent(e));
+  }
+
+  touchstart = (e) => {
+    this.bind(document, 'touchmove', this.touchmove);
+    this.bind(document, 'touchend', this.touchend);
+    if (e.touches.length === 1) {
+      this.pressEvent.emit(this.normalizeEvent(e));
+    }
+  }
+
+  touchmove = (e) => {
+    if (e.touches.length === 1) {
+      this.dragEvent.emit(this.normalizeEvent(e));
+    }
+  }
+
+  touchend = (e) => {
+    this.unbind(document, 'touchmove', this.touchmove);
+    this.unbind(document, 'touchend', this.touchend);
+    if (e.touches.length === 0) {
+      this.releaseEvent.emit(this.normalizeEvent(e));
+    }
+  }
+
+  // 返回常用位置信息
+  normalizeEvent(e) {
+    // 判断事件类型，用于计算位置坐标
+    if (e.type.match(/touch/)) {
+      return {
+          pageX: e.changedTouches[0].pageX,
+          pageY: e.changedTouches[0].pageY,
+          clientX: e.changedTouches[0].clientX,
+          clientY: e.changedTouches[0].clientY,
+          type: e.type,
+          originalEvent: e,
+          isTouch: true
+      };
+  }
+    return {
+        pageX: e.pageX,
+        pageY: e.pageY,
+        clientX: e.clientX,
+        clientY: e.clientY,
+        offsetX: e.offsetX,
+        offsetY: e.offsetY,
+        type: e.type,
+        originalEvent: e
+    };
+}
+}
+```
+
+### 自定义结构指令
 
 ## 服务与 RxJS
 
@@ -604,6 +919,32 @@ Rx 基础自响应式编程范式，已经在多种编程语言中实现，而 R
 ## 依赖注入
 
 ```js
+// app.component.ts
+import { Component } from '@angular/core'
+
+// 1. 导入被依赖对象的服务
+import { ContactService } from './shared/contact.service';
+import { LoggerService } from './shared/logger/service';
+import { UserService } from './shared/user.service';
+
+@Component({
+  moduleId: module.id,
+  selector: 'contact-app',
+  // 2. 在组件中配置注入器
+  providers: [ContactService, UserService, LoggerService],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+
+export class ContactAppComponent {
+  // 3. 在组件构造函数中声明需要注入的依赖
+  constructor(logger: LoggerService, contactService: ContactService, userService: UserService) {}
+}
+```
+
+
+
+```js
 import { Injectable } from '@angular/core';
 import { Product } from './products';
 import { HttpClient } from '@angular/common/http';
@@ -672,6 +1013,29 @@ export class AppModule { }
 
 - https://angular.io/start/start-routing
 
+## 其他 
+
+### NgZone
+
+A zone is an execution context that persists across async tasks. You can think of it as [thread-local storage](https://en.wikipedia.org/wiki/Thread-local_storage) for JavaScript VMs. This guide describes how to use Angular's NgZone to automatically detect changes in the component to update HTML.
+
+```js
+import { NgZone} from '@angular/core';
+  ngOnInit() {
+    if (this.enableResize) {
+      this.ngZone.runOutsideAngular(() => {
+        this.bindEvent();
+      });
+    }
+  }
+```
+
+这里的 ngZone.runOutsideAngular 的作用是什么？为什么要使用它？
+
+**参考资料**：
+
+- [NgZone](https://angular.io/guide/zone)
+
 ## 实战 DevUI
 
 ### **实现一个** **angular Splitter** **组件**
@@ -679,9 +1043,54 @@ export class AppModule { }
 angular -》 vue3 步骤：
 
 1. 从 HTML 结构入手，分析使用的 demo 基本用法，html 的结构怎么定义的，怎么使用。从这里可以分析父组件和子组件。（跟手写代码从测试用例入手很像）
-2. 
+2. 根据 HTML 完善 TS 逻辑，完善子组件。
+
+#### 基本用法
+
+##### Splitter
+
+HTML
+
+```html
+<ng-content select="d-splitter-pane"></ng-content>
+<ng-container *ngFor="let pane of panes; let index = index; let last = last">
+  <d-splitter-bar
+    dResize
+    [style.order]="index * 2 + 1" // 利用 pane 的数量，动态安排 bar 的 order 为 1、3、5，保证处于中间。
+    *ngIf="!last"
+    [index]="index"
+    [splitBarSize]="splitBarSize"
+    [disabledBarSize]="disabledBarSize"
+    [orientation]="orientation"
+    [showCollapseButton]="showCollapseButton"
+  >
+  </d-splitter-bar>
+</ng-container>
+
+```
+
+**CSS**
+
+- flex 布局
+
+```scs
+
+```
+
+**TS**
+
+- input
+  - orientation
+  - splitBarSize
+
+##### Spliter-bar
+
+**ts**
+
+- orientation
 
 ## 参考资料
 
 - [半小时入门 Angular 2](https://juejin.cn/post/6844903475038388232)
+- [手把手教你使用Vue/React/Angular三大框架开发Pagination分页组件](https://juejin.cn/post/6844904151730782221)
 

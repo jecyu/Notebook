@@ -99,6 +99,24 @@ qasida
 ```
 
 为什么无法匹配 `Iraq` 呢？正则表达式要求 q 之后跟一个 u 以外的字符，如果文本行的结尾有一个换行字符，就可以成功匹配到。因为 egrep 会在检查正则表达式之前把这些换行符去掉，所以在行尾的 q 之后，没有能够匹配到 u 以外的字符。
+
+#### 排除字符串
+
+```js
+import Vue from "vue";
+// 自动注册指令
+
+const req = require.context("./", false, /\.\/(?!index\.)\w*\.js$/); // 排除 index
+
+req.keys().forEach((fileName) => {
+  const directiveName = fileName.replace(/\.\/|\.js/g, "");
+  Vue.directive(directiveName, req(fileName).default);
+});
+
+```
+
+
+
 #### 用点匹配任意字符
 
 元字符 `[.]`（通常称为点号）用来匹配任意字符的字符组的简便写法。如果我们需要在表达式中使用一个“匹配任何字符”的占位符（placeholder），用点号就很方便。
@@ -505,7 +523,7 @@ alert( '12-34-56'.replace( /-/g, ":" ) )  // 12:34:56
 let str = "John Smith";
 
 // 交换名字和姓氏
-alert(str.replace(/(john) (smith)/i, '$2, $1')) // Smith, John
+alert(str.replace(/(john) (smi)/i, '$2, $1')) // Smith, John
 ```
 
 ##### **对于需要“智能”替换的场景，第二个参数可以是一个函数。**

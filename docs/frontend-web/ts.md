@@ -571,7 +571,7 @@ let someValue: any = 'this is a string'
 let strLength: number = (someValue as string).length
 ```
 
-两种形式是等价的。 至于使用哪个大多数情况下是凭个人喜好；然而，当你在 TypeScript 里使用 JSX 时，只有 `as` 语法断言是被允许的。
+两种形式是等价的。 至于使用哪个大多数情况下是凭个人喜好；然而，**当你在 TypeScript 里使用 JSX 时，只有 `as` 语法断言是被允许的。**
 
 使用例子有：
 
@@ -596,7 +596,39 @@ function getLength(something: string | number): number {
 }
 ```
 
+vue3 应用例子：
+
+```tsx
+import type { PropType, ExtractPropTypes } from "vue";
+export type SplitterOrientation = "vertical" | "horizontal";
+
+export const splitterProps = {
+  /**
+   * 可选，指定 Splitter中窗格的方向，默认水平分割。
+   */
+  orientation: {
+    type: String as PropType<SplitterOrientation>, // Vue 对定义了 type 的 prop 执行运行时验证。要将这些类型提供给 TypeScript，我们需要使用 PropType 强制转换构造函数，这样的话 String 会强制遵守为 "vertical" | "horizontal"
+    default: "horizontal",
+  },
+  // 如果 type 不是复杂的类型，则不需要使用 PropType 转换
+   /**
+   * 分隔条大小
+   */
+  splitBarSize: {
+    type: String,
+    required: true,
+  },
+} as const;
+
+export type SplitterProps = ExtractPropTypes<typeof splitterProps>;
+
+```
+
+vue3  https://blog.csdn.net/ZY_FlyWay/article/details/112695221
+
 #### 非空断言
+
+在上下文当类型检查器无法断定类型时，一个新的后缀表达式操作符 `!`可以用于断言操作对象是否 `null` 和非 `undefined` 类型。**具体而言，x! 将 x 值域中排除 null 和 undefined。**
 
 #### 确定赋值断言
 
@@ -2217,8 +2249,6 @@ console.log(greeter2.greet())
 
 如上一节里所讲的，类定义会创建两个东西：类的实例类型和一个构造函数。 因为类可以创建出类型，所以你能够在允许使用接口的地方使用类。
 
-如上一节里所讲的，类定义会创建两个东西：类的实例类型和一个构造函数。 因为类可以创建出类型，所以你能够在允许使用接口的地方使用类。
-
 ```typescript
 class Point {
   x: number
@@ -3548,6 +3578,456 @@ private padLeft(value: string, padding: string | number) {
   }
 ```
 
+###
+
+## 声明文件
+
+```ts
+// shims-tsx.d.ts
+import Vue, { VNode } from "vue";
+
+declare global {
+  namespace JSX {
+    // tslint:disable no-empty-interface
+    interface Element extends VNode {}
+    // tslint:disable no-empty-interface
+    interface ElementClass extends Vue {}
+    interface IntrinsicElements {
+      [elem: string]: any;
+    }
+  }
+}
+```
+
+#### ts 文件模块组织
+
+在 C# 里面我们习惯于将每个类都单独放在一个文件中，并使用命名空间将这些类组合在一起。而在 TypeScript 中 namespace 的概念与 C# 完全不一样，类似的概念就是放在全局空间 namespace 了，当然也有放置在模块内部的。
+
+<u>模块除了可以解决命名空间的冲突问题外，还能明确依赖关系，只有导出的模块在外部才可见。</u>而就算 C# 无论是否使用 using，都可以通过命名空间访问。
+
+#### 模块（module） vs 命名空间（namespace） vs declare（声明）
+
+在 ts 中，分为普通文件与类型声明文件。
+
+普通文件与文件的组织也是以模块（以前是命名空间）的形式进行的。对于正常的 ts 文件，它也是采用 ES6 模式进行 import/export 的
+
+而对于类型声明文件来说，就使用到了 declare 和 namespace，module，无论是 `declare namespace` 还是 `declare module` 只要写了 **export，都是声明在局部模块内的，也就是别的模块需要使用的话，则需要 import 进来**。**否则，就是声明在全局命名空间下的**。
+
+因此，要看你写的 ts 普通文件要在哪个场景下使用，es6 还是 umd 否则是全局变量 `<script>` 引入，然后编写不同的类型声明文件。
+
+#### 什么是声明语句
+
+当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。
+
+例如 引入 vue 后缀文件的模块，tsc 是识别不了，会显示找不到模块的错误。
+
+```ts
+import Vue from "vue"; // 因为 vue 已经提供了声明文件，因此不会报错
+import App from "./App.vue";
+// 这里会报错：Cannot find module './App.vue'
+```
+
+因此需要声明模块，这样引入 `.vue` 后缀的文件就不会报编译错误了。
+
+```ts
+// shims-vue.d.ts // 这里是声明模块，对 "*.vue" 模块的，一个文件就是一个模块
+declare module "*.vue" {
+  import Vue from "vue";
+  export default Vue;
+}
+```
+
+上面的代码告诉 TypeScript `*.vue` 后缀的文件可以交给 vue 模块来处理。
+
+`declare module "*.vue"` 针对 .vue 后缀的文件（ts 中一个文件就是一个模块）进行声明，也就是对模块进行声明。除此之外，还有 `declare module "xxx"` 进行对模块的扩展。
+
+```ts
+// 扩展 node_modules/vue/types/vue 模块
+import vue from "vue/types/vue";
+declare module "vue/types/vue" {
+  interface Vue {
+    $lodash: any;
+  }
+}
+```
+
+同理，在 ts 文件中，使用了其他模块如 `*.scss` 文件，也需要声 scss 模块的类型定义，否则 tsc 找不到，会报编译错误。
+
+```ts
+declare module "*.scss" {
+  // 全局声明
+  const content: { [className: string]: string };
+  export default content;
+}
+```
+
+新增模块声明，需要重新编译。
+
+- 全局声明
+  - `declare var` 声明全局变量
+  - `declare function` 声明全局方法
+  - `declare class` 声明全局类
+  - `declare enum` 声明全局枚举类型
+  - `declare namspace` 声明（含有子属性）的全局对象
+  - `interface` 和 `type` 声明全局类型
+- npm 包（npm 包的声明文件与全局变量的声明文件有很大区别。在 npm 包的声明文件中，使用 declare 不再会声明一个全局变量，而只会在当前文件中声明一个局部变量。只有在声明文件中使用 export 导出，然后在使用方 import 导入后，才会应用到这些类型声明。）
+- export
+- `export default` ES6 默认导出
+- `export =` commonjs 导出模块
+- UMD 库
+- `export as namespace` UMD 库声明全局变量
+- `declare global` 扩展全局变量
+- `declare module` 扩展模块
+- `/// <reference />` 三斜线指令
+
+#### 什么是声明文件
+
+通常我们会把声明语句放到一个单独的文件（jQuery.d.ts）中，这就是声明文件：
+
+```ts
+// src/jQuery.d.ts
+declare var jQuery: (selector: string) => any;
+```
+
+```ts
+// src/index.ts
+jQuery("#foo");
+```
+
+声明文件必需以 `.d.ts` 为后缀。
+
+一般来说，ts 会解析项目中所有的 `*.ts` 文件，当然也包含以 `.d.ts` 结尾的文件。所以当我们将 `jQuery.d.ts` 放到项目中时，其他所有 `*.ts` 文件就都可以获得 `jQuery` 的类型定义了。
+
+```bash
+/path/to/project
+|——src
+|  |——index.ts
+|  |__jQuery.d.ts
+|__tsconfig.json
+```
+
+假如仍然无法解析，那么可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `jQuery.d.ts` 文件
+
+##### 第三方声明文件
+
+### 书写声明文件
+
+当一个第三方库没有提供声明文件时，我们就需要自己书写声明文件了。在不同的场景下，声明文件的内容和使用方式会有所区别。
+库的使用场景主要有以下几种：
+
+- `全局变量`：通过 `<script>` 标签引入第三方库，注入全局变量。
+- `npm 包`：通过 `import foo from 'foo'`导入，符合 ES6 模块规范
+- `UMD 库`：既可以通过 `<script` 标签引入后，又可以通过 `import` 导入。
+- `直接扩展全局变量`：通过 `<script>` 标签引入后，改变一个全局变量的结构
+- `在 npm 包或 UMD 库中扩展全局变量`：引用 npm 包或 UMD 库后，改变一个全局变量的结构
+- `模块插件`：通过 `<script>` 或 import 导入后，改变另一个模块的结构
+
+#### 全局变量
+
+- declare var 声明全局变量
+- declare function 声明全局方法
+- declare class 声明全局类
+- declare enum 声明全局枚举类型
+- declare namespace 声明（含有子属性的）全局对象
+- interface 和 type 声明全局类型
+
+只要写了 **export，都是声明在局部模块内的，也就是别的模块需要使用的话，则需要 import 进来**。**否则，就是声明在全局命名空间下的**。
+
+比如 vue3 的 computed 定义：
+
+```ts
+// runtime-core.d.ts
+export declare function computed<T>(getter: ComputedGetter<T>): ComputedRef<T>;
+
+export declare function computed<T>(options: WritableComputedOptions<T>): WritableComputedRef<T>;
+
+export declare type ComputedOptions = Record<string, ComputedGetter<any> | WritableComputedOptions<any>>;
+export { ComputedRef }
+```
+
+
+
+##### declare namespace
+
+namespace 是 ts 早期时为了解决模块化而创造的关键字，中文称为命名空间。
+
+由于历史遗留原因，在早期还没有 ES6 的时候，ts 提供了一种模块化方案，使用 `module` 关键字表示`内部模块`。但由于后来 ES6 也使用了 module 关键字，ts 为了兼容 ES6，使用 namespace 替代了自己的 module，更名为`命名空间`。
+
+随着 ES6 的广泛应用，<u>现在已经不建议再使用 ts 中的 namespace，而推荐使用 ES6 的模块化方案了，</u>故我们不再需要学习 namespace 的使用了。
+
+namespace 被淘汰了，但是在声明文件中，declare namespace 还是比较常用的，它用来表示全局变量是一个对象，包含很多子属性。
+
+因此有两种方式声明特定的模块
+
+```ts
+declare module "buffer" {} // with quotes，表示导出的 es6 外部模块
+
+declare module buffer {} // without quotes => 表示为declare namespace buffer {}
+```
+
+##### 声明接口
+
+```ts
+// eslint-disable-next-line no-unused-vars
+interface Window {
+  // 声明全局全局接口
+  __NETWORK__: string;
+}
+```
+
+##### npm 包
+
+一般我们通过 `import foo from 'foo'` 导入一个 npm 包，这是符合 ES6 模块规范。
+
+在我们尝试给一个 npm 包创建声明之前，需要先看看它的声明文件是否已经存在。一般来说，npm 包的声明文件可能存在于两个地方：
+
+1. 与该 npm 包绑定在一起。判断依据是 `package.json` 中有 `types` 字段，或者有一个 `index.d.ts` 声明文件。这种模式不需要额外安装其他包，是最为推荐的，所以以后我们自己创建 npm 包的时候，最好也将声明文件和 npm 包绑定在一起。
+2. 发布到 `@types` 里。我们只需要尝试安装一下对应的 `@types` 包就知道是否存在该声明文件，安装命令是 `npm install @types/foo --save-dev`。这种模式一般是由于 npm 包的维护者没有提供声明文件，所以只能由其他人将声明文件发布到 `@types` 里了。
+
+假如以上两种方式都没有找到对应的声明文件，那么我们就需要自己为它写声明文件了。由于是通过 `import` 语句导入的模块，所以声明文件存放的位置也有所约束，一般有两种方案：
+
+1. 创建一个 `node_modules/@types/foo/index.d.ts` 文件，存放 `foo` 模块的声明文件。这种方式不需要额外的配置，但是 `node_modules` 目录步不稳定，代码也没有被保存到仓库中，无法回溯版本，有不小心北删除的风险，故不太建议用这种方案，一般只用作临时测试。
+2. 创建一个 `types`或 `typings` 目录，专门用来管理自己写的声明文件，将 `foo` 的声明文件放到 `type/foo/index.d.ts` 中。这种方式需要配置下 `tsconfig.json` 中的 `paths` 和 `baseUrl` 字段。
+   （这里为什么需要配置 `paths` 和 `baseUrl` 只不过可以让 `import xxx from 'xxx' 省略前缀`）
+
+目录结构：
+
+```bash
+/path/to/project
+|——src
+|  |__index.ts
+|——types
+|  |——foo
+|     |__jQuery.d.ts
+|__tsconfig.json
+```
+
+`tsconfig.json` 内容
+
+```json
+{
+  "compilerOptions": {
+    "target": "esnext", // 输出的目标 js 文件
+    "module": "esnext", // 模块化
+    "strict": true,
+    "jsx": "preserve", // 支持 tsx 写法
+    "importHelpers": true, //
+    "moduleResolution": "node",
+    "experimentalDecorators": true, // 支持实验性的装饰器
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["types/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/icons/svg/index.js"
+  ],
+  "exclude": ["node_modules"]
+}
+```
+
+paths、和 baseUrl 可以在 ts 引入模块时省略根路径，`include` 则是需要编译的文件
+
+##### 模块插件
+
+如果是需要扩展原有模块的话，需要在类型声明文件中先引用原有模块，再使用 `declare module` 扩展原有模块：
+
+方式 1：
+
+```ts
+// types/moment-plugin/index.d.ts
+
+import * as moment from "moment";
+
+declare module "moment" {
+  export function foo(): moment.CalendarKey;
+}
+```
+
+方式 2:
+
+```ts
+import vue from "vue/types/vue";
+// 扩展 node_modules/vue/types/vue 模块
+declare module "vue/types/vue" {
+  interface Vue {
+    $lodash: any;
+  }
+}
+```
+
+## 命名空间和模块
+
+#### 命名空间
+
+所有的 `.ts` 里声明的文件，编译后的文件是暴露一个全局变量。
+
+编译前
+
+```ts
+namespace utils.math {
+  const sum = function(a: number, b: number) {
+    // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
+    //   return null;
+    // }
+    return a + b;
+  };
+  const mul = (a: number, b: number): number => a * b;
+  const sub = (a: number, b: number): number => a - b;
+  const div = (a: number, b: number): number => a / b;
+
+  module.exports = {
+    sum,
+    mul,
+    sub,
+    div,
+  };
+}
+```
+
+编译后
+
+```ts
+var utils;
+(function(utils) {
+  var math;
+  (function(math) {
+    var sum = function(a, b) {
+      // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
+      //   return null;
+      // }
+      return a + b;
+    };
+    var mul = function(a, b) {
+      return a * b;
+    };
+    var sub = function(a, b) {
+      return a - b;
+    };
+    var div = function(a, b) {
+      return a / b;
+    };
+    module.exports = {
+      sum: sum,
+      mul: mul,
+      sub: sub,
+      div: div,
+    };
+  })((math = utils.math || (utils.math = {})));
+})(utils || (utils = {}));
+```
+
+看 js 代码能发现, 在 js 中命名空间其实就是一个全局对象. 如果你开发的程序想要暴露一个全局变量就可以用`namespace`。命名空间对解决全局作用域里命名冲突很重要的，但是对于模块来说却不是一个问题。<u>模块具有其自己的作用域，并且只有导出的声明才会在模块外部可见。</u>
+
+##### 使用命名空间
+
+命名空间是位于**全局命名空间**下的一个普通的带有名字的 · `JavaScript 对象`。这令命名空间十分容易使用。它们可以在多文件中同时使用，并通过 `--outFile` 结合在一起。命名空间是帮你组织 Web 应用不错的方式，你可以把所有依赖都放在 HTML 页面的 `<script>` 标签里。
+
+`但就像其他的全局命名空间污染一样，它很难去识别组件之间的`依赖关系`，尤其是在大型的应用中。`
+
+### 模块
+
+#### import type 特性
+
+
+
+TypeScript 3.8 带来了一个新特性：`仅仅导入 / 导出声明`。
+
+```ts
+import type { CSSProperties } from "vue"
+function setStyle(style: CSSProperties, options: {}): CSSProperties {
+  //...
+}
+```
+
+避免 TypeScript 会混淆导出的究竟是一个类型还是一个值。
+
+比如在下面的例子中， MyThing 究竟是一个值还是一个类型？
+
+```js
+import { MyThing } from './some-module.js';
+export { MyThing };
+```
+
+如果单从这个文件来看，我们无从得知答案。
+
+如果 Mything 仅仅是一个类型，Babel 和 TypeScript 使用的 transpileModule API 编译出的代码将无法正确工作，并且 TypeScript 的 isolatedModules 编译选项将会提示我们，这种写法将会抛出错误。
+
+> TypeScript 做了两件事
+>
+> 1. 将静态类型检查添加到 JavaScript 代码中。
+> 2. 将 TS + JS 代码转换为各种JS版本。
+>
+> 先删除类型，后进行转换
+
+`import type ... from`—让编译器知道你要导入的内容绝对是一种类型。
+
+`export type ... from` —一样，仅用作导出。
+
+```js
+// src/lib-type-re-export.ts
+export type { Track, Playlist } from "./types";
+export type { CreatePlaylistRequestParams } from "./api";
+export { createPlaylist } from "./api";
+
+// 会被编译为：
+
+// dist/lib-type-re-export.js
+export { createPlaylist } from "./api";
+```
+
+import type 仅仅导入被用于类型注解或声明的声明语句，它总是会被完全删除，因此在运行时将不会留下任何代码。
+
+与此相似，export type 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
+
+详细看参考资料继续～
+
+参考资料：
+
+- [你不知道的 「 import type 」](https://juejin.cn/post/6949060229610864654)
+
+#### 模块里不要使用命名空间
+
+<u>当初次进入基于模块的开发模式时，可能总会控制不住要将到处包裹在一个命名空间里</u>。模块具有自己的`作用域`，并且只有导出的声明才会在模块外部`可见`。记住这点， 命名空间在使用模块时几乎没什么价值。
+
+<u>在组织方面，命名空间对于在全局作用域内对逻辑上相关的对象和类型进行分组是很便利的。</u>例如，在 C# 里，你会从 `System.Collections` 里找到所有集合的类型。通过将类型有层次地组织在命名空间里，可以方便用户找到与使用那些类型。<u>然而，模块本身已经存在于文件系统之中，这是必须的。我们必须通过路径和文件名找到它们，这已经提供了一种逻辑上的组织形式。</u>我们可以创建 `/collections/generic` 文件夹，把相应模块放在里面。
+
+`命名空间对解决全局作用域里命名冲突来说是很重要的`。比如，你可以有一个 `My.Application.Customer.AddForm` 和 `My.Application.Order.AddForm` -- 两个类型的名字相同，但命名空间不同。然而，这对于模块来说却不是一个问题。`在一个模块里，没有理由两个对象拥有同一个名字。`从模块的使用角度来说，使用者会挑出他们用来引用模块的名字，所以也没有理由发生重名的情况。
+
+#### 使用模块
+
+像命名空间一样，模块可以包含代码和声明。<u>不同的是`模块可以声明它的`依赖`(import 进来的)。</u>
+
+模块会把依赖添加到模块加载器上（例如 CommonJs/Require.js）。对于小型的 JS 应用来说可能没必要，但是对于大型应用，这一点点的花费会带来长久的模块化和可维护性的便利。模块也提供了更好的代码重用，更强的封闭性以及更好的使用工具进行优化。
+
+对于 Node.js 应用来说，模式是默认并推荐的组织代码的方式。
+
+从 ECMAScript 2015 开始，模块成为了语言内置的部分，应该会被所有正常的解释引擎所支持。因此，对于新项目来说推荐使用模块做为组织代码的方式。
+
+##### TypeScript 如何解析模块
+
+TypeScript 是模仿 Node.js 运行时的解析策略来在编译阶段定位模块定义文件。因此，TypeScript 在 Node 解析逻辑基础上增加了 TypeScript 源文件的扩展名 (.ts，.tsx 和 .d.ts) 。同时，TypeScript 在 `package.json` 里使用字段 `types` 来表示类型 `main` 的意义——编译器会使用它来找到要使用的 `main` 定义文件。
+
+指定了 `types` 为 `foo.d.ts` 之后，导入此库的时候，就会去找 foo.d.ts 作为此库的类型声明文件了。
+
+typings 与 types 一样，只是另一种写法。
+
+1. 先识别 package.json 中是否存在 `types` 或 typings 字段。
+2. 发现不存在，那么就会寻找是否存在 `index.d.ts` 文件。
+3. 如果还是不存在，那么就会寻找是否存在 `lib/index.d.ts` 文件。假如说连 `lib/index.d.ts` 都不存在的话，就会被认为是一个没有提供类型声明文件的库了。
+4. 这个时候可以进行 `install @types` 里面的类型文件，这样在编译的时候，ts 也会从这个文件下寻找对应的模块类型声明文件，然后重复 1-3 的步骤。
+5. 如果 @types 也没有，就需要自己编写了。
+6. 另外，而有的库为了支持导入子模块如导入 vue 后缀的文件，比如 import bar from 'foo/lib/bar.vue'，就需要额外再编写一个类型声明文件 lib/bar.d.ts 或者 lib/bar/index.d.ts，
+7. 假如仍然无法解析，那么可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `xxxx.d.ts` 文件。
+
 ## 区别
 
 ### 泛型与 Any
@@ -4001,384 +4481,6 @@ let c2: C.a = C.a; // C.a 枚举类型只能被赋值为自身 C.a
 
 ### 装饰器
 
-### 命名空间和模块
-
-#### 命名空间
-
-所有的 `.ts` 里声明的文件，编译后的文件是暴露一个全局变量。
-
-编译前
-
-```ts
-namespace utils.math {
-  const sum = function(a: number, b: number) {
-    // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
-    //   return null;
-    // }
-    return a + b;
-  };
-  const mul = (a: number, b: number): number => a * b;
-  const sub = (a: number, b: number): number => a - b;
-  const div = (a: number, b: number): number => a / b;
-
-  module.exports = {
-    sum,
-    mul,
-    sub,
-    div,
-  };
-}
-```
-
-编译后
-
-```ts
-var utils;
-(function(utils) {
-  var math;
-  (function(math) {
-    var sum = function(a, b) {
-      // if (Object.prototype.toString.call(a) !== '[object Number]' || Object.prototype.toString.call(b) !== '[object Number]') {
-      //   return null;
-      // }
-      return a + b;
-    };
-    var mul = function(a, b) {
-      return a * b;
-    };
-    var sub = function(a, b) {
-      return a - b;
-    };
-    var div = function(a, b) {
-      return a / b;
-    };
-    module.exports = {
-      sum: sum,
-      mul: mul,
-      sub: sub,
-      div: div,
-    };
-  })((math = utils.math || (utils.math = {})));
-})(utils || (utils = {}));
-```
-
-看 js 代码能发现, 在 js 中命名空间其实就是一个全局对象. 如果你开发的程序想要暴露一个全局变量就可以用`namespace`。命名空间对解决全局作用域里命名冲突很重要的，但是对于模块来说却不是一个问题。<u>模块具有其自己的作用域，并且只有导出的声明才会在模块外部可见。</u>
-
-##### 使用命名空间
-
-命名空间是位于**全局命名空间**下的一个普通的带有名字的 · `JavaScript 对象`。这令命名空间十分容易使用。它们可以在多文件中同时使用，并通过 `--outFile` 结合在一起。命名空间是帮你组织 Web 应用不错的方式，你可以把所有依赖都放在 HTML 页面的 `<script>` 标签里。
-
-`但就像其他的全局命名空间污染一样，它很难去识别组件之间的`依赖关系`，尤其是在大型的应用中。`
-
-#### 模块
-
-##### 模块里不要使用命名空间
-
-<u>当初次进入基于模块的开发模式时，可能总会控制不住要将到处包裹在一个命名空间里</u>。模块具有自己的`作用域`，并且只有导出的声明才会在模块外部`可见`。记住这点， 命名空间在使用模块时几乎没什么价值。
-
-<u>在组织方面，命名空间对于在全局作用域内对逻辑上相关的对象和类型进行分组是很便利的。</u>例如，在 C# 里，你会从 `System.Collections` 里找到所有集合的类型。通过将类型有层次地组织在命名空间里，可以方便用户找到与使用那些类型。<u>然而，模块本身已经存在于文件系统之中，这是必须的。我们必须通过路径和文件名找到它们，这已经提供了一种逻辑上的组织形式。</u>我们可以创建 `/collections/generic` 文件夹，把相应模块放在里面。
-
-`命名空间对解决全局作用域里命名冲突来说是很重要的`。比如，你可以有一个 `My.Application.Customer.AddForm` 和 `My.Application.Order.AddForm` -- 两个类型的名字相同，但命名空间不同。然而，这对于模块来说却不是一个问题。`在一个模块里，没有理由两个对象拥有同一个名字。`从模块的使用角度来说，使用者会挑出他们用来引用模块的名字，所以也没有理由发生重名的情况。
-
-##### 使用模块
-
-像命名空间一样，模块可以包含代码和声明。<u>不同的是`模块可以声明它的`依赖`(import 进来的)。</u>
-
-模块会把依赖添加到模块加载器上（例如 CommonJs/Require.js）。对于小型的 JS 应用来说可能没必要，但是对于大型应用，这一点点的花费会带来长久的模块化和可维护性的便利。模块也提供了更好的代码重用，更强的封闭性以及更好的使用工具进行优化。
-
-对于 Node.js 应用来说，模式是默认并推荐的组织代码的方式。
-
-从 ECMAScript 2015 开始，模块成为了语言内置的部分，应该会被所有正常的解释引擎所支持。因此，对于新项目来说推荐使用模块做为组织代码的方式。
-
-<!-- #### 模块解析
-
-#### Classic
-
-#### Node -->
-
-##### TypeScript 如何解析模块
-
-TypeScript 是模仿 Node.js 运行时的解析策略来在编译阶段定位模块定义文件。因此，TypeScript 在 Node 解析逻辑基础上增加了 TypeScript 源文件的扩展名 (.ts，.tsx 和 .d.ts) 。同时，TypeScript 在 `package.json` 里使用字段 `types` 来表示类型 `main` 的意义——编译器会使用它来找到要使用的 `main` 定义文件。
-
-指定了 `types` 为 `foo.d.ts` 之后，导入此库的时候，就会去找 foo.d.ts 作为此库的类型声明文件了。
-
-typings 与 types 一样，只是另一种写法。
-
-1. 先识别 package.json 中是否存在 `types` 或 typings 字段。
-2. 发现不存在，那么就会寻找是否存在 `index.d.ts` 文件。
-3. 如果还是不存在，那么就会寻找是否存在 `lib/index.d.ts` 文件。假如说连 `lib/index.d.ts` 都不存在的话，就会被认为是一个没有提供类型声明文件的库了。
-4. 这个时候可以进行 `install @types` 里面的类型文件，这样在编译的时候，ts 也会从这个文件下寻找对应的模块类型声明文件，然后重复 1-3 的步骤。
-5. 如果 @types 也没有，就需要自己编写了。
-6. 另外，而有的库为了支持导入子模块如导入 vue 后缀的文件，比如 import bar from 'foo/lib/bar.vue'，就需要额外再编写一个类型声明文件 lib/bar.d.ts 或者 lib/bar/index.d.ts，
-7. 假如仍然无法解析，那么可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `xxxx.d.ts` 文件。
-
-### 声明文件
-
-```ts
-// shims-tsx.d.ts
-import Vue, { VNode } from "vue";
-
-declare global {
-  namespace JSX {
-    // tslint:disable no-empty-interface
-    interface Element extends VNode {}
-    // tslint:disable no-empty-interface
-    interface ElementClass extends Vue {}
-    interface IntrinsicElements {
-      [elem: string]: any;
-    }
-  }
-}
-```
-
-#### ts 文件模块组织
-
-在 C# 里面我们习惯于将每个类都单独放在一个文件中，并使用命名空间将这些类组合在一起。而在 TypeScript 中 namespace 的概念与 C# 完全不一样，类似的概念就是放在全局空间 namespace 了，当然也有放置在模块内部的。
-
-<u>模块除了可以解决命名空间的冲突问题外，还能明确依赖关系，只有导出的模块在外部才可见。</u>而就算 C# 无论是否使用 using，都可以通过命名空间访问。
-
-#### 模块（module） vs 命名空间（namespace） vs declare（声明）
-
-在 ts 中，分为普通文件与类型声明文件。
-
-普通文件与文件的组织也是以模块（以前是命名空间）的形式进行的。对于正常的 ts 文件，它也是采用 ES6 模式进行 import/export 的
-
-而对于类型声明文件来说，就使用到了 declare 和 namespace，module，无论是 `declare namespace` 还是 `declare module` 只要写了 **export，都是声明在局部模块内的，也就是别的模块需要使用的话，则需要 import 进来**。**否则，就是声明在全局命名空间下的**。
-
-因此，要看你写的 ts 普通文件要在哪个场景下使用，es6 还是 umd 否则是全局变量 `<script>` 引入，然后编写不同的类型声明文件。
-
-#### 什么是声明语句
-
-当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。
-
-例如 引入 vue 后缀文件的模块，tsc 是识别不了，会显示找不到模块的错误。
-
-```ts
-import Vue from "vue"; // 因为 vue 已经提供了声明文件，因此不会报错
-import App from "./App.vue";
-// 这里会报错：Cannot find module './App.vue'
-```
-
-因此需要声明模块，这样引入 `.vue` 后缀的文件就不会报编译错误了。
-
-```ts
-// shims-vue.d.ts // 这里是声明模块，对 "*.vue" 模块的，一个文件就是一个模块
-declare module "*.vue" {
-  import Vue from "vue";
-  export default Vue;
-}
-```
-
-上面的代码告诉 TypeScript `*.vue` 后缀的文件可以交给 vue 模块来处理。
-
-`declare module "*.vue"` 针对 .vue 后缀的文件（ts 中一个文件就是一个模块）进行声明，也就是对模块进行声明。除此之外，还有 `declare module "xxx"` 进行对模块的扩展。
-
-```ts
-// 扩展 node_modules/vue/types/vue 模块
-import vue from "vue/types/vue";
-declare module "vue/types/vue" {
-  interface Vue {
-    $lodash: any;
-  }
-}
-```
-
-同理，在 ts 文件中，使用了其他模块如 `*.scss` 文件，也需要声 scss 模块的类型定义，否则 tsc 找不到，会报编译错误。
-
-```ts
-declare module "*.scss" {
-  // 全局声明
-  const content: { [className: string]: string };
-  export default content;
-}
-```
-
-新增模块声明，需要重新编译。
-
-- 全局声明
-  - `declare var` 声明全局变量
-  - `declare function` 声明全局方法
-  - `declare class` 声明全局类
-  - `declare enum` 声明全局枚举类型
-  - `declare namspace` 声明（含有子属性）的全局对象
-  - `interface` 和 `type` 声明全局类型
-- npm 包（npm 包的声明文件与全局变量的声明文件有很大区别。在 npm 包的声明文件中，使用 declare 不再会声明一个全局变量，而只会在当前文件中声明一个局部变量。只有在声明文件中使用 export 导出，然后在使用方 import 导入后，才会应用到这些类型声明。）
-- export
-- `export default` ES6 默认导出
-- `export =` commonjs 导出模块
-- UMD 库
-- `export as namespace` UMD 库声明全局变量
-- `declare global` 扩展全局变量
-- `declare module` 扩展模块
-- `/// <reference />` 三斜线指令
-
-#### 什么是声明文件
-
-通常我们会把声明语句放到一个单独的文件（jQuery.d.ts）中，这就是声明文件：
-
-```ts
-// src/jQuery.d.ts
-declare var jQuery: (selector: string) => any;
-```
-
-```ts
-// src/index.ts
-jQuery("#foo");
-```
-
-声明文件必需以 `.d.ts` 为后缀。
-
-一般来说，ts 会解析项目中所有的 `*.ts` 文件，当然也包含以 `.d.ts` 结尾的文件。所以当我们将 `jQuery.d.ts` 放到项目中时，其他所有 `*.ts` 文件就都可以获得 `jQuery` 的类型定义了。
-
-```bash
-/path/to/project
-|——src
-|  |——index.ts
-|  |__jQuery.d.ts
-|__tsconfig.json
-```
-
-假如仍然无法解析，那么可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `jQuery.d.ts` 文件
-
-##### 第三方声明文件
-
-#### 书写声明文件
-
-当一个第三方库没有提供声明文件时，我们就需要自己书写声明文件了。在不同的场景下，声明文件的内容和使用方式会有所区别。
-库的使用场景主要有以下几种：
-
-- `全局变量`：通过 `<script>` 标签引入第三方库，注入全局变量。
-- `npm 包`：通过 `import foo from 'foo'`导入，符合 ES6 模块规范
-- `UMD 库`：既可以通过 `<script` 标签引入后，又可以通过 `import` 导入。
-- `直接扩展全局变量`：通过 `<script>` 标签引入后，改变一个全局变量的结构
-- `在 npm 包或 UMD 库中扩展全局变量`：引用 npm 包或 UMD 库后，改变一个全局变量的结构
-- `模块插件`：通过 `<script>` 或 import 导入后，改变另一个模块的结构
-
-##### 全局变量
-
-- declare var 声明全局变量
-- declare function 声明全局方法
-- declare class 声明全局类
-- declare enum 声明全局枚举类型
-- declare namespace 声明（含有子属性的）全局对象
-- interface 和 type 声明全局类型
-
-##### declare namespace
-
-namespace 是 ts 早期时为了解决模块化而创造的关键字，中文称为命名空间。
-
-由于历史遗留原因，在早期还没有 ES6 的时候，ts 提供了一种模块化方案，使用 `module` 关键字表示`内部模块`。但由于后来 ES6 也使用了 module 关键字，ts 为了兼容 ES6，使用 namespace 替代了自己的 module，更名为`命名空间`。
-
-随着 ES6 的广泛应用，<u>现在已经不建议再使用 ts 中的 namespace，而推荐使用 ES6 的模块化方案了，</u>故我们不再需要学习 namespace 的使用了。
-
-namespace 被淘汰了，但是在声明文件中，declare namespace 还是比较常用的，它用来表示全局变量是一个对象，包含很多子属性。
-
-因此有两种方式声明特定的模块
-
-```ts
-declare module "buffer" {} // with quotes，表示导出的 es6 外部模块
-
-declare module buffer {} // without quotes => 表示为declare namespace buffer {}
-```
-
-##### 声明接口
-
-```ts
-// eslint-disable-next-line no-unused-vars
-interface Window {
-  // 声明全局全局接口
-  __NETWORK__: string;
-}
-```
-
-##### npm 包
-
-一般我们通过 `import foo from 'foo'` 导入一个 npm 包，这是符合 ES6 模块规范。
-
-在我们尝试给一个 npm 包创建声明之前，需要先看看它的声明文件是否已经存在。一般来说，npm 包的声明文件可能存在于两个地方：
-
-1. 与该 npm 包绑定在一起。判断依据是 `package.json` 中有 `types` 字段，或者有一个 `index.d.ts` 声明文件。这种模式不需要额外安装其他包，是最为推荐的，所以以后我们自己创建 npm 包的时候，最好也将声明文件和 npm 包绑定在一起。
-2. 发布到 `@types` 里。我们只需要尝试安装一下对应的 `@types` 包就知道是否存在该声明文件，安装命令是 `npm install @types/foo --save-dev`。这种模式一般是由于 npm 包的维护者没有提供声明文件，所以只能由其他人将声明文件发布到 `@types` 里了。
-
-假如以上两种方式都没有找到对应的声明文件，那么我们就需要自己为它写声明文件了。由于是通过 `import` 语句导入的模块，所以声明文件存放的位置也有所约束，一般有两种方案：
-
-1. 创建一个 `node_modules/@types/foo/index.d.ts` 文件，存放 `foo` 模块的声明文件。这种方式不需要额外的配置，但是 `node_modules` 目录步不稳定，代码也没有被保存到仓库中，无法回溯版本，有不小心北删除的风险，故不太建议用这种方案，一般只用作临时测试。
-2. 创建一个 `types`或 `typings` 目录，专门用来管理自己写的声明文件，将 `foo` 的声明文件放到 `type/foo/index.d.ts` 中。这种方式需要配置下 `tsconfig.json` 中的 `paths` 和 `baseUrl` 字段。
-   （这里为什么需要配置 `paths` 和 `baseUrl` 只不过可以让 `import xxx from 'xxx' 省略前缀`）
-
-目录结构：
-
-```bash
-/path/to/project
-|——src
-|  |__index.ts
-|——types
-|  |——foo
-|     |__jQuery.d.ts
-|__tsconfig.json
-```
-
-`tsconfig.json` 内容
-
-```json
-{
-  "compilerOptions": {
-    "target": "esnext", // 输出的目标 js 文件
-    "module": "esnext", // 模块化
-    "strict": true,
-    "jsx": "preserve", // 支持 tsx 写法
-    "importHelpers": true, //
-    "moduleResolution": "node",
-    "experimentalDecorators": true, // 支持实验性的装饰器
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": "./",
-    "paths": {
-      "*": ["types/*"]
-    }
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "src/icons/svg/index.js"
-  ],
-  "exclude": ["node_modules"]
-}
-```
-
-paths、和 baseUrl 可以在 ts 引入模块时省略根路径，`include` 则是需要编译的文件
-
-##### 模块插件
-
-如果是需要扩展原有模块的话，需要在类型声明文件中先引用原有模块，再使用 `declare module` 扩展原有模块：
-
-方式 1：
-
-```ts
-// types/moment-plugin/index.d.ts
-
-import * as moment from "moment";
-
-declare module "moment" {
-  export function foo(): moment.CalendarKey;
-}
-```
-
-方式 2:
-
-```ts
-import vue from "vue/types/vue";
-// 扩展 node_modules/vue/types/vue 模块
-declare module "vue/types/vue" {
-  interface Vue {
-    $lodash: any;
-  }
-}
-```
 
 
 
@@ -4554,7 +4656,7 @@ import qqmap from "qqmap";
 
 #### Vue3 插件编写类型
 
-​```js
+```js
 import { App, Plugin } from 'vue';
 import Map from "./Map";
 export const install = (app: App, options = {}) => {
@@ -4617,7 +4719,7 @@ vue add typescript
 
 
 使用了 vuecli3/4 的项目情况下，在已创建的项目中安装，https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-typescript/README.md
-```ts
+​```ts
 vue add @vue/typescript
 ​``` -->
 <!-- 测试报错，找不到 Home.vue -->
@@ -4630,7 +4732,7 @@ vue add @vue/typescript
 
 2. 使 webpack 支持 ts，要安装 `ts-loader`，编写 loader 规则。
 
-​```js
+```js
 // vue.config.js
 module.exports = {
   chainWebpack: (config) => {
@@ -4649,7 +4751,7 @@ module.exports = {
 
 3. tsconfig 输出的 js，是否还经过 babel 的处理呢？
 
-```json
+​```json
 {
   "compilerOptions": {
     "target": "esnext",

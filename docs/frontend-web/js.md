@@ -204,6 +204,32 @@ alert(`${guest} ${admin}`); // Pete Jane(成功交换！)
 
 #### 对象解构
 
+### 日期和时间
+
+#### 日期转化为数字，日期差值
+
+当 `Date` 对象被转化为数字时，得到的是对应的时间戳，与使用 `date.getTime() `的结果相同。
+
+```js
+let date = new Date();
+alert(+date); // 以毫秒为单位的数值，与使用 date.getTime() 的结果相同
+```
+
+有一个重要的副作用：日期可以相减，相减的结果是以毫秒为单位时间差。
+
+```js
+let start = new Date(); // 开始测量时间
+
+// do the job
+for (let i = 0; i < 100000; i++) {
+  let doSomething = i * i * i;
+}
+
+let end = new Date(); // 结束测量时间
+
+alert( `The loop took ${end - start} ms` );
+```
+
 ### Map and Set（映射和集合）
 
 #### 总结
@@ -313,7 +339,47 @@ let user = {
 2. 数值转换发生在对象相减或应用数学函数时。例如，`Date` 对象可以相减，`date1-date2` 的结果是两个日期之间的差值。
 3. 至于字符串转换——通常发生在我们像 `alert(obj)` 这样输出一个对象和类似的上下文中。
 
+为了进行转换，JavaScript 尝试查找并调用三个对象方法：
+
+1. 调用 `obj[Symbol.toPrimitive](hint)`—带有 symbol 键 `Symbol.toPrimitive` （系统 symbol）
+
+#### Symbol.toPrimitive
+
+我们可以使用
+
 #### toString/valueOf
+
+默认情况下，普通对象具有 `toString` 和 `valueOf` 方法：
+
+- `toString` 方法返回一个字符串 `"[object Object]"`
+- `valueOf` 方法返回对象自身
+
+下面是一个示例：
+
+```js
+let user = {name: "John"};
+
+alert(user); // [object Object]
+alert(user.valueOf() === user); // true
+```
+
+#### 总结
+
+对象到原始值的转换，是由许多期望以原始值作为值的内建函数和运算符自动调用的。
+
+这里有三种类型（hint）：
+
+- `string` （对于 `alert` 和其他需要字符串的操作）
+- `number` （对于数学运算）
+- `default` （少数运算符）
+
+转换算法是：
+
+1. 调用 `obj[Symbol.toPrimitive](hint)` 如果这个方法存在，
+2. 否则，如果 hint 是 `"string"`
+   - 尝试 `obj.toString()` 和 `obj.valueOf()`，无论哪个存在。
+3. 否则，如果 hint 是`"number"`或者`"default"`
+   - 尝试 `obj.valueOf()` 和 `obj.toString()`，无论哪个存在。
 
 ## 基础运算符，数学
 
@@ -462,7 +528,153 @@ alert(url); // https://google.com/search?q=Rock%26Roll
 
 对于每个搜索参数，我们应该使用 `encodeURIComponent`，以将其正确地插入到 URL 字符串中。最安全的方式是对 name 和 value 都进行编码，除非我们能够绝对确保它只包含允许的字符。
 
+浏览器：文档，事件，接口
+
+## Document
+
+### IntersectionObserver
+
+**IntersectionObserver API是异步的，不随着目标元素的滚动同步触发，性能消耗极低。**
+
+```js
+const box = document.querySelector('.box');
+const intersectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach((item) => {
+    if (item.isIntersecting) {
+      console.log('进入可视区域');
+    }
+  })
+});
+intersectionObserver.observe(box);
+```
+
+`callback`函数被调用时，会传给它一个数组，这个数组里的每个对象就是当前进入可视区域或者离开可视区域的对象(`IntersectionObserverEntry`对象).
+
+**`IntersectionObserverEntry`对象**
+
+这个对象有很多属性，其中最常用的属性是：
+
+- `target`: 被观察的目标元素，是一个 DOM 节点对象
+- `isIntersecting`: 是否进入可视区域
+- `intersectionRatio`: 相交区域和目标元素的比例值，进入可视区域，值大于0，否则等于0
+
+参考资料
+
+### 特性和属性（Attributes and properties）
+
+style 特性是字符串类型的，但 style 属性是一个对象：
+
+#### [非标准的特性，dataset](https://zh.javascript.info/dom-attributes-and-properties#fei-biao-zhun-de-te-xing-dataset)
+
+**所有以 “data-” 开头的特性均被保留供程序员使用。它们可在 `dataset` 属性中使用。**
+
+```html
+<body data-about="Elephants">
+<script>
+  alert(document.body.dataset.about); // Elephants
+</script>
+```
+
+像 `data-order-state` 这样的多词特性可以以驼峰式进行调用：`dataset.orderState`。
+
+```html
+<style>
+  .order[data-order-state="new"] {
+    color: green;
+  }
+
+  .order[data-order-state="pending"] {
+    color: blue;
+  }
+
+  .order[data-order-state="canceled"] {
+    color: red;
+  }
+</style>
+
+<div id="order" class="order" data-order-state="new">
+  A new order.
+</div>
+
+<script>
+  // 读取
+  alert(order.dataset.orderState); // new
+
+  // 修改
+  order.dataset.orderState = "pending"; // (*)
+</script>
+```
+
+使用 `data-*` 特性是一种合法且安全的传递自定义数据的方式。
+
+请注意，我们不仅可以读取数据，还可以修改数据属性（data-attributes）
+
+### 元素大小和滚动
+
+#### 几何
+
+<img src="../.vuepress/public/images/2021-09-03-22-18-33.png" style="zoom:80%;" />
+
+### Window 大小和滚动
+
+### 坐标
+
+<img src="../.vuepress/public/images/2021-09-03-22-30-08.png" style="zoom:80%;" />
+
+#### 元素坐标：getBoundingClientRect
+
+参考资料：
+
+- [你真的会用getBoundingClientRect吗？](https://github.com/zuopf769/notebook/blob/master/fe/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BC%9A%E7%94%A8getBoundingClientRect%E5%90%97/README.md)
+
+## UI 事件
+
+### 滚动
+
+
+
+## 模块
+
+### Import *
+
+通常，我们把要导入的东西列在花括号 `import {...}` 中，就像这样：
+
+```js
+// 📁 main.js
+import {sayHi, sayBye} from './say.js';
+
+sayHi('John'); // Hello, John!
+sayBye('John'); // Bye, John!
+```
+
+但是如果有很多要导入的内容，我们可以使用 `import * as <obj>` 将所有内容导入为一个对象，例如：
+
+```js
+// 📁 main.js
+import * as say from './say.js';
+
+say.sayHi('John');
+say.sayBye('John');
+```
+
+如果我们将所有东西 `*` 作为一个对象导入，那么 `default` 属性正是默认的导出：
+
+```javascript
+// 📁 main.js
+import * as user from './user.js';
+
+let User = user.default; // 默认的导出
+new User('John');
+
+// 或者通过 require
+```
+
+## 动画
+
+### CSS 动画
+
 ## 基础
+
 ### 面向对象与原型
 
 ![](../.vuepress/public/images/2020-05-26-15-49-50-js-prototype-01.png)
@@ -2086,7 +2298,9 @@ const module = (function() {
 
 #### 闭包引起内存泄漏
 
-### JS 前端模块化
+## 模块
+
+
 
 #### 抛出问题
 

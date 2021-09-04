@@ -1,5 +1,43 @@
 # CSS 项目实战总结（持续更新）
 
+## 结构与布局
+
+### Flex
+
+#### flex-basic
+
+**flex-basis** 设置的是**元素在主轴上的初始尺寸**，**是 Flex 项目放入 Flex 容器之前的尺寸**，这是 Flex 项目的理想或者说假想尺寸。
+
+有以下公式：
+
+> content -> width -> flex-basis（受到 max|min-width 的制约）
+
+- **最终尺寸**（final flex-basis）会受 `min-width` 和 `max-width` 属性限制。
+
+- 如果未指定 `flex-basis`，`flex-basis` 将回退到 `width` 属性。如果未指定 `width` 属性，`flex-basis` 将回退到基于 Flex 项目内容的计算宽度值（computed width）。
+- 最佳实践是使用 `flex-basis` 而非 `width` 或 `height`。特别是，Safari 浏览器上还有一个古老的 bug：在使用了 `height` 而非 `flex-basis` 属性的 Flex 项目上 `felx-shrink` 属性不会生效。
+
+在 `flex-basis` 未指定的情况下，`width` 是它的回退方案，`min-width` 和 `max-width` 是限制了最终 尺寸的上限和下限。
+
+而当 `flex-direction` 为 `column` 或 `column-reverse` 的时候，那就是 `flex-basis` 跟 `height` 的关系了。
+
+**当空间不够的时候**
+
+Flex 项目开始收缩以适应容器空间（变为每个 `125px`）。`flex-shrink` 用于控制收缩比例。可以通过给 `flex-shrink` 指定一个更大或更小的值来控制收缩的程度，甚至可以设置为 `0`，表示不许收缩
+
+**当有剩余空间的时候**
+
+我们可以指定我们的 Flex 项目在放入 Flex 容器之后伸展，来占据剩余空间，这是通过 `flex-grow` 属性控制的，此属性默认为 `0`，表示不会伸展。下例中，我们为每个 Flex 项目都设置了 `flex-grow: 1`（以相同比例伸展）来占据剩余空间。
+
+- 剩余空间：x
+- 假设有三个flex item元素，flex-grow 的值分别为a, b, c
+- 每个元素可以分配的剩余空间为： a/(a+b+c) * x，b/(a+b+c) * x，c/(a+b+c) * x，这个公式的前提下是 flex-basic 为 0%，否则上面的公式还要加上元素初始尺寸的考虑。（初始尺寸越大的占比瓜分也越大）
+
+**参考资料**
+
+- [width 与 flex-basis 的区别](https://juejin.cn/post/6844903914148462599)
+- [深入理解 flex-grow、flex-shrink、flex-basis](https://juejin.cn/post/6844904016439148551)
+
 ## 0. 前言
 
 ## 1. 基础

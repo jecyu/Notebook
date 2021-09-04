@@ -6,6 +6,33 @@
 
 ## TypeScript 支持
 
+```js
+import type { PropType, ExtractPropTypes } from "vue"; // 表示引入的仅仅是类型声明，而不是一个值 
+export type SplitterOrientation = "vertical" | "horizontal";
+
+export const splitterProps = {
+  /**
+   * 可选，指定 Splitter中窗格的方向，默认水平分割。
+   */
+  orientation: {
+    type: String as PropType<SplitterOrientation>, // Vue 对定义了 type 的 prop 执行运行时验证。要将这些类型提供给 TypeScript，我们需要使用 PropType 强制转换构造函数，这样的话 String 会强制遵守为 "vertical" | "horizontal"
+    default: "horizontal",
+  },
+  // 如果 type 不是复杂的类型，则不需要使用 PropType 转换
+   /**
+   * 分隔条大小
+   */
+  splitBarSize: {
+    type: String,
+    required: true,
+  },
+} as const;
+
+export type SplitterProps = ExtractPropTypes<typeof splitterProps>;
+```
+
+计算属性的类型声明处理。
+
 官方文档说明
 
 - https://v3.vuejs.org/guide/typescript-support.html#project-creation
@@ -29,6 +56,52 @@ export default defineComponent({
 </script>
 ```
 
+**模版编写**
+
+setup 中直接返回的话，computed 这些值是没有自动帮你展开 value 的，在 template 或者写 render() 函数（因为有 vue-jsx 插件，同时也可以在这上面写指令）就可以。不过像下面这种写法的话，对于 react 用户更加友好，写起来更加符合 react 的预期，减少心智负担。（可以写一期 vue3 组件实战。）
+
+对比 devui 的组件就知道了，下面这种写法的话，如果写了**自定义指令**怎么处理呢？可以查看 jsx-next https://github.com/vuejs/jsx-next/tree/dev/packages/babel-plugin-jsx#readme
+
+​    "@vitejs/plugin-vue-jsx": "^1.1.0",
+
+​    "@vue/babel-plugin-jsx": "^1.0.6",
+
+都有支持，可以写。其他情况的话，尽量和 JSX 本身一致
+
+或者使用 **withDirectives** 全局 API，查看 ant-design-vue 的使用
+
+```js
+setup() {
+  return () => {
+      const { splitBarSize, orientation } = props;
+      // class
+      const wrapperClass = ["d-splitter", `devui-splitter-${orientation}`]; // prop 改变，一样改变 wrapperClass
+    // 而不是 const wrapperClass = computed(() =>  ["d-splitter", `devui-splitter-${orientation}`])
+
+      return (
+        <div class={wrapperClass}>
+          {panes}
+          {panes
+            .filter((pane, index, arr) => index !== arr.length - 1)
+            .map((pane, index) => {
+              return (
+                <d-splitter-bar
+                  style={`order: ${index * 2 + 1}`}
+                  splitBarSize={splitBarSize}
+                  orientation={orientation}
+                  index={index}
+                ></d-splitter-bar>
+              );
+            })}
+        </div>
+      );
+    };
+  },
+}
+```
+
+
+
 #### **组件的输入/输出**
 
 ```js
@@ -42,6 +115,202 @@ props: {
   }
 }
 ```
+
+插槽如何传入以及监听事件
+
+#### class/style绑定
+
+class
+
+```html
+<div className={`devui-accordion-item-title ${ disabled ? 'disabled' : '' }`}></div>
+```
+
+style
+
+```html
+const width = '100px'
+
+<button style={{ width: width, fontSize: '16px' }}></button>
+
+tsx
+ style={`order: ${index * 2 + 1}`}
+```
+
+#### DOM 获取
+
+通过refs 来回去真实dom元素, 这个和react 的用法一样,为了获得对模板内元素或组件实例的引用，我们可以像往常一样在setup()中声明一个ref并返回它
+
+1. 还是跟往常一样，在 html 中写入 ref 的名称
+2. 在steup 中定义一个 ref
+3. steup 中返回 ref的实例
+4. onMounted 中可以得到 ref的RefImpl的对象, 通过.value 获取真实dom。render() 方法也是这样绑定 `ref="elmRefs"`，如果是直接返回 tsx 的话，则使用 `ref={elmRefs}` 绑定，setup 使用 tsx 挺好的，也不用特意 return 东西给模版。
+
+```js
+<template>
+  <!--第一步：还是跟往常一样，在 html 中写入 ref 的名称-->
+  <div class="mine" ref="elmRefs">
+    <span>1111</span>
+  </div>
+</template>
+
+<script lang="ts">
+import { set } from 'lodash';
+import { defineComponent, onMounted, ref } from 'vue';
+export default defineComponent({
+  setup(props, context) {
+    // 获取真实dom
+    const elmRefs = ref<null | HTMLElement>(null);
+    onMounted (() => {
+      console.log(elmRefs.value); // 得到一个 RefImpl 的对象, 通过 .value 访问到数据
+    })
+
+    return {
+      elmRefs
+    }
+  }
+});
+</script>
+```
+
+**JSX 如何获取**
+
+```tsx
+ render() {
+    const { classString, eleRef } = this;
+    return <div class={classString} ref="eleRef"></div>; // 不能写成 ref={eleRef}
+  },
+```
+
+### computed
+
+```ts
+setup() {
+  let _order = 0; // flex 布局下 pane 位置
+  const order = computed<number>({
+    get: () => _order,
+    set: (paneOrder) => {
+      _order = paneOrder;
+      setOrderStyles();
+    },
+  });
+  function setOrderStyles() {
+    nextTick(() => {
+      const ele = eleRef.value;
+      setStyle(ele, { order: order.value }); // 注意这里使用的话，也是用 order.value，而不是 order，否则类型也对不上
+      // order 是 WritableComputedRef<number>
+      // 因为这里的 computed 也是 ref，基本类型
+    });
+  }
+}
+
+```
+
+官方文档也有说明，要注意看文档
+
+```tsx
+import { defineComponent, ref, computed } from 'vue'
+
+export default defineComponent({
+  name: 'CounterButton',
+  setup() {
+    let count = ref(0)
+
+    // read-only
+    const doubleCount = computed(() => count.value * 2)
+
+    const result = doubleCount.value.split('') // => Property 'split' does not exist on type 'number'
+  }
+})
+
+```
+
+
+
+### watch 与 watchEffect 的用法
+
+> watch 函数用来侦听特定的数据源，并在回调函数中执行副作用。默认情况是惰性的，也就是说仅在侦听的源数据变更时才执行回调。
+
+```vue
+watch(source, callback, [options])
+```
+
+参数说明：
+
+- source: 可以支持 string,Object,Function,Array; 用于指定要侦听的响应式变量
+- callback: 执行的回调函数
+- options：支持 deep、immediate 和 flush 选项。
+
+## 自定义指令
+
+setup 中直接返回的话，computed 这些值是没有自动帮你展开 value 的，在 template 或者写 render() 函数（因为有 vue-jsx 插件，同时也可以在这上面写指令）就可以。不过像下面这种写法的话，对于 react 用户更加友好，写起来更加符合 react 的预期，减少心智负担。（可以写一期 vue3 组件实战。）
+
+对比 devui 的组件就知道了，下面这种写法的话，如果写了**自定义指令**怎么处理呢？可以查看 jsx-next https://github.com/vuejs/jsx-next/tree/dev/packages/babel-plugin-jsx#readme
+
+​    "@vitejs/plugin-vue-jsx": "^1.1.0",
+
+​    "@vue/babel-plugin-jsx": "^1.0.6",
+
+都有支持，可以写。其他情况的话，尽量和 JSX 本身一致
+
+或者使用 **withDirectives** 全局 API，查看 ant-design-vue 的使用
+
+```js
+import { defineComponent, reactive, provide, withDirectives } from "vue";
+import { splitterProps, SplitterProps } from "./splitter-types";
+import DSplitterBar from "./splitter-bar";
+import SplitterService from "./splitter.service";
+import dresize from "./util/d-resize-directive";
+import "./splitter.scss";
+
+export default defineComponent({
+  name: "DSplitter",
+  components: {
+    DSplitterBar,
+  },
+  props: splitterProps,
+  emits: [],
+  setup(props: SplitterProps, ctx) {
+    const state = reactive({
+      panes: [], // 内嵌面板
+      splitterService: SplitterService,
+    });
+
+    state.panes = ctx.slots.DSplitterPane();
+
+    provide("panes", state.panes);
+    provide("splitterService", state.splitterService);
+
+    return () => {
+      const { splitBarSize, orientation } = props;
+      // class
+      const wrapperClass = ["d-splitter", `devui-splitter-${orientation}`];
+
+      return (
+        <div class={wrapperClass}>
+          {state.panes}
+          {state.panes
+            .filter((pane, index, arr) => index !== arr.length - 1)
+            .map((pane, index) => {
+              return withDirectives(
+                <d-splitter-bar
+                  style={`order: ${index * 2 + 1}`}
+                  splitBarSize={splitBarSize}
+                  orientation={orientation}
+                  index={index}
+                ></d-splitter-bar>,
+                [[dresize]]
+              );
+            })}
+        </div>
+      );
+    };
+  },
+});
+
+```
+
+
 
 ## 插槽
 
@@ -77,6 +346,10 @@ export default defineComponent({
 });
 ```
 
+### 如何给插槽绑定事件或数据（template/tsx）？
+
+
+
 ## 组合式 API
 
 子组件如何接收父组件的传值及注意事项、子组件如何触发父组件的方法
@@ -108,7 +381,7 @@ export default {
 
 setup 存在的意义，就是为了让你能够使用新增的组合 API。并且这些组合 API 只能在 setup 函数内使用
 
-setup 调用的时机是创建组件实例，然后初始化 props，紧接着就是调用 setup 函数。从生命周期钩子的角度来看，它会在 beforeCreate 钩子之前被调用，所以 setup 内是拿不到 this 上下文
+setup 调用的时机是创建组件实例，然后初始化 props，紧接着就是调用 setup 函数。**从生命周期钩子的角度来看，它会在 beforeCreate 钩子之前被调用，所以 setup 内是拿不到 this 上下文**
 
 ### template 模版中使用 setup
 
@@ -281,6 +554,130 @@ export default {
 };
 </script>
 ```
+### watchEffect
+
+首先 watchEffect 会追踪响应式数据的变化，并且还会在第一次渲染的时候立即执行
+
+```html
+<template>
+  <div>
+    <h1>{{ state.search }}</h1>
+    <button @click="handleSearch">改变查询字段</button>
+  </div>
+
+</template>
+
+<script>
+import { reactive, watchEffect } from 'vue'
+
+export default {
+  setup() {
+    let state = reactive({
+      search: Date.now()
+    })
+    watchEffect(() => {
+      console.log(`监听查询字段${state.search}`)
+    })
+
+    const handleSearch = () => {
+      state.search = Date.now()
+    }
+    return {
+      state,
+      handleSearch
+    }
+  }
+}
+</script>
+```
+
+watchEffect 函数返回一个新的函数，我们可以通过执行这个函数或者当组件被卸载的时候，来停止监听行为。
+
+watchEffect 的回调方法内有一个很重要的方法，用于清除副作用。它接受的回调函数也接受一个函数 onInvalidate。名字不重要，重要的是它将会在 watchEffect 监听的变量改变之前被调用一次
+
+
+那么要它何用呢？用处非常大。举个例子，我们需要监听 search 的变化，去请求接口数据，此时接口是异步返回的，每当我改变 search 都会去请求一次接口，那么有可能 search 改变的很频繁，那就会频繁的去请求接口，导致服务端压力倍增。我们可以通过这个特性去降低服务端的压力，具体逻辑如下：
+
+```html
+<template>
+  <h1>{{ state.search }}</h1>
+  <button @click="handleSearch">改变查询字段</button>
+</template>
+
+<script>
+import { reactive, watchEffect } from "vue";
+export default {
+  name: "App",
+  components: {},
+  setup() {
+    let timer = null;
+    let state = reactive({
+      search: Date.now(),
+    });
+    watchEffect((onInvalidate) => {
+      console.log(`监听查询字段 ${state.search}`);
+      timer = setTimeout(() => {
+        console.log("模拟接口异步请求，3 秒之后返回详情信息");
+      }, 3000);
+      onInvalidate(() => {
+        console.log("清除");
+        clearInterval(timer);
+      });
+    });
+    const handleSearch = () => {
+      state.search = Date.now();
+    };
+    return {
+      state,
+      handleSearch,
+    };
+  },
+};
+</script>
+```
+
+在 watchEffect 回调函数内，我用 setTimeout 的形式去模拟响应时间为 3 秒的异步请求，上面代码可以理解为 3 秒之内如果你不去改变 search 变量，那么页面就成功返回接口数据，如果在 3 秒之内你再次点击按钮改变了 search 变量，onInvalidate 将会被触发，从而清理掉上一次的接口请求，然后根据新的 search 变量去执行新的请求
+### watch
+
+watch 的功能和之前的 Vue 2.0 的 watch 是一样的。和 watchEffect 相比较，区别在 watch 必须制定一个特定的变量，并且不会默认执行回调函数，而是等到监听的变量改变了，才会执行。并且你可以拿到改变前和改变后的值
+
+```html
+<template>
+  <div>
+    <h1>{{ state.search }}</h1>
+    <button @click="handleSearch">改变查询字段</button>
+  </div>
+
+</template>
+
+<script>
+import { reactive, watch } from 'vue'
+
+export default {
+  setup() {
+    let timer = null
+    let state = reactive({
+      search: Date.now()
+    })
+    watch(() => {
+      return state.search
+    }, (nextData, preData) => {
+      console.log('preData', preData)
+      console.log('nextData', nextData)
+    })
+
+    const handleSearch = () => {
+      state.search = Date.now()
+    }
+    return {
+      state,
+      handleSearch
+    }
+  }
+}
+</script>
+```
+
 ## 响应式系统 API
 
 ### reactive
@@ -308,7 +705,7 @@ const state = reactive({
 - `ref` 可以生成 `值类型`（即基本数据类型） 的响应式数据；
 - `ref` 可以用于**模板**和**reactive**；
 - `ref` 通过 `.value` 来修改值（一定要记得加上 `.value` ）；
-- `ref` 不仅可以用于**响应式**，还可以用于模板的 `DOM` 元素。
+- `ref` 不仅可以用于**响应式**，**还可以用于模板的 `DOM` 元素。**
 
 
 
@@ -477,129 +874,7 @@ original.count++
 copy.count++ // warning!
 1
 ```
-### watchEffect
 
-首先 watchEffect 会追踪响应式数据的变化，并且还会在第一次渲染的时候立即执行
-
-```html
-<template>
-  <div>
-    <h1>{{ state.search }}</h1>
-    <button @click="handleSearch">改变查询字段</button>
-  </div>
-
-</template>
-
-<script>
-import { reactive, watchEffect } from 'vue'
-
-export default {
-  setup() {
-    let state = reactive({
-      search: Date.now()
-    })
-    watchEffect(() => {
-      console.log(`监听查询字段${state.search}`)
-    })
-
-    const handleSearch = () => {
-      state.search = Date.now()
-    }
-    return {
-      state,
-      handleSearch
-    }
-  }
-}
-</script>
-```
-
-watchEffect 函数返回一个新的函数，我们可以通过执行这个函数或者当组件被卸载的时候，来停止监听行为。
-
-watchEffect 的回调方法内有一个很重要的方法，用于清除副作用。它接受的回调函数也接受一个函数 onInvalidate。名字不重要，重要的是它将会在 watchEffect 监听的变量改变之前被调用一次
-
-
-那么要它何用呢？用处非常大。举个例子，我们需要监听 search 的变化，去请求接口数据，此时接口是异步返回的，每当我改变 search 都会去请求一次接口，那么有可能 search 改变的很频繁，那就会频繁的去请求接口，导致服务端压力倍增。我们可以通过这个特性去降低服务端的压力，具体逻辑如下：
-
-```html
-<template>
-  <h1>{{ state.search }}</h1>
-  <button @click="handleSearch">改变查询字段</button>
-</template>
-
-<script>
-import { reactive, watchEffect } from "vue";
-export default {
-  name: "App",
-  components: {},
-  setup() {
-    let timer = null;
-    let state = reactive({
-      search: Date.now(),
-    });
-    watchEffect((onInvalidate) => {
-      console.log(`监听查询字段 ${state.search}`);
-      timer = setTimeout(() => {
-        console.log("模拟接口异步请求，3 秒之后返回详情信息");
-      }, 3000);
-      onInvalidate(() => {
-        console.log("清除");
-        clearInterval(timer);
-      });
-    });
-    const handleSearch = () => {
-      state.search = Date.now();
-    };
-    return {
-      state,
-      handleSearch,
-    };
-  },
-};
-</script>
-```
-
-在 watchEffect 回调函数内，我用 setTimeout 的形式去模拟响应时间为 3 秒的异步请求，上面代码可以理解为 3 秒之内如果你不去改变 search 变量，那么页面就成功返回接口数据，如果在 3 秒之内你再次点击按钮改变了 search 变量，onInvalidate 将会被触发，从而清理掉上一次的接口请求，然后根据新的 search 变量去执行新的请求
-### watch
-
-watch 的功能和之前的 Vue 2.0 的 watch 是一样的。和 watchEffect 相比较，区别在 watch 必须制定一个特定的变量，并且不会默认执行回调函数，而是等到监听的变量改变了，才会执行。并且你可以拿到改变前和改变后的值
-
-```html
-<template>
-  <div>
-    <h1>{{ state.search }}</h1>
-    <button @click="handleSearch">改变查询字段</button>
-  </div>
-
-</template>
-
-<script>
-import { reactive, watch } from 'vue'
-
-export default {
-  setup() {
-    let timer = null
-    let state = reactive({
-      search: Date.now()
-    })
-    watch(() => {
-      return state.search
-    }, (nextData, preData) => {
-      console.log('preData', preData)
-      console.log('nextData', nextData)
-    })
-
-    const handleSearch = () => {
-      state.search = Date.now()
-    }
-    return {
-      state,
-      handleSearch
-    }
-  }
-}
-</script>
-```
 
 ## 生命周期钩子函数、提供/注入（provide/inject）
 
@@ -1569,6 +1844,36 @@ export default {
 
 ## Vue 3.0 DevUI 组件库
 
+###  vue3 Babel JSX 插件
+
+v-model
+
+> 注意：如果想要使用 `arg`, 第二个参数需要为字符串
+
+```js
+<input v-model={val} />
+<input v-model={[val, ["modifier"]]} />
+<A v-model={[val, "argument", ["modifier"]]} />
+```
+
+会变编译成：
+
+```js
+h(A, {
+  argument: val,
+  argumentModifiers: {
+    modifier: true,
+  },
+  "onUpdate:argument": ($event) => (val = $event),
+});
+```
+
+https://github.com/vuejs/jsx-next/blob/dev/packages/babel-plugin-jsx/README-zh_CN.md#%E6%8C%87%E4%BB%A4
+
+关于解构的问题：
+
+解构会让左值失去响应式，要注意
+
 规范
 
 ```sh
@@ -1593,10 +1898,330 @@ Button.version = '0.0.1'
 export {  Button as default, xxxDirective, xxService }
 ```
 
+### 实现一个 Splitter 组件
 
+自上而下的设计方式，先有一个 Splitter，通过 angular 设计稿看出 splitter 里面由以下模块
+
+- pane
+- bar
+
+1. 从 HTML 结构入手，分析使用的 demo 基本用法，html 的结构怎么定义的，怎么使用。从这里可以分析父组件和子组件。（跟手写代码从测试用例入手很像）
+2. 根据 HTML 完善 TS 逻辑，完善子组件。
+
+#### 基本用法
+
+##### Splitter
+
+HTML
+
+
+
+```js
+
+```
+
+
+
+**CSS**
+
+- flex 布局
+
+```scs
+
+```
+
+**TS**
+
+- input
+  - orientation
+  - splitBarSize
+
+##### Spliter-bar
+
+**html**
+
+**scss**
+
+```scss
+.d-splitter-bar {
+  background-color: $devui-dividing-line;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+```
+
+**ts**
+
+- orientation
+
+#### angular 服务如何用 vue3 实现
+
+1. 直接导出一个单例模式，这样其他组件直接引入使用即可。
+
+   ```ts
+   
+   ```
+
+2. 对于其他的逻辑复用，非单例方式，后续可以使用 usexx 方式实现
+
+   ```ts
+   import { ref, Ref, computed } from "vue";
+   
+   type CountResultProps = {
+     count: Ref<number>;
+     multiple: Ref<number>;
+     increase: (delta?: number) => void;
+     decrease: (delta?: number) => void;
+   };
+   
+   export default function useCount(initValue = 1): CountResultProps {
+     const count = ref(initValue);
+   
+     const increase = (delta?: number): void => {
+       if (typeof delta !== "undefined") {
+         count.value += delta;
+       } else {
+         count.value += 1;
+       }
+     };
+     const multiple = computed(() => count.value * 2);
+   
+     const decrease = (delta?: number): void => {
+       if (typeof delta !== "undefined") {
+         count.value -= delta;
+       } else {
+         count.value -= 1;
+       }
+     };
+   
+     return {
+       count,
+       multiple,
+       increase,
+       decrease,
+     };
+   }
+   
+   ```
+
+- https://stackoverflow.com/questions/41164672/whats-the-equivalent-of-angular-service-in-vuejs
+- https://lukeliutingchun.medium.com/vue-js-using-a-stateful-angular-like-service-to-organize-your-code-abf109f32ab7
+
+#### angular   ngAfterContentInit()  事件的模拟
+
+**slot组件和外层组件的通信**
+
+slot组件和外层组件其实并不是父子组件关系，**非父子组件通信**我们可以考虑**事件总线**（event bus）或者**状态管理模式**（vuex）。
+
+因为 vue 没有这个事件，单纯使用 onMounted 是不行的，因为 splitter-bar 会先执行，会导致 panes 配置问题
+
+```js
+    // onMounted(() => {
+    //   console.log("splitter-onMounted");
+    //   reconfigure();
+    // });
+    // 或者把这个方法注入到 pane，这样就可以及时调
+```
+
+或者说这个方法直接在 pane 里调用即可，不需要在 splitter 组件
+
+#### 调整面板大小
+
+```js
+ 方法u一  //   // if (!SplitterService.isStaticBar(props.index)) { // 这里需要改正，必须要在 panes 挂载后才能执行，因此需要在 panes 发生改变时通过事件通知执行，要不自己写一个 eventbus
+
+    //   //   bindClass += " resizable";
+    //   // } else {
+
+    //   // }
+    //   return bindClass;
+    // });
+
+ 方法二// TODO晚上尝试， 使用 state.splitterService，splitterService，让它具有响应式。
+    // 然后 splitter 通过监听 splitterPane 的 Update 事件，重新调用 recofigure，改变 splitterService
+    // 把 splitterService 传递给 splitter-bar，splitter-bar 获取 这个 prop，在内部做一些处理。
+
+ 方法三：把服务从父组件注入进入，注入的东西必须具有响应式，这样子组件才能检测
+```
+
+这里尝试了不少方法
+
+最终
+
+## 原理
+
+### 响应式原理
+
+**题目描述**
+
+```js
+// 示例1 ref
+let num = ref(5);
+effect(() => (sum = num.value * 100));
+
+console.log(sum); // 500
+
+num.value = 10;
+console.log(sum); // 1000
+
+// 示例2 computed
+let num1 = ref(5);
+let num2 = ref(8);
+let sum1 = computed(() => num1.value * num2.value); // 40
+let sum2 = computed(() => sum1.value * 10); // 400
+
+num1.value = 10;
+
+console.log(sum1.value); // 80
+console.log(sum2.value); // 800
+
+num2.value = 16;
+
+console.log(sum1.value); // 160
+console.log(sum2.value); // 1600
+```
+
+**思路分析**
+
+1. track 和 trigger
+
+   - 用track函数把所有依赖于 xxx 变量的 effect 函数都收集起来，放在 dep 里，dep为什么用 Set 呢？因\* 为Set可以自动去重。搜集起来之后，以后只要 xxx变量一改变，就执行trigger函数通知dep里所有\* 依赖money变量的effect函数执行，实现依赖变量的更新。
+   - 使用 Proxy 实现自动收集依赖，以及自动通知更新
+   - 使用 WeakMap 存储多个对象
+
+2.  解决收集依赖写死问题
+
+   - 实际开发中，肯定是不止两个对象的，如果每多加一个对象，就得多加一个else if判断，那是万万不行的。那我\* 们要怎么解决这个问题呢？
+
+   - 解决方案：使用一个全局变量 activeEffect 来巧妙解决这个问题，具体是怎么解决呢？其实很简单，就是每一个 effect 函数一执行，就把自身放到对应的 dep 里，这就可以不需要写死了
+
+**编码实现**
+
+```js
+let activeEffect = null;
+function effect(fn) {
+  activeEffect = fn; //相当于 观察者
+  activeEffect();
+  activeEffect = null; // 执行完立马变成 null
+}
+
+const targetMap = new WeakMap(); // 1. 存放对象，每个对象会建立一个Map来存储此对象里属性的dep(使用 Set来存储)
+/**
+ * 收集依赖
+ * @param {*} target
+ * @param {*} key
+ */
+function track(target, key) {
+  // 如果此时 activeEffect 为 null 则不执行下面
+  // 这里判断是为了避免例如 console.log(person.name) 而触发 track
+  if (!activeEffect) return;
+
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    targetMap.set(target, (depsMap = new Map())); // 使用 Map 存储 dep
+  }
+
+  let dep = depsMap.get(key); // 获取属性的 dep 依赖数组
+  if (!dep) {
+    depsMap.set(key, (dep = new Set()));
+  }
+
+  dep.add(activeEffect); // 把此时的 activeEffect 添加进去
+}
+
+/**
+ * 派发更新
+ * @param {*} target
+ * @returns
+ */
+function trigger(target, key) {
+  let depsMap = targetMap.get(target);
+  if (depsMap) {
+    const dep = depsMap.get(key);
+    if (dep) {
+      dep.forEach((effect) => effect());
+    }
+  }
+}
+
+function reactive(target) {
+  const handler = {
+    get(target, key, receiver) {
+      track(receiver, key); // 访问时收集依赖
+      return Reflect.get(target, key, receiver); // 相当于 receiver[key]
+    },
+    set(target, key, value, receiver) {
+      Reflect.set(target, key, value, receiver); // 相当于 recevier[key] = value
+      trigger(receiver, key); // 设置时自动通知更新
+    },
+  };
+  return new Proxy(target, handler);
+}
+
+function ref(initValue) {
+  return reactive({
+    value: initValue,
+  });
+}
+
+function computed(fn) {
+  const result = ref();
+  effect(() => (result.value = fn())); // 执行 computed 传入函数，fn 里面有被 computed 依赖的属性，执行 fn 时会触发 computed 依赖收集
+  return result;
+}
+```
+
+#### Proxy
+
+
+
+#### Proxy 和 Reflect
+
+```js
+const person = { name: "林三心", age: 22 };
+
+// Before
+const proxyPerson = new Proxy(person, {
+  get(target, key, receiver) {
+    return target[key];
+  },
+  set(target, key, value, receiver) {
+    target[key] = value;
+  },
+});
+
+// After
+const proxyPerson = new Proxy(person, {
+  get(target, key, receiver) {
+    return Reflect.get(target, key);
+  },
+  set(target, key, value, receiver) {
+    return Reflect.set(target, key, value);
+  },
+});
+
+console.log(proxyPerson.name); // 林三心
+proxyPerson.name = "sunshine_lin";
+console.log(proxyPerson.name); // sunshine_lin
+```
+
+### diff 原理
 
 ## 参考资料
 
 - [轻松学会 React 钩子：以 useEffect() 为例](http://www.ruanyifeng.com/blog/2020/09/react-hooks-useeffect-tutorial.html)
 - https://juejin.cn/book/6933939264455442444/section/6933954409923608584
+- 使用
+  - [Vue3.0 新特性以及使用经验总结](https://juejin.cn/post/6940454764421316644)
+  - [让你30分钟快速掌握vue 3](https://juejin.cn/post/6887359442354962445)
+  - [【Vue3官方教程】🎄万字笔记 | 同步导学视频](https://juejin.cn/post/6909247394904702984#heading-0)
+  - [Vue3的7种和Vue2的12种组件通信，值得收藏](https://juejin.cn/post/6999687348120190983#heading-4)
+  - [Vue 3.0 自定义指令的这些知识你掌握了么？](https://juejin.cn/post/6944875414208643102)
+- 原理
+  - [林三心画了8张图，最通俗易懂的Vue3响应式核心原理解析](https://juejin.cn/post/7001999813344493581)
+  - [[Vue官方教程笔记]- 尤雨溪手写mini-vue](https://juejin.cn/post/6911897255087702030)
 
