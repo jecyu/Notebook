@@ -161,6 +161,38 @@ for (let char of "Hello") {
   console.log(greeting.trim()); // expected output: "Hello world!";
   ```
 
+### 数组
+
+#### 多维数组
+
+数组里的项也可以是数组。我们可以将其用于多维数组，例如存储矩阵：
+
+```js
+let matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+];
+
+alert( matrix[1][1] ); // 最中间的那个数
+```
+
+初始化一个二维数组： 
+
+```js
+// 错误示范，使用 fill 后续的引用改变都是相同的值 [1,2]
+const dp = new Array(n).fill([1, 2])
+
+// 正确示范
+const dp = [];
+  // 初始化
+for (let i = 0; i < n; i++) {
+  dp.push([1, 2]);
+}
+```
+
+
+
 ### 解构赋值
 
 #### 数组解构
@@ -325,6 +357,87 @@ let user = {
 
 > ⚠️就像 `for..in` 循环一样，这些方法会忽略使用 `Symbol(...)` 作为键的属性。通常这很方便。但是，如果我们也想要 Symbol 类型的键，那么这儿有一个单独的方法 [Object.getOwnPropertySymbols](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols)，它会返回一个只包含 Symbol 类型的键的数组。另外，还有一种方法 [Reflect.ownKeys(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)，它会返回 **所有** 键。
 
+### JSON 方法，toJSON
+
+#### 格式化：space
+
+`JSON.strigify(value, replacer, spaces)` 第三个参数是用于优化格式的空格数量。
+
+以前，所有字符串化的对象都没有缩进和额外的空格。如果我们想通过网络发送一个对象，那就没什么问题。
+
+`space` 参数专门用于调整出更美观的输出。
+
+这里的 `space = 2` 告诉 JavaScript 在多行中显示嵌套的对象，对象内部缩进 2 个空格。
+
+```js
+let user = {
+  name: "John",
+  age: 25,
+  roles: {
+    isAdmin: false,
+    isEditor: true
+  }
+};
+
+alert(JSON.stringify(user, null, 2));
+/* 两个空格的缩进：
+{
+  "name": "John",
+  "age": 25,
+  "roles": {
+    "isAdmin": false,
+    "isEditor": true
+  }
+}
+*/
+
+/* 对于 JSON.stringify(user, null, 4) 的结果会有更多缩进：
+{
+    "name": "John",
+    "age": 25,
+    "roles": {
+        "isAdmin": false,
+        "isEditor": true
+    }
+}
+*/
+```
+
+ `spaces` 参数仅用于日志记录和美化输出。
+
+### 类型转换
+
+#### 总结
+
+有三种常用的类型转换：转换为 string 类型、转换为 number 类型和转换为 boolean 类型。
+
+**字符串转换**——转换发生在输出内容的时候，也可以通过 `String(value)` 进行显式转换。原始类型值的 string 类型转换通常是很明显的。
+
+**数字型转换**——转换发生在进行算术操作时，也可以通过 `Number(value)` 进行显式转换。
+
+数字型转换遵循以下规则：
+
+| 值             | 变成……                                                       |
+| :------------- | :----------------------------------------------------------- |
+| `undefined`    | `NaN`                                                        |
+| `null`         | `0`                                                          |
+| `true / false` | `1 / 0`                                                      |
+| `string`       | “按原样读取”字符串，两端的空白会被忽略。空字符串变成 `0`。转换出错则输出 `NaN`。 |
+
+**布尔型转换** —— 转换发生在进行逻辑操作时，也可以通过 `Boolean(value)` 进行显式转换。
+
+布尔型转换遵循以下规则：
+
+| 值                                    | 变成……  |
+| :------------------------------------ | :------ |
+| `0`, `null`, `undefined`, `NaN`, `""` | `false` |
+| 其他值                                | `true`  |
+
+上述的大多数规则都容易理解和记忆。人们通常会犯错误的值得注意的例子有以下几个：
+
+- 对 `undefined` 进行数字型转换时，输出结果为 `NaN`，而非 `0`。
+- 对 `"0"` 和只有空格的字符串（比如：`" "`）进行布尔型转换时，输出结果为 `true`。
+
 ## Object(对象)：基础知识
 
 ### 可选链 "?."
@@ -421,6 +534,44 @@ alert(user.valueOf() === user); // true
 #### 左移  a << b
 
 比如 1 << 8 得到 256
+
+## 函数进阶内容
+
+#### 变量作用域，闭包
+
+1. 是什么？：闭包是指内部函数总是总可以访问其所在的外部函数中声明的变量和参数，即使在其外部函数被返回（寿命终结）之后。
+2. 怎么产生闭包？：
+   - 当在一个函数内定义另外一个函数就会产生闭包。**在函数被创建时，函数的隐藏属性 [[Environment]] 会记住函数被创建时的位置，在调用时可以访问到当时的外部变量**。
+   - 所有函数都是天生闭包的（只有一个例外，将在 ["new Function" 语法](https://zh.javascript.info/new-function) 中讲到）。
+3. 应用场景：匿名执行函数（var 污染、库的封装）、防抖节流函数、结果缓存。
+
+## 原型，继承
+
+### 原型继承
+
+在编程中，我们经常会想获取并扩展一些东西。 
+
+例如，我们有一个 `user` 对象及其属性和方法，并希望将 `admin` 和 `guest` 作为基于 `user` 的稍加修改的变体。
+
+我们想重用 `user` 中的内容，而不是复制/重新实现它的方法，而只是在其之上构建一个新的对象。
+
+**原型继承（Prototypal inheritance）** 这个语言特性能够帮助我们实现这一需求。
+
+#### [[ Prototype ]]
+
+ 在 JavaScript 
+
+#### 总结
+
+- 在 JavaScript 中，所有的对象都有一个隐藏的 `[[Prototype]]` 属性，它要么是另一个对象，要么就是 `null`。
+- 我们可以使用 `obj.__proto__` 访问它（历史遗留下来的 getter/setter）
+- 通过 `[[Prototype]] ` 引用的对象被称为“原型”。
+- 如果我们想要读取 `obj` 的一个属性或者调用一个方法，并且它不存在，那么 JavaScript 就会尝试在原型上查找它。
+- 写/删除操作直接在对象上进行，它们不使用原型（假设它是数据属性，不是 setter）。
+- 如果我们调用 `obj.method()`，而且 `method` 是从原型中获取的，`this` 仍然会引用 `obj`。因此，方法始终与当前对象一起使用，即使方法是继承的。
+- `for...in` 循环在其自身和继承的属性上进行迭代。所有其他的键/值获取方法仅对对象本身起作用。
+
+### F.prototype
 
 ## 网络请求
 
@@ -617,7 +768,106 @@ style 特性是字符串类型的，但 style 属性是一个对象：
 
 ### Window 大小和滚动
 
+我们如何找到浏览器窗口（window）的宽度和高度呢？我们如何获得文档（document）的包括滚动部分在内的完整宽度和高度呢？我们如何使用 JavaScript 滚动页面？
+
+对于此类信息，我们可以使用与 `<html>` 标签相对应的根文档元素 `document.documentElement`。但是还有其他方法和特性需要考虑。
+
+#### 窗口的 width/height
+
+为了获取窗口（window）的宽度和高度，我们可以使用 `document.documentElement` 的 `clientWidth/clientHeight`：
+
+<img src="../.vuepress/public/images/2021-09-06-19-48-35.png" style="zoom:80%;" />
+
+>  ⚠️ **不是** `window.innerWidth/innerHeight`
+>
+>  浏览器也支持像 `window.innerWidth/innerHeight` 这样的属性。它们看起来像我们想要的，那为什么不使用它们呢？
+>
+>  如果这里存在一个滚动条，并且滚动条占用了一些空间，那么 `clientWidth/clientHeight` 会提供没有滚动条（减去它）的 width/height。换句话说，它们返回的是可用于内容的文档的可见部分的 width/height。
+>
+>  `window.innerWidth/innerHeight` 包括了滚动条。
+>
+>  如果这里有一个滚动条，它占用了一些空间，那么这两行代码会显示不同的值：
+>
+>  ```js
+>  alert( window.innerWidth ); // 整个窗口的宽度
+>  alert( document.documentElement.clientWidth ); // 减去滚动条宽度后的窗口宽度
+>  ```
+>
+>  在大多数情况下，我们需要**可用**的窗口宽度以绘制或放置某些东西。也就说，在滚动条内（如果有）。所以，我们应该使用 `documentElement.clientHeight/clientWidth`。
+
+#### 文档的 width/height
+
+从理论上讲，由于根文档元素是 `document.documentElement`，并且它包围了所有内容，因此我们可以通过使用 `documentElement.scrollWidth/scrollHeight` 来测量文档的完整大小。
+
+但是在该元素上，对于整个文档，这些属性均无法正常工作。在 Chrome/Safari/Opera 中，如果没有滚动条，`documentElement.scrollHeight` 甚至可能小于 `documentElement.clientHeight`！
+
+为了可靠地获得完整的文档高度，我们应该采用以下这些属性的最大值：
+
+```js
+let scrollHeight = Math.max(
+  	document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight,
+    document.body.clientHeight, document.documentElement,clientHeight
+);
+alert('Full document height, with scrolled out part: ' + scrollHeight);
+```
+
+为什么这样？这些不一致来源于远古时代，而不是“聪明”的逻辑。
+
+#### 获得当前滚动
+
+DOM 元素的当前滚动状态在其 `scrollLeft/scrollTop` 属性中。
+
+对于文档滚动，在大多数浏览器中，我们可以使用 `document.documentElement.scrollLeft/scrollTop` ，但在较旧的基于 WebKit 的浏览器中则不行，例如在 Safari（bug [5991](https://bugs.webkit.org/show_bug.cgi?id=5991)）中，我们应该使用 `document.body` 而不是 `document.documentElement`。
+
+幸运的是，我们根本不必记住这些特性，因为滚动在 `window.pageXOffset/pageYOffset` 中可用：
+
+```js
+alert('Current scroll from the top: ' + window.pageYOffset);
+alert('Current scroll from the left: ' + window.pageXOffset);
+```
+
+这些属性是只读的。
+
+#### 滚动：scrollTo，scrollBy，scrollntoView
+
+> 必须在 DOM 完全构建好之后才能通过 JavaScript 滚动页面。
+>
+> 例如，如果我们尝试通过 `<head>` 中的脚本滚动页面，它将无法正常工作。
+
+可以通过更改 `scrollTop/scrollLeft` 来滚动常规元素。
+
+我们可以使用 `document.documentElement.scrollTop/scrollLeft` 对页面进行相同的操作**（Safari 除外，而应该使用 `document.body.scrollTop/Left代替`）**
+
+或者，有一个更简单的通用解决方案：使用特殊方法 [window.scrollBy(x,y)](https://developer.mozilla.org/zh/docs/Web/API/Window/scrollBy) 和 [window.scrollTo(pageX,pageY)](https://developer.mozilla.org/zh/docs/Web/API/Window/scrollTo)。
+
+- 方法 `scrollBy(x, y)` 将页面滚动至**相对于当前位置的 （x，y）位置**。例如，`scrollby(0, 10)` 会讲页面向下滚动 `10px`。
+- 方法 `scrollTo(pageX, pageY)` 将页面滚动至**绝对坐标**，使得可见部分的左上角具有相对于文档左上角的左边`(pageX, pageY)`。就像设置了 `scrollLeft/scrollTop` 一样。
+  - 要滚动到最开始，我们可以使用 `scrollTo(0, 0)`。
+
+这些方法，适用于所有浏览器。
+
+#### scrollnToView
+
+#### 禁止滚动
+
 ### 坐标
+
+#### Screen
+
+屏幕坐标系，坐标原点位于屏幕的左下角。
+
+#### Page
+
+网页文档坐标系，坐标原点位于根节点左上角。
+
+#### Client
+
+客户端坐标系，浏览器窗口可见区域的左上角。
+
+#### Offset
+
+局部坐标系，以目标元素自身的左上角为原点。
 
 <img src="../.vuepress/public/images/2021-09-03-22-30-08.png" style="zoom:80%;" />
 
@@ -627,11 +877,138 @@ style 特性是字符串类型的，但 style 属性是一个对象：
 
 - [你真的会用getBoundingClientRect吗？](https://github.com/zuopf769/notebook/blob/master/fe/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BC%9A%E7%94%A8getBoundingClientRect%E5%90%97/README.md)
 
+## 事件简介
+
+### 事件委托
+
+#### 总结
+
+事件委托是 DOM 事件最有用的模式之一。
+
+它通常用于为许多相似的元素添加相同的处理，但不仅限于此。
+
+算法：
+
+1. 在容器（container）上放一个处理程序。
+2. 在处理程序中——检查源元素 `event.target`。
+3. 如果事件发生在我们感兴趣的元素内，那么处理该事件。
+
+好处：
+
+- 简化初始化并节省内存：无需添加许多处理程序。
+- 更少的代码：添加或移除元素时，无需添加/移除处理程序。
+- DOM 修改：我们可以使用 `innerHTML` 等，来批量添加/移除元素。
+
+事件委托也有其局限性：
+
+- 首先，事件必须冒泡。而有些事件不会冒泡。此外，低级别的处理程序不应该使用 `event.stopPropagation()`。
+- 其次，委托可能会增加 CPU 负载，因为容器级别的处理程序会对容器中任意位置的事件做反应，而不管我们是否对该事件感兴趣。但是，通常负载可以忽略不计，所以我们不考虑它。
+
+#### 任务
+
 ## UI 事件
 
 ### 滚动
 
+`scroll` 事件允许对页面或元素滚动作出反应。我们可以在这里做一些有用的事情。
 
+例如：
+
+- 
+
+### 鼠标拖放事件
+
+#### 拖放算法
+
+拖放（Drag Drop） 是一个很赞的界面解决方案。取某件东西并将其拖放是执行许多东西的一种简单明了的方式，从复制和移动文档（如在文件管理器中）到订购（将物品放入购物车）。
+
+在现代 HTML标准中有一个[关于拖放的部分](https://html.spec.whatwg.org/multipage/interaction.html#dnd)，其中包含了例如 `dragstart` 和 `dragend` 等特殊事件。
+
+这些事件使我们能够支持特殊类型的拖放，例如处理从 OS 文件管理器中拖动文件，并将其拖放到浏览器窗口中。之后，JavaScript 便可以访问此类文件中的内容。
+
+> TODO 验证以下的段落：但是，原生的拖放事件也有其局限性。例如，我们无法阻止从特定区域的拖动。并且，我们无法将拖动变成“水平”或“竖直”的。还有很多其他使用它们无法完成的拖放任务。并且，移动设备对此类事件的支持非常有限。
+>
+> 因此，在这里我们将看到，如何使用鼠标事件来实现拖放。
+
+基础的拖放算法如下所示：
+
+1. 在 `mousedown` 上 —— 根据需要准备要移动的元素（也许创建一个它的副本，向其中添加一个类或其他任何东西）。
+2. 然后在 `mousemove` 上，通过更改 `position:absolute` 情况下的 `left/top` 来移动它。
+3. 在 `mouseup` 上 —— 执行与完成的拖放相关的所有行为
+
+```js
+function bindEvent(el) {
+  // 绑定 mousedown 事件
+  bind(el, "mousedown", onMousedown);
+}
+
+function onMousedown(e) {
+  bind(document, "mousemove", onMousemove);
+  bind(document, "mouseup", onMouseup);
+}
+
+function onMousemove(e) {}
+
+function onMouseup(e) {
+  unbind(document, "mousemove", onMousemove);
+  unbind(document, "mouseup", onMouseup);
+}
+```
+
+例如当我们将一个东西拖动到一个元素上方时，高亮显示该元素。
+
+```js
+ball.onmousedown = function(event) {
+  // (1) 准备移动：确保 absolute，并通过设置 z-index 以确保球在顶部
+  ball.style.position = 'absolute';
+  ball.style.zIndex = 1000;
+
+  // 将其从当前父元素中直接移动到 body 中
+  // 以使其定位是相对于 body 的
+  document.body.append(ball);
+
+  // 现在球的中心在 (pageX, pageY) 坐标上
+  function moveAt(pageX, pageY) {
+    ball.style.left = pageX - ball.offsetWidth / 2 + 'px';
+    ball.style.top = pageY - ball.offsetHeight / 2 + 'px';
+  }
+
+  // 将我们绝对定位的球移到指针下方
+  moveAt(event.pageX, event.pageY);
+
+  function onMouseMove(event) {
+    moveAt(event.pageX, event.pageY);
+  }
+
+  // (2) 在 mousemove 事件上移动球
+  document.addEventListener('mousemove', onMouseMove);
+
+  // (3) 放下球，并移除不需要的处理程序
+  ball.onmouseup = function() {
+    document.removeEventListener('mousemove', onMouseMove);
+    ball.onmouseup = null;
+  };
+};
+
+```
+
+因为浏览器有自己的对图片和一些其他元素的拖放处理。它会在我们进行拖放操作时自动运行，并与我们的拖放处理产生了冲突。 禁用
+
+```js
+ball.ondragstart = function() { 
+  return false;
+};
+```
+
+**另一个重要的方面是**——我们在 `document` 上跟踪 `mousemove` ，而不是在 `ball` 上。乍一看，鼠标似乎总是在求的上方，我们将 `mousemove` 放在球上。
+
+但是 `mousemove` 会经常被触发，但不会针对每个像素都如此。因此，在快速移动鼠标后，鼠标指针可能会从球上跳转至文档中间的某个位置（甚至跳转至窗口外）。
+
+因此，我们应该监听 `document` 以捕获它。
+
+#### 修正定位
+
+#### 潜在的放置目标
 
 ## 模块
 
@@ -672,6 +1049,12 @@ new User('John');
 ## 动画
 
 ### CSS 动画
+
+## 杂项
+
+### Proxy 和 Reflect
+
+
 
 ## 基础
 

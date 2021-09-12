@@ -1,5 +1,7 @@
 # CSS 项目实战总结（持续更新）
 
+
+
 ## 结构与布局
 
 ### Flex
@@ -38,9 +40,34 @@ Flex 项目开始收缩以适应容器空间（变为每个 `125px`）。`flex-s
 - [width 与 flex-basis 的区别](https://juejin.cn/post/6844903914148462599)
 - [深入理解 flex-grow、flex-shrink、flex-basis](https://juejin.cn/post/6844904016439148551)
 
-## 0. 前言
+## 
 
-## 1. 基础
+## 过渡与动画
+
+### CSS3 Transform
+
+Transform 字面上就是变形，改变的意思。在 CSS3 中 transform 主要包括以下几种：**旋转 rotate**、**扭曲 skew**、**缩放 scale**和**移动 translate**以及**矩阵变形matrix**。
+
+**语法**
+
+```css
+transform ： none | <transform-function> [ <transform-function> ]* 
+/* 也就是：*/
+transform: rotate | scale | skew | translate |matrix;
+```
+
+- `none`：表示不进行变换
+- `<transform-funciton>`表示一个或多个变换函数，以空格分开；换句话说就是我们同时对一个元素进行 transform 的多种属性操作，例如 rotate、scale、translate 三种，但这里需要提醒大家的，以往我们叠加效果都是用逗号（“，”）隔开，但 transform 中使用多个属性时却需要有空格隔开。
+
+#### 旋转 rotate
+
+rotate(<angle)：通过指定的角度参数对原元素指定一个 2D rotation（2D 旋转 ），需先有 transform-origin 属性的定义。transform-origin 定义的是旋转的基点，其中 angle 是指旋转角度。如果设置的值为正数表示顺时针旋转，如果设置的值为负数，则表示逆时针旋转。如：transform: rotate(30deg)：
+
+![](../.vuepress/public/images/2021-09-09-08-49-59.png)
+
+#### 改变元素基点 transform-origin
+
+元素默认基点就是其中心位置，换句话说我们没有使用 transform-origin 改变元素基点位置的情况下，transform 进行的 rotate、translate、scale、skew、matrix 都等操作都是以元素自己中心位置进行变化的。
 
 ### 获取滚动条宽度
 
@@ -218,7 +245,7 @@ Vue scope，里面子元素还是需要嵌套来区分应用范围。也就是�
 
 需要探索 Buttons 的元子处理。
 
-## 3. 底层原理
+
 
 ## 4. 最佳实践
 
@@ -226,4 +253,21 @@ Vue scope，里面子元素还是需要嵌套来区分应用范围。也就是�
 
 ## 参考资料
 
-- 《CSS 世界》
+- 书籍文档
+  - 《CSS 权威指南》
+  - 《精通 CSS 高级 Web 标准解决方案》
+  - 《CSS 世界》
+  - 《CSS 揭秘》
+  - W3C CSS 规范
+- 网站
+  - CSS-Tricks
+  - Dev.to
+  - Smashing Mane
+  - CSS Weekly
+  - SitePoint
+  - 张鑫旭 老师的鑫空间，鑫生活
+  - chokcoco 老师的 爱CSS（ICSS）
+  - **MDN 网站**
+  - **https://www.w3cplus.com/ 会员付费**
+- [大学没学过数学也要理解 CSS3 transform 中的 matrix](https://mp.weixin.qq.com/s/128BBnRhj94Dy7L6VI44xg)
+

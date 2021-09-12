@@ -115,8 +115,6 @@ req.keys().forEach((fileName) => {
 
 ```
 
-
-
 #### 用点匹配任意字符
 
 元字符 `[.]`（通常称为点号）用来匹配任意字符的字符组的简便写法。如果我们需要在表达式中使用一个“匹配任何字符”的占位符（placeholder），用点号就很方便。
@@ -401,7 +399,26 @@ Perl 和其他学多语言提供的一个正则表达式特性：**替换**（su
 
 #### 用环视功能为数值添加逗号🌟
 
+大的数值，如果在其间加入逗号，会更容易看懂。下面的程序：
 
+```js
+Print "The US population is $pop\n";
+```
+
+可能输出 “The US population is 298444215”，但对大多数说英语的人来说，“298,444,215” 看起来更自然。用正则表达式如何做呢？
+
+我们应该从这个数的右边开始，**每次数 3 位数字，如果左边还有数字的话，就加入一个逗号**。如果我们能把这种思路直接用到正则表达式中当然很好，可惜正则表达式一般都是从左向右工作的。
+
+梳理一下思路就会发现，逗号应该加在**“左边有数字，右边数字的个数正好是 3 的倍数的位置”**，这样，使用**环视（lookaround）**就可以解决这个问题。
+
+环视结构不匹配任何字符，只匹配文本中的特定位置，这一点与单词分界符「\b」、锚点「^」和 `「$」` 相似。
+
+| 类型                           | 正则表达式                   | 匹配成功的条件...                                            |
+| ------------------------------ | ---------------------------- | ------------------------------------------------------------ |
+| 肯定逆序环视<br />否定逆序环视 | (?<=......)<br />(?<!......) | 子表达式能够匹配**左侧文本**<br />子表达式不能匹配**左侧文本** |
+| 肯定顺序环视<br />否定顺序环视 | (?=.......)<br />(?!......)  | 子表达式能够匹配**右侧文本**<br />子表达式不能匹配**右侧文本** |
+
+环视不会“占用”字符，即在检查子表达式能否匹配的过程中，它们本身不会“占用”任何文本。
 
 ## 正则表达式在 JavaScript 中的使用
 
@@ -594,6 +611,57 @@ alert(result); // Smith, John
 #### regexp.exec(str)
 
 #### regexp.test(str)
+
+方法 `regexp.test(str)` 查找匹配项 ，然后返回 `true/false` 表示是否存在。
+
+例如：
+
+```js
+let str = "I love JavaScript";
+
+// 这两个测试相同
+alert( /love/i.test(str) ); // true
+alert( str.search(/love/i) != -1 ); // true
+```
+
+一个反例：
+
+```js
+let str = "Bla-bla-bla";
+alert(/love/i.test(str)); // false
+alert(str.search(/love/i) != -1); //false
+```
+
+如果正则表达式带有标记 `g`，则 `regexp.test` 从 `regexp.lastIndex` 属性中查找，并更新此属性，就像 `regexp.exec` 一样。
+
+因此，我们可以用它给定位置进行搜索：
+
+```js
+let regexp = /love/gi;
+
+let str = "I love JavaScript";
+
+// 从位置 10 开始：
+regexp.lastIndex = 10;
+alert( regexp.test(str) ); // false（无匹配）
+```
+
+> **相同的全局正则表达式在不同的源字符串上测试可能会失败**
+>
+> 如果我们在不同的源字符串上应用相同的全局表达式，可能会出现错误的结果，因为 `regexp.test` 的调用会增加 `regexp.lastIndex` 属性值，因此在另一个字符串中的搜索可能是从非 0 位置开始的。
+>
+> 例如，这里我们在同一文本上调用 `regexp.test` 两次，而第二次调用失败了：
+>
+> ```javascript
+> let regexp = /javascript/g;  // （新建 regexp：regexp.lastIndex=0)
+> 
+> alert( regexp.test("javascript") ); // true（现在 regexp.lastIndex=10）
+> alert( regexp.test("javascript") ); // false
+> ```
+>
+> 这正是因为在第二个测试中 `regexp.lastIndex` 不为零。
+>
+> 如要解决这个问题，我们可以在每次搜索之前设置 `regexp.lastIndex = 0`。或者，不调用正则表达式的方法，而是使用字符串方法 `str.match/search/...`，这些方法不用 `lastIndex`。
 
 正则表达式的创建和使用
 

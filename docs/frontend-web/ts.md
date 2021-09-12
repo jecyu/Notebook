@@ -1167,7 +1167,7 @@ let myObj = { size: 10, label: 'Size 10 Object' }
 printLabel(myObj)
 ```
 
-类型检查器会查看 `printLabel` 的调用。`printLabel` 有一个参数，并要求这个对象参数有一个名为 `label` 类型为 `string` 的属性。 需要注意的是，我们传入的对象参数实际上会包含很多属性，但是编译器只会检查那些必需的属性是否存在，以及其类型是否匹配。 然而，有些时候 TypeScript  却并不会这么宽松（对对象字面量的检查比较严格），我们下面会稍做讲解。
+类型检查器会查看 `printLabel` 的调用。`printLabel` 有一个参数，并要求这个对象参数有一个名为 `label` 类型为 `string` 的属性。 需要注意的是，**我们传入的对象参数实际上会包含很多属性，但是编译器只会检查那些必需的属性是否存在，以及其类型是否匹配**。 然而，有些时候 TypeScript  却并不会这么宽松（对对象字面量的检查比较严格），我们下面会稍做讲解。
 
 下面我们重写上面的例子，这次使用接口来描述：必须包含一个`label` 属性且类型为 `string`：
 
@@ -3260,6 +3260,14 @@ pet.swim()    // error
 
 ### 类型保护（或类型守卫）🌟
 
+#### in 关键字
+
+#### typeof 关键字
+
+#### instanceof 关键字
+
+#### 自定义类型保护的类型谓词
+
 联合类型适合于那些值可以为不同类型的情况。 但当我们想确切地了解是否为 `Fish` 或者是 `Bird` 时怎么办？ JavaScript 里常用来区分这 2 个可能值的方法是检查成员是否存在。如之前提及的，我们只能访问联合类型中共同拥有的成员。
 
 ```typescript
@@ -4751,7 +4759,7 @@ module.exports = {
 
 3. tsconfig 输出的 js，是否还经过 babel 的处理呢？
 
-​```json
+```json
 {
   "compilerOptions": {
     "target": "esnext",
@@ -4800,7 +4808,7 @@ new Vue({
 
 你会发现在 vue 项目中的 ts 环境下，进行 `import Vue from 'vue'` 时，vscode 编辑器 ts 是识别不 Vue 这个类型的，因此还需要在项目添加 `typing` 文件夹添加 `.d.ts` 关于 vue 的类型声明文件才可以，包括 `shims-tsx.d.ts` 和 `shims-vue.d.ts`，`shims-tsx.d.ts`用于支持 jsx 写法。
 
-```ts
+​```ts
 // shims-vue.d.ts
 declare module "*.vue" {
   // 声明一个模块，应用于所有的 vue 组件的 import 语句中

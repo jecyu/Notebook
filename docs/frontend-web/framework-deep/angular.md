@@ -755,6 +755,34 @@ export class ResizeDirective implements OnInit, OnDestroy {
 }
 ```
 
+绑定的指令实例，可以直接在被绑定的组件中获取，比如 `this.resize` 获取引用
+
+```js
+// splitter-bar.component.ts
+  ngOnInit(): void {
+    let state;
+    const resizeListener = this.resize.pressEvent
+      .pipe(
+        tap(this.stopPropagation),
+        filter(() => this.splitter.isResizable(this.index)),
+        tap(() => state = this.splitter.dragState(this.index)),
+        switchMap(this.moveStream(this.resize))
+      )
+      .subscribe(({ pageX, pageY, originalX, originalY }) => {
+        let distance;
+        if (this.orientation === 'vertical') {
+          distance = pageY - originalY;
+        } else {
+          distance = pageX - originalX;
+        }
+        this.splitter.setSize(state, distance);
+      });
+    this.subscriptions.add(resizeListener);
+  }
+```
+
+
+
 ### 自定义结构指令
 
 ## 服务与 RxJS
@@ -874,19 +902,167 @@ observable.subscribe(observer)
 
 除了 Observable 以及 Operator，Rx 中还有一些其他的核心概念，例如
 
-- Observer：对 Observable 对象发出的每个事件进行响应。
-- Subscription：Observable 对象被订阅后返回的 Subscription 实例。
-- Subject：EventEmitter 的等价数据结构，可以当作 Observable 被监听，也可以作为 Observer 发送新的事件。
+- **Observer**：对 Observable 对象发出的每个事件进行响应。
+- **Subscription**：Observable 对象被订阅后返回的 Subscription 实例。
+- **Subject**：EventEmitter 的等价数据结构，可以当作 Observable 被监听，也可以作为 Observer 发送新的事件。
 
 ### RxJS
 
-Rx 基础自响应式编程范式，已经在多种编程语言中实现，而 RxJS 就是其在 JavaScript 层面上的实现。
+Rx 继承自响应式编程范式，已经在多种编程语言中实现，而 RxJS 就是其在 JavaScript 层面上的实现。
+
+> RxJS 至于 event，就像以前 jquery 至于 dom，lodash/underscore 至于 data。
+
+RxJS is a library for composing asynchronous and event-based programs by using observable sequences. It provides one core type, the [Observable](https://rxjs-dev.firebaseapp.com/guide/observable), satellite types (Observer, Schedulers, Subjects) and operators inspired by [Array#extras](https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/1.6) (map, filter, reduce, every, etc) to allow handling asynchronous events as collections.
+
+> *Think of RxJS as Lodash for events.*
+
+ReactiveX combines the [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) with the [Iterator pattern](https://en.wikipedia.org/wiki/Iterator_pattern) and [functional programming with collections](http://martinfowler.com/articles/collection-pipeline/#NestedOperatorExpressions) to fill the need for an ideal way of managing sequences of events.
+
+The essential concepts in RxJS which solve async event management are:
+
+- **Observable:** represents the idea of an invokable collection of future values or events.表示未来值或事件的可调用集合的概念
+- **Observer:** is a collection of callbacks that knows how to listen to values delivered by the Observable.是一个回调集合，它知道如何监听 Observable 传递的值，对 Observable 对象发出的每个事件进行响应。
+- **Subscription:** represents the execution of an Observable, is primarily useful for cancelling the execution.
+- **Operators:** are pure functions that enable a functional programming style of dealing with collections with operations like `map`, `filter`, `concat`, `reduce`, etc.
+- **Subject:** is equivalent to an EventEmitter, and the only way of multicasting a value or event to multiple Observers.
+- **Schedulers:** are centralized dispatchers to control concurrency, allowing us to coordinate when computation happens on e.g. `setTimeout` or `requestAnimationFrame` or others.
+
+异步操作和同步操作最大的区别就是异步有**时序。**
+
+我们可以把同步操作理解为：**数据**+**函数**
+
+那么异步操作就是：**数据**+**函数**+**时序**
+
+Rx干的事情，就是把**时序**抽离成一根**时间轴**，在这根时间轴上进行**同步操作**，而异步相关的时序处理就交给Rx提供的各种operator。
+
+所以问题就很简单了，如果你的应用是一个**时序密集**的应用，那么使用Rx能帮你理清楚复杂的异步逻辑。反之，如果异步操作之间没有太多的联系，**时序简单，**则不那么需要使用Rx。
+
+**订阅异步事件**
+
+```js
+import { fromEvent } from "rxjs";
+fromEvent(document, "click").subscribe(() => console.log("Clicked!"));
+```
+
+**Purity 纯能力**
+
+```js
+import { fromEvent } from "rxjs";
+import { scan } from "rxjs/operators";
+fromEvent(document, "click")
+      .pipe(scan((count) => count + 1, 0))
+      .subscribe((count) => console.log(`Clicked ${count} times`));
+```
+
+The **scan** operator works just like **reduce** for arrays. It takes a value which is exposed to a callback. The returned value of the callback will then become the next value exposed the next time the callback runs.
+
+**Flow**
+
+RxJS 有一系列的操作符，可以帮助你控制事件如何通过你的 observables
+
+```js
+import { fromEvent } from 'rxjs';
+import { throttleTime, scan } from 'rxjs/operators';
+
+fromEvent(document, 'click')
+  .pipe(
+    throttleTime(1000),
+    scan(count => count + 1, 0)
+  )
+  .subscribe(count => console.log(`Clicked ${count} times`));
+```
+
+Other flow control operators are [**filter**](https://rxjs-dev.firebaseapp.com/api/operators/filter), [**delay**](https://rxjs-dev.firebaseapp.com/api/operators/delay), [**debounceTime**](https://rxjs-dev.firebaseapp.com/api/operators/debounceTime), [**take**](https://rxjs-dev.firebaseapp.com/api/operators/take), [**takeUntil**](https://rxjs-dev.firebaseapp.com/api/operators/takeUntil), [**distinct**](https://rxjs-dev.firebaseapp.com/api/operators/distinct), [**distinctUntilChanged**](https://rxjs-dev.firebaseapp.com/api/operators/distinctUntilChanged) etc.
+
+**Values**
+
+You can transform the values passed through your observables.
+
+```js
+import { fromEvent } from 'rxjs';
+import { throttleTime, map, scan } from 'rxjs/operators';  
+fromEvent(document, "click")
+  .pipe(
+    throttleTime(1000),
+    map((event) => event.clientX),
+    scan((count, clientX) => count + clientX, 0)
+  )
+  .subscribe((count) => console.log(count));
+```
 
 #### 创建 Observable 对象
 
 #### 使用 RxJS 处理复杂场景
 
 用户在一个文本输入框进行输入时，需要对用户的输入
+
+作者：Starkwang
+链接：https://www.zhihu.com/question/303073602/answer/536112212
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+比如你写一个基于 websocket 的在线聊天室，不可能每次 ws 收到新消息，都立刻渲染出来，这样在很多人同时说话的时候，一般会有渲染性能问题。
+
+所以你需要收集一段时间的消息，然后把它们一起渲染出来，例如每一秒批量渲染一次。
+
+用原生 JS 写的话，你需要维护一个队列池，和一个定时器，收到消息，先放进队列池，然后定时器负责把消息渲染出来，类似：
+
+```js
+let messagePool = []
+ws.on('message', (message) => {
+    messagePool.push(message)
+})
+
+setInterval(() => {
+    render(messagePool)
+    messagePool = []
+}, 1000)
+```
+
+这里已经是最简化的代码了，但逻辑依然很破碎，并且还要考虑清理定时器的问题。
+
+如果用 RxJS，代码就好看了很多：
+
+```js
+Rx.Observable
+    .fromEvent(ws, 'message')
+    .bufferTime(1000)
+    .subscribe(messages => render(messages))
+```
+
+------
+
+另外一个例子，比如我们在写一个游戏，当用户连续输入"上上下下左右左右BABA"的时候，就弹出隐藏的彩蛋，用原生 JS 的话也是需要维护一个队列，队列中放入最近12次用户的输入。然后每次按键的时候，都识别是否触发了彩蛋。
+
+RxJS 的话就简化了很多，主要是少了维护队列的逻辑：
+
+```js
+const code = [
+   "ArrowUp",
+   "ArrowUp",
+   "ArrowDown",
+   "ArrowDown",
+   "ArrowLeft",
+   "ArrowRight",
+   "ArrowLeft",
+   "ArrowRight",
+   "KeyB",
+   "KeyA",
+   "KeyB",
+   "KeyA"
+]
+
+Rx.Observable.fromEvent(document, 'keyup')
+    .map(e => e.code)
+    .bufferCount(12, 1)
+    .subscribe(last12key => {
+        if (_.isEqual(last12key, code)) {
+            console.log('隐藏的彩蛋 \(^o^)/~')
+        }
+    })
+```
 
 #### RxJS 和 Promise 的对比
 
@@ -897,6 +1073,18 @@ Rx 基础自响应式编程范式，已经在多种编程语言中实现，而 R
 在 Rx 的理念中，Observable 通常可以实现成“热”（Hot）模式或者 “冷”（Cold）模式。在 “热”模式下，Observable 对象一旦创建，便会开始发送数据。而在“冷”模式下，Observable 对象会一直等到自己被订阅，才会开始数据流的发送。在 RxJS 中，Observable 实现的是“冷”模式。
 
 #### RxJS 中的 Operator
+
+Operators are **functions**. There are two kinds of operators:
+
+**Pipeable Operators** are the kind that can be piped to Observables using the syntax `observableInstance.pipe(operator())`. These include, [`filter(...)`](https://rxjs-dev.firebaseapp.com/api/operators/filter), and [`mergeMap(...)`](https://rxjs-dev.firebaseapp.com/api/operators/mergeMap). When called, they do not *change* the existing Observable instance. Instead, they return a *new* Observable, whose subscription logic is based on the first Observable.
+
+> *A Pipeable Operator is a function that takes an Observable as its input and returns another Observable. It is a pure operation: the previous Observable stays unmodified.*
+
+**Creation Operators** are the other kind of operator, which can be called as standalone functions to create a new Observable. For example: `of(1, 2, 3)` creates an observable that will emit 1, 2, and 3, one right after another. Creation operators will be discussed in more detail in a later section.
+
+##### switchMap
+
+
 
 #### Angular 中的 RxJS
 
@@ -911,6 +1099,58 @@ Rx 基础自响应式编程范式，已经在多种编程语言中实现，而 R
 > 链接：https://www.zhihu.com/question/40195289/answer/85338699
 > 来源：知乎
 > 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处
+
+整体的流程是，
+
+- 在指令内部，鼠标按下、移动、放开的 splitter-bar 的过程中都会传递鼠标的坐标信息，
+- 然后 splitter-bar 通过 rxjs 监听获取数据，动态的调整相应的 pane 的大小。
+
+```js
+// splitter- bar 
+
+// 移动的时候，阻止事件冒泡
+  private stopPropagation = ({ originalEvent: event }) => {
+    event.stopPropagation();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+  }
+
+  // 处理移动过程中的数据流, 合并到pressEvent事件流中
+  private moveStream = resize => mouseDown =>
+    resize.dragEvent.pipe(
+      takeUntil(resize.releaseEvent),
+      map(({ pageX, pageY }) => ({
+        originalX: mouseDown.pageX,
+        originalY: mouseDown.pageY,
+        pageX,
+        pageY
+      }))
+    )
+
+ngOnInit(): void {
+    let state;
+    const resizeListener = this.resize.pressEvent
+      .pipe( // subscribe 调用后，按顺序执行 pipe 管道的函数，并把最后的 switchMap 的输出作为输入到 subscribe 里
+        tap(this.stopPropagation),
+        filter(() => this.splitter.isResizable(this.index)), // 把可以缩放的 pane 取出来
+        tap(() => state = this.splitter.dragState(this.index)), // 记录 pane 的初始状态
+        switchMap(this.moveStream(this.resize)) // 拿到移动过程的数据流进行合并再输出
+      )
+      .subscribe(({ pageX, pageY, originalX, originalY }) => {
+        let distance;
+        if (this.orientation === 'vertical') {
+          distance = pageY - originalY;
+        } else {
+          distance = pageX - originalX;
+        }
+        this.splitter.setSize(state, distance);
+      });
+    this.subscriptions.add(resizeListener);
+  }
+```
+
+
 
 参考资料：
 
@@ -1015,9 +1255,17 @@ export class AppModule { }
 
 ## 其他 
 
-### NgZone
+### NgZone（监控区域，处理变更检测）
 
-A zone is an execution context that persists across async tasks. You can think of it as [thread-local storage](https://en.wikipedia.org/wiki/Thread-local_storage) for JavaScript VMs. This guide describes how to use Angular's NgZone to automatically detect changes in the component to update HTML.
+`Zone` 通过一系列的钩子，来监控区域内所有的同步和异步操作的状态变化。Angular 引入 [Zone.js](https://link.juejin.cn/?target=https%3A%2F%2Flink.zhihu.com%2F%3Ftarget%3Dhttps%3A%2F%2Fgithub.com%2Fangular%2Fzone.js%2F) 以处理变更检测。Zone.js 使 angular 可以决定何时需要刷新UI。
+
+#### 变更检测基础
+
+>  A zone is an execution context that persists across async tasks. 
+
+Zone 是一个跨异步任务中持续存在的执行上下文，简单来说就是为异步任务保留了上下文环境。zone.js的设计灵感来源于Dart语言，它描述JavaScript执行过程的上下文，可以在异步任务之间进行持久性传递，它类似于Java中的TLS（[thread-local storage: 线程本地存储](https://link.juejin.cn?target=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FThread-local_storage)）技术，zone.js 则是将TLS引入到JavaScript语言中的实现框架。
+
+ This guide describes how to use Angular's NgZone to automatically detect changes in the component to update HTML.
 
 ```js
 import { NgZone} from '@angular/core';
@@ -1032,9 +1280,221 @@ import { NgZone} from '@angular/core';
 
 这里的 ngZone.runOutsideAngular 的作用是什么？为什么要使用它？
 
-**参考资料**：
+##### 什么时候 app 更新 HTML
 
-- [NgZone](https://angular.io/guide/zone)
+- initial rendering
+- update data inside button click event handler
+- HTTP Request
+- setTimeout
+- Promise.then
+- some other asynchronous APIs
+
+如何处理
+
+- 对于组件初始化， Angular calls change detection explicitly. 
+
+- For [asynchronous operations](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous), Angular uses a zone to detect changes in places where the data could have possibly mutated and it runs change detection automatically.
+
+#### Zones 和 执行上下文
+
+Zone 提供了能够在异步任务中持续存在的执行上下文。
+
+A zone provides a new zone context other than `this`, the zone context that persists across asynchronous operations. In the following example, the new zone context is called `zoneThis`.
+
+```js
+zone.run(() => {
+  // now you are in a zone
+  expect(zoneThis).toBe(zone);
+  setTimeout(function() {
+    // the zoneThis context will be the same zone
+    // when the setTimeout is scheduled
+    expect(zoneThis).toBe(zone);
+  });
+});
+```
+
+This new context, `zoneThis`, can be retrieved from the `setTimeout()` callback function, and this context is the same when the `setTimeout()` is scheduled. To get the context, you can call [`Zone.current`](https://github.com/angular/angular/blob/master/packages/zone.js/lib/zone.ts)
+
+#### Zones and async lifecycle hooks
+
+zone.js采用猴子补丁（Monkey-patched）的暴力方式将 JavaScript 中的异步任务都包裹了一层，使得这些异步任务都将运行在 zon e的上下文中。每一个异步的任务在 zone.js 都被当做为一个 Task，并在 Task 的基础上 zone.js 为开发者提供了执行前后的钩子函数（hook），来监控区域内所有的同步和异步操作的状态变化。
+
+- `onScheduleTask`: triggers when a new asynchronous task is scheduled, such as when you call `setTimeout()`.
+- `onInvokeTask`: triggers when an asynchronous task is about to execute, such as when the callback of `setTimeout()` is about to execute.
+- `onHasTask`: triggers when the status of one kind of task inside a zone changes from stable to unstable or from unstable to stable. A status of "stable" means there are no tasks inside the zone, while "unstable" means a new task is scheduled in the zone.
+- `onInvoke`: triggers when a synchronous function is going to execute in the zone.
+
+```js
+const zone = Zone.current.fork({
+  name: 'zone',
+  onScheduleTask: function(delegate, curr, target, task) {
+    console.log('new task is scheduled:', task.type, task.source);
+    return delegate.scheduleTask(target, task);
+  },
+  onInvokeTask: function(delegate, curr, target, task, applyThis, applyArgs) {
+    console.log('task will be invoked:', task.type, task.source);
+    return delegate.invokeTask(target, task, applyThis, applyArgs);
+  },
+  onHasTask: function(delegate, curr, target, hasTaskState) {
+    console.log('task state changed in the zone:', hasTaskState);
+    return delegate.hasTask(target, hasTaskState);
+  },
+  onInvoke: function(delegate, curr, target, callback, applyThis, applyArgs) {
+    console.log('the callback will be invoked:', callback);
+    return delegate.invoke(target, callback, applyThis, applyArgs);
+  }
+});
+zone.run(() => {
+  setTimeout(() => {
+    console.log('timeout callback is invoked.');
+  });
+});
+```
+
+The concept of a *Zone Task* is very similar to the JavaScript VM Task concept:
+
+- `macroTask`: such as `setTimeout()`
+- `microTask`: such as `Promise.then()`
+- `eventTask`: such as `element.addEventListener()`
+
+上述例子输出：
+
+```js
+// 输出
+the callback will be invoked: () => {
+  setTimeout(() => {
+    console.log('timeout callback is invoked.');
+  });
+}
+new task is scheduled: macroTask setTimeout
+task state changed in the zone: { microTask: false,
+  macroTask: true,
+  eventTask: false,
+  change: 'macroTask' }
+task will be invoked macroTask: setTimeout
+timeout callback is invoked.
+task state changed in the zone: { microTask: false,
+  macroTask: false,
+  eventTask: false,
+  change: 'macroTask' }
+```
+
+All of the functions of `Zone` are provided by a library called [Zone.js](https://github.com/angular/angular/tree/master/packages/zone.js/README.md). This library implements those features by intercepting asynchronous APIs through monkey patching. Monkey patching is a technique to add or modify the default behavior of a function at runtime without changing the source code.
+
+#### NgZone
+
+While Zone.js can monitor all the states of synchronous and asynchronous operations, **Angular additionally provides a service called NgZone**. This service creates a zone named `angular` to automatically trigger change detection when the following conditions are satisfied:
+
+1. When a sync or async function is executed.
+2. When there is no `microTask` scheduled.
+
+##### NgZone run() and runOutsideOfAngular
+
+`Zone` handles most asynchronous APIs such as `setTimeout()`, `Promise.then()`, and `addEventListener()`. For the full list, see the [Zone Module document](https://github.com/angular/angular/blob/master/packages/zone.js/MODULE.md). Therefore in those asynchronous APIs, you don't need to trigger change detection manually.
+
+**There are still some third party APIs that Zone does not handle. In those cases, the `NgZone` service provides a [`run()`](https://angular.io/api/core/NgZone#run) method that allows you to execute a function inside the Angular zone**. This function, and all asynchronous operations in that function, trigger change detection automatically at the correct time.
+
+```js
+export class AppComponent implements OnInit {
+  constructor(private ngZone: NgZone) {}
+  ngOnInit() {
+    // New async API is not handled by Zone, so you need to
+    // use ngZone.run() to make the asynchronous operation in the Angular zone
+    // and trigger change detection automatically.
+    this.ngZone.run(() => {
+      someNewAsyncAPI(() => {
+        // update the data of the component
+      });
+    });
+  }
+}
+```
+
+By default, all asynchronous operations are inside the Angular zone, which triggers change detection automatically. Another common case is when you don't want to trigger change detection. In that situation, you can use another `NgZone` method: [`runOutsideAngular()`](https://angular.io/api/core/NgZone#runoutsideangular).
+
+```js
+export class AppComponent implements OnInit {
+  constructor(private ngZone: NgZone) {}
+  ngOnInit() {
+    // You know no data will be updated,
+    // so you don't want to trigger change detection in this
+    // specified operation. Instead, call ngZone.runOutsideAngular()
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        // update component data
+        // but don't trigger change detection.
+      });
+    });
+  }
+}
+```
+
+比如
+
+You can specify that certain DOM events do not run inside the Angular zone; for example, to prevent a `mousemove` or `scroll` event to trigger change detection.
+
+如果模板中有一些变量在组件中经常变动，比如变量foo。
+
+```js
+<div>
+  我经常变动: {{ foo }}
+</div>
+```
+
+在组件中它的初始值为0。
+
+```js
+foo = 0;
+```
+
+假设在组件中有个循环，不断更新foo的值。
+
+```js
+for (let i = 0; i < 100; i++) {
+  setInterval(() => this.counter++, 10);
+}
+```
+
+那么频繁的变动将造成性能损耗。
+
+Angular 为我们提供了 NgZone 服务，对于一些频繁的操作，可以不去触发变更检测。
+
+一、使得Angular不跟踪变化
+
+1、在组件中引入 NgZone，再将其注入。
+
+```js
+import { NgZone } from '@angular/core';
+1   constructor(
+2     private zone: NgZone
+3   ) { }
+```
+
+2、调用runOutsideAngular方法，Angular不会对里面的变化进行跟踪。
+
+```js
+this.zone.runOutsideAngular(() => {
+	for (let i = 0; i < 100; i++) {
+		setInterval(() => this.counter++, 10);
+  }
+});
+```
+
+setInterval每隔一秒更新foo，而此时模板中的foo将不会有变化。
+
+二、重新跟踪变化
+
+如果此时又想让Angular跟踪foo的变化，用其提供的run方法。
+
+```js
+this.zone.run(() => {
+　　setTimeout(() => this.foo = this.foo, 1000);
+});
+```
+
+那么1秒后模板中的foo会得到更新。　　　　　　　　　
+
+##### Setting up Zone.js
 
 ## 实战 DevUI
 
@@ -1089,8 +1549,17 @@ HTML
 
 - orientation
 
+#### 拖动缩放核心处理
+
+angular、react、vue3 编写 splitter 的对比，这样就可以参考分页的文章，作为了解三大框架的处理。
+
 ## 参考资料
 
-- [半小时入门 Angular 2](https://juejin.cn/post/6844903475038388232)
 - [手把手教你使用Vue/React/Angular三大框架开发Pagination分页组件](https://juejin.cn/post/6844904151730782221)
+- 使用
+  - [半小时入门 Angular 2](https://juejin.cn/post/6844903475038388232)
+  - [zone.js - 暴力之美](https://juejin.cn/post/6844903426615148557)
+  - [NgZone](https://angular.io/guide/zone)
+  - 《揭秘 Angular2》
+  - Rxjs https://rxjs-dev.firebaseapp.com/api/operators/switchMap
 

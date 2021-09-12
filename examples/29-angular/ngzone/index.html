@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="dataDiv"></div>
+    <button id="btn">updateData</button>
+    <canvas id="canvas"></canvas>
+    <script>
+      let value = "initialValue";
+      // initial rendering
+      detectChange();
+
+      function renderHTML() {
+        document.getElementById("dataDiv").innerText = value;
+      }
+
+      function detectChange() {
+        const currentValue = document.getElementById("dataDiv").innerText;
+        if (currentValue !== value) {
+          renderHTML();
+        }
+      }
+
+      // Example 1: update data inside button click event handler
+      document.getElementById("btn").addEventListener("click", () => {
+        // update value
+        value = "button update value";
+        // call detectChange manally
+        detectChange();
+      });
+
+      // Example 2: HTTP Request
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", function() {
+        // get response from server
+        value = this.responseText;
+        // call detectChange manually
+        detectChange();
+      });
+      xhr.open("GET", serverUrl);
+      xhr.send();
+
+      // Example 3: setTimeout
+      setTimeout(() => {
+        // update value inside setTimeout callback
+        value = "timeout update value";
+        // call detectChange manually
+        detectChange();
+      }, 100);
+
+      // Example 4: Promise.then
+      Promise.resolve("promise resolved a value").then((v) => {
+        // update value inside Promise thenCallback
+        value = v;
+        // call detectChange manually
+        detectChange();
+      }, 100);
+
+      // Example 5: some other asynchronous APIs
+      document.getElementById("canvas").toBlob((blob) => {
+        // update value when blob data is created from the canvas
+        value = `value updated by canvas, size is ${blob.size}`;
+        // call detectChange manually
+        detectChange();
+      });
+    </script>
+  </body>
+</html>

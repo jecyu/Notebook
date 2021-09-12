@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 ```
 
-**模版编写**
+##### **模版编写 ** tsx vs render. Template
 
 setup 中直接返回的话，computed 这些值是没有自动帮你展开 value 的，在 template 或者写 render() 函数（因为有 vue-jsx 插件，同时也可以在这上面写指令）就可以。不过像下面这种写法的话，对于 react 用户更加友好，写起来更加符合 react 的预期，减少心智负担。（可以写一期 vue3 组件实战。）
 
@@ -309,6 +309,122 @@ export default defineComponent({
 });
 
 ```
+
+### 边界情况：访问组件实例
+
+>  通常来说，建议在组件实例中保持所使用的指令的独立性。从自定义指令中访问组件实例，通常意味着该指令本身应该是一个组件。然而，在某些情况下这种用法是有意义的。
+
+angular 的指令也是跟组件没有强关联的，因为指令只是通过 Ouput 发布事件，在被绑定的组件里进行引用。
+
+```js
+const resize: Directive = {
+  mounted(el, { value = true, instance }, VNode) {
+    // console.log("instance ->", instance); // 可以直接拿到 splitter-bar的实例，调用里面的方法，但是这样耦合有点高，晚上先实现看看是否可行，再考虑优化。晚上也引入 rxjs 跑下 demo 看看。
+    // instance.$emit("pressEvent", 666);
+
+    // console.log("instance ->", instance.$options); // instance 指的是 splitter，也就是指令所在的组件实例，而不是被绑定的是实例
+    // 或者先直接绑定 splitter-bar 内部，至于控制 dresize 的缩放的话，再考虑通过 prop 控制，再动态绑定到 resize 即可
+    console.log("el", el);
+    // 是否允许拖动
+    if (value) {
+      bindEvent(el);
+    }
+  },
+}
+```
+
+被绑定的组件实例如何获取指令的消息。
+
+不少问题，都可以写成文章了。
+
+### 指令与绑定的通信
+
+
+
+#### 直接调用组件的方法
+
+需求
+
+这样需要编写组件时，不能直接在 setup 返回 jsx，需要返回对象属性，才能在 instance 中获取？
+
+```js
+// loading   setup(props: ComponentProps) {
+
+  const style: CSSProperties = {
+    top: props.view.top,
+    left: props.view.left,
+    zIndex: props.zIndex
+  }
+  if (!props.message) {
+    style.background = 'none'
+  }
+  const isShow = ref(false)
+
+  const open = () => {
+    isShow.value = true
+  }
+
+  const close = () => {
+    isShow.value = false
+  }
+
+  return {
+    style,
+    isShow,
+    open,
+    close
+  }
+},
+
+```
+
+loading 指令访问 open 方法，重新实现了创建组件
+
+```js
+
+const toggleLoading = (el: TargetHTMLElement, binding: BindingType) => {
+  if (binding.value) {
+    const vals: Promise<any>[] | false | 'error' = isPromise(binding.value)
+    if (vals === 'error') return
+
+    `el.instance.proxy.open()`
+    el.appendChild(el.mask!)
+    cacheInstance.add(el)
+
+    if (vals) {
+      Promise.all(vals)
+      // eslint不允许空的then执行体 @mrundef-210810
+      // .then((res: Array<boolean>) => {
+      // })
+      .catch((err: any) => {
+        console.error(new Error('Promise handling errors'), err)
+      }).finally(() => {
+        unmount(el)
+      })
+    }
+  } else {
+    unmount(el)
+  }
+}
+```
+
+如果是这样写的话，怎么处理属性定义到 instance 上来？？
+
+```js
+setup() {
+    return () => {
+      return (
+        <div class={state.wrapperClass} ref={eleRef}>
+          <div class="devui-resize-handle"></div>
+        </div>
+      );
+    };
+}
+```
+
+
+
+#### 内部发送事件到组件
 
 
 
@@ -678,6 +794,10 @@ export default {
 </script>
 ```
 
+#### getCurrentInstance
+
+`getCurrentInstance` enables access to an internal component instance.
+
 ## 响应式系统 API
 
 ### reactive
@@ -752,9 +872,7 @@ export default{
 
 - `toRef` 如果用于普通对象（非响应式对象），产出的结果不具备响应式。
 
-我们通过 `reactive` 来创建一个**响应式对象**，之后呢，如果只单独要对响应式对象里面的**某一个属性**进行响应式，那么使用`toRef` 来解决。用 `toRef(Object, prop)` 的形式来传**对象名**和**具体的属性名**，达到某个属性数据响应式的效果
-
-
+我们通过 `reactive` 来创建一个**响应式对象**，之后呢，**如果只单独要对响应式对象里面的某一个属性进行响应式，那么使用`toRef` 来解决**。用 `toRef(Object, prop)` 的形式来传**对象名**和**具体的属性名**，达到某个属性数据响应式的效果。
 
 `toRef` is useful when you want to pass the ref of a prop to a composition function:
 
@@ -768,15 +886,13 @@ export default {
 
 #### toRefs
 
-- 与 `toRef` 不一样的是， `toRefs` 是针对整个对象的所有属性，目标在于将响应式对象（ `reactive` 封装）转换为普通对象
+- 与 `toRef` 不一样的是， **`toRefs` 是针对整个对象的所有属性，目标在于将响应式对象（ `reactive` 封装）转换为普通对象**
 
 - 普通对象里的每一个属性 `prop` 都对应一个 `ref`
 
-- `toRefs` 和对象 `Object` 两者**保持引用关系**，即一个改完另外一个也跟着改。
+- `toRefs` 和原对象 `Object` 两者**保持引用关系**，即一个改完另外一个也跟着改。
 
-面对使用对象多个属性进行模版渲染时，如果直接解构 `reactive` ，那么解构出来的对象会直接失去响应式。这时候就可以使用 toRefs 进行处理。
-
-
+面对使用对象多个属性进行模版渲染时，如果直接解构 `reactive` ，那么解构出来的对象会直接失去响应式。**这时候就可以使用 toRefs 进行处理。**
 
 另外合成函数返回响应式对象也可以使用 toRefs 处理，这样也不怕被进行解构。
 
@@ -2052,6 +2168,81 @@ slot组件和外层组件其实并不是父子组件关系，**非父子组件�
 
 最终
 
+##### angular 指令事件与绑定的组件通信问题 vue 如何处理
+
+#### 不用 rxjs 的优雅实现
+
+#### 展开收缩功能
+
+HTML
+
+TS
+
+#### 大量的异步 DOM 渲染问题，如何处理时序，
+
+组件渲染逻辑有依赖顺序的如何处理，比如 splitter-bar 要等 pane 渲染完成
+
+涉及到 DOM 的渲染，宽高获取。
+
+如何获取 nextTick 后的结果进行渲染
+
+Mounted
+
+#### 在 Vue 中以服务的方式抽离管理 pane 是否还合理，如何更合理
+
+- 状态管理
+- 组件渲染 dom 顺序
+
+使用 reactive 抽离共享状态，集中在一个 store 模式管理（小型 redux），也就是现在服务。关键是让它具有响应式，所以可以
+
+- 为管理复杂组件状态困扰？试试 vue 简单状态管理 Store 模式
+
+问题一：
+
+- 状态管理可以维护 store 模式，然后使用 vue3 的 use 来实现。改写现在的服务方式，不需要再引入服务的概念。
+
+问题二：那对于使用到状态有先后次序的怎么处理？
+
+- 如果 store 本身的 state 是有响应的，那么直接可以 import 进来，或者是 splitter，比如 isStaticBar，监听 panes 的变化？其他的也同理，统一通过监听来处理。
+- 还有就是 pane 自身的状态，props 统一不能直接通过组件来更改。store 里也不应该保留组件的实例，因为直接改变实例还是比较混乱的。可以保存组件的状态，比如 pane 的某些值状态，pane 里面更新时直接通过 类 commit 更新，可以在 pane 的生命周期 mounted、update 这些，而 splitter-bar 要进行监听的话，也是监听这些状态，而不必要直接监听 pane，这里也比较混乱。
+- store 作为单例，它是响应式，可以直接导入到各个子组件中。
+- 暂时这样处理，有更好的方案再探索。这样才比较清晰点。
+- 这里有个问题是如果 splitter 不放置 panes 的话，后续 splitter-bar 怎么根据索引找到对应的 pane呢？可以放的，只不过不放置组件实例，而是放置状态。
+
+参考 element-plus，晚上再参考参考字节的状态机。然后就实行。今个礼拜得提交一个初版，别人也能看得懂的，现在的说实在难维护。
+
+容器组件放置状态机，通过 props 分发。
+
+解决方案：
+
+- 1. 方案一使用 vue3 的状态管理模式，store + provide/inject，比较适合多组件以及
+  2. 方案二使用 vue3 reactive 对象，直接导入文件。
+  3. 方案三：使用 vue3 + store 像 element-plus 类似 vuex 的模式？
+
+  
+
+**首先实践第二种方案**。
+
+- 实践起来不太行，因为 splitter 获取 panes slot 后，需要改变或者获取 pane 实例的东西比如 props，这样根本就没获取到。
+
+- **store 记录每个 pane 的状态，统一通过 props 分发。****不保存 pane 的实例**
+
+- splitter
+
+- **splitter-pane 的 props 只能来自外部组件，而不能直接获取 pane 实例更改x**。内部 pane 的 order 状态需要从外部 props 传入，通过 splitter 传入。 
+
+- 使用 vue3 reactive 对象，直接导入文件共享
+
+**第一种方案**：适合业务项目，并且适合业务组件较多的情况，需要逐步传递。
+
+参考资料
+
+- [Vue3+TS 优雅地使用状态管理](https://juejin.cn/post/6984604019272450085)
+- [为管理复杂组件状态困扰？试试 vue 简单状态管理 Store 模式](https://juejin.cn/post/6844903841482145799)
+- 0Vue3 Composition-Api + TypeScript + 新型状态管理模式探索。](https://juejin.cn/post/6844904131610542087#heading-9)
+- [Vue3 - 新的状态管理方式](https://mp.weixin.qq.com/s/NHLKcFF94BJ5rMR-sVv4HQ)
+- [[Vue3时代，你应该全面拥抱依赖注入](https://zhuanlan.zhihu.com/p/351519484)](https://zhuanlan.zhihu.com/p/351519484)
+
 ## 原理
 
 ### 响应式原理
@@ -2221,6 +2412,7 @@ console.log(proxyPerson.name); // sunshine_lin
   - [【Vue3官方教程】🎄万字笔记 | 同步导学视频](https://juejin.cn/post/6909247394904702984#heading-0)
   - [Vue3的7种和Vue2的12种组件通信，值得收藏](https://juejin.cn/post/6999687348120190983#heading-4)
   - [Vue 3.0 自定义指令的这些知识你掌握了么？](https://juejin.cn/post/6944875414208643102)
+  - 
 - 原理
   - [林三心画了8张图，最通俗易懂的Vue3响应式核心原理解析](https://juejin.cn/post/7001999813344493581)
   - [[Vue官方教程笔记]- 尤雨溪手写mini-vue](https://juejin.cn/post/6911897255087702030)

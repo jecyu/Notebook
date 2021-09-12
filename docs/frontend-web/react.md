@@ -2554,6 +2554,30 @@ Dva = React + React-Router + React-Saga
 
 ### React 状态管理
 
+## React 的未来
+
+### 拥抱异步渲染
+
+### Suspense 带来的异步操作革命
+
+### 函数化的 Hooks
+
+useRef
+
+useCallback
+
+useMemo
+
+useMemo缓存的是值
+
+useCallback缓存的是函数
+
+useContext
+
+useReducer
+
+useImperativeHandle
+
 ## 3. 项目实战
 
  React 开发总结持续更新
@@ -2757,7 +2781,9 @@ Dva 的研究使用
 - [reactjs 怎么实现监听数据对象](reactjs怎么实现监听数据对象)
 - 手动实现 redux，再阅读：[前端状态管理 Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://mp.weixin.qq.com/s/T3UeN2-RjSNP0mGjJr0PDw)，效果棒棒
 - [深入 JSX](https://zh-hans.reactjs.org/docs/jsx-in-depth.html#___gatsby)
-- [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
+- 书籍
+  - [React 小书](http://huziketang.mangojuice.top/books/react/lesson3)
+  - [React 进阶之路](https://www.zhihu.com/pub/book/119636771)
 - [Vue 与 React 的对比](https://www.cnblogs.com/Tohold/p/9511679.html)
 - [Vue 进阶必学之高阶组件 HOC](https://juejin.im/post/6844904116603486221?utm_source=gold_browser_extension#heading-4)
 - [「React进阶」 React全部api解读+基础实践大全(夯实基础2万字总结)
