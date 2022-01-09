@@ -107,6 +107,17 @@ nginx -T         # 查看当前 Nginx 最终的配置
 nginx -t -c <配置路径>    # 检查配置是否有问题，如果已经在配置目录，则不需要-c
 ```
 
+systemctl 是 Linux 系统应用管理工具 systemd 的主命令，用于管理系统，我们也可以用它来对 Nginx 进行管理，相关命令如下：
+```sh
+systemctl start nginx    # 启动 Nginx
+systemctl stop nginx     # 停止 Nginx
+systemctl restart nginx  # 重启 Nginx
+systemctl reload nginx   # 重新加载 Nginx，用于修改配置后
+systemctl enable nginx   # 设置开机启动 Nginx
+systemctl disable nginx  # 关闭开机启动 Nginx
+systemctl status nginx   # 查看 Nginx 运行状态
+```
+
 ## Nginx 架构
 
 - 多进程模式

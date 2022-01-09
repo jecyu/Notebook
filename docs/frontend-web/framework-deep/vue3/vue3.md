@@ -15,7 +15,7 @@ export const splitterProps = {
    * 可选，指定 Splitter中窗格的方向，默认水平分割。
    */
   orientation: {
-    type: String as PropType<SplitterOrientation>, // Vue 对定义了 type 的 prop 执行运行时验证。要将这些类型提供给 TypeScript，我们需要使用 PropType 强制转换构造函数，这样的话 String 会强制遵守为 "vertical" | "horizontal"
+      type: String as PropType<SplitterOrientation>, // Vue 对定义了 type 的 prop 执行运行时验证。要将这些类型提供给 TypeScript，我们需要使用 PropType 强制转换构造函数，这样的话 String 会强制遵守为 "vertical" | "horizontal"
     default: "horizontal",
   },
   // 如果 type 不是复杂的类型，则不需要使用 PropType 转换
@@ -118,6 +118,20 @@ props: {
 
 插槽如何传入以及监听事件
 
+#### props 模版不传递，默认为 null，提 issue
+
+```tsx
+  // 配置 pane 信息，panes 列表，方便后续计算使用
+  setPanes({ panes }): void {
+    this.state.panes = panes.map((pane: SplitterPane, index: number) => {
+      // pane.props.order = index * 2; // props 不传递的情况下，null 为空如何处理，报错，临时解决不采用 props 监听模式，直接通过 expose 一个 order = ref() 出来
+      pane.component.exposed.order = index * 2;
+      pane.getPaneSize = pane?.component?.exposed.getPaneSize;
+      return pane;
+    });
+  }
+```
+
 #### class/style绑定
 
 class
@@ -172,6 +186,42 @@ export default defineComponent({
 });
 </script>
 ```
+
+通过 ref 与 `getInstance.vnode.el` 的区别在哪里？一样的，这个在 vue2 中相当于 this 值。
+
+```tsx
+  // 获取当前 pane大小
+    const computedSize = () => {
+      console.log("getCurrentInstance ->", instance.vnode.el.offsetWidth);
+      if (orientation === "vertical") {
+        // return domRef.value.offsetHeight;
+        return instance.vnode.el.offsetHeight;
+      } else {
+        // return domRef.value.offsetWidth;
+        return instance.vnode.el.offsetWidth;
+      }
+    };
+```
+
+非 template 下如何处理，jsx 模式
+
+```js
+ return () => {
+    return (
+      <div class="devui-splitter-pane" ref={domRef}>
+        {slots.default?.()}
+      </div>
+    );
+  };
+```
+
+
+
+#### 获取当前组件实例 getCurrentInstance
+
+### 父组件获取子组件的一些属性 expose
+
+- [【vue3冷知识】组件被 ref 时可控暴露对象的 expose 函数](https://juejin.cn/post/6939753219065118733#heading-3)
 
 **JSX 如何获取**
 
@@ -309,6 +359,32 @@ export default defineComponent({
 });
 
 ```
+
+#### 共享属性如何处理
+
+一种考虑方式是把它放在 el 元素上传递，但是对于不同的事件监听如何处理。
+
+不能放到函数外部，否则会形成单例，导致问题。放到内部对象也不行。
+
+```js
+const resize: Directive = {
+  // resizeDirectiveProp: null, // 这里的 resize 也形成了单例，所以放在这里共享也不行的。最好就是发布事件到外部监听，或者现处理
+  mounted(el, { value }: DirectiveBinding<ResizeDirectiveProp>) {
+    el.$value = value;
+    // 是否允许拖动
+    if (value.enableResize) {
+      bindEvent(el);
+    }
+  },
+  unmounted(el, { value }: DirectiveBinding<ResizeDirectiveProp>) {
+    if (value.enableResize) {
+      unbind(el, 'mousedown', onMousedown);
+    }
+  },
+};
+```
+
+
 
 ### 边界情况：访问组件实例
 
@@ -462,7 +538,158 @@ export default defineComponent({
 });
 ```
 
+外部使用：
+
+```vue
+<template>
+  <section>
+    <d-splitter class="splitter-border"  :orientation="orientation" :splitBarSize="splitBarSize" style="height: 300px">
+      <template v-slot:DSplitterPane> <--!--> 这里使用具名</--!-->
+        <d-splitter-pane collapseDirection="before" :size="size" :minSize="minSize" :maxSize="maxSize" :collapsible="true" @sizeChange="sizeChange" @collapsedChange="collapsedChange">
+          <div class="pane-content">
+            <h2>Left</h2>
+            <div>width: 30%, min-width: 20%</div>
+          </div>
+        </d-splitter-pane>
+        <d-splitter-pane minSize="15%">
+          <div class="pane-content">
+            <h2>Right</h2>
+            <div>Content</div>
+          </div>
+        </d-splitter-pane>
+      </template>
+    </d-splitter>
+  </section>
+</template>
+```
+
+#### slot 高级用法
+
+```js
+// DBreadcrumb
+export function getPropsSlot(
+  slots: Object,
+  props: Object,
+  prop = 'default'
+): JSX.Element | string | undefined {
+  return props[prop] ?? slots[prop]?.()
+}
+
+const separatorIcon = getPropsSlot(slots, props, 'separatorIcon') ?? '/'
+provide('separatorIcon', separatorIcon)
+```
+
+动态获取 slots 属性，并进行渲染获取。然后把 slot 的结果注入到 breadcrumb-item，由 breadcrumb-item进行处理，这样就可以把 props 和 slot 统一进行处理。
+
+```vue
+<template>
+  <div>
+    <d-breadcrumb separatorIcon=">">
+      <d-breadcrumb-item>
+        <a routerLink="/components/zh-cn/get-start">DevUI</a>
+      </d-breadcrumb-item>
+      <d-breadcrumb-item>
+        <span>Breadcrumb</span>
+      </d-breadcrumb-item>
+    </d-breadcrumb>
+  </div>
+  <div>
+    <d-breadcrumb>
+      <template v-slot:separatorIcon>
+         <span style="color: red">></span>
+      </template>
+      <d-breadcrumb-item>
+        <a routerLink="/components/zh-cn/get-start">DevUI</a>
+      </d-breadcrumb-item>
+      <d-breadcrumb-item>
+        <span>Breadcrumb</span>
+      </d-breadcrumb-item>
+    </d-breadcrumb>
+  </div>
+</template>
+```
+
+- https://v3.vuejs.org/guide/web-components.html#definecustomelement
+
+应用：devui 的面包屑
+
 ### 如何给插槽绑定事件或数据（template/tsx）？
+
+### 如果给插槽孩子传递 props 值
+
+```tsx
+import { defineComponent, reactive, ref, provide, onMounted } from 'vue'
+import { splitterProps, SplitterProps } from './splitter-types'
+import DSplitterBar from './splitter-bar'
+import { useSplitterStore } from './splitter-store'
+import './splitter.scss'
+
+export default defineComponent({
+  name: 'DSplitter',
+  components: {
+    DSplitterBar,
+  },
+  props: splitterProps,
+  emits: [],
+  setup(props: SplitterProps, ctx) {
+    const { setPanes, setSplitter } = useSplitterStore()
+    const state = reactive({
+      panes: [], // 内嵌面板
+    })
+
+    state.panes = ctx.slots.DSplitterPane?.() || []
+    setPanes({ panes: state.panes })
+
+    const domRef = ref<HTMLElement>()
+
+    provide('orientation', props.orientation)
+    provide('panes', state.panes)
+
+    onMounted(() => {
+      let containerSize = 0
+      if (props.orientation === 'vertical') {
+        containerSize = domRef.value.clientHeight
+      } else {
+        containerSize = domRef.value.clientWidth
+      }
+      setSplitter({ containerSize })
+    })
+
+    return () => {
+      const { splitBarSize, orientation, showCollapseButton } = props
+      const wrapperClass = ['d-splitter', `devui-splitter-${orientation}`]
+
+      return (
+        <div class={wrapperClass} ref={domRef}>
+          {state.panes.map((pane, index) => {
+            if (pane.props) {
+              pane.props.order = index * 2 // 这里的 props 有可能为空，当外部模版没有传递 prop 时，
+            }
+            return pane
+          })}
+          {state.panes
+            .filter((pane, index, arr) => index !== arr.length - 1)
+            .map((pane, index) => {
+              return (
+                <d-splitter-bar
+                  key={pane}
+                  style={`order: ${index * 2 + 1}`}
+                  splitBarSize={splitBarSize}
+                  orientation={orientation}
+                  index={index}
+                  showCollapseButton={showCollapseButton}
+                ></d-splitter-bar>
+              )
+            })}
+        </div>
+      )
+    }
+  },
+})
+
+```
+
+
 
 
 
@@ -2219,9 +2446,8 @@ Mounted
   2. 方案二使用 vue3 reactive 对象，直接导入文件。
   3. 方案三：使用 vue3 + store 像 element-plus 类似 vuex 的模式？
 
-  
 
-**首先实践第二种方案**。
+**实践第二种方案**【x】
 
 - 实践起来不太行，因为 splitter 获取 panes slot 后，需要改变或者获取 pane 实例的东西比如 props，这样根本就没获取到。
 
@@ -2231,9 +2457,64 @@ Mounted
 
 - **splitter-pane 的 props 只能来自外部组件，而不能直接获取 pane 实例更改x**。内部 pane 的 order 状态需要从外部 props 传入，通过 splitter 传入。 
 
-- 使用 vue3 reactive 对象，直接导入文件共享
+- 使用 vue3 reactive 对象，直接导入文件共享。
 
-**第一种方案**：适合业务项目，并且适合业务组件较多的情况，需要逐步传递。
+  - 注意：这种方案有严重问题，比如实例化多个组件时会共用同一份状态，导致问题，之前在 devui splitter 就出现这个问题，点击 splitter-bar 控制了另一个 splitter 实例下的 pane，因为它们共用了 pane。
+
+  - 如果直接在 store 导出单个实例的话，在其他组件比如 splitter-bar、splitter-pane import 后就是新的实例，这样不满足需求。我是想要实现多个 splitter 组件实例化，多份状态。但单个 splitter 里的 pane、bar 还是共享同一份状态，还是参考 element-plus 采用在 splitter 实例化 store，然后在 splitter 进行注入或者通过 props 传递。
+
+  - 如下所示，关键是这里函数使用到了外部的 state，一直在闭包中存储着。如果把 state 放到函数里声明的话，又不能保证同一个 splitter 下其他组件导入的状态相同。
+
+    ```js
+    // ...
+    const state: splitterState = reactive({
+      panes: [],
+      splitterContainerSize: 0,
+    })
+    
+    export function useSplitterStore() {
+      // ...
+      const readonlyState = readonly(state)
+      return {
+        splitterState: readonlyState,
+      }
+    
+    ```
+
+  - 或者说，这样处理，只在 splitter 调用 useSplitterStore，获得的状态，再注入到子组件即可。但是对比来看，还是直接 new Store 来处理，更具可读性
+
+**实践第一种方案**：
+
+- 适合业务项目，并且适合业务组件较多的情况，需要逐步传递。
+
+- 还发现了一个 bug，就是声明在单个模块文件的 局部变量，很容易导致闭包形成单例的形式，所以要尽量注意！
+
+  ```js
+  export interface ResizeDirectiveProp {
+    enableResize: true; // 是否允许拖动
+    onPressEvent: Function;
+    onDragEvent: Function;
+    onReleaseEvent: Function;
+  }
+  
+  const resize: Directive = {
+    // resizeDirectiveProp: null, // 这里的 resize 也形成了单例，所以放在这里共享也不行的。最好就是发布事件到外部监听，或者现处理
+    mounted(el, { value }: DirectiveBinding<ResizeDirectiveProp>) {
+      el.$value = value;
+      // 是否允许拖动
+      if (value.enableResize) {
+        bindEvent(el);
+      }
+    },
+    unmounted(el, { value }: DirectiveBinding<ResizeDirectiveProp>) {
+      if (value.enableResize) {
+        unbind(el, 'mousedown', onMousedown);
+      }
+    },
+  };
+  ```
+
+  
 
 参考资料
 
@@ -2242,6 +2523,151 @@ Mounted
 - 0Vue3 Composition-Api + TypeScript + 新型状态管理模式探索。](https://juejin.cn/post/6844904131610542087#heading-9)
 - [Vue3 - 新的状态管理方式](https://mp.weixin.qq.com/s/NHLKcFF94BJ5rMR-sVv4HQ)
 - [[Vue3时代，你应该全面拥抱依赖注入](https://zhuanlan.zhihu.com/p/351519484)](https://zhuanlan.zhihu.com/p/351519484)
+
+服务方式调用比如 modal，跟 vue.$toxx 很类似：
+
+- 参考https://gitee.com/devui/vue-devui/issues/I469ZM#git-comment-divider
+
+## 测试
+
+TODO 后续统一提交到前端自动化测试仓库。https://naluduo.vip/Fe-Auto-Testing/
+
+进行维护更新。
+
+Jest + @vue/test-utils
+
+```ts
+beforeEach(() => {
+  wrapper = mount(testComponent)
+  splitterElement = wrapper.vm.$el
+})
+```
+
+#### 渲染组件
+
+#### 测试 Props
+
+Props 
+
+```js
+import { mount } from '@vue/test-utils'
+import Foo from './Foo.vue'
+
+test('setProps demo', async () => {
+  const wrapper = mount(Foo, { props: { foo: 'bar' }})
+  expect(wrapper.vm.foo).toBe('bar')
+})
+```
+
+setProps
+
+```js
+import { mount } from '@vue/test-utils'
+import Foo from './Foo.vue'
+
+test('setProps demo', async () => {
+  const wrapper = mount(Foo)
+
+  await wrapper.setProps({ foo: 'bar' })
+
+  expect(wrapper.vm.foo).toBe('bar')
+})
+```
+
+或者
+
+```js
+import { mount } from '@vue/test-utils'
+import Foo from './Foo.vue'
+
+test('setProps demo', async () => {
+  const wrapper = mount(<Foo foo="bar"></Foo>)
+})
+```
+
+#### 模拟用户输入
+
+测试挂载
+
+```js
+  describe('basic', () => {
+    const testComponent = {
+      components: {
+        DSplitter,
+        DSplitterPane,
+      },
+      template: `
+        <d-splitter :orientation="orientation" :splitBarSize="splitBarSize" style="height: 500px; border: 1px solid #E3E5E9;">
+            <template v-slot:DSplitterPane>
+              <d-splitter-pane :size="size" :minSize="minSize" :maxSize="maxSize" :collapsible="collapsible" :collapsed="collapsed" @sizeChange="sizeChange">
+                <div class="pane-content">
+                  <h2>左侧面板</h2>
+                  <div>左侧内容区域，宽度 30%，最小宽度 20%</div>
+                </div>
+              </d-splitter-pane>
+              <d-splitter-pane size="50px">
+                <div class="pane-content">
+                  <h2>中间面板</h2>
+                  <div>中间内容区域</div>
+                </div>
+              </d-splitter-pane>
+              <d-splitter-pane>
+                <div class="pane-content">
+                  <h2>右侧面板</h2>
+                  <div>右侧内容区域</div>
+                </div>
+              </d-splitter-pane>
+            </template>
+        </d-splitter>
+      `,
+      setup() {
+        const orientation = ref('horizontal')
+        const splitBarSize = ref('2px')
+        const size = ref('30%')
+        const minSize = ref('20%')
+        const maxSize = ref('60%')
+        const collapsible = ref(true)
+        const collapsed = ref(false)
+        const sizeChange = (size) => {
+          console.log(size)
+        }
+        return {
+          orientation,
+          splitBarSize,
+          size,
+          minSize,
+          maxSize,
+          collapsible,
+          collapsed,
+          sizeChange,
+        }
+      },
+    }
+    const wrapper = mount(testComponent)
+    const splitterElement = wrapper.vm.$el
+    it('should create testComponent', () => {
+      expect(wrapper.vm).toBeTruthy()  // 测试挂载
+    })
+
+    it('should create splitter container', () => {
+      expect(splitterElement).toBeTruthy()  // 测试容器创建
+      expect(wrapper.classes()).toContain('devui-splitter-horizontal') // 测试容器样式
+    })
+    
+     it('should render splitter-bar', () => {
+      console.log('wrapper.html(', wrapper.html()) 
+      const handles = wrapper.findAll('.devui-splitter-bar') // 包装器使用 findAll 寻找元素，获得元素包装器,https://lmiller1990.github.io/vue-testing-handbook/v3/finding-elements-and-components.html#finding-elements
+      expect(handles.length).toBe(2)
+    })
+  })
+```
+
+
+
+参考资料：
+
+- https://lmiller1990.github.io/vue-testing-handbook/v3
+- https://v3.vuejs.org/guide/testing.html#choosing-your-framework-3
 
 ## 原理
 

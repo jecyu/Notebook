@@ -2284,6 +2284,34 @@ let myAdd = function(x, y) {
 
 在 JavaScript 里，函数可以使用函数体外部的变量。 当函数这么做时，我们说它‘捕获’了这些变量。 至于为什么可以这样做以及其中的利弊超出了本文的范围，但是深刻理解这个机制对学习 JavaScript 和 TypeScript 会很有帮助。
 
+```ts
+/ 注意区别
+
+// 普通的接口
+interface discount1{
+  getNum : (price:number) => number
+}
+
+// 函数类型接口
+interface discount2{
+  // 注意:
+  // “:” 前面的是函数的签名，用来约束函数的参数
+  // ":" 后面的用来约束函数的返回值
+  (price:number):number
+}
+let cost:discount2 = function(price:number):number{
+   return price * .8;
+}
+
+// 也可以使用类型别名
+type Add = (x: number, y: number) => number
+let add: Add = (a: number, b: number) => a + b
+```
+
+**箭头函数**
+
+要先声明函数类型，然后在定义的地方，也声明上，这样 jsx 绑定函数时才不会有报错问题。
+
 ### 基本示例
 
 和 JavaScript 一样，TypeScript 函数可以创建有名字的函数和匿名函数。你可以随意选择适合应用程序的方式，不论是定义一系列 API 函数还是只使用一次的函数。
@@ -2353,7 +2381,7 @@ function(x: number, y: number): number {
 
 只要参数类型是匹配的，那么就认为它是有效的函数类型，而不在乎参数名是否正确。
 
-第二部分是返回值类型。 对于返回值，我们在函数和返回值类型之前使用(`=>`)符号，使之清晰明了。 如之前提到的，返回值类型是函数类型的必要部分，如果函数没有返回任何值，你也必须指定返回值类型为 `void` 而不能留空。
+第二部分是返回值类型。 对于返回值，我们在函数和返回值类型之前使用(`=>`)符号，使之清晰明了。 如之前提到的，**返回值类型是函数类型的必要部分，如果函数没有返回任何值，你也必须指定返回值类型为 `void` 而不能留空**。
 
 函数的类型只是由参数类型和返回值组成的。 函数中使用的捕获变量不会体现在类型里。 实际上，这些变量是函数的隐藏状态并不是组成 API 的一部分。
 
@@ -3049,6 +3077,21 @@ interface StringArray1 {
 
 为了同时支持两种索引类型，就得要求数字索引的返回值必须是字符串索引返回值的子类。其中的原因就是当使用数值索引时，JavaScript 在执行索引操作时，会先把数值索引先转换为字符串索引。所以 `keyof { [x: string]: Person }` 的结果会返回 `string | number`。
 
+实战 breadcrumb-item
+
+```ts
+ to: {
+    type: [String, Object] as PropType<string | Record<string, unknown>>,
+    default: ''
+  },
+  replace: {
+    type: Boolean,
+    default: false
+  }
+```
+
+
+
 #### infer
 
 #### extends
@@ -3586,9 +3629,9 @@ private padLeft(value: string, padding: string | number) {
   }
 ```
 
-###
-
 ## 声明文件
+
+#### 项目里代码如果引入了外部库的声明文件，ts 编译时是怎么寻找的？
 
 ```ts
 // shims-tsx.d.ts
@@ -4808,7 +4851,7 @@ new Vue({
 
 你会发现在 vue 项目中的 ts 环境下，进行 `import Vue from 'vue'` 时，vscode 编辑器 ts 是识别不 Vue 这个类型的，因此还需要在项目添加 `typing` 文件夹添加 `.d.ts` 关于 vue 的类型声明文件才可以，包括 `shims-tsx.d.ts` 和 `shims-vue.d.ts`，`shims-tsx.d.ts`用于支持 jsx 写法。
 
-​```ts
+```ts
 // shims-vue.d.ts
 declare module "*.vue" {
   // 声明一个模块，应用于所有的 vue 组件的 import 语句中
@@ -4862,7 +4905,7 @@ yarn --dev @babel/preset-typescript @babel/plugin-proposal-class-properties @bab
 
 babel 配置文件（`.babelrc` 或 `babel.config.js`）
 
-```js
+​```js
 {
 	"presets": [
 		"@babel/typescript"
@@ -5570,6 +5613,8 @@ declare module "*.vue" {
 
 ## 参考资料
 
+- 文章
+  - [TS 常见问题整理（60多个，持续更新ing）](https://juejin.cn/post/6844904055039344654)
 - 《重学 TypeScript》
 - [Ts高手篇：22个示例深入讲解Ts最晦涩难懂的高级类型工具](https://juejin.cn/post/6994102811218673700)
 - 综合

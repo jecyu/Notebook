@@ -1255,6 +1255,75 @@ export class AppModule { }
 
 ## 其他 
 
+### NgTemplateOutlet
+
+Inserts an embedded view from a prepared `TemplateRef`
+
+把 template 模版引用插入到内嵌视图中，类似于 vue 的 render 传递，只不过 render 的模版在 angular 中可以直接定义在 html 中，跟 slot 是有区别的，slot 主要是展示孩子。
+
+定义：
+
+```ts
+// breadcrumb.component.ts
+import {
+    Component,
+    Input,
+    TemplateRef,
+} from '@angular/core';
+@Component({
+    selector: 'd-breadcrumb',
+    exportAs: 'dBreadcrumb',
+    templateUrl: './breadcrumb.component.html',
+    styleUrls: ['./breadcrumb.component.scss'],
+    preserveWhitespaces: false,
+})
+export class BreadCrumbComponent {
+    @Input() separatorIcon: TemplateRef<any>;
+}
+```
+
+
+
+```html
+<span class="devui-breadcrumb-separator">
+  <ng-template
+    [ngTemplateOutlet]="breadCrumbComponent.separatorIcon ? breadCrumbComponent.separatorIcon : defaultSeparator"
+    [ngTemplateOutletContext]="{
+      $implicit: this
+    }"
+  >
+  </ng-template>
+</span>
+
+<ng-template #defaultSeparator>
+  <span class="devui-breadcrumb-separator"> / </span>
+</ng-template>
+```
+
+外部使用：
+
+```html
+<d-breadcrumb [separatorIcon]="separatorIcon">
+  <d-breadcrumb-item>
+    <a routerLink="/components/zh-cn/get-start">DevUI</a>
+  </d-breadcrumb-item>
+  <d-breadcrumb-item>
+    <span>Breadcrumb</span>
+  </d-breadcrumb-item>
+</d-breadcrumb>
+<ng-template #separatorIcon>
+  <span class="icon-arrow-right"></span>
+</ng-template>
+```
+
+To sum up, 
+
+- **ng-content** is used to display **children** in a template,
+-  **ng-container** is used as a non-rendered container to avoid having to add a *span* or a *div*, 
+- **ng-template** allows you to group some content that is not rendered directly but can be used in other places of your template or you code.
+
+参考资料：https://codeburst.io/angular-interview-question-what-are-ng-container-ng-content-and-ng-template-9fafbbc255d5
+
 ### NgZone（监控区域，处理变更检测）
 
 `Zone` 通过一系列的钩子，来监控区域内所有的同步和异步操作的状态变化。Angular 引入 [Zone.js](https://link.juejin.cn/?target=https%3A%2F%2Flink.zhihu.com%2F%3Ftarget%3Dhttps%3A%2F%2Fgithub.com%2Fangular%2Fzone.js%2F) 以处理变更检测。Zone.js 使 angular 可以决定何时需要刷新UI。
@@ -1552,6 +1621,10 @@ HTML
 #### 拖动缩放核心处理
 
 angular、react、vue3 编写 splitter 的对比，这样就可以参考分页的文章，作为了解三大框架的处理。
+
+## 测试
+
+
 
 ## 参考资料
 

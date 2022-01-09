@@ -94,7 +94,7 @@ jamesauble@James-MacBook-Air:$ echo $NVM_DIR
 /Users/jamesauble/.nvm
 ```
 
-
+在没有代理的情况，nvm 的安装还可以通过 gitee 镜像进行安装，详细看 https://segmentfault.com/a/1190000037474308
 
 然后通过 nvm 安装 node
 
@@ -141,6 +141,11 @@ npm --registry https://registry.npm.taobao.org install express
 
 2.持久使用（推荐使用）
 打开cmd使用命令：npm config set registry https://registry.npm.taobao.org// 配置后可通过下面命令来验证是否成功　npm config ls// 此时：metrics-registry = "http://registry.npm.taobao.org/"表示设置成功npm config get registry// 或npm info express
+```
+
+设置默认的 node 版本：
+```sh
+nvm alias default 14.17.5
 ```
 ### 阻塞与非阻塞 IO
 

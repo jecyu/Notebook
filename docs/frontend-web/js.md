@@ -1,8 +1,185 @@
+ [react.md](react.md) 
+
 # JS
 
 > https://github.com/stephentian/33-js-concepts#6-this-call-apply-%E5%92%8C-bind
 
 [[toc]]
+
+## JavaScript 基础知识
+
+### 循环：while 和 for
+
+我们经常需要重复执行一些操作。
+
+例如，我们需要将列表中的商品逐个输出，或者运行相同的代码将数字 1 到 10 逐个输出。
+
+**循环** 是一种重复运行同一代码的方法。
+
+#### “for” 循环
+
+`for` 循环看起来就像这样：
+
+```js
+for (begin; condition; step) {
+  // 循环体
+}
+```
+
+我们通过示例来了解一下这三个部分的含义。下述循环从 `i` 等于 `0` 到 `3` （但不包括 `3`） 运行 `alert(i)`：
+
+```js
+for (let i = 0; i < 3; i++) { // 结果为 0、1、2
+  alert(i)
+}
+```
+
+我们逐个部分分析 `for` 循环：
+
+| 语句段         |            |                                                  |
+| :------------- | :--------- | :----------------------------------------------- |
+| begin          | `i = 0`    | 进入循环时执行一次。                             |
+| condition      | `i < 3`    | 在每次循环迭代之前检查，如果为 false，停止循环。 |
+| body（循环体） | `alert(i)` | 条件为真时，重复运行。                           |
+| step           | `i++`      | 在每次循环体迭代后执行。                         |
+
+一般循环算法的工作原理如下：
+
+```js
+开始运行
+→ (如果 condition 成立 → 运行 body 然后运行 step)
+→ (如果 condition 成立 → 运行 body 然后运行 step)
+→ (如果 condition 成立 → 运行 body 然后运行 step)
+→ .
+```
+
+所以，`begin` 运行一次，然后进行迭代；每次检查 `condition` 后，执行 `boby` 和 `step`
+
+```js
+// for (let i = 0; i < 3; i++) alert(i)
+
+// 开始
+let i = 0
+// 如果条件为真，运行下一步
+if (i < 3) { alert(i); i++ }
+// 如果条件为真，运行下一步
+if (i < 3) { alert(i); i++ }
+// 如果条件为真，运行下一步
+if (i < 3) { alert(i); i++ }
+// ……结束，因为现在 i == 3
+```
+
+#### 总结
+
+我们学习了三种循环：
+
+- `while` — 每次迭代之前都要检查条件。
+- `do...while` — 每次迭代后都要检查条件。
+- `for (;;)` —每次迭代之前都要检查条件，可以使用其他设置。
+
+通常使用 `while(true)` 来构造 “无限”循环。这样的循环和其他循环一样，都可以通过 `break` 指令来终止。
+
+如果我们不想在当前迭代中做任何事，并且想要转移至下一次迭代，那么可以使用 `continue` 指令。
+
+`breack/continue` 支持循环前的标签。标签是 `break/continue` 跳出嵌套循环以转到外部的唯一方法。
+
+#### 任务
+
+##### [最后一次循环的值](https://zh.javascript.info/while-for#zui-hou-yi-ci-xun-huan-de-zhi)
+
+此代码最后一次 alert 的值是多少？为什么？
+
+```js
+let i = 3;
+
+while (i) {
+  alert( i-- );
+}
+```
+
+答案是：`1`。
+
+每次循环迭代都将 `i` 减 `1`。当检查到 `i = 0` 时，`while(i)` 循环停止。
+
+因此，此循环执行的步骤如下（“循环展开”）：
+
+```js
+let i = 3;
+
+alert(i--); // 显示 3，i 减至 2
+
+alert(i--) // 显示 2，i 减至 1
+
+alert(i--) // 显示 1，i 减至 0
+
+// 完成，while(i) 检查循环条件并停止循环
+```
+
+##### [while 循环显示哪些值？](https://zh.javascript.info/while-for#while-xun-huan-xian-shi-na-xie-zhi)
+
+对于每次循环，写出你认为会显示的值，然后与答案进行比较。
+
+以下两个循环的 `alert` 值是否相同？
+
+1. 前缀形式 `++i`：
+
+```js
+let i = 0;
+while (++i < 5) alert(i);
+```
+
+2. 后缀形式 `i++`
+
+```js
+let i = 0;
+while (i++ < 5) alert(i);
+```
+
+答：不同
+
+前缀形式，先赋值后比较
+
+```js
+let i = 0;
+alert(i); // 显示 1，2，3，4
+```
+
+后缀形式，先比较后赋值
+
+```js
+let i = 0;
+alert(i); //  显示 1, 2, 3, 4, 5
+```
+
+##### ["for" 循环显示哪些值？](https://zh.javascript.info/while-for#for-xun-huan-xian-shi-na-xie-zhi)
+
+两次循环 `alert` 值是否相同？
+
+1. 后缀形式
+
+```js
+for (let i = 0; i < 5; i++) alert(i);
+```
+
+2. 前缀形式
+
+```js
+for (let i = 0; i < 5; ++i) alert(i);
+```
+
+答：相同
+
+前缀形式
+
+```js
+0, 1, 2, 3, 4
+```
+
+后缀形式
+
+```js
+0，1，2，3，4
+```
 
 ## 数据类型
 
@@ -184,10 +361,21 @@ alert( matrix[1][1] ); // 最中间的那个数
 const dp = new Array(n).fill([1, 2])
 
 // 正确示范
-const dp = [];
-  // 初始化
-for (let i = 0; i < n; i++) {
-  dp.push([1, 2]);
+第一种方法：通过数组表达式来创建二维数组
+
+var ArrayObj = [ [ 1,2 ], [ 1,2] ];
+第二种方法：通过构造函数来创建二维数组
+
+//第一种方式：传递两个Array构造函数到参数中
+var ArrayObj = new  Array(new  Array(),new  Array());
+ 
+//第二种方式：传递两个Array表达式到参数中
+var ArrayObj = new  Array([],[]);
+ 
+//第三种方式：通过for循环为其添加Array构造函数
+var ArrayObj = new Array();    //创建数组对象
+for (var i = 0; i < length; i++) {
+    ArrayObj[i] = new Array();    //在每一个数组元素内再定义一个数组
 }
 ```
 
@@ -236,6 +424,36 @@ alert(`${guest} ${admin}`); // Pete Jane(成功交换！)
 
 #### 对象解构
 
+```js
+let options = {
+  title: "My menu",
+  items: ["Item1", "Item2"]
+};
+
+function showMenu({
+  title = "Untitled",
+  width: w = 100,  // width goes to w
+  height: h = 200, // height goes to h
+  items: [item1, item2] // items first element goes to item1, second to item2
+}) {
+  alert( `${title} ${w} ${h}` ); // My Menu 100 200
+  alert( item1 ); // Item1
+  alert( item2 ); // Item2
+}
+
+showMenu(options);
+```
+
+注意⚠️：如果我们想让所有的参数都使用默认值，那我们应该传递一个空对象
+
+```js
+showMenu({}); // 不错，所有值都取默认值
+
+showMenu(); // 这样会导致错误
+```
+
+
+
 ### 日期和时间
 
 #### 日期转化为数字，日期差值
@@ -262,7 +480,45 @@ let end = new Date(); // 结束测量时间
 alert( `The loop took ${end - start} ms` );
 ```
 
+
+
 ### Map and Set（映射和集合）
+
+#### Object.entries：从对象创建 Map
+
+当创建一个 `Map` 后，我们可以传入一个带有键值对的数组（或其他可迭代对象）来进行初始化，如下所示：
+
+```js
+// 键值对 [key, value] 数组
+let map = new Map([
+  ['1', 'str1'],
+  [1, 'num1'],
+  [true, 'bool1']
+]);
+
+alert(map.get('1')); // str1
+```
+
+如果我们想从一个已有的普通对象（plain Object）来创建一个 `Map`，那么我们可以使用内建方法 [Object.entries(obj)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/entries)，该方法返回对象的键/值对数组，该数组格式完全按照 `Map` 所需的格式。
+
+所以可以像下面这样从一个对象创建一个 Map：
+
+```js
+let obj = {
+  name: "John",
+  age: 30
+}
+
++ let map = new Map(Object.entries(obj));
+
+alert(map.get('name')); // John
+```
+
+这里，`Object.entries` 返回键/值对数组：`[["name", "John"], ["age", 30]]`。这就是 `Map` 所需要的格式。
+
+#### Object.fromEntries：从 Map 创建对象
+
+
 
 #### 总结
 
@@ -442,6 +698,14 @@ alert(JSON.stringify(user, null, 2));
 
 ### 可选链 "?."
 
+这个 ?? 的意思是，如果 ?? 左边的值是 null 或者 undefined，那么就返回右边的值。
+
+```js
+export function getPropsSlot(slots: unknown, props: unknown, prop = 'default') {
+  return props[prop] ?? slots[prop]?.()
+
+```
+
 ### 对象——原始值转换
 
 当对象相加 `obj + obj2`，相减 `obj1 - obj2`，或者使用 `alert(obj)` 打印时会发生什么？
@@ -537,7 +801,49 @@ alert(user.valueOf() === user); // true
 
 ## 函数进阶内容
 
-#### 变量作用域，闭包
+### Rest 参数和 Spread 与法
+
+#### Rest 参数 `...`
+
+#### Spread 与法
+
+#### 获取一个 array/object 的副本
+
+使用 spread 语法也可以做跟 `Object.assign()` 同样的事情，浅拷贝。
+
+```js
+let arr = [1, 2, 3];
+let arrCopy = [...arr]; // 将数组 spread 到参数列表中
+											  // 然后将结果放到一个新数组
+// 两个数组中的内容相同吗？ 
+console.log(JSON.stringify(arr) === JSON.stringify(arrCopy)); // true
+
+// 两个数组相等吗？
+console.log(arr === arrCopy); // false （它们的引用是不同的）
+
+// 修改我们初始的数组不会修改脚本
+arr.push(4);
+console.log(arr); // 1, 2 ,3, 4
+console.log(arrCopy); // 1, 2, 3
+```
+
+
+
+#### 总结
+
+当我们在代码中看到 `"..."` 时，它要么是 rest 参数，要么就是 spread 与法。
+
+有一个简单的方法可以区分它们：
+
+- 若 `...` 出现在函数参数列表的最后，那么它就是 rest 参数，它会把参数列表中剩余的参数收集到一个数组。
+- 若 `...` 出现在函数调用或类似的表达式中，那它就是 spread 语法，它会把一个数组展开为列表。
+
+使用场景：
+
+- Rest 参数用于创建可接受任意数量参数的函数。
+- Spread 语法用于将数组传递给通常需要含有许多参数的列表的函数。
+
+### 变量作用域，闭包
 
 1. 是什么？：闭包是指内部函数总是总可以访问其所在的外部函数中声明的变量和参数，即使在其外部函数被返回（寿命终结）之后。
 2. 怎么产生闭包？：
@@ -573,7 +879,148 @@ alert(user.valueOf() === user); // true
 
 ### F.prototype
 
+## 类
+
+### Mixin 模式
+
+在 JavaScript 中，我们只能继承单个对象。每个对象只能有一个 `[[Prototype]]`。并且每个类只可以扩展另外一个类。
+
+但是有些时候这种设定（单继承）会让人感到受限制。例如，我有一个 `StreetSweeper` 类和一个 `Bicycle` 类，现在想要一个它们的 mixin：`StreetSweepingBicycle` 类。
+
+或者，我们有一个 `User` 类和一个 `EventEmitter` 类来实现事件生成（event generation），并且我们想将 `EventEmitter` 的功能添加到 `User` 中，以便我们的用法可以触发事件（emit event）。
+
+有一个概念可以帮助我们，叫做 “mixins”。
+
+根据维基百科的定义，[mixin](https://en.wikipedia.org/wiki/Mixin) 是一个包含可被其他类使用而无需继承的方法的类。
+
+换句话说，*mixin* 提供了实现特定行为的方法，但是我们不单独使用它，而是使用它来将这些行为添加到其他类中。
+
+```js
+function setMixin(target, mixin) {
+  if (arguments[2]) {
+    for (var i = 2, len = arguments.length; i < len; i++) {
+      target.prototype[arguments[i]] = mixin.prototype[arguments[i]];
+    }
+  }
+  else {
+    for (var methodName in mixin.prototype) {
+      if (!Object.hasOwnProperty(target.prototype, methodName)) {  // 避免覆盖
+        target.prototype[methodName] = mixin.prototype[methodName];
+      }
+    }
+  }
+}
+setMixin(User,LogMixin,'actionLog');
+setMixin(Goods,LogMixin,'requestLog');
+```
+
+ #### 一个 Mixin 实例
+
+#### EventMixin
+
+```js
+describe('Emitter(obj)', function () {
+    it('should mixin', function (done) {
+      const proto = {}
+      Emitter(proto)
+      proto.on('something', done)
+      proto.emit('something')
+    })
+  })
+// 注册事件处理器
+  function mixin(obj) {
+    for (let key in Emitter.prototype) {
+      obj[key] = Emitter.prototype[key]
+    }
+    return obj
+  }
+  function Emitter(obj) {
+    if (obj) return mixin(obj)
+  }
+
+  // 注册事件处理器
+  Emitter.prototype.on = function (event, fn) {
+    this.eventHandlerMap = this.eventHandlerMap || new Map()
+    if (this.eventHandlerMap.has(event)) {
+      typeof fn === 'function' && this.eventHandlerMap.get(event).push(fn)
+    } else {
+      this.eventHandlerMap.set(event, [fn])
+    }
+  }
+```
+
+**参考资料**
+
+- https://zh.javascript.info/mixins
+
 ## 网络请求
+
+1. 基于 ajax 轮询
+   - 优点：开发简单
+   - 缺点：大多数情况下无用请求，占用服务端资源
+   - 实现方式：客户端每隔一段时间调用接口，无论有没有数据，接口立即返回。
+   - 使用场景：不想折腾，消息及时性要求没有那么高，服务器资源充足。
+
+2. 基于 ajax 长轮询
+   - 优点：消息及时，命中率高，消耗服务端资源少
+   - 缺点：在 Ajax 轮询的基础上做的改进，服务端和客户端需要同时改造，消息会有部分延迟（发生在请求交替之时）
+   - 实现方式：客户端在上次请求返回后，在发送下次请求，服务端当有数据或者超时后返回，没有数据时 hold 住链接（超时时间需要综合考虑服务器性能和及时性做出平衡，有代理的话需要考虑代理对于链接的超时机制）
+   - 使用场景：扫码登录、微信网页端获取消息等。
+
+3. 长连接
+   - 优点：通信即时，通信模式采用双工，类似于打电话
+   - 缺点：服务端和客户端需要同时改造，当链接过多时，消耗服务器资源比较大。
+   - 实现方式：客户端和服务端建立长链接，基于 WebSocket，comet，iframe、服务端 SSE 推送技术等。
+   - 使用场景：实时性要求高，比如银行系统、股票系统等。
+
+### 长轮询（Long polling）
+
+**长轮询是与服务器保持持久连接的最简单方式，它不使用任何特定的协议，例如 WebSocket 或者 Server Sent Event。**
+
+它很容易实现，在很多场景下也很好用。
+
+#### 常规轮询
+
+从服务器获取新信息的最简单的方式是定期轮询。也就是说，定期向服务器发出请求：“你好，我在这儿，你有关于我的任何消息吗？”例如，每 10 秒一次。
+
+作为响应，服务器首先通知自己，客户端处于在线状态，然后—发送目前为止的消息包。
+
+这可行，但是也有些缺点：
+
+1. 消息传递的延迟最多为 10 秒（两个请求之间）。
+2. 即使没有消息，服务器也会每隔 10 秒被请求轰炸一次，即使用户切换到其他地方或者处于休眠状态，也是如此。就性能而言，这是一个很大的负担。
+
+因此，如果我们讨论的是一个非常小的服务，那么这种方式可行，但总的来说，它需要改进。
+
+#### 长轮询
+
+### WebSocket
+
+
+
+#### 总结
+
+WebSocket 是一种在浏览器和服务器之间建立持久连接的现代方式。
+
+- WebSocket 没有跨源限制。
+- 浏览器对 WebSocket 支持很好。
+- 可以发送/接收字符串和二进制数据。
+
+WebScoket 方法：
+
+- `socket.send(data)`
+- `socket.close([close], [reason])`
+
+WebSocket 事件：
+
+- `open`
+- `message`
+- `error`
+- `close`
+
+WebSocket 自身并不包含重新连接（reconneciton），身份验证（authentication）和很多其他高级机制。因此，有针对于此的客户端/服务端的库，并且也可以手动实现这些功能。
+
+有时为了将 WebSocket 集成到现有项目中，人们将主 HTTP 服务器与 WebSocket 服务器并行运行，并且它们之间共享同一个数据库。对于 WebSocket 请求使用一个通向 WebSocket 服务器的子域 `wss://ws.site.com`，而 `https://site.com` 则通向主 HTTP 服务器。
 
 ### ajax
 
@@ -637,7 +1084,77 @@ xhr.send(null);
 
 ### URL 对象
 
+内建的 [URL](https://zh.javascript.info/url) 类提供了用于创建和解析 URL 的便捷接口。
+
+没有任何一个网络方法一定需要使用 `URL` 对象，字符串就足够了。所以从技术上讲，我们并不是必须使用 `URL`。但是有些时候 `URL` 对象真的很有用。
+
 #### 创建 URL 对象
+
+创建一个新的 `URL` 对象的语法：
+
+```js
+new URL(url, [base])
+```
+
+- **`url`**—完整的 URL，或者仅路径（如果设置了 base），
+- **`base`**— 可选的 base URL：如果设置了此参数，且参数 `url` 只有路径，则会根据这个 `base` 生成 URL。
+
+例如：
+
+```js
+let url = new URL('https://javascript.info/profile/admin');
+```
+
+下面这两个 URL 是一样的：
+
+```js
+let url1 = new URL('https://javascript.info/profile/admin');
+let url2 = new URL('/profile/admin', 'https://javascript.info');
+
+alert(url1); // https://javascript.info/profile/admin
+alert(url2); // https://javascript.info/profile/admin
+```
+
+我们可以根据相对于现有 URL 的路径轻松创建一个新的 URL：
+
+```js
+let url = new URL('https://javascript.info/profile/admin');
+let newUrl = new URL('tester', url);
+
+alert(newUrl); // https://javascript.info/profile/tester
+```
+
+`URL` 对象立即允许我们访问其组件，因此这是一个解析 url 的好方法，例如：
+
+```js
+let url = new URL('https://javascript.info/url');
+
+alert(url.protocol); // https:
+alert(url.host); // javascript.info
+alert(url.pathname); // url
+```
+
+这是 URL 组件的备忘单：
+
+![](../.vuepress/public/images/2021-10-31-10-54-51.png)
+
+- `href` 是完整的 URL，与 `url.toString()` 相同
+
+- `protocol` 以冒号字符`:` 结尾
+
+- `search` — 以问号 `?` 开头的一串参数
+
+- `hash` 以哈希字符 `#` 开头
+
+- 如果存在 HTTP 身份验证，则这里可能还会有 `user` 和 `password` 属性：
+
+  `http://login:password@site.com`（图片上没有，很少被用到）。
+
+> ⚠️ 我们可以讲 `URL` 对象传递给网络（和大多数其他）方法，而不是字符串
+>
+> 我们可以在 `fetch` 或 `XMLHttpRequest` 中使用 `URL` 对象，几乎可以在任何需要 URL 字符串的地方都能使用 `URL` 对象。
+>
+> 通常，`URL` 对象可以替代字符串传递给任何方法，因为大多数方法都会执行字符串转换，这会将 `URL` 对象转换为具有完整 URL 的字符串。
 
 #### SearchParams
 
@@ -682,6 +1199,20 @@ alert(url); // https://google.com/search?q=Rock%26Roll
 浏览器：文档，事件，接口
 
 ## Document
+
+### DOM 树
+
+### 节点属性：type、tag 和 content
+
+<img src="../.vuepress/public/images/2021-11-10-11-43-03.png" style="zoom:50%;" />
+
+文档对象模型（DOM）是将 HTML 或 XML 文档视为树结构的接口，其中每个节点（node）都是文档的对象。 DOM 还提供了一组用于查询树、修改结构和样式的方法。
+
+**元素是特定类型的节点——`Node.ELEMENT_NODE`以及文档、注释、文本等类型**。
+
+简单的说，元素是使用 HTML 文档中的标记编写的节点。 `<html>`、`<head>`、`<title>`、`<body>`、`<h2>`、`<p>` 都是元素，因为它们是用标签表示的。
+
+文档类型、注释、文本节点不是元素，因为它们不是用标签编写的：
 
 ### IntersectionObserver
 
@@ -759,6 +1290,286 @@ style 特性是字符串类型的，但 style 属性是一个对象：
 使用 `data-*` 特性是一种合法且安全的传递自定义数据的方式。
 
 请注意，我们不仅可以读取数据，还可以修改数据属性（data-attributes）
+
+### 样式和类
+
+通常有两种设置元素样式的方式：
+
+1. 在 CSS 中场景中创建一个类，并添加它：`<div class="...">`
+2. 将属性直接写入 `style`：`<div style="...">`
+
+JavaScript 既可以修改类，也可以修改 `style` 属性。
+
+相较于将样式写入 `style` 属性，我们应该首选通过 CSS 类的方式来添加样式。仅当类”无法处理“时，才应选择使用 `style` 属性的方式。
+
+例如，如果我们动态地计算元素的坐标，并希望通过 JavaScript 来设置它们，那么使用 `style` 是可以接受的，如下所示：
+
+```js
+let top = /* 复杂的计算 */;
+let left = /* 复杂的计算 */;
+
+elem.style.left = left; // 例如 '123px'，在运行时计算出的
+elem.style.top = top; // 例如 '456px'
+```
+
+对于其他情况，例如将文本设为红色，添加一个背景图标 —可以在 CSS 中对这些样式尽心描述，然后添加类（JavaScript 可以做到）。这样更灵活，更易于支持。
+
+#### [className 和 classList](https://zh.javascript.info/styles-and-classes#classname-he-classlist)
+
+更改类是脚本中最常见的操作之一。
+
+在很久以前，JavaScript 中有一个限制：像`”class“` 这样的保留字不能用作对象的属性。这一限制现在已经不存在了，但当时就不能存在像 `elem.class` 这样的 `"class"` 属性。
+
+因此，对于类，引入了看起来类似的属性 `className` ：`elem.className` 对应于 `"class"` 特性（attribute）。
+
+例如：
+
+```js
+<body class="main page">
+  <script>
+    alert(document.body.className); // main page
+  </script>
+</body>
+```
+
+封装对类的操作
+
+```tsx
+/**
+ * 判断 DOM 中的元素是否含有某个类
+ * @param el 元素
+ * @param className 类名
+ * @returns
+ */
+export function hasClass(el: any, className: string): boolean {
+  if (el.classList) {
+    return el.classList.contains(className);
+  }
+  const originClass = el.className;
+  return ` ${originClass} `.indexOf(` ${className} `) > -1;
+}
+
+/**
+ * 向 DOM 中的元素添加一个类
+ * @param el 元素
+ * @param className 类名
+ */
+export function addClass(el: any, className: string) {
+  if (el.classList) {
+    el.classList.add(className);
+  } else {
+    if (!hasClass(el, className)) {
+      el.className = `${el.className} ${className}`;
+    }
+  }
+}
+
+/**
+ * 从 DOM 中的元素移除一个类
+ * @param el 元素
+ * @param className 类名
+ */
+export function removeClass(el: any, className: string) {
+  if (el.classList) {
+    el.classList.remove(className);
+  } else {
+    if (hasClass(el, className)) {
+      const originClass = el.className;
+      el.className = ` ${originClass} `.replace(` ${className} `, " ");
+    }
+  }
+}
+```
+
+#### 计算样式：getComputedStyle
+
+修改样式很简单。但是如何**读取**样式呢？
+
+例如，我们想知道的 size、margins 和 color。应该怎么获取？
+
+**`style` 属性仅对 `"style"` 特性（attribute）值起作用，而没有任何 CSS 级联（cascade）。**
+
+因此我们无法使用 `elem.style` 读取来自 CSS 类的任何内容。
+
+例如，这里的 `style` 看不到 margin：
+
+```html
+<head>
+  <style>body { color: red; margin: 5px }</style>
+</head>
+<body>
+  The red text
+  <script>
+    alert(document.body.style.color); // 空的
+    alert(document.body.style.marginTop); // 空的
+  </script>
+</body>
+```
+
+......但如果我们需要，例如，将 margin 增加 20px 呢？那么我们需要 margin 的当前值。
+
+对于这个需求，这里有另一种方法：`getComputedStyle`。
+
+语法如下：
+
+```js
+getComputedStyle(element, [pseudo])
+```
+
+**element**
+
+需要被读取样式值的元素。
+
+**pseudo**
+
+伪元素（如果需要），例如`::before`。空字符串或无参数则意味着元素。
+
+结果是一个具有样式属性的对象，像 `elem.style`，但现在对于所有的 CSS 类来说都是如此。
+
+例如：
+
+```html
+<head>
+  <style> body { color: red; margin: 5px } </style>
+</head>
+<body>
+  <script>
+    let computedStyle = getComputedStyle(document.body);
+    
+    // 现在我们可以读取它的 margin 和 color 了
+    
+    alert( computedStyle.marginTop ); // 5px
+    alert( computedStyle.color ); // rgb(255, 0, 0)
+  </script>
+</body>
+```
+
+>
+>
+>⚠️**计算值和解析值**
+>
+>在 CSS 中有两个概念：
+>
+>1. **计算（computed）**样式值是所有 CSS 规则和 CSS 继承都应用后的值，这是 CSS 级联（cascade）的结果。它看起来结像 `height: 1em` 或 `font-size: 125%`。
+>2. **解析（resolved）**样式值是最终应用于元素的样式值。诸如 `1em` 或 `125%` 这样的值是相对的。浏览器将使用计算（compute）值，并使所有单位均为固定的，且为绝对单位，例如 `height: 20px` 或 `font-size: 16px`。对于几何属性，解析（resolved）值可能具有浮点，例如：`width: 50.5px`。
+>
+>很久以前，创建了 `getComputedStyle` 获取计算（computed）值，但事实证明，解析（resolved）值要方便得多，标准也因此发生了变化。
+>
+>所以，现在 `getComputedStyle` 实际上返回的属性的解析值（resolved）。
+
+
+
+>⚠️ `getComputedStyle` 需要完整的属性名
+>
+>我们应该总是使用我们想要的确切的的属性，例如 `paddingLeft`、`marginTop`或 `borderTopWidth`。否则，就不能保证正确的结果。
+>
+>例如，如果有 `paddingLeft/paddingTop` 属性，那么对于 `getComputedStyle(elem).padding`，我们会得到什么？什么都没有，或者是从已知的 padding 中 “生成”的值？这里没有标准的规则。
+>
+>还有其他不一致的地方。例如，在下面这个例子中，某些浏览器（Chrome）会显示 `10px`，而某些浏览器（Firefox）则没有：
+>
+>```html
+><style>
+>  body {
+>    margin: 10px;
+>  }
+></style>
+><script>
+>  let style = getComputedStyle(document.body);
+>  alert(style.margin); // 在 Firefox 中是空字符串
+></script>
+>```
+
+> ⚠️ 应用于 `:visited` 链接的样式被隐藏了！
+>
+> 可以使用 CSS 伪类 `:visited` 对被访问过的链接进行着色。
+>
+> 但 `getComputedStyle` 没有给出访问该颜色的方式，因为否则，任意页面都可以通过在页面上创建它，并通过检查样式来确定用户是否访问了某链接。
+>
+> JavaScript 看不到 `:visited` 所应用的样式。此外，CSS 中也有一个限制，即禁止在 `:visited` 中应用更改几何形状的样式。这是为了确保一个不好的页面无法测试链接是否被访问，进行窥探隐私。
+
+#### 总结
+
+要管理 class，有两个。DOM 属性：
+
+- `className` — 字符串值，可以很好地管理整个类的集合。
+- `classList`—具有 `add/remove/toggle/contains` 方法的对象，可以很好地支持单个类。
+
+要改变样式：
+
+- `style` 属性是具有驼峰（camelCased）样式的对象。对其进行读取和修改与修改 `"style"` 特性（attribute）的各个属性具有相同的效果。要了解如何应用 `important` 和其他特殊内容 — 在 [MDN](https://developer.mozilla.org/zh/docs/Web/API/CSSStyleDeclaration) 中有一个方法列表。
+- `style.cssText` 属性对应于整个 `"style"` （attribute），即完整的样式字符串。
+
+要读取已解析的（resolved）样式（对于所有类，在应用所有 CSS 并计算最终值之后）：
+
+- `getComputedStyle(elem, [pseudo])`返回与 `style` 对象类似，且包含了所有类的对象。只读。
+
+### 修改文档（document）
+
+DOM 修改是创建“实时”页面的关键。
+
+在这里，我们将会看到如何“即时”创建新元素并修改现有页面内容。
+
+#### 例子：展示一条消息
+
+#### 创建一个元素
+
+#### 插入方法
+
+#### insertAdjacentHTML/Text/Element
+
+#### 总结
+
+- 创建新节点的方法
+  - `document.createElement(tag)` — 用给定的标签创建一个元素节点，
+  - `document.createTextNode(value)` — 创建一个文本节点
+  - `elem.cloneNode(deep)` — 克隆元素，如果 `deep==true` 则与其后代一起克隆。
+
+- 插入和移除节点的方法：
+
+  - `node.append(...nodes or strings)` — 在 `node` 末尾插入，
+  - `node.prepend(...nodes or strings)` — 在  `node` 开头插入，
+  - `node.before(...nodes or strings)` — 在 `node` 之前插入，
+  - `node.after(...nodes or strings)` — 在 `node` 之后插入，
+  - `node.replaceWith(...nodes or strings)` — 替换 `node`。
+  - `node.remove()` — 移除 `node`。
+
+  文本字符串被“作为文本”插入。
+
+- 这里还有“旧式”的方法：
+
+  - `parent.appendChild(node)`
+
+  - `parent.insertBefore(node, nextSibling)`
+
+  - `parent.removeChild(node)`
+
+  - `parent.replaceChild(newElem, node)`
+
+    这些方法都返回 `node`。
+
+- 在 `html` 中给定一些 HTML，`elem.insertAdjacentHTML(where, html)`会根据 `where` 的值来插入它：
+
+  - `"beforebegin"` — 将 `html` 插入到 `elem` 前面，
+
+  - `"afterbegin"` — 将 `html` 插入到 `elem` 的开头，
+
+  - `"beforeend"` — 将 `html` 插入到 `elem` 的末尾，
+
+  - `"afterend"` — 将 `html` 插入到 `elem` 后面。
+
+    另外，还有类似的方法，`elem.insertAdjacentText` 和 `elem.insertAjacentElement` ，它们会插入文本字符串和元素，但很少使用。
+
+- 要在页面加载完成之前将 HTML 附加到页面：
+
+  - `document.write(html)`
+
+    页面加载完成后，这样的调用将会擦除文档。多见于旧脚本。
+
+#### 任务：从对象创建树
+
+#### 任务：在树中显示后代
+
+#### 任务：创建日历
 
 ### 元素大小和滚动
 
@@ -853,6 +1664,26 @@ alert('Current scroll from the left: ' + window.pageXOffset);
 
 ### 坐标
 
+要移动页面的元素，我们应该先熟悉坐标。
+
+大多数 JavaScript 方法处理的是以下两种坐标系中的一个：
+
+1. **相对于窗口** — 类似于 `position: fixed`，从窗口的顶部/左侧边缘计算得出。
+   - 我们将这些坐标表示为 `clientX/clientY`，当我们研究事件属性时，就会明白为什么使用这种名称来表示坐标。
+2. **相对于文档** — 于文档根（document root）中的 `position: absolute` 类似，从文档的顶部/左侧边缘计算得出。
+   - 我们将它们表示为 `pageX/pageY`。
+
+当页面滚动到最开始时，此时窗口的左上角恰好时文档的左上角，它们的坐标彼此相等。但是，在文档移动之后，元素的窗口相对坐标会发生变化，因为元素在窗口中移动，而元素在文档中的相对坐标保持不变。
+
+在下图中，我们在文档中取一点，并演示了它滚动之前（左）和之后（右）的坐标：
+
+![](../.vuepress/public/images/2021-09-25-22-08-55.png)
+
+当文档滚动了：
+
+- `pageY` — 元素在文档中的相对坐标保持不变，从文档顶部（现在已滚动出去）开始计算。
+- `clientY` — 窗口相对坐标确实发生了变化（箭头变短了），因为同一个点越来越靠近窗口顶部。
+
 #### Screen
 
 屏幕坐标系，坐标原点位于屏幕的左下角。
@@ -869,13 +1700,84 @@ alert('Current scroll from the left: ' + window.pageXOffset);
 
 局部坐标系，以目标元素自身的左上角为原点。
 
-<img src="../.vuepress/public/images/2021-09-03-22-30-08.png" style="zoom:80%;" />
-
 #### 元素坐标：getBoundingClientRect
 
-参考资料：
+> 获取页面元素的位置和判断元素是否在可视区域
+
+方法 `elem.getBoundingClientRect()` 返回最小矩形的窗口坐标，该矩形将 `elem` 作为内建  [DOMRect](https://www.w3.org/TR/geometry-1/#domrect) 类的对象。
+
+主要的 `DOMRect` 属性：
+
+- `x/y` — 矩形原点相对于窗口的 X/Y 坐标，
+- `width/height` — 矩形的 width/height （可以为负）。
+
+此外，还有派生（derived）属性：
+
+- `top/bottom` — 顶部/底部矩形边缘的 Y 坐标，
+- `left/right` — 左/右矩形边缘的 X 坐标
+
+下面这张是 `elem.getBoundingClientRect()` 的输出的示意图：
+
+<img src="../.vuepress/public/images/2021-09-03-22-30-08.png" style="zoom:80%;" />
+
+正如你所看到的，`x/y` 和 `width/height` 对矩形进行了完整的描述。可以很容易地从它们计算出派生（derived）属性：
+
+- `left = x` 
+- `top = y`
+- `right = x + width`
+- `bottom = y + height`
+
+请注意：
+
+- 坐标可能是小数，例如 `10.5`。这是正常的，浏览器内部使用小数进行计算。在设置 `style.left/top` 时，我们不是必须对它们进行舍入。
+- 坐标可能是负数。例如滚动页面，使 `elem` 现在位于窗口的上方，则 `elem.getBoundinClientRect().top` 为负数。
+
+> **为什么需要派生（derived）属性？如果有了 `x/y`，为什么还要还会存在 `top/left`？**
+>
+> 从数学上讲，一个矩形是使用其起点 `(x, y)` 和方向向量 `(width, height)` 唯一定义的。因此，其他派生属性是为了方便起见。
+>
+> 从技术上讲，`width/height` 可能为负数，从而允许 “定向（directed）”矩形，例如代表带有正确标记的开始和结束的鼠标选择。
+>
+> 负的 `width/height` 值表示矩形从其右下角开始，然后向左上方“增长”。
+>
+> 这是一个矩形，其 `width` 和 `height` 均为负数。（例如 `width = -200`，`height = -100`）：
+>
+> <img src="../.vuepress/public/images/2021-09-25-22-26-26.png" style="zoom:80%;" />
+>
+> 正如你所看到的，在这个例子中，`left/top` 与 `x/y` 不相等。
+>
+> 但是实际上，`elem.getBoundingClientRect()` 总是返回正数的 width/height，这里我们提及负的 `width/height` 只是为了帮助你理解，为什么这些看起来重复的属性，实际上并不是重复的。
+
+> ⚠️**IE 浏览器不支持 `x/y`**
+>
+> 由于历史原因，IE 浏览器不支持 `x/y` 属性。
+>
+> 因此，我们可以写一个 polyfill（在 `DomRect.prototype` 中添加一个 getter），或者仅使用 `top/left`，因为对于正值的 `width/height` 来说，它们和 `x/y` 一直是一样的，尤其是对于 `elem.getBoundingClientRect()` 的结果。
+
+> ⚠️ 坐标的 right/bottom 与 CSS position 属性不同
+>
+> 相对于窗口 （window）的坐标和 CSS `position:fixed` 之间有明显相似之处。
+>
+> 但是在 CSS 定位中， `right` 属性表示距右边缘的距离，而 `bottom` 属性表示距下边缘的距离。
+>
+> 如果我们再看一下上面的图片，我们可以看到在 JavaScript 中并非如此。窗口的所有坐标都是从左上角开始计数，包括这些坐标。
+
+**参考资料**
 
 - [你真的会用getBoundingClientRect吗？](https://github.com/zuopf769/notebook/blob/master/fe/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BC%9A%E7%94%A8getBoundingClientRect%E5%90%97/README.md)
+
+#### [elementFromPoint(x, y)](https://zh.javascript.info/coordinates#elementFromPoint)
+
+#### 用于 “fixed “ 定位
+
+#### 文档坐标
+
+#### 总结
+
+页面上的任何点都有坐标：
+
+1. 相对于窗口的坐标 — `elem.getBoundingClientRect()`。
+2. 相对于文档的坐标 — `elem.getBoundingClientRect()` 加上当前页面滚动。
 
 ## 事件简介
 
@@ -906,6 +1808,288 @@ alert('Current scroll from the left: ' + window.pageXOffset);
 
 #### 任务
 
+### 创建自定义事件
+
+我们不仅可以分配事件处理程序，还可以从 JavaScript 生成事件。
+
+自定义事件可用于创建“图形组件”。例如，我们自己的基于 JavaScript 的菜单的根元素可能会触发 `open` （打开菜单），`select` （有一项被选中）等事件来告诉菜单发生了什么。另一个代码可能会监听事件，并观察菜单发生了。
+
+我们不仅可以生成出于自身目的而创建的全新事件，还可以生成例如 `click` 和 `mousedown` 等内建事件。**这可能会有助于自动化测试**。
+
+#### 事件构造器
+
+内建事件类形成一个层次结构（hierarchy），类似于 DOM 元素类。根是内建的 [Event](http://www.w3.org/TR/dom/#event) 类。
+
+我们可以像这样创建 `Event` 对象：
+
+```js
+let event = new Event(type[, options]);
+```
+
+参数：
+
+- **type** — 事件类型，可以是像这样 `"click"` 的字符串，或者我们自己的像这样 `"my-event"` 的参数。
+
+- **options** — 具有两个可选属性的对象：
+
+  - `bubbles: true/false` — 如果为 `true`，那么事件就会冒泡。
+  - `cancelable: true/false` — 如果为 `true`，那么“默认行为”就会被阻止。稍后我们会看到对于自定义事件，它意味着什么。
+
+  默认情况下，以上两者都为 false：`{bubbles: false, cancelable: false}`。
+
+#### dispatchEvent
+
+事件对象被创建后，我们应该使用 `elem.dispatchEvent(event)` 调用在元素上“运行”它。
+
+然后，处理程序会对它作出反应，就好像它是一个常规的浏览器事件一样。如果事件是用 `bubbles` 标志创建的，那么它就会冒泡。
+
+在下面这个示例中，`click` 事件是用 JavaScript 初始化创建的。处理程序工作方式和点击按钮的方式相同：
+
+```html
+<button id="elem" onclick="alert('Click!');">Autoclick</button>
+
+<script>
+  let event = new Event("click");
+  elem.dispatchEvent(event);
+</script>
+```
+
+> Event.isTrusted
+>
+> 有一种方法可以区分“真实”用户事件和通过脚本生成的事件。
+>
+> 对于来自真实用户操作的事件，`event.isTrusted` 属性为 `true`，对于脚本生成的事件，`event.isTrusted` 属性为 `false`。
+
+#### 冒泡示例
+
+我们可以创建一个名为 `"hello"` 的冒泡事件，并在 `document` 上捕获它。
+
+我们需要做的就是将 `bubbles` 设置为 `true`：
+
+```html
+<h1 id="elem">Hello from the script!</h1>
+
+<script>
+  // 在 document  上捕获 ...
+  document.addEventListener("hello", function(event) {
+    alert("Hello from " + event.target.tagName); // Hello from H1
+  });
+  
+  // 在 elem 上 dispatch
+  let event = new Event("hello", { bubbles: true});
+  elem.dispatchEvent(evet);
+  
+  // 在 document 上的处理程序将被激活，并显示信息。
+</script>
+```
+
+注意：
+
+1. 我们应该对我们的自定义事件使用 `addEventListener`，因为 `on<event>` 仅存在于内建事件中，`document.onhello` 则无法运行。
+2. 必须设置 `bubbles: true` ，否则事件不会向上冒泡。
+
+内建事件（`click`） 和自定义事件 （`hello`）的冒泡机制相同。自定义事件也有捕获阶段和冒泡阶段。
+
+#### MouseEvent，KeyboardEvent 及其他
+
+这是一个摘自于 [UI 事件规范](https://www.w3.org/TR/uievents) 的一个简短的 UI 事件类列表：
+
+- `UIEvent` 
+- `FocusEvent`
+- `MouseEvent`
+- `WheelEvent`
+- `KeyboardEvent`
+
+如果我们想要创建这样的事件，我们应该使用它们而不是 `new Event`。例如，`new MouseEvent("click")`。
+
+正确的构造器允许为该类型的事件指定标准属性。
+
+就像鼠标事件的 `clientX/clientY` 一样：
+
+```js
+let event = new MouseEvent("click", {
+  bubbles: true,
+  cancelable: true,
+  clientX: 100,
+  clientY: 100
+});
+
+alert(event.clientX); // 100
+```
+
+请注意⚠️：通用的 `Event` 构造器不允许这样做。
+
+让我们试试：
+
+```js
+let event = new Event("click", {
+  bubbles: true, // 构造器 Event 中只有 bubbles 和 cancelable 可以工作
+  cancelable: true,
+  clientX: 100,
+  clientY: 100
+});
+
+alert(event.clientX); // undefined, 未知的属性被忽略了！
+```
+
+从技术上讲，我们可以通过在创建后直接分配 `event.clientX = 100` 来解决这个问题。所以，这是一个方便和遵守规则的问题。浏览器生成的事件始终具有正确的类型。
+
+规范中提供了不同 UI 事件的属性的完整列表，例如 [MouseEvent](https://www.w3.org/TR/uievents/#mouseevent)。
+
+#### 自定义事件
+
+对于我们自己的全新事件类型，例如 `"hello"`，我们应该使用 `new CustomEvent`。从技术上讲，[CustomEvent](https://dom.spec.whatwg.org/#customevent) 和 `Event` 一样。除了一点不同。
+
+在第二个参数（对象）中，我们可以为我们想要与事件一起传递的任何自定义信息添加一个附加的属性 `detail`。
+
+例如：
+
+```html
+<h1 id="elem">Hello for John!</h1>
+
+<script>
+  // 事件附带给处理程序的其他详细信息
+  elem.addEventListener("hello", function(event) {
+    alert(event.datail.name);
+  });
+  
+  elem.dispatchEvent(new CustomEvent("hello", {
+    detail: { name: "John"}
+  }));
+</script>
+```
+
+`detail` 属性可以有任何数据。从技术上讲，我们可以不用，因为我们可以在创建后讲任何属性分配给常规的 `new Event` 对象中。但是 `CustomEvent` 提供了特殊的 `detail` 字段，以避免与其他事件属性的冲突。
+
+此外，事件类描述了它是 “什么类型的事件”，如果事件是自定义的，那么我们应该使用 `CustomEvent` 来明确它是什么。
+
+#### event.preventDefault()
+
+许多浏览器事件都有“默认行为”，例如导航到链接，开始一个选择，等。
+
+对于新的，自定义的事件，绝对没有默认的浏览器行为，但是分派（dispatch）此类事件的代码可能有自己的计划，触发该事件之后应该做什么。
+
+通过调用 `event.preventDefault()` ，事件处理程序可以发出一个信号，指出这些行为应该被取消。
+
+在这种情况下， `elem.dispatchEvent(event)` 的调用会返回 `false`。那么分派（dispatch）该事件的代码就会知道不应该继续。
+
+让我们看一个实际的例子 — 一只隐藏的兔子（可以是关闭菜单或者其他）。
+
+在下面，你可以看到一个在其上分派了 `"hide"` 事件的 `#rabit` 和 `hide(()` 函数，以使所有感兴趣的各方面都知道这只兔子要隐藏起来。
+
+任何处理程序都可以使用 `rabbit.addEventListener('hide',...)` 来监听该事件，并在需要时使用 `event.preventDefault()` 来取消该行为。然后兔子就不会藏起来了：
+
+```html
+<pre id="rabbit">
+  |\   /|
+   \|_|/
+   /. .\
+  =\_Y_/=
+   {>o<}
+</pre>
+
+<button onclick="hide()">Hide()</button>
+
+<script>
+  function hide() {
+    let event = new CustomEvent("hide", {
+      cancelable: true // 没有这个标志，preventDefault 将不起作用
+    });
+    if (!rabbit.dispatchEvent(event)) {
+      alert('The action was prevented by a handler');
+    } else {
+      rabbit.hidden = true;
+    }
+  }
+
+  rabbit.addEventListener('hide', function())
+</script>
+```
+
+#### 事件中的事件是同步的
+
+通常事件是在队列中处理的。也就是说：如果浏览器正在处理 `onclick`，这时发生了一个新的事件，例如鼠标移动了，那么它的处理程序会被排入队列，相应的 `mousemove` 处理程序将在 `onclick` 事件处理完成后被调用。
+
+值得注意的例外情况就是，一个事件是在另一个事件中发起的。例如使用 `dispatchEvent`。这类事件将会被立即处理，即是在新的事件处理程序被调用之后，恢复到当前的事件处理程序。
+
+例如，在下面的代码中，`menu-open` 事件是在 `onclick` 事件执行过程中被调用的。
+
+它会被立即执行，而不必等待 `onclick` 处理程序结束：
+
+```html
+<button id="menu">Menu (click me)</button>
+
+<script>
+  menu.onclick = function() {
+    alert(1);
+    
+    menu.dispatchEvent(new CustomEvent("menu-open", {
+      bubbles: true
+    }));
+    
+    alert(2);
+  };
+  
+  // 在 1 和 2 之间触发
+  document.addEventListener('menu-open', () => alert('nested'));
+</script>
+```
+
+输出顺序为：1 -> nested -> 2
+
+请注意，嵌套事件 `menu-open` 会在 `document` 上被捕获。嵌套事件的传播（propagation）和处理先被完成，然后处理过程才会返回到外部代码（`onclick`）。
+
+这不只是与 `dispatchEvent` 有关，还有其他情况。如果一个事件处理程序调用了触发其他事件的方法 — 它们同样也会被以嵌套的方式同步处理。
+
+不过有时候，这并不是我们期望的结果。我们想让 `onclick` 不受 `menu-open` 或者其它嵌套事件的影响，优先被处理完毕。
+
+那么，我们就可以将 `dispatchEvent` （或另一个触发事件的调用）放在 `onclick` 末尾，或者最好将其包装到零延迟的 `setTimeout` 中：
+
+```html
+<button id="menu">Menu （click me）</button>
+<script>
+  menu.onclick = function() {
+    alert(1);
+    
+    setTimeout(() => menu.dispatchEvent(new CustomEvent("menu-open", {
+      bubbles: true
+    })));
+    
+    alert(2);
+  };
+  
+  document.addEventListener('menu-open', () => alert('nested'));
+</script>
+```
+
+现在，`dispatchEvent` 在当前代码执行完成之后异步执行，包括 `mouse.onclick` ，因此，事件处理程序是完全独立的。
+
+输出顺序变成：1 -> 2 -> nested。
+
+#### 总结
+
+要从代码生成一个事件，我们首先需要创建一个事件对象。
+
+通用的 `Event(name, options)` 构造器接受任意事件名称和具有两个属性的 `options` 对象：
+
+- 如果事件应该冒泡，则 `bubbles: true`。
+- 如果 `event.preventDefault()` 应该有效，则 `cancelable: true`。
+
+其他像 `MouseEvent` 和 `KeyboardEvent` 这样的原生事件的构造器，都接受特定于该事件类型的属性。例如，鼠标事件的 `clientX`。
+
+对于自定义事件，我们应该使用 `CustomEvent` 构造器。它有一个名为 `detail` 的附加选项，我们应该将事件特定的数据分配给它。这样，所有处理程序可以以 `event.detail` 的形式来访问它。
+
+尽管技术上可以生成像 `click` 或 `keydown` 这样的浏览器事件，但我们还是应谨慎使用它们。
+
+我们不应该生成浏览器事件，因为这是运行处理程序的一种怪异 （hacky）方式。大多数时候，这都是糟糕的架构。
+
+**可以生成原生事件**
+
+- 如果第三方程序库不提供其他交互方式，那么这是使第三方程序库工作所需的一种肮脏手段。
+- 对于自动化测试，要在脚本中“点击按钮”并查看接口是否正确响应。
+
+使用我们自己的名称的自定义事件通常是出于架构的目的而创建的，以指示发生在菜单（menu），滑块（slider），转播（carousel）等内部发生了什么。
+
 ## UI 事件
 
 ### 滚动
@@ -914,7 +2098,7 @@ alert('Current scroll from the left: ' + window.pageXOffset);
 
 例如：
 
-- 
+
 
 ### 鼠标拖放事件
 
@@ -1046,15 +2230,356 @@ new User('John');
 // 或者通过 require
 ```
 
-## 动画
-
-### CSS 动画
-
 ## 杂项
 
 ### Proxy 和 Reflect
 
+### DOM 变动观察器（Mutation observer）
 
+MutationObserverAPI可以看作一个监听DOM所有变化（包含节点、属性、文本内容的变动）的接口。
+
+和EventTargetAPI的addEventListener相比：
+
+**共同点**: 两者的回调函数执行都是异步任务，都要在主执行栈之后执行；
+
+**不同点**：
+
+1. addEventListener的回调函数会进入宏任务队列；
+2. MutationObserver的回调函数会进入微任务队列
+3. addEventListener的触发方式是同步触发；比如，点击后，回调函数立即进入宏任务队列。
+4. MutationObserver的监听是异步触发，在所有的DOM操作完成后才触发使回调函数进入微任务队列。
+
+**参考资料**
+
+- [MutationObserverAPI--微任务](https://www.cnblogs.com/lyraLee/p/11827285.html)
+
+## 动画
+
+### 贝塞尔曲线
+
+### CSS 动画
+
+css 动画可以在不借助 JavaScript 的情况下做出一些简单的动画效果。
+
+你也可以通过 JavaScript 控制 CSS 动画，使用少量的代码，就能让动画表现更加出色。
+
+#### CSS 过渡（transition）[#css-transition]
+
+CSS 过渡的理念非常简单，我们只需要定义某一个属性以及如何动态地表现其变化。当属性变化时，浏览器将会绘制出相应的过渡动画。
+
+也就是说：我们只需要改变某个属性，然后所有流畅的动画都由浏览器生成。
+
+举个例子，以下 CSS 会为 `background-color` 的变化生成一个 3 秒的过渡动画：
+
+```css
+.animated {
+  transition-property: background-color;
+  transition-duration: 3s;
+}
+```
+
+现在，只要一个元素拥有名为 `.animated` 的类型，那么任何背景颜色的变化都会被渲染为 3 秒钟的动画。
+
+```html
+<button id="color">Click me</button>
+<style>
+  #color {
+    transition-property: background-color;
+    transition-duration: 3s;
+  }
+</style>
+<script>
+  color.onclick = function() {
+    this.style.backgroundColor = 'red';
+  }
+</script>
+```
+
+CSS 提供了四个属性来描述一个过渡：
+
+- `transition-property`
+- `transition-duration`
+- `transition-timing-funciton`
+- `transition-delay`
+
+我们可以在 `transition` 中以 `property duration timing-funcition delay` 的顺序一次性定义它们，并且可以同时为多个属性设置过渡动画。
+
+请看以下例子：
+
+```html
+<button id="growing">Click me</button>
+
+<style>
+  #growing {
+    transition: font-size 3s, color 2s;
+  }
+</style>
+
+<script>
+growing.onclick = function() {
+  this.style.fontSize = '36px';
+  this.style.color = 'red';
+}
+</script>
+```
+
+#### transition-property
+
+#### transition-duration
+
+#### transition-delay
+
+#### transition-timing-function
+
+#### transitionend 事件
+
+CSS 动画完成后，会触发 `transitionend` 事件。
+
+这被广泛用于在动画结束后执行某种操作。我们也可以用它来串联动画。
+
+`transitionend` 的事件对象有几个特定的属性：
+
+`event.propertyName` ：当前完成动画的属性，这在我们同时为多个属性加上动画时会很有用。
+
+`event.elapsedTime` ：动画完成的时间（按秒计算），不包括 `transition-delay`。
+
+#### 关键帧动画（Keyframes）
+
+我们可以通过 CSS 提供的 `@keyframes` 规则整合多个简单的动画。
+
+它会指定某个动画的名称以及相应的规则：哪个属性，何时以及何地渲染动画。
+
+然后使用 `animation` 属性把动画绑定到相应的元素上，并为其添加额外的参数。
+
+```html
+<div class="progress"></div>
+
+<style>
+  @keyframes go-left-right {        /* 指定一个名字："go-left-right" */
+    from { left: 0px; }             /* 从 left: 0px 开始 */
+    to { left: calc(100% - 50px); } /* 移动至 left: 100%-50px */
+  }
+
+  .progress {
+    animation: go-left-right 3s infinite alternate;
+    /* 把动画 "go-left-right" 应用到元素上
+       持续 3 秒
+       持续次数：infinite
+       每次都改变方向
+    */
+
+    position: relative;
+    border: 2px solid green;
+    width: 50px;
+    height: 20px;
+    background: lime;
+  }
+</style>
+```
+
+### JavaScript 动画
+
+JavaScript 动画可以处理 CSS 无法处理的事情。
+
+例如，沿着具有与 Bezier 曲线不同的时序函数的复杂路径移动，或者实现画布上的动画。
+
+#### 使用 setInterval
+
+从 HTML/CSS 的角度来看，动画是 style 属性的逐渐变化。例如，将 `style.left` 从 `0px` 变化到 `100px` 可以移动元素。
+
+如果我们用 `setInterval` 每秒做 50 次小变化，看起来会更流畅。电影也是这样的原理：每秒 24 帧或更多帧足以使其看起来流畅。
+
+```js
+let delay = 1000 / 50; // 每秒 50 帧
+let timer = setInterval(function() {
+  if (animation complete) clearInterval(timer);
+  else increase style.left
+}, delay)
+```
+
+更完整的动画示例
+
+```js
+let start = Date.now(); // 保存开始时间
+
+let timer = setInterval(function() {
+  // 距开始过了多长时间
+  let timePassed = Date.now() - start;
+
+  if (timePassed >= 2000) {
+    clearInterval(timer); // 2 秒后结束动画
+    return;
+  }
+
+  // 在 timePassed 时刻绘制动画
+  draw(timePassed);
+
+}, 20);
+
+// 随着 timePassed 从 0 增加到 2000
+// 将 left 的值从 0px 增加到 400px
+function draw(timePassed) {
+  train.style.left = timePassed / 5 + 'px';
+}
+```
+
+#### 使用 requestAnimationFrame
+
+假设我们有几个同时运行的动画。
+
+如果我们单独运行它们，每个都有自己的 `setInterval(..., 20)`，那么浏览器必须比 `20ms` 更频繁的速度重绘。
+
+每个 `setInterval`每 `20ms` 触发一次，但它们互相独立，因此 `20ms` 内将有多个独立运行的重绘。
+
+这几个独立的重绘应该组合在一起，以使浏览器更加容易处理。
+
+换句话说，像下面这样：
+
+```js
+setInterval(function() {
+  animate1();
+  animate2();
+  animate3();
+}, 20)
+```
+
+...... 比这样更好：
+
+```js
+setInterval(animate1, 20);
+setInterval(animate2, 20);
+setInterval(animate3, 20);
+```
+
+还有一件事需要记住。有时当 CPU 过载时，或者有其他原因需要降低重绘频率。例如，如果浏览器选项卡顿被隐藏，那么绘图完全没有意义。
+
+有一个标准[动画时序](http://www.w3.org/TR/animation-timing/)提供了 `requestAnimationFrame` 函数。
+
+它解决了所有这些问题，甚至更多其它的问题。
+
+```js
+let requestId = requestAnimationFrame(callback);
+```
+
+**这会让 `callback` 函数在浏览器每次重绘的最近时间运行。**
+
+**如果我们对 `callback` 中的元素进行变化，这些变化将与其他 `requestAnimationFrame` 回调和 CSS 动画组合在一起。因此，只会有一次几何重新计算和重绘，而不是多次。**
+
+返回值 `requestId` 可用来取消回调：
+
+```js
+// 取消回调
+cancelAnimationFrame(requesId)
+```
+
+**`callback` 得到一个参数 —— 从页面加载开始经过的毫秒数**。这个时间也可通过调用 [performance.now()](https://developer.mozilla.org/zh/docs/Web/API/Performance/now) 得到。
+
+通常 `callback` 很快就会运行，除非 CPU 过载或笔记本电量消耗殆尽，或者其他原因。
+
+下面的代码显示了 `requestAnimationFrame` 的前 10 次运行之间的时间间隔。通常是 10-20ms：
+
+```js
+<script>
+  let prev = performance.now();
+  let times = 0;
+
+  requestAnimationFrame(function measure(time) {
+    document.body.insertAdjacentHTML("beforeEnd", Math.floor(time - prev) + " ");
+    prev = time;
+
+    if (times++ < 10) requestAnimationFrame(measure);
+  });
+</script>
+```
+
+#### 结构化动画
+
+现在我们可以在 `requestAnimationFrame` 基础上创建一个更通用的动画函数：
+
+```js
+function animate({timing, draw, duration}) {
+  let start = performance.now();
+  
+  requestAnimationFrame(function animate(time) {
+    // timeFraction 从 0 增加到 1
+    let timeFraction = (time - start) / duration;
+    if (timeFraction > 1) timeFraction = 1;
+    
+    // 计算当前动画状态
+    let progress = timing(timeFraction);
+    
+    draw(progress); // 绘制
+    
+    if (timeFraction < 1) {
+      requsetAnimationFrame(animate); // 这里改成 setTimeout 也可以，只不过要设置 16.7ms定时，保证跟浏览器刷新率一致。
+    }
+  });
+}
+```
+
+`animate` 接受 3 个描述动画的基本参数：
+
+**`duration`**
+
+动画总时间，比如 `1000`。
+
+**`timing(timeFraction)`**
+
+时序函数，类似 CSS 属性 `transition-timing-function` ，传入一个已过去的时间与总时间之比的小数（`0` 代表开始，`1` 代表结束），返回动画完成度（类似 Bezier 曲线中的 `y`）。
+
+例如，线性函数意味着动画以相同的速度均匀地进行。
+
+```js
+function linear(timeFraction) {
+  return timeFraction;
+}
+```
+
+![](../.vuepress/public/images/2021-09-14-15-57-35.png)
+
+它类似于 `transition-timing-function: linear`。
+
+**`draw(progress)`**
+
+获取动画完成状态并绘制的函数。值 `progress = 0` 表示开始动画状态，`progress = 1` 表示结束状态。这是实际绘制动画的函数。
+
+它可以移动元素：
+
+```js
+function draw(progress) {
+  train.style.left = progress + 'px';
+}
+```
+
+ ...... 或者做任何事情，我们可以以任何方式为任何事物制作动画。
+
+让我们使用我们的函数将元素的 `width` 从 `0` 变化为 `100%`。
+
+```js
+animate({
+  duration: 1000,
+  timing(timeFraction) {
+    return timeFraction;
+  },
+  draw(progress) {
+    elem.style.width = progress * 100 + '%';
+  }
+});
+```
+
+与 CSS 动画不同，我们可以在这里设计任何时序函数和任何绘图函数。时序函数不受 Bezier 曲线的限制，并且 `draw` 不局限于操作 CSS 属性，还可以为类似烟花动画或其他动画创建新元素。
+
+#### 时序函数
+
+
+
+#### 总结
+
+JavaScript 动画应该通过 `requestAnimationFrame` 实现。该内置方法允许设置回调函数，以便在浏览器准备重绘时运行。那通常很快，但确切的时间取决于浏览器。
+
+当页面在后台时，根本没有重绘，因此回调将不会运行：动画将被暂停并且不会消耗资源。那很棒。
+
+这是设置大多数动画的 helper 函数 `animate`：
 
 ## 基础
 
@@ -3376,4 +4901,4 @@ function Random(min, max) {
 - 对象
   - [深入探究 Function & Object 鸡蛋问题](https://github.com/yygmind/blog/issues/35)
   - [【进阶 5-2 期】图解原型链及其继承优缺点](https://github.com/yygmind/blog/issues/35)
-  - [【进阶 5-1 期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)
+  - [【进阶 5-1 期】重新认识构造函数、原型和原型链](https://juejin.im/post/5c6a9c10f265da2db87b98f3)ocalo
