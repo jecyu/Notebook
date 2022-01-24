@@ -1,0 +1,16 @@
+{
+  "name": "concurrency",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "koa": "^2.13.4",
+    "koa-static": "^5.0.0"
+  }
+}
