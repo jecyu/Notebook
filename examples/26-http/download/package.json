@@ -1,0 +1,15 @@
+{
+  "name": "download",
+  "version": "0.1.0",
+  "description": "download",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "koa": "^2.13.4"
+  }
+}
