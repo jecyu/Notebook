@@ -1,0 +1,16 @@
+{
+  "name": "moriscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/code-frame": "^7.16.7",
+    "@babel/core": "^7.18.5"
+  }
+}
