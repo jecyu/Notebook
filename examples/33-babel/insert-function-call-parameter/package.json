@@ -1,0 +1,23 @@
+{
+  "name": "insert-function-call-parameters",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "engines": {
+    "node": "^14.17.5"
+  },
+  "keywords": [],
+  "author": "naluduo233 <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/generator": "^7.18.2",
+    "@babel/parser": "^7.18.5",
+    "@babel/traverse": "^7.18.5",
+    "@babel/types": "^7.18.4",
+    "babel-plugin-tester": "^10.1.0",
+    "jest": "^28.1.1"
+  }
+}
