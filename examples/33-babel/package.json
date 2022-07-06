@@ -1,7 +1,6 @@
 {
   "name": "33-babel",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "build": "babel src -d lib"
@@ -12,5 +11,7 @@
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.5"
-  }
+  },
+  "dependencies": {},
+  "description": ""
 }

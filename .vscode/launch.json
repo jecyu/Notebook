@@ -4,6 +4,23 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
+    {
+      "name": "babel 插件代码高亮",
+      "type": "node",
+      "request": "launch",
+      // "stopOnEntry": true,
+      // "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/examples/33-babel/code-highlight/tests/case1.js",
+      // "runtimeExecutable": "/Users/kayliang/.nvm/versions/node/v14.17.5/bin/node"
+    },
+
+    {
+      "name": "babel 自动埋点",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/33-babel/auto-track/src/index.js",
+    },
     // {
     //   "name": "launch lua process",
     //   "type": "lua",
@@ -23,22 +40,6 @@
     //   "cpath": "${workspaceFolder}/?.dll",
     //   "arg": [],
     // }
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Program",
-      "stopOnEntry": true,
-      "skipFiles": ["<node_internals>/**"],
-      // "program": "${workspaceFolder}/examples/algorithm/sorting/demo03.js"
-      // "program": "${workspaceFolder}/examples/dataStructure/tree/demo01.js"
-      // "program": "${workspaceFolder}/examples/algorithm/string/demo08.js"
-      // "program": "${workspaceFolder}/examples/js/object/prototype/demo16.js"
-      "program": "${workspaceFolder}/examples/3-js/object/oop/main.js"
-      // "program": "${workspaceFolder}/examples/functional-program/compose/demo01.js"
-      // "program": "${workspaceFolder}/examples/node/event/demo02.js"
-      // "program": "${workspaceFolder}/examples/vue/reactive/demo03.js"
-      // "program": "${workspaceFolder}/examples/js/string/demo04.js"
-    },
     // {
     //   "name": "Debug Jest Tests",
     //   "type": "node",
