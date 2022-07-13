@@ -1,0 +1,23 @@
+{
+  "name": "auto-i18n",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "^14.17.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "jecyu <jecyu.lin@gmail.com> (https://naluduo233.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/generator": "^7.18.7",
+    "@babel/helper-module-imports": "^7.18.6",
+    "@babel/helper-plugin-utils": "^7.18.6",
+    "@babel/parser": "^7.18.8",
+    "fs-extra": "^10.1.0"
+  }
+}
