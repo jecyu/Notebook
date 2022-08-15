@@ -14,12 +14,29 @@
       "program": "${workspaceFolder}/examples/33-babel/code-highlight/tests/case1.js",
       // "runtimeExecutable": "/Users/kayliang/.nvm/versions/node/v14.17.5/bin/node"
     },
-
     {
       "name": "babel 自动埋点",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/examples/33-babel/auto-track/src/index.js",
+    },
+    {
+      "name": "babel 自动国际化",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/33-babel/auto-i18nn/src/index.js",
+    },
+    {
+      "name": "babel 自动文档化",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/33-babel/auto-document/src/index.js",
+    },
+    {
+      "name": "linter-fo-direction-lint",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/33-babel/auto-document/src/for-direction-lint-entry.js",
     },
     // {
     //   "name": "launch lua process",
